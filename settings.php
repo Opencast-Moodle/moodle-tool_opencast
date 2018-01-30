@@ -26,6 +26,17 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
-   // TODO: Define the plugin settings page.
-   // https://docs.moodle.org/dev/Admin_settings
+
+    $settings = new admin_settingpage('tool_opencast_settings', new lang_string('pluginname', 'tool_opencast'));
+
+    $settings->add(new admin_setting_configtext('apiurl', get_string('apiurl', 'tool_opencast'),
+        get_string('apiurldesc', 'tool_opencast'), 'moodle-proxy.rz.tu-ilmenau.de'));
+    $settings->add(new admin_setting_configtext('apiusername', get_string('apiusername', 'tool_opencast'),
+        get_string('apiusernamedesc', 'tool_opencast'), ''));
+    $settings->add(new admin_setting_configpasswordunmask('apipassword', get_string('apipassword', 'tool_opencast'),
+        get_string('apipassworddesc', 'tool_opencast'), ''));
+    $settings->add(new admin_setting_configduration('connecttimeout', get_string('connecttimeout', 'tool_opencast'),
+        get_string('connecttimeoutdesc', 'tool_opencast'), 1));
+
+    $ADMIN->add('tools', $settings);
 }
