@@ -32,6 +32,8 @@ class api extends \curl {
 
     private $username;
     private $password;
+    private $timeout;
+    private $baseurl;
 
     public static function get_sort_param($params) {
 
@@ -69,11 +71,17 @@ class api extends \curl {
         return self::get_courses_series_title_prefix() . $courseid;
     }
 
-    public function __construct($username, $password, $timeout = 30, $settings = array()) {
+    /**
+     * Constructor of the Opencast API.
+     * @param array $settings additional curl settings.
+     * @throws \dml_exception
+     */
+    public function __construct($settings = array()) {
         parent::__construct($settings);
-        $this->username = $username;
-        $this->password = $password;
-        $this->timeout = $timeout;
+        $this->username = get_config('tool_opencast', 'apiusername');
+        $this->password = get_config('tool_opencast', 'apipassword');;
+        $this->timeout = get_config('tool_opencast', 'apitimeout');;
+        $this->baseurl = get_config('tool_opencast', 'apiurl');
     }
 
     /**
@@ -152,13 +160,15 @@ class api extends \curl {
     /**
      * Do a GET call to opencast API.
      *
-     * @param string $url
+     * @param string $resource path of the resource.
      * @param array $runwithroles if set, the request is executed within opencast assuming the user has
      * the specified roles.
      * @return string JSON String of result.
      * @throws \moodle_exception
      */
-    public function oc_get($url, $runwithroles = array()) {
+    public function oc_get($resource, $runwithroles = array()) {
+
+        $url = $this->baseurl . $resource;
 
         $header = $this->get_authentication_header('GET', $url, $runwithroles);
         $header[] = 'Content-Type: application/json';
@@ -217,14 +227,16 @@ class api extends \curl {
     /**
      * Do a POST call to opencast API.
      *
-     * @param string $url
+     * @param string $resource path of the resource.
      * @param array $params post parameters.
      * @param array $runwithroles if set, the request is executed within opencast assuming the user has
      * the specified roles.
      * @return string JSON String of result.
      * @throws \moodle_exception
      */
-    public function oc_post($url, $params = array(), $runwithroles = array()) {
+    public function oc_post($resource, $params = array(), $runwithroles = array()) {
+
+        $url = $this->baseurl . $resource;
 
         $header = $this->get_authentication_header('POST', $url, $runwithroles);
 
@@ -257,14 +269,16 @@ class api extends \curl {
     /**
      * Do a PUT call to opencast API.
      *
-     * @param string $url url of requested resource.
+     * @param string $resource path of the resource.
      * @param array $params array of parameters.
      * @param array $runwithroles if set, the request is executed within opencast assuming the user has
      * the specified roles.
      * @return string JSON String of result.
      * @throws \moodle_exception
      */
-    public function oc_put($url, $params = array(), $runwithroles = array()) {
+    public function oc_put($resource, $params = array(), $runwithroles = array()) {
+
+        $url = $this->baseurl . $resource;
 
         $header = $this->get_authentication_header('PUT', $url, $runwithroles);
         $this->setHeader($header);
