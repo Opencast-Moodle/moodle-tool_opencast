@@ -1,12 +1,15 @@
 # Opencast API #
 
-TODO Describe the plugin shortly here.
-
-TODO Provide more detailed description here.
+This tool provides API functions as well as general settings for the different opencast tools:
+* [block_opencast](https://github.com/unirz-tu-ilmenau/moodle-block_opencast)
+* [filter_opencast](https://github.com/unirz-tu-ilmenau/moodle-filter_opencast)
+* [repository_opencast](https://github.com/unirz-tu-ilmenau/moodle-repository_opencast)
 
 ## License ##
 
 2018 Tobias Reischmann <tobias.reischmann@wi.uni-muenster.de>
+
+based on 2017 Andreas Wagner, SYNERGY LEARNING
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
