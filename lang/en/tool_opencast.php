@@ -42,3 +42,4 @@ $string['connecttimeoutdesc'] = 'Setup the time in seconds while moodle is tryin
 $string['needphp55orhigher'] = 'PHP Version 5.5 or higher is needed';
 $string['wrongmimetypedetected'] = 'Wrong mimetype was detected, while trying to upload {$a->filename} from course {$a->coursename},
     You can only upload video files!';
+$string['serverconnectionerror'] = 'There was a problem with the connection to the opencast server. Please check your credentials and your network settings.';
