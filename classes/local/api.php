@@ -75,13 +75,26 @@ class api extends \curl {
      * Constructor of the Opencast API.
      * @param array $settings additional curl settings.
      * @throws \dml_exception
+     * @throws \moodle_exception
      */
     public function __construct($settings = array()) {
         parent::__construct($settings);
+
         $this->username = get_config('tool_opencast', 'apiusername');
         $this->password = get_config('tool_opencast', 'apipassword');;
         $this->timeout = get_config('tool_opencast', 'apitimeout');;
         $this->baseurl = get_config('tool_opencast', 'apiurl');
+        if (empty($this->baseurl)) {
+            throw new \moodle_exception('apiurlempty', 'tool_opencast');
+        }
+
+        if (empty($this->username)) {
+            throw new \moodle_exception('apiusernameempty', 'tool_opencast');
+        }
+
+        if (empty($this->password)) {
+            throw new \moodle_exception('apipasswordempty', 'tool_opencast');
+        }
     }
 
     /**

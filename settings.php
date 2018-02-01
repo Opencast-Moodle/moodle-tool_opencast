@@ -27,15 +27,15 @@ defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
 
-    $settings = new admin_settingpage('tool_opencast_settings', new lang_string('pluginname', 'tool_opencast'));
+    $settings = new admin_settingpage('tool_opencast', new lang_string('pluginname', 'tool_opencast'));
 
-    $settings->add(new admin_setting_configtext('apiurl', get_string('apiurl', 'tool_opencast'),
+    $settings->add(new admin_setting_configtext('tool_opencast/apiurl', get_string('apiurl', 'tool_opencast'),
         get_string('apiurldesc', 'tool_opencast'), 'moodle-proxy.rz.tu-ilmenau.de'));
-    $settings->add(new admin_setting_configtext('apiusername', get_string('apiusername', 'tool_opencast'),
+    $settings->add(new admin_setting_configtext('tool_opencast/apiusername', get_string('apiusername', 'tool_opencast'),
         get_string('apiusernamedesc', 'tool_opencast'), ''));
-    $settings->add(new admin_setting_configpasswordunmask('apipassword', get_string('apipassword', 'tool_opencast'),
+    $settings->add(new admin_setting_configpasswordunmask('tool_opencast/apipassword', get_string('apipassword', 'tool_opencast'),
         get_string('apipassworddesc', 'tool_opencast'), ''));
-    $settings->add(new admin_setting_configduration('connecttimeout', get_string('connecttimeout', 'tool_opencast'),
+    $settings->add(new admin_setting_configduration('tool_opencast/connecttimeout', get_string('connecttimeout', 'tool_opencast'),
         get_string('connecttimeoutdesc', 'tool_opencast'), 1));
 
     $ADMIN->add('tools', $settings);
