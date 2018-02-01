@@ -113,59 +113,32 @@ class api extends \curl {
 
     /**
      * Get an digest authentication header.
-     *
-     * @param string $method http method to be used, e.g. 'POST' or 'GET'.
-     * @param string $url url of the requested ressouce.
      * @param array $runwithroles if set, the request is executed within opencast assuming the user has
      * the specified roles.
+     *
      * @return array of authentification headers
      * @throws \moodle_exception
      */
-    private function get_authentication_header($method, $url, $runwithroles = array()) {
+    private function get_authentication_header($runwithroles = array()) {
 
-        $options = array('CURLOPT_HEADER' => true);
-        $this->setopt($options);
+            $options = array('CURLOPT_HEADER' => true);
+            $this->setopt($options);
 
-        $header = array();
-        $header[] = "X-Requested-Auth: Digest";
-        // Restrict to Roles.
-        if (!empty($runwithroles)) {
-            $header[] = "X-RUN-WITH-ROLES: " . implode(', ', $runwithroles);
-        }
+            // Restrict to Roles.
+            if (!empty($runwithroles)) {
+                $header[] = "X-RUN-WITH-ROLES: " . implode(', ', $runwithroles);
+                $this->setHeader($header);
+            }
 
-        $this->setHeader($header);
-        $this->setopt('CURLOPT_CONNECTTIMEOUT', $this->timeout);
+            $this->setopt('CURLOPT_CONNECTTIMEOUT', $this->timeout);
 
-        $authresponse = $this->get($url);
+            $basicauth = base64_encode($this->username . ":" . $this->password);
 
-        $matches = [];
-        preg_match('/WWW-Authenticate: Digest (.*)/', $authresponse, $matches);
+            $header = array();
 
-        if (empty($matches)) {
-            throw new \moodle_exception('authenticationrequestfailed', 'tool_opencast');
-        }
-
-        $authheaders = explode(',', $matches[1]);
-
-        $parsed = array();
-        foreach ($authheaders as $pair) {
-            $vals = explode('=', $pair);
-            $parsed[trim($vals[0])] = trim($vals[1], '" ');
-        }
-
-        $realm = (isset($parsed['realm'])) ? $parsed['realm'] : "";
-        $nonce = (isset($parsed['nonce'])) ? $parsed['nonce'] : "";
-        $opaque = (isset($parsed['opaque'])) ? $parsed['opaque'] : "";
-
-        $authenticate1 = md5($this->username . ":" . $realm . ":" . $this->password);
-        $authenticate2 = md5($method . ":" . $url);
-        $response = md5($authenticate1 . ":" . $nonce . ":" . $authenticate2);
-
-        $header = array();
-        $header[] = sprintf(
-            'Authorization: Digest username="%s", realm="%s", nonce="%s", opaque="%s", uri="%s", response="%s"',
-            $this->username, $realm, $nonce, $opaque, $url, $response
-        );
+            $header[] = sprintf(
+                'Authorization: Basic %s', $basicauth
+            );
 
         return $header;
     }
@@ -183,7 +156,7 @@ class api extends \curl {
 
         $url = $this->baseurl . $resource;
 
-        $header = $this->get_authentication_header('GET', $url, $runwithroles);
+        $header = $this->get_authentication_header($runwithroles);
         $header[] = 'Content-Type: application/json';
         $this->setHeader($header);
         $this->setopt(array('CURLOPT_HEADER' => false));
@@ -251,7 +224,7 @@ class api extends \curl {
 
         $url = $this->baseurl . $resource;
 
-        $header = $this->get_authentication_header('POST', $url, $runwithroles);
+        $header = $this->get_authentication_header($runwithroles);
 
         $header[] = "Content-Type: multipart/form-data";
         $this->setHeader($header);
@@ -293,7 +266,7 @@ class api extends \curl {
 
         $url = $this->baseurl . $resource;
 
-        $header = $this->get_authentication_header('PUT', $url, $runwithroles);
+        $header = $this->get_authentication_header($runwithroles);
         $this->setHeader($header);
         $this->setopt(array('CURLOPT_HEADER' => false));
 
