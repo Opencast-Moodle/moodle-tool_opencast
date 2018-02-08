@@ -78,7 +78,7 @@ class tool_opencast_external extends external_api {
      * @throws required_capability_exception
      */
     public static function get_courses_for_instructor($username) {
-        $params = self::validate_parameters(self::get_courses_for_instructor_parameters(), array('username'=>$username));
+        self::validate_parameters(self::get_courses_for_instructor_parameters(), array('username'=>$username));
 
         return self::get_courses_with_capability($username, 'tool/opencast:instructor');
     }
@@ -94,7 +94,7 @@ class tool_opencast_external extends external_api {
      * @throws required_capability_exception
      */
     public static function get_courses_for_learner($username) {
-        $params = self::validate_parameters(self::get_courses_for_learner_parameters(), array('username'=>$username));
+        self::validate_parameters(self::get_courses_for_learner_parameters(), array('username'=>$username));
 
         return self::get_courses_with_capability($username, 'tool/opencast:learner');
     }
