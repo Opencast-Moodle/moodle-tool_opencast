@@ -75,6 +75,7 @@ class tool_opencast_external extends external_api {
      * @throws coding_exception
      * @throws dml_exception
      * @throws invalid_parameter_exception
+     * @throws required_capability_exception
      */
     public static function get_courses_for_instructor($username) {
         $params = self::validate_parameters(self::get_courses_for_instructor_parameters(), array('username'=>$username));
@@ -90,6 +91,7 @@ class tool_opencast_external extends external_api {
      * @throws coding_exception
      * @throws dml_exception
      * @throws invalid_parameter_exception
+     * @throws required_capability_exception
      */
     public static function get_courses_for_learner($username) {
         $params = self::validate_parameters(self::get_courses_for_learner_parameters(), array('username'=>$username));
@@ -104,9 +106,15 @@ class tool_opencast_external extends external_api {
      * @return array
      * @throws coding_exception
      * @throws dml_exception
+     * @throws required_capability_exception
      */
     private static function get_courses_with_capability($username, $capability) {
         $result = array();
+
+        $context = context_system::instance();
+        if (!has_capability('tool/opencast:externalapi', $context)) {
+            throw new required_capability_exception($context, 'tool/opencast:externalapi', 'nopermissions', '');
+        }
 
         $user = core_user::get_user_by_username($username);
         $courses = enrol_get_all_users_courses($user->id);
