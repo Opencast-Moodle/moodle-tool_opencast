@@ -39,6 +39,10 @@ $string['apiusernameempty'] = 'Username for Opencast API user is not setup corre
 $string['connecttimeout'] = 'Connection timeout';
 $string['connecttimeoutdesc'] = 'Setup the time in seconds while moodle is trying to connect to opencast until timeout';
 
+$string['opencast:externalapi'] = 'Access to tool_opencast webservices';
+$string['opencast:instructor'] = 'Gives the role of an instructor in opencast';
+$string['opencast:learner'] = 'Gives the role of a learner in opencast';
+
 $string['needphp55orhigher'] = 'PHP Version 5.5 or higher is needed';
 $string['wrongmimetypedetected'] = 'Wrong mimetype was detected, while trying to upload {$a->filename} from course {$a->coursename},
     You can only upload video files!';
