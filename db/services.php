@@ -40,3 +40,16 @@ $functions = array(
         'capabilities' => 'tool/opencast:externalapi',
     ),
 );
+
+$services = array(
+    'Opencast web service' => array(
+        'functions' => array (
+            'tool_opencast_get_courses_for_learner',
+            'tool_opencast_get_courses_for_instructor',
+            'core_user_get_users_by_field',
+        ),
+        'restrictedusers' => 1, // if 1, the administrator must manually select which user can use this service.
+        // (Administration > Plugins > Web services > Manage services > Authorised users)
+        'enabled'=>1, // if 0, then token linked to this service won't work
+    )
+);
