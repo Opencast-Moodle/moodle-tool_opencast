@@ -47,3 +47,4 @@ $string['needphp55orhigher'] = 'PHP Version 5.5 or higher is needed';
 $string['wrongmimetypedetected'] = 'Wrong mimetype was detected, while trying to upload {$a->filename} from course {$a->coursename},
     You can only upload video files!';
 $string['serverconnectionerror'] = 'There was a problem with the connection to the opencast server. Please check your credentials and your network settings.';
+$string['privacy:metadata'] = 'The opencast tool only provides an API to communicate with an Opencast instance, but does not effect or store any personal data.';
