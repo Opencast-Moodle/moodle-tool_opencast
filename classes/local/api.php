@@ -239,7 +239,7 @@ class api extends \curl {
                     $value->add_to_curl_request($this, $key);
                     $this->add_postname($value, $key);
                 } else {
-                    $this->_tmp_file_post_params[$key] = $value;
+                    $this->_tmp_file_post_params[$key] = rawurlencode($value);
                 }
             }
             $options['CURLOPT_POSTFIELDS'] = $this->_tmp_file_post_params;
