@@ -25,6 +25,7 @@
  */
 
 namespace tool_opencast\local;
+defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . '/lib/filelib.php');
 
@@ -125,10 +126,10 @@ class api extends \curl {
             $this->setopt($options);
 
             // Restrict to Roles.
-            if (!empty($runwithroles)) {
-                $header[] = "X-RUN-WITH-ROLES: " . implode(', ', $runwithroles);
-                $this->setHeader($header);
-            }
+        if (!empty($runwithroles)) {
+            $header[] = "X-RUN-WITH-ROLES: " . implode(', ', $runwithroles);
+            $this->setHeader($header);
+        }
 
             $this->setopt('CURLOPT_CONNECTTIMEOUT', $this->timeout);
 
