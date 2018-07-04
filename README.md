@@ -5,11 +5,23 @@ This tool provides API functions as well as general settings for the different o
 * [filter_opencast](https://github.com/unirz-tu-ilmenau/moodle-filter_opencast)
 * [repository_opencast](https://github.com/unirz-tu-ilmenau/moodle-repository_opencast)
 
+The tool stores the relation between courses and series ids and 
+offers webservice endpoints for the opencast role provider. 
+
+## Settings ##
+
+Here the general settings for the connection to your opencast server can be set.
+Required are the server and the API user.
+
+Make sure that the API user you define here has the necessary access rights in opencast to actually access the API endpoints for *events*, *groups* and *series*.
+
+Additionally, you can define a timeout for the connection.
+
 ## License ##
 
-2018 Tobias Reischmann <tobias.reischmann@wi.uni-muenster.de>
+This plugin is developed in cooperation with the TU Ilmenau and the WWU Münster.
 
-based on 2017 Andreas Wagner, SYNERGY LEARNING
+It is based on 2017 Andreas Wagner, SYNERGY LEARNING
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
