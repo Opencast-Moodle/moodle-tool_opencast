@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-if ($ADMIN->fulltree) {
+if ($hassiteconfig) {
 
     $settings = new admin_settingpage('tool_opencast', new lang_string('pluginname', 'tool_opencast'));
 
