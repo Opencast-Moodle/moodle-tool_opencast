@@ -126,10 +126,10 @@ class api extends \curl {
             $this->setopt($options);
 
             // Restrict to Roles.
-        if (!empty($runwithroles)) {
-            $header[] = "X-RUN-WITH-ROLES: " . implode(', ', $runwithroles);
-            $this->setHeader($header);
-        }
+            if (!empty($runwithroles)) {
+                $header[] = "X-RUN-WITH-ROLES: " . implode(', ', $runwithroles);
+                $this->setHeader($header);
+            }
 
             $this->setopt('CURLOPT_CONNECTTIMEOUT', $this->timeout);
 
