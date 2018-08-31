@@ -39,6 +39,14 @@ $functions = array(
         'type' => 'read',
         'capabilities' => 'tool/opencast:externalapi',
     ),
+    'tool_opencast_get_groups_for_learner' => array(
+        'classname' => 'tool_opencast_external',
+        'methodname' => 'get_groups_for_learner',
+        'classpath'   => 'admin/tool/opencast/external.php',
+        'description' => 'Service to query the groups in which a user has a membership in',
+        'type' => 'read',
+        'capabilities' => 'tool/opencast:externalapi, moodle/site:accessallgroups',
+    ),
 );
 
 $services = array(
@@ -46,6 +54,7 @@ $services = array(
         'functions' => array (
             'tool_opencast_get_courses_for_learner',
             'tool_opencast_get_courses_for_instructor',
+            'tool_opencast_get_groups_for_learner',
             'core_user_get_users_by_field',
         ),
         'restrictedusers' => 1, // If 1, the administrator must manually select which user can use this service.
