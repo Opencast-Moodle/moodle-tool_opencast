@@ -126,10 +126,10 @@ class api extends \curl {
             $this->setopt($options);
 
             // Restrict to Roles.
-        if (!empty($runwithroles)) {
-            $header[] = "X-RUN-WITH-ROLES: " . implode(', ', $runwithroles);
-            $this->setHeader($header);
-        }
+            if (!empty($runwithroles)) {
+                $header[] = "X-RUN-WITH-ROLES: " . implode(', ', $runwithroles);
+                $this->setHeader($header);
+            }
 
             $this->setopt('CURLOPT_CONNECTTIMEOUT', $this->timeout);
 
@@ -272,6 +272,40 @@ class api extends \curl {
         $this->setopt(array('CURLOPT_HEADER' => false));
 
         $options['CURLOPT_CUSTOMREQUEST'] = "PUT";
+        if (is_array($params)) {
+            $this->_tmp_file_post_params = array();
+            foreach ($params as $key => $value) {
+                $this->_tmp_file_post_params[$key] = $value;
+            }
+            $options['CURLOPT_POSTFIELDS'] = $this->_tmp_file_post_params;
+            unset($this->_tmp_file_post_params);
+        } else {
+            // The raw post data.
+            $options['CURLOPT_POSTFIELDS'] = $params;
+        }
+
+        return $this->request($url, $options);
+    }
+
+    /**
+     * Do a DELETE call to opencast API.
+     *
+     * @param string $resource path of the resource.
+     * @param array $params array of parameters.
+     * @param array $runwithroles if set, the request is executed within opencast assuming the user has
+     * the specified roles.
+     * @return string JSON String of result.
+     * @throws \moodle_exception
+     */
+    public function oc_delete($resource, $params = array(), $runwithroles = array()) {
+
+        $url = $this->baseurl . $resource;
+
+        $header = $this->get_authentication_header($runwithroles);
+        $this->setHeader($header);
+        $this->setopt(array('CURLOPT_HEADER' => false));
+
+        $options['CURLOPT_CUSTOMREQUEST'] = "DELETE";
         if (is_array($params)) {
             $this->_tmp_file_post_params = array();
             foreach ($params as $key => $value) {
