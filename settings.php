@@ -38,5 +38,13 @@ if ($hassiteconfig) {
     $settings->add(new admin_setting_configduration('tool_opencast/connecttimeout', get_string('connecttimeout', 'tool_opencast'),
         get_string('connecttimeoutdesc', 'tool_opencast'), 1));
 
+    $compatibilitymodes = array(
+        0 => get_string("compatibilitymode_off", "tool_opencast"),
+        5 => "Opencast 5.x",
+    );
+
+    $settings->add(new admin_setting_configselect('tool_opencast/compatibilitymode', get_string('compatibilitymode', 'tool_opencast'),
+        get_string('compatibilitymodedesc', 'tool_opencast'), 0, $compatibilitymodes));
+
     $ADMIN->add('tools', $settings);
 }

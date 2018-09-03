@@ -38,6 +38,10 @@ $string['apiusernamedesc'] = 'For all calls to the API moodle uses this user. Au
 $string['apiusernameempty'] = 'Username for Opencast API user is not setup correctly, go to settings of block opencast to fix this';
 $string['connecttimeout'] = 'Connection timeout';
 $string['connecttimeoutdesc'] = 'Setup the time in seconds while moodle is trying to connect to opencast until timeout';
+$string['compatibilitymode'] = 'Compatibility Mode';
+$string['compatibilitymodedesc'] = 'The compatibility mode allows to connect to older Opencast versions. 
+For Opencast 5.x you have to provide the Webservice User in Opencast with the Role ROLE_ADMIN in order to be able to start workflows and use features such as changing visibility or deleting videos.';
+$string['compatibilitymode_off'] = 'Off';
 
 $string['opencast:externalapi'] = 'Access to tool_opencast webservices';
 $string['opencast:instructor'] = 'Gives the role of an instructor in opencast';
