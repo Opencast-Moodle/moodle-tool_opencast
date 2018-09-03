@@ -25,6 +25,7 @@
  */
 
 namespace tool_opencast\local;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . '/lib/filelib.php');
@@ -35,6 +36,8 @@ class api extends \curl {
     private $password;
     private $timeout;
     private $baseurl;
+
+    private static $supportedapilevel;
 
     public static function get_sort_param($params) {
 
@@ -319,6 +322,29 @@ class api extends \curl {
         }
 
         return $this->request($url, $options);
+    }
+
+    /**
+     * Checks if the opencast version support a certain version of the External API.
+     * This is necessary for the decision, which opencast endpoints are used throughout this class.
+     * @return string|null returns the version as string.
+     * @throws \dml_exception
+     * @throws \moodle_exception
+     */
+    public function supports_api_level($level) {
+        if (!self::$supportedapilevel) {
+
+            $resource = '/api/version';
+
+            $api = new api();
+            $result = json_decode($api->oc_get($resource));
+
+            if ($api->get_http_code() != 200) {
+                throw new \moodle_exception('Opencast system not reachable.');
+            }
+            self::$supportedapilevel = $result->versions;
+        }
+        return is_array(self::$supportedapilevel) && in_array($level, self::$supportedapilevel);
     }
 
 }
