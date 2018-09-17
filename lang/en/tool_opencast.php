@@ -29,13 +29,13 @@ $string['pluginname'] = 'Opencast API';
 
 $string['apipassword'] = 'Password for API user';
 $string['apipassworddesc'] = 'Setup a password for the super user, who does the api calls.';
-$string['apipasswordempty'] = 'Password for API user is not setup correctly, go to settings of block opencast to fix this';
+$string['apipasswordempty'] = 'Password for API user is not setup correctly, go to settings of tool opencast to fix this';
 $string['apiurl'] = 'Opencast API url';
 $string['apiurldesc'] = 'Setup the base url of the Opencast system, for example: opencast.example.com';
-$string['apiurlempty'] = 'Url for Opencast API is not setup correctly, go to settings of block opencast to fix this';
+$string['apiurlempty'] = 'Url for Opencast API is not setup correctly, go to settings of tool opencast to fix this';
 $string['apiusername'] = 'Username for API calls';
 $string['apiusernamedesc'] = 'For all calls to the API moodle uses this user. Authorization is done by adding suitable roles to the call';
-$string['apiusernameempty'] = 'Username for Opencast API user is not setup correctly, go to settings of block opencast to fix this';
+$string['apiusernameempty'] = 'Username for Opencast API user is not setup correctly, go to settings of tool opencast to fix this';
 $string['connecttimeout'] = 'Connection timeout';
 $string['connecttimeoutdesc'] = 'Setup the time in seconds while moodle is trying to connect to opencast until timeout';
 

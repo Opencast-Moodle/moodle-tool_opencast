@@ -68,6 +68,20 @@ class tool_opencast_external extends external_api {
     }
 
     /**
+     * Describes the parameters for getting groups for a opencast user.
+     *
+     * @return external_function_parameters
+     * @throws coding_exception
+     */
+    public static function get_groups_for_learner_parameters() {
+        return new external_function_parameters(
+            array(
+                'username' => new external_value(core_user::get_property_type('username'), 'User Name'),
+            )
+        );
+    }
+
+    /**
      * Get all courses for a user, in which he has the capabilities of a instructor.
      *
      * @param  string $username user name
@@ -97,6 +111,32 @@ class tool_opencast_external extends external_api {
         self::validate_parameters(self::get_courses_for_learner_parameters(), array('username' => $username));
 
         return self::get_courses_with_capability($username, 'tool/opencast:learner');
+    }
+
+    /**
+     * Get all courses for a user, in which he has the capabilities of a learner.
+     *
+     * @param  string $username user name
+     * @return array list of course ids
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     * @throws required_capability_exception
+     */
+    public static function get_groups_for_learner($username) {
+        self::validate_parameters(self::get_groups_for_learner_parameters(), array('username' => $username));
+
+        $context = context_system::instance();
+        if (!has_capability('tool/opencast:externalapi', $context)) {
+            throw new required_capability_exception($context, 'tool/opencast:externalapi', 'nopermissions', '');
+        }
+        if (!has_capability('moodle/site:accessallgroups', $context)) {
+            throw new required_capability_exception($context, 'moodle/site:accessallgroups', 'nopermissions', '');
+        }
+
+        global $DB;
+        $user = core_user::get_user_by_username($username);
+        return $DB->get_records('groups_members', array('userid' => $user->id), '', 'groupid as id');
     }
 
     /**
@@ -152,6 +192,21 @@ class tool_opencast_external extends external_api {
             new external_single_structure(
                 array(
                     'id' => new external_value(PARAM_INT, 'id of course'),
+                )
+            )
+        );
+    }
+
+    /**
+     * Describes the confirm_user return value.
+     *
+     * @return external_multiple_structure array of course ids
+     */
+    public static function get_groups_for_learner_returns() {
+        return new external_multiple_structure(
+            new external_single_structure(
+                array(
+                    'id' => new external_value(PARAM_INT, 'id of group'),
                 )
             )
         );
