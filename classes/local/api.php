@@ -191,7 +191,8 @@ class api extends \curl {
         if (is_object($source)) {
             $filename = $source->source;
         } else {
-            $filename = $storedfile->get_source();
+            // If source is not a serialised object, it is a string containing only the filename.
+            $filename = $source;
         }
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
