@@ -185,9 +185,14 @@ class api extends \curl {
             throw new \moodle_exception('needphp55orhigher', 'tool_opencast');
         }
 
-        $sourse = @unserialize($storedfile->get_source());
-        $filename = $sourse ? $sourse : $storedfile->get_source();
-        is_string($filename) ? $filename = $filename : $filename = $filename->source ;
+        //Extracting filename from $file->file_record->source, make sure to have a string filename!
+        $source = @unserialize($storedfile->get_source());
+        $filename = '';
+        if (is_object($source)) {
+            $filename = $source->source;
+        } else {
+            $filename = $storedfile->get_source();
+        }
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
         // If extension is empty, add extension base on mimetype.
