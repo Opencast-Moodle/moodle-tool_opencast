@@ -209,13 +209,12 @@ class api extends \curl {
         if ($mediatype != 'video') {
 
             $contextid = $storedfile->get_contextid();
-            $context = \context::instance_by_id($contextid);
-            list($context, $course, $cm) = get_context_info_array($context);
+            list($context, $course, $cm) = get_context_info_array($contextid);
 
             $info = new \stdClass();
             $info->coursename = $course->fullname . "(ID: {$course->id})";
             $info->filename = $filename;
-            throw new \moodle_exception('wrongmimetypedetected', 'tool_opencast', $info);
+            throw new \moodle_exception('wrongmimetypedetected', 'tool_opencast', '', $info);
         }
 
         $curlfile->postname = $filename;
