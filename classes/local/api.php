@@ -26,6 +26,9 @@
 
 namespace tool_opencast\local;
 
+use local_chunkupload\chunkupload_form_element;
+use local_chunkupload\local\chunkupload_file;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . '/lib/filelib.php');
@@ -222,6 +225,41 @@ class api extends \curl {
     }
 
     /**
+     * Opencast needs a fileextension for uploaded file, so add a postname
+     * (which the core curl module does NOT) to curl_file.
+     *
+     * @param chunkupload_file $file chunkupload file to be uploaded.
+     * @param string $key key identifier within the post params array of the stored file.
+     * @throws \moodle_exception
+     */
+    private function add_postname_chunkupload($file, $key) {
+
+        $curlfile = $this->_tmp_file_post_params[$key];
+
+        // Ensure that file is uploaded as a curl file (PHP 5 > 5.5.0 is needed).
+        if (!$curlfile instanceof \CURLFile) {
+            throw new \moodle_exception('needphp55orhigher', 'tool_opencast');
+        }
+
+        $filename = $file->get_filename();
+
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+
+        // If extension is empty, add extension base on mimetype.
+        if (empty($extension)) {
+            $mimetype = file_storage::mimetype_from_file($file->get_fullpath());
+            $extension = mimeinfo_from_type('extension', $mimetype);
+            $filename .= '.' . $extension;
+        }
+
+        // Check mimetype.
+        $mimetype = mimeinfo('type', $filename);
+
+        $curlfile->postname = $filename;
+        $curlfile->mime = $mimetype;
+    }
+
+    /**
      * Do a POST call to opencast API.
      *
      * @param string $resource path of the resource.
@@ -249,6 +287,10 @@ class api extends \curl {
                 if ($value instanceof \stored_file) {
                     $value->add_to_curl_request($this, $key);
                     $this->add_postname($value, $key);
+                } elseif (class_exists('\local_chunkupload\local\chunkupload_file') &&
+                    $value instanceof \local_chunkupload\local\chunkupload_file) {
+                        $value->add_to_curl_request($this, $key);
+                        $this->add_postname_chunkupload($value, $key);
                 } else {
                     $this->_tmp_file_post_params[$key] = $value;
                 }
@@ -259,7 +301,6 @@ class api extends \curl {
             // The raw post data.
             $options['CURLOPT_POSTFIELDS'] = $params;
         }
-
         return $this->request($url, $options);
     }
 
