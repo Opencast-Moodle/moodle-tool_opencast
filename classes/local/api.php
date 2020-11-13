@@ -128,24 +128,24 @@ class api extends \curl {
      */
     private function get_authentication_header($runwithroles = array()) {
 
-            $options = array('CURLOPT_HEADER' => true);
-            $this->setopt($options);
+        $options = array('CURLOPT_HEADER' => true);
+        $this->setopt($options);
 
-            // Restrict to Roles.
-            if (!empty($runwithroles)) {
-                $header[] = "X-RUN-WITH-ROLES: " . implode(', ', $runwithroles);
-                $this->setHeader($header);
-            }
+        // Restrict to Roles.
+        if (!empty($runwithroles)) {
+            $header[] = "X-RUN-WITH-ROLES: " . implode(', ', $runwithroles);
+            $this->setHeader($header);
+        }
 
-            $this->setopt('CURLOPT_CONNECTTIMEOUT', $this->timeout);
+        $this->setopt('CURLOPT_CONNECTTIMEOUT', $this->timeout);
 
-            $basicauth = base64_encode($this->username . ":" . $this->password);
+        $basicauth = base64_encode($this->username . ":" . $this->password);
 
-            $header = array();
+        $header = array();
 
-            $header[] = sprintf(
-                'Authorization: Basic %s', $basicauth
-            );
+        $header[] = sprintf(
+            'Authorization: Basic %s', $basicauth
+        );
 
         return $header;
     }
@@ -188,7 +188,7 @@ class api extends \curl {
             throw new \moodle_exception('needphp55orhigher', 'tool_opencast');
         }
 
-        //Extracting filename from $file->file_record->source, make sure to have a string filename!
+        // Extracting filename from $file->file_record->source, make sure to have a string filename!
         $source = @unserialize($storedfile->get_source());
         $filename = '';
         if (is_object($source)) {
@@ -287,7 +287,7 @@ class api extends \curl {
                 if ($value instanceof \stored_file) {
                     $value->add_to_curl_request($this, $key);
                     $this->add_postname($value, $key);
-                } elseif (class_exists('\local_chunkupload\local\chunkupload_file') &&
+                } else if (class_exists('\local_chunkupload\local\chunkupload_file') &&
                     $value instanceof \local_chunkupload\local\chunkupload_file) {
                         $value->add_to_curl_request($this, $key);
                         $this->add_postname_chunkupload($value, $key);
