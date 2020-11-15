@@ -49,14 +49,15 @@ jobs:
       install:
         - moodle-plugin-ci install --no-init
       script:
+        - moodle-plugin-ci phpdoc
         - moodle-plugin-ci phplint
-      # - moodle-plugin-ci phpcpd
+        - moodle-plugin-ci phpcpd
         - moodle-plugin-ci phpmd
-      # - moodle-plugin-ci codechecker
-        - moodle-plugin-ci savepoints
-      # - moodle-plugin-ci mustache
-        - moodle-plugin-ci grunt
+        - moodle-plugin-ci codechecker
         - moodle-plugin-ci validate
+        - moodle-plugin-ci savepoints
+        - moodle-plugin-ci mustache
+        - moodle-plugin-ci grunt
     # Smaller build matrix for development builds
     - stage: develop
       php: 7.4
@@ -73,23 +74,18 @@ jobs:
 
 # Unit tests and behat tests against full matrix.
 install:
-  - moodle-plugin-ci install --no-init
-
+  - moodle-plugin-ci install
 script:
-  - moodle-plugin-ci phplint
-  - moodle-plugin-ci phpcpd
-  - moodle-plugin-ci phpmd
-  - moodle-plugin-ci codechecker
-  - moodle-plugin-ci savepoints
-  - moodle-plugin-ci grunt
-  - moodle-plugin-ci validate
-
+  - moodle-plugin-ci phpunit --coverage-clover
+  - moodle-plugin-ci behat
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 
 stages:
   - static
   - name: develop
-    if: branch != master AND (type != pull_request OR head_branch != master) AND (tag IS blank)
+    if: false
+    #if: branch != master AND (type != pull_request OR head_branch != master) AND (tag IS blank)
   - name: test
-    if: branch = master OR (type = pull_request AND head_branch = master) OR (tag IS present)
+    if: false
+    #if: branch = master OR (type = pull_request AND head_branch = master) OR (tag IS present)

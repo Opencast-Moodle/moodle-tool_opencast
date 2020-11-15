@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Capabilities for tool_opencast.
+ *
  * @package    tool_opencast
  * @copyright  2018 Tobias Reischmann <tobias.reischmann@wi.uni-muenster.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

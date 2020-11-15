@@ -14,6 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Persistable of seriesmapping
+ *
+ * @package    tool_opencast
+ * @copyright  2018 Tobias Reischmann WWU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace tool_opencast;
 defined('MOODLE_INTERNAL') || die;
 
@@ -24,7 +32,6 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2018 Tobias Reischmann WWU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class seriesmapping extends \core\persistent {
 
     /** Table name for the persistent. */
