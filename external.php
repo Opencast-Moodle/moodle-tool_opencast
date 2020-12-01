@@ -141,8 +141,8 @@ class tool_opencast_external extends external_api {
 
     /**
      * Returns all course ids where the user has the specific capability in.
-     * @param $username
-     * @param $capability
+     * @param string $username the username
+     * @param string $capability the moodle capability
      * @return array
      * @throws coding_exception
      * @throws dml_exception

@@ -15,8 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package   tool_opencast
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Upgrade.php for tool_opencast.
+ *
+ * @package    tool_opencast
+ * @copyright  2018 Tobias Reischmann WWU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
