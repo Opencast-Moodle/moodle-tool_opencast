@@ -143,7 +143,7 @@ class api extends \curl {
         } else {
             $this->baseurl = $baseurl;
         }
-        
+
         if (empty($this->baseurl)) {
             throw new \moodle_exception('apiurlempty', 'tool_opencast');
         }
