@@ -128,6 +128,7 @@ class api extends \curl {
     /**
      * Constructor of the Opencast API.
      * @param array $settings additional curl settings.
+     * @param string|null $baseurl optional baseurl for distributed oc solution
      * @throws \dml_exception
      * @throws \moodle_exception
      */
