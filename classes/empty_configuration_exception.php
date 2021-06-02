@@ -15,17 +15,27 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Exception, which is thrown when the tool settings are emtpy.
  *
- * @package     tool_opencast
- * @copyright   2018 Tobias Reischmann <tobias.reischmann@wi.uni-muenster.de>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    block_opencast
+ * @copyright  2021 Tamara Gunkel, University of Münster
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+namespace tool_opencast;
+
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'tool_opencast';
-$plugin->release   = 'v3.11-r1'; // First release under Moodle 3.11.
-$plugin->version = 2021060200;
-$plugin->requires = 2017051500;
-$plugin->maturity = MATURITY_STABLE;
+
+/**
+ * Exception, which is thrown when the tool settings are empty.
+ *
+ * @package    block_opencast
+ * @copyright  2021 Tamara Gunkel, University of Münster
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class empty_configuration_exception extends \moodle_exception
+{
+
+}
