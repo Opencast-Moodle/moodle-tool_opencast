@@ -56,5 +56,40 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018013002, 'error', 'opencast');
     }
 
+    if ($oldversion < 2021060400) {
+
+        // Define field default to be added to block_opencast_series.
+        $table = new xmldb_table('tool_opencast_series');
+        $field = new xmldb_field('isdefault', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'series');
+
+        // Conditionally launch add field default.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Remove unique key.
+        $dbman->drop_key($table, new xmldb_key('fk_course',XMLDB_KEY_FOREIGN_UNIQUE, array('courseid'), 'course', array('id')));
+
+        // Check that each course has only exactly one series.
+        $sql = "SELECT courseid, COUNT(id) FROM {tool_opencast_series} GROUP BY courseid ";
+        $courseentries = $DB->get_records_sql($sql);
+        foreach($courseentries as $entry) {
+            if(intval($entry->count) > 1) {
+                // This should not happen. But if it does, simply select the first one as default.
+                // 1. Set all to 0.
+                $DB->set_field('tool_opencast_series', 'isdefault', '0', ['courseid' => $entry->courseid]);
+
+                // 2. Set one to 1.
+                $records = $DB->get_records('tool_opencast_series');
+                $firstrecord = array_values($records)[0];
+                $firstrecord->isdefault = '1';
+                $DB->update_record('tool_opencast_series', $firstrecord);
+            }
+        }
+
+        // Opencast savepoint reached.
+        upgrade_plugin_savepoint(true, 2021060400, 'error', 'opencast');
+    }
+
     return true;
 }

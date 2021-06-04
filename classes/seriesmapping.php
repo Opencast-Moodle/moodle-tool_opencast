@@ -53,6 +53,18 @@ class seriesmapping extends \core\persistent {
             'series' => array(
                 'type' => PARAM_ALPHANUMEXT,
             ),
+           'isdefault' => array(
+              'type' => PARAM_BOOL,
+            ),
         );
+    }
+
+    public static function get_record($filters = array()) {
+        // Keep it compatible with old versions.
+        if(!array_key_exists('isdefault', $filters)) {
+            $filters['isdefault'] = '1';
+        }
+
+        return parent::get_record($filters);
     }
 }
