@@ -59,9 +59,10 @@ class seriesmapping extends \core\persistent {
         );
     }
 
-    public static function get_record($filters = array()) {
+    public static function get_record($filters = array(), $skipdefault = false) {
+        // TODO later deprecate skipdefault and remove this compatibility stuff.
         // Keep it compatible with old versions.
-        if(!array_key_exists('isdefault', $filters)) {
+        if(!$skipdefault && !array_key_exists('isdefault', $filters)) {
             $filters['isdefault'] = '1';
         }
 
