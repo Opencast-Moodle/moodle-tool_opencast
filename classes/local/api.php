@@ -28,6 +28,7 @@ namespace tool_opencast\local;
 
 use local_chunkupload\chunkupload_form_element;
 use local_chunkupload\local\chunkupload_file;
+use tool_opencast\empty_configuration_exception;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -139,15 +140,15 @@ class api extends \curl {
         $this->timeout = get_config('tool_opencast', 'apitimeout');;
         $this->baseurl = get_config('tool_opencast', 'apiurl');
         if (empty($this->baseurl)) {
-            throw new \moodle_exception('apiurlempty', 'tool_opencast');
+            throw new empty_configuration_exception('apiurlempty', 'tool_opencast');
         }
 
         if (empty($this->username)) {
-            throw new \moodle_exception('apiusernameempty', 'tool_opencast');
+            throw new empty_configuration_exception('apiusernameempty', 'tool_opencast');
         }
 
         if (empty($this->password)) {
-            throw new \moodle_exception('apipasswordempty', 'tool_opencast');
+            throw new empty_configuration_exception('apipasswordempty', 'tool_opencast');
         }
     }
 
