@@ -56,5 +56,43 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018013002, 'error', 'opencast');
     }
 
+    if ($oldversion < 2021062300) {
+        // Create new table for Opencast instances.
+        $table = new xmldb_table('tool_opencast_oc_instances');
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+        $table->add_field('name', XMLDB_TYPE_CHAR, '200', null, XMLDB_NOTNULL);
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Create default instance.
+        $ocinstance = new \stdClass();
+        $ocinstance->name = 'Default';
+        $ocinstanceid = $DB->insert_record('tool_opencast_oc_instances', $ocinstance);
+
+        // Add new field to series table.
+        $table = new xmldb_table('tool_opencast_series');
+        $field = new xmldb_field('ocinstanceid', XMLDB_TYPE_INTEGER, '10');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Use default series for current series.
+        $DB->set_field('tool_opencast_series', 'ocinstanceid', $ocinstanceid);
+
+        // Set instance field to not null.
+        $field = new xmldb_field('ocinstanceid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $dbman->change_field_notnull($table, $field);
+
+        // Add foreign key to series table.
+        $key = new xmldb_key('fk_ocinstance', XMLDB_KEY_FOREIGN, array('ocinstanceid'), 'tool_opencast_oc_instances', array('id'));
+        $dbman->add_key($table, $key);
+
+        // Opencast savepoint reached.
+        upgrade_plugin_savepoint(true, 2021062300, 'tool', 'opencast');
+    }
+
     return true;
 }
