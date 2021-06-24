@@ -25,16 +25,24 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+global $OUTPUT;
+
 if ($hassiteconfig) {
 
     $settings = new admin_settingpage('tool_opencast', new lang_string('pluginname', 'tool_opencast'));
 
+    // Show a notification banner if the plugin is connected to the Opencast demo server.
+    if (strpos(get_config('tool_opencast', 'apiurl'), 'stable.opencast.org') !== false) {
+        $demoservernotification = $OUTPUT->notification(get_string('demoservernotification', 'tool_opencast'), \core\output\notification::NOTIFY_WARNING);
+        $settings->add(new admin_setting_heading('tool_opencast/demoservernotification', '', $demoservernotification));
+    }
+
     $settings->add(new admin_setting_configtext('tool_opencast/apiurl', get_string('apiurl', 'tool_opencast'),
-        get_string('apiurldesc', 'tool_opencast'), 'moodle-proxy.rz.tu-ilmenau.de'));
+        get_string('apiurldesc', 'tool_opencast'), 'https://stable.opencast.org', PARAM_URL));
     $settings->add(new admin_setting_configtext('tool_opencast/apiusername', get_string('apiusername', 'tool_opencast'),
-        get_string('apiusernamedesc', 'tool_opencast'), ''));
+        get_string('apiusernamedesc', 'tool_opencast'), 'admin'));
     $settings->add(new admin_setting_configpasswordunmask('tool_opencast/apipassword', get_string('apipassword', 'tool_opencast'),
-        get_string('apipassworddesc', 'tool_opencast'), ''));
+        get_string('apipassworddesc', 'tool_opencast'), 'opencast'));
     $settings->add(new admin_setting_configduration('tool_opencast/connecttimeout', get_string('connecttimeout', 'tool_opencast'),
         get_string('connecttimeoutdesc', 'tool_opencast'), 1));
 

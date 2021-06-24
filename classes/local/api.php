@@ -139,6 +139,12 @@ class api extends \curl {
         $this->password = get_config('tool_opencast', 'apipassword');;
         $this->timeout = get_config('tool_opencast', 'apitimeout');;
         $this->baseurl = get_config('tool_opencast', 'apiurl');
+
+        // If the admin omitted the protocol part, add the HTTPS protocol on-the-fly.
+        if (!preg_match('/^https?:\/\//', $this->baseurl)) {
+            $this->baseurl = 'https://'.$this->baseurl;
+        }
+
         if (empty($this->baseurl)) {
             throw new empty_configuration_exception('apiurlempty', 'tool_opencast');
         }
