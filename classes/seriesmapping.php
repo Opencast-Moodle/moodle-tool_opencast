@@ -43,6 +43,7 @@ class seriesmapping extends \core\persistent {
      * @return array
      */
     protected static function define_properties() {
+
         return array(
             'id' => array(
                 'type' => PARAM_INT,
@@ -52,6 +53,14 @@ class seriesmapping extends \core\persistent {
             ),
             'series' => array(
                 'type' => PARAM_ALPHANUMEXT,
+            ),
+            'ocinstanceid' => array(
+                'type' => PARAM_INT,
+                'default' => function(){
+                    global $DB;
+                    $defaultinstance = $DB->get_record('tool_opencast_oc_instances', array('isdefault' => true));
+                    return $defaultinstance->id;
+                }
             ),
         );
     }
