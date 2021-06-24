@@ -61,6 +61,7 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         $table = new xmldb_table('tool_opencast_oc_instances');
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
         $table->add_field('name', XMLDB_TYPE_CHAR, '200', null, XMLDB_NOTNULL);
+        $table->add_field('isvisible', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0);
         $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
 
         if (!$dbman->table_exists($table)) {
