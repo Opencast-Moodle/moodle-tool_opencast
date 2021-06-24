@@ -71,6 +71,7 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         // Create default instance.
         $ocinstance = new \stdClass();
         $ocinstance->name = 'Default';
+        $ocinstance->isvisible = true;
         $ocinstanceid = $DB->insert_record('tool_opencast_oc_instances', $ocinstance);
 
         // Add new field to series table.
