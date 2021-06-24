@@ -56,7 +56,7 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018013002, 'error', 'opencast');
     }
 
-    if ($oldversion < 2021062300) {
+    if ($oldversion < 2021062400) {
         // Create new table for Opencast instances.
         $table = new xmldb_table('tool_opencast_oc_instances');
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
