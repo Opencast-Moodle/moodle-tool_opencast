@@ -92,7 +92,7 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         $dbman->add_key($table, $key);
 
         // Opencast savepoint reached.
-        upgrade_plugin_savepoint(true, 2021062300, 'tool', 'opencast');
+        upgrade_plugin_savepoint(true, 2021062400, 'tool', 'opencast');
     }
 
     return true;
