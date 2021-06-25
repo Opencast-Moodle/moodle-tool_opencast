@@ -56,25 +56,14 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018013002, 'error', 'opencast');
     }
 
-    if ($oldversion < 2021062400) {
-        // Create new table for Opencast instances.
-        $table = new xmldb_table('tool_opencast_oc_instances');
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
-        $table->add_field('name', XMLDB_TYPE_CHAR, '200', null, XMLDB_NOTNULL);
-        $table->add_field('isvisible', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0);
-        $table->add_field('isdefault', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0);
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-
-        if (!$dbman->table_exists($table)) {
-            $dbman->create_table($table);
-        }
-
+    if ($oldversion < 2021062502) {
         // Create default instance.
         $ocinstance = new \stdClass();
+        $ocinstance->id = 1;
         $ocinstance->name = 'Default';
         $ocinstance->isvisible = true;
         $ocinstance->isdefault = true;
-        $ocinstanceid = $DB->insert_record('tool_opencast_oc_instances', $ocinstance);
+        set_config('ocinstances', json_encode(array($ocinstance)), 'tool_opencast');
 
         // Add new field to series table.
         $table = new xmldb_table('tool_opencast_series');
@@ -84,18 +73,14 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         }
 
         // Use default series for current series.
-        $DB->set_field('tool_opencast_series', 'ocinstanceid', $ocinstanceid);
+        $DB->set_field('tool_opencast_series', 'ocinstanceid', 1);
 
         // Set instance field to not null.
         $field = new xmldb_field('ocinstanceid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
         $dbman->change_field_notnull($table, $field);
 
-        // Add foreign key to series table.
-        $key = new xmldb_key('fk_ocinstance', XMLDB_KEY_FOREIGN, array('ocinstanceid'), 'tool_opencast_oc_instances', array('id'));
-        $dbman->add_key($table, $key);
-
         // Opencast savepoint reached.
-        upgrade_plugin_savepoint(true, 2021062400, 'tool', 'opencast');
+        upgrade_plugin_savepoint(true, 2021062502, 'tool', 'opencast');
     }
 
     return true;

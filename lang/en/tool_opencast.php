@@ -40,6 +40,19 @@ $string['connecttimeout'] = 'Connection timeout';
 $string['connecttimeoutdesc'] = 'Configure the time in seconds while Moodle is trying to connect to Opencast. If Opencast does not answer within this time, the connection attempt times out.';
 $string['demoservernotification'] = 'The Opencast API tool is currently configured to connect to the <a href="https://stable.opencast.org">public Opencast demo server</a>. You can use this Opencast server for evaluating this plugin.<br />Do not use it for any production purposes. Please <a href="https://docs.opencast.org/">setup your own Opencast server</a> instead.';
 
+$string['configuration'] = 'Configuration';
+$string['configuration_instance'] = 'Configuration: {$a}';
+$string['ocinstances'] = 'Opencast Instances';
+$string['ocinstancesdesc'] = 'Defines a list of Opencast Instances to which the Opencast plugins can connect.';
+$string['name'] = 'Name';
+$string['isvisible'] = 'Is visible to teachers';
+$string['addinstance'] = 'Add instance';
+$string['delete_instance'] = 'Delete instance';
+$string['delete_instance_confirm'] = 'Do you really want to delete this instance?<br>
+Teachers will not be able to see videos used in this instance anymore.<br>
+<b>Caution:</b> All data related to this instance will be lost.<br><br>
+The deletion will be performed after you click on "Save changes" on the main settings page.';
+
 $string['opencast:externalapi'] = 'Access to Opencast API webservices';
 $string['opencast:instructor'] = 'Gives the role of an instructor in Opencast';
 $string['opencast:learner'] = 'Gives the role of a learner in Opencast';

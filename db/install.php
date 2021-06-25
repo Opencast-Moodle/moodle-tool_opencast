@@ -23,13 +23,12 @@
  */
 
 function xmldb_tool_opencast_install() {
-    global $DB;
-
     // Create default instance.
     $ocinstance = new \stdClass();
+    $ocinstance->id = 1;
     $ocinstance->name = 'Default';
     $ocinstance->isvisible = true;
     $ocinstance->isdefault = true;
-    $DB->insert_record('tool_opencast_oc_instances', $ocinstance);
+    set_config('ocinstances', json_encode(array($ocinstance)), 'tool_opencast');
 }
 
