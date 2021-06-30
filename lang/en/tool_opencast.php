@@ -27,27 +27,26 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Opencast API';
 
-$string['apipassword'] = 'Password for API user';
-$string['apipassworddesc'] = 'Setup a password for the super user, who does the api calls.';
-$string['apipasswordempty'] = 'Password for API user is not setup correctly, go to settings of tool opencast to fix this';
-$string['apiurl'] = 'Opencast API url';
-$string['apiurldesc'] = 'Setup the base url of the Opencast system, for example: opencast.example.com';
-$string['apiurlempty'] = 'Url for Opencast API is not setup correctly, go to settings of tool opencast to fix this';
-$string['apiusername'] = 'Username for API calls';
-$string['apiusernamedesc'] = 'For all calls to the API moodle uses this user. Authorization is done by adding suitable roles to the call';
-$string['apiusernameempty'] = 'Username for Opencast API user is not setup correctly, go to settings of tool opencast to fix this';
+$string['apipassword'] = 'Password of Opencast API user';
+$string['apipassworddesc'] = 'Configure the password of the Opencast user who is used to do the Opencast API calls.';
+$string['apipasswordempty'] = 'Password of Opencast API user is not configured correctly. Go to the settings of the Opencast API tool to fix this.';
+$string['apiurl'] = 'Opencast API URL';
+$string['apiurldesc'] = 'Configure the base URL of the Opencast system. A valid URL is required here. If you omit the protocol part here, \'https://\' is added on-the-fly when doing Opencast API calls.';
+$string['apiurlempty'] = 'URL of Opencast API is not configured correctly. Go to the settings of the Opencast API tool to fix this.';
+$string['apiusername'] = 'Username of Opencast API user';
+$string['apiusernamedesc'] = 'Configure the username of the Opencast user who is used to do the Opencast API calls. Moodle uses this Opencast user for all communication with Opencast. Authorization is done by adding suitable roles to the call.';
+$string['apiusernameempty'] = 'Username of Opencast API user is not configured correctly. Go to the settings of the Opencast API tool to fix this.';
 $string['connecttimeout'] = 'Connection timeout';
-$string['connecttimeoutdesc'] = 'Setup the time in seconds while moodle is trying to connect to opencast until timeout';
+$string['connecttimeoutdesc'] = 'Configure the time in seconds while Moodle is trying to connect to Opencast. If Opencast does not answer within this time, the connection attempt times out.';
+$string['demoservernotification'] = 'The Opencast API tool is currently configured to connect to the <a href="https://stable.opencast.org">public Opencast demo server</a>. You can use this Opencast server for evaluating this plugin.<br />Do not use it for any production purposes. Please <a href="https://docs.opencast.org/">setup your own Opencast server</a> instead.';
 
-$string['opencast:externalapi'] = 'Access to tool_opencast webservices';
-$string['opencast:instructor'] = 'Gives the role of an instructor in opencast';
-$string['opencast:learner'] = 'Gives the role of a learner in opencast';
+$string['opencast:externalapi'] = 'Access to Opencast API webservices';
+$string['opencast:instructor'] = 'Gives the role of an instructor in Opencast';
+$string['opencast:learner'] = 'Gives the role of a learner in Opencast';
 
 $string['needphp55orhigher'] = 'PHP Version 5.5 or higher is needed';
-$string['wrongmimetypedetected'] = 'Wrong mimetype was detected, while trying to upload {$a->filename} from course {$a->coursename},
-    You can only upload video files!';
-$string['serverconnectionerror'] = 'There was a problem with the connection to the opencast server. Please check your credentials and your network settings.';
+$string['wrongmimetypedetected'] = 'Wrong mimetype was detected, while trying to upload {$a->filename} from course {$a->coursename}. You can only upload video files!';
+$string['serverconnectionerror'] = 'There was a problem with the connection to the Opencast server. Please check your Opencast API credentials and your network settings.';
 
 // Privacy API.
-$string['privacy:metadata'] = 'The admin tool only provides API endpoints and general settings for the set of opencast plugin.
-It saves, which opencast series belongs to which course, but it does not store any personal data.';
+$string['privacy:metadata'] = 'The Opencast API admin tool only provides API endpoints and general settings for the set of Opencast plugins. It stores which Opencast series belongs to which Moodle course, but it does not store any personal data.';
