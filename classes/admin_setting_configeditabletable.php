@@ -86,8 +86,8 @@ class admin_setting_configeditabletable extends \admin_setting
      * @return string Returns an HTML string
      */
     public function output_html($data, $query = '') {
-        return '<div class="mt-3" id="' . $this->divid .
-            '"></div><button class="btn btn-primary mt-3 float-right" type="button" id="addrow-' . $this->divid . '">' .
+        return '<div class="row justify-content-end"><div class="mt-3 col-sm-9 p-0" id="' . $this->divid .
+            '"></div></div><button class="btn btn-primary mt-3 float-right" type="button" id="addrow-' . $this->divid . '">' .
             get_string('addinstance', 'tool_opencast') . '</button>';
     }
 }

@@ -80,7 +80,15 @@ if ($hassiteconfig) {
         $ADMIN->add('tool_opencast', $instancessettings);
 
         foreach ($instances as $instance) {
-            $settings = new admin_settingpage('tool_opencast_configuration_' . $instance->id, new lang_string('configuration_instance', 'tool_opencast', $instance->name));
+            if (count($instances) <= 1) {
+                $settings = new admin_settingpage('tool_opencast_configuration',
+                    new lang_string('configuration', 'tool_opencast'));
+            }
+             else {
+                 $settings = new admin_settingpage('tool_opencast_configuration_' . $instance->id,
+                     new lang_string('configuration_instance', 'tool_opencast', $instance->name));
+             }
+
 
             if ($instance->isdefault) {
                 // Show a notification banner if the plugin is connected to the Opencast demo server.

@@ -53,8 +53,9 @@ export const init = (instancesinputid) => {
                 instancesinput.val(JSON.stringify(data));
             },
             columns: [
-                {title: 'ID', field: "id"}, // TODO allow admins to change the ID (should only be used for importing settings)
-                {title: jsstrings[0], field: "name", editor: "input", widthGrow: 4,},
+                {title: 'ID', field: "id", widthGrow: 0},
+                // TODO allow admins to change the ID (should only be used for importing settings)
+                {title: jsstrings[0], field: "name", editor: "input", widthGrow: 2,},
                 {
                     title: jsstrings[1],
                     field: "isvisible",
