@@ -132,13 +132,23 @@ class api extends \curl {
      * @throws \dml_exception
      * @throws \moodle_exception
      */
-    public function __construct($settings = array()) {
+    public function __construct($instanceid = null, $settings = array()) {
+        // TODO check if working with other plugins
         parent::__construct($settings);
 
-        $this->username = get_config('tool_opencast', 'apiusername');
-        $this->password = get_config('tool_opencast', 'apipassword');;
-        $this->timeout = get_config('tool_opencast', 'apitimeout');;
-        $this->baseurl = get_config('tool_opencast', 'apiurl');
+        $ocinstances = json_decode(get_config('tool_opencast', 'ocinstances'));
+        $key = array_search(1, array_column($ocinstances, 'isdefault'));
+        if (!$instanceid || $ocinstances[$key]->id == $instanceid) {
+            $this->username = get_config('tool_opencast', 'apiusername');
+            $this->password = get_config('tool_opencast', 'apipassword');;
+            $this->timeout = get_config('tool_opencast', 'apitimeout');;
+            $this->baseurl = get_config('tool_opencast', 'apiurl');
+        } else {
+            $this->username = get_config('tool_opencast', 'apiusername_' . $instanceid);
+            $this->password = get_config('tool_opencast', 'apipassword_' . $instanceid);
+            $this->timeout = get_config('tool_opencast', 'apitimeout_' . $instanceid);
+            $this->baseurl = get_config('tool_opencast', 'apiurl_' . $instanceid);
+        }
 
         // If the admin omitted the protocol part, add the HTTPS protocol on-the-fly.
         if (!preg_match('/^https?:\/\//', $this->baseurl)) {
