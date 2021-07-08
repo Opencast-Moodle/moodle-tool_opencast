@@ -137,8 +137,8 @@ class api extends \curl {
         parent::__construct($settings);
 
         $ocinstances = json_decode(get_config('tool_opencast', 'ocinstances'));
-        $key = array_search(1, array_column($ocinstances, 'isdefault'));
-        if (!$instanceid || $ocinstances[$key]->id == $instanceid) {
+        $key = array_search(true, array_column($ocinstances, 'isdefault'));
+        if (!$instanceid || $ocinstances[$key]->id === $instanceid) {
             $this->username = get_config('tool_opencast', 'apiusername');
             $this->password = get_config('tool_opencast', 'apipassword');;
             $this->timeout = get_config('tool_opencast', 'apitimeout');;

@@ -56,7 +56,7 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018013002, 'error', 'opencast');
     }
 
-    if ($oldversion < 2021062502) {
+    if ($oldversion < 2021070800) {
         // Create default instance.
         $ocinstance = new \stdClass();
         $ocinstance->id = 1;
@@ -79,8 +79,14 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         $field = new xmldb_field('ocinstanceid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
         $dbman->change_field_notnull($table, $field);
 
+        // TODO check if this works!!
+        // Remove unique constraint on courseid and use combination of ocinstanceid and courseid
+        $table->deleteKey('fk_course');
+        $table->add_key('fk_course', XMLDB_KEY_FOREIGN, array('courseid'), 'course', array('id'));
+        $table->add_key('unq_course_ocinstance', XMLDB_KEY_UNIQUE, array('courseid', 'ocinstanceid'));
+
         // Opencast savepoint reached.
-        upgrade_plugin_savepoint(true, 2021062502, 'tool', 'opencast');
+        upgrade_plugin_savepoint(true, 2021070800, 'tool', 'opencast');
     }
 
     return true;
