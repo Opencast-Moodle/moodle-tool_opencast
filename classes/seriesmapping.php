@@ -57,11 +57,25 @@ class seriesmapping extends \core\persistent {
             'ocinstanceid' => array(
                 'type' => PARAM_INT,
                 'default' => function(){
+                    // todo that doesnt work anymore -> use setting
                     global $DB;
                     $defaultinstance = $DB->get_record('tool_opencast_oc_instances', array('isdefault' => true));
                     return $defaultinstance->id;
                 }
             ),
+           'isdefault' => array(
+              'type' => PARAM_BOOL,
+            ),
         );
+    }
+
+    public static function get_record($filters = array(), $skipdefault = false) {
+        // TODO later deprecate skipdefault and remove this compatibility stuff.
+        // Keep it compatible with old versions.
+        if(!$skipdefault && !array_key_exists('isdefault', $filters)) {
+            $filters['isdefault'] = '1';
+        }
+
+        return parent::get_record($filters);
     }
 }
