@@ -59,4 +59,18 @@ class settings_api extends \curl
             return get_config('tool_opencast', 'apiurl_' . $ocinstanceid);
         }
     }
+
+    public static function get_ocinstance($ocinstanceid) {
+        $ocinstances = json_decode(get_config('tool_opencast', 'ocinstances'));
+        $key = array_search($ocinstanceid, array_column($ocinstances, 'id'));
+        return $ocinstances[$key];
+    }
+
+    public static function get_ocinstances() {
+        return json_decode(get_config('tool_opencast', 'ocinstances'));
+    }
+
+    public static function num_ocinstances() {
+        return count(self::get_ocinstances());
+    }
 }

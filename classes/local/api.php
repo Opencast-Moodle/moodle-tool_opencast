@@ -136,6 +136,8 @@ class api extends \curl {
         // TODO check if working with other plugins
         parent::__construct($settings);
 
+        $instanceid = intval($instanceid);
+
         $ocinstances = json_decode(get_config('tool_opencast', 'ocinstances'));
         $key = array_search(true, array_column($ocinstances, 'isdefault'));
         if (!$instanceid || $ocinstances[$key]->id === $instanceid) {
