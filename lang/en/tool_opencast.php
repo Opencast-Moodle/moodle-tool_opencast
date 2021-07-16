@@ -43,12 +43,13 @@ $string['apiurltestfailedlong'] = 'There is no Opencast instance running on the 
 $string['apiurltestsucceedbutnocredentialslong'] = 'The Opencast API URL is valid, but Username or Password are not yet provided.<br />Please enter valid Username and Password in order to avoid fatal error during tasks which use this setting.';
 $string['apicreadentialstestfailedlong'] = 'The given Username or Password for the Opencast API is not valid.<br />Please use valid Username and Password in order to avoid fatal error during tasks which use this setting.';
 $string['testtoolheader'] = 'Connection test tool';
-$string['testtoolheaderdesc'] = 'Use this {$a} to test the current Opencast API settings.';
+$string['testtoolheaderdesc'] = 'To test the current Opencast API settings use: {$a}';
 $string['testtoolurl'] = 'Connection Test Tool';
 $string['apiurltestsuccessfulshort'] = 'Opencast API URL test successful.';
 $string['apiurltestfailedshort'] = 'Opencast API URL test failed!';
 $string['apicreadentialstestsuccessfulshort'] = 'Opencast API User Credentials test successful.';
 $string['apicreadentialstestfailedshort'] = 'Opencast API User Credentials test failed!';
+$string['testtooldisabledbuttontitle'] = 'Unable to conduct the connection test due to unloaded js modules.';
 
 $string['opencast:externalapi'] = 'Access to Opencast API webservices';
 $string['opencast:instructor'] = 'Gives the role of an instructor in Opencast';

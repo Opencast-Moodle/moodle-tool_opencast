@@ -129,32 +129,54 @@ class api extends \curl {
     /**
      * Constructor of the Opencast API.
      * @param array $settings additional curl settings.
+     * @param array $customconfigs custom api config.
      * @throws \dml_exception
      * @throws \moodle_exception
      */
-    public function __construct($settings = array()) {
+    public function __construct($settings = array(), $customconfigs = array()) {
         parent::__construct($settings);
 
-        $this->username = get_config('tool_opencast', 'apiusername');
-        $this->password = get_config('tool_opencast', 'apipassword');;
-        $this->timeout = get_config('tool_opencast', 'apitimeout');;
-        $this->baseurl = get_config('tool_opencast', 'apiurl');
+        // If there is no custom configs to set, we go for the stored configs.
+        if (empty($customconfigs)) {
+            $this->username = get_config('tool_opencast', 'apiusername');
+            $this->password = get_config('tool_opencast', 'apipassword');
+            $this->timeout = get_config('tool_opencast', 'apitimeout');
+            $this->baseurl = get_config('tool_opencast', 'apiurl');
+
+            if (empty($this->username)) {
+                throw new empty_configuration_exception('apiusernameempty', 'tool_opencast');
+            }
+
+            if (empty($this->password)) {
+                throw new empty_configuration_exception('apipasswordempty', 'tool_opencast');
+            }
+        } else {
+            // When user wanted to use the api class but not with the stored configs.
+            if (array_key_exists('apiurl', $customconfigs)) {
+                $this->baseurl = $customconfigs['apiurl'];
+            }
+
+            if (array_key_exists('apiusername', $customconfigs)) {
+                $this->username = $customconfigs['apiusername'];
+            }
+
+            if (array_key_exists('apipassword', $customconfigs)) {
+                $this->password = $customconfigs['apipassword'];
+            }
+
+            if (array_key_exists('apitimeout', $customconfigs)) {
+                $this->timeout = $customconfigs['apitimeout'];
+            }
+        }
 
         // If the admin omitted the protocol part, add the HTTPS protocol on-the-fly.
         if (!preg_match('/^https?:\/\//', $this->baseurl)) {
             $this->baseurl = 'https://'.$this->baseurl;
         }
 
+        // The base url is a must and cannot be empty, so we check its existence for both scenarios.
         if (empty($this->baseurl)) {
             throw new empty_configuration_exception('apiurlempty', 'tool_opencast');
-        }
-
-        if (empty($this->username)) {
-            throw new empty_configuration_exception('apiusernameempty', 'tool_opencast');
-        }
-
-        if (empty($this->password)) {
-            throw new empty_configuration_exception('apipasswordempty', 'tool_opencast');
         }
     }
 
@@ -452,4 +474,59 @@ class api extends \curl {
         return is_array(self::$supportedapilevel) && in_array($level, self::$supportedapilevel);
     }
 
+    /**
+     * Checks if the Opencast API URL is reachable and there is an Opencast instance running on that URL.
+     * 
+     * @return boolean whether the API URL is reachable or not.
+     */
+    public function connection_test_url() {
+        $url = $this->baseurl;
+
+        $this->resetHeader();
+        
+        // Define header array.
+        $header = array();
+
+        if ($this->username && $this->password) {
+            $header = $this->get_authentication_header();
+        }
+
+        $header[] = 'Content-Type: application/json';
+        $this->setHeader($header);
+        $this->setopt(array('CURLOPT_HEADER' => false));
+        
+        // The "/api" resource endpoint returns key characteristics of the API such as the server name and the default version.
+        $resource = $url . '/api';
+        $serverinfo = $this->get($resource);
+
+        // It might happen that admin only wants to check the url without credentials,
+        // in this case, the "/api" endpoint call returns 200 response code but not related info,
+        // which is enough to say that URL is fine.
+
+        // If the connection fails or the Opencast instance could not be found, we return false.
+        if ($this->get_http_code() != 200) {
+            return false;
+        }
+
+        // Otherwise, we return true.
+        return true;
+    }
+
+    /**
+     * Checks if the Opencast API username and password is valid.
+     * 
+     * @return boolean whether the given api $level is supported.
+     */
+    public function connection_test_credentials() {
+        // The "/api" resource endpoint returns information on the logged in user.
+        $userinfo = json_decode($this->oc_get('/api/info/me'));
+        
+        // If the connection fails or credentials are invalid, we return false.
+        if ($this->get_http_code() != 200 || !$userinfo) {
+            return false;
+        }
+
+        // Otherwise, we return true.
+        return true;
+    }
 }

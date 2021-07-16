@@ -32,6 +32,12 @@ if ($hassiteconfig) {
     // Require the lib to use in set_updatedcallback method(s).
     require_once($CFG->dirroot.'/admin/tool/opencast/lib.php');
 
+    // To add connection test tool required js to the page.
+    if (isset($PAGE) AND is_callable(array($PAGE->requires, 'js'))) {
+        $PAGE->requires->jquery();
+        $PAGE->requires->js_call_amd('tool_opencast/opencasttesttool', 'init');
+    }
+
     $settings = new admin_settingpage('tool_opencast', new lang_string('pluginname', 'tool_opencast'));
 
     // Show a notification banner if the plugin is connected to the Opencast demo server.
@@ -64,12 +70,17 @@ if ($hassiteconfig) {
     $settings->add(new admin_setting_configduration('tool_opencast/connecttimeout', get_string('connecttimeout', 'tool_opencast'),
         get_string('connecttimeoutdesc', 'tool_opencast'), 1));
 
-    // Provide Connection Test Tool as a link.
-    $url = new moodle_url('/admin/tool/opencast/testtool.php');
-    $link = html_writer::link($url, get_string('testtoolurl', 'tool_opencast'), array());
-    // Put the link inside the header description.
+    // Provide Connection Test Tool button.
+    $attributes = [
+        'id' => 'testtool-modal',
+        'class' => 'btn btn-warning disabled',
+        'disabled' => 'disabled',
+        'title' => get_string('testtooldisabledbuttontitle', 'tool_opencast')
+    ];
+    $connectiontoolbutton = html_writer::tag('button', get_string('testtoolurl', 'tool_opencast'), $attributes);
+    // Place the button inside the header description.
     $settings->add(new admin_setting_heading('tool_opencast/testtoolexternalpage', get_string('testtoolheader', 'tool_opencast'),
-        get_string('testtoolheaderdesc', 'tool_opencast', $link)));
+        get_string('testtoolheaderdesc', 'tool_opencast', $connectiontoolbutton)));
 
     $ADMIN->add('tools', $settings);
 }

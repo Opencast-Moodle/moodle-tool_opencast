@@ -47,6 +47,16 @@ $functions = array(
         'type' => 'read',
         'capabilities' => 'tool/opencast:externalapi, moodle/site:accessallgroups',
     ),
+    'tool_opencast_connection_test_tool' => array(
+        'classname'     => 'tool_opencast_external',
+        'methodname'    => 'connection_test_tool',
+        'classpath'     => 'admin/tool/opencast/external.php',
+        'description'   => 'Service to test Opencast API URL connection',
+        'type'          => 'read',
+        'capabilities'  => 'tool/opencast:externalapi',
+        'ajax'          => true,
+        'loginrequired' => true,
+    ),
 );
 
 $services = array(
