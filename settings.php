@@ -44,7 +44,7 @@ if ($hassiteconfig) {
             $ADMIN->add('tool_opencast', $settings);
         } else {
             foreach ($instances as $instance) {
-                $settings = new admin_settingpage('tool_opencast_configuration' . $instance->id,
+                $settings = new admin_settingpage('tool_opencast_configuration_' . $instance->id,
                     new lang_string('configuration_instance', 'tool_opencast', $instance->name));
                 $ADMIN->add('tool_opencast', $settings);
             }

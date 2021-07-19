@@ -453,6 +453,7 @@ class api extends \curl {
 
             $resource = '/api/version';
 
+            // TODO
             $api = new api();
             $result = json_decode($api->oc_get($resource));
 
