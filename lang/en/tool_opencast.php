@@ -39,6 +39,17 @@ $string['apiusernameempty'] = 'Username of Opencast API user is not configured c
 $string['connecttimeout'] = 'Connection timeout';
 $string['connecttimeoutdesc'] = 'Configure the time in seconds while Moodle is trying to connect to Opencast. If Opencast does not answer within this time, the connection attempt times out.';
 $string['demoservernotification'] = 'The Opencast API tool is currently configured to connect to the <a href="https://stable.opencast.org">public Opencast demo server</a>. You can use this Opencast server for evaluating this plugin.<br />Do not use it for any production purposes. Please <a href="https://docs.opencast.org/">setup your own Opencast server</a> instead.';
+$string['apiurltestfailedlong'] = 'There is no Opencast instance running on the given URL.<br />Please use a valid URL in order to avoid fatal error during tasks which use this setting.';
+$string['apiurltestsucceedbutnocredentialslong'] = 'The Opencast API URL is valid, but Username or Password are not yet provided.<br />Please enter valid Username and Password in order to avoid fatal error during tasks which use this setting.';
+$string['apicreadentialstestfailedlong'] = 'The given Username or Password for the Opencast API is not valid.<br />Please use valid Username and Password in order to avoid fatal error during tasks which use this setting.';
+$string['testtoolheader'] = 'Connection test tool';
+$string['testtoolheaderdesc'] = 'To test the current Opencast API settings use: {$a}';
+$string['testtoolurl'] = 'Connection Test Tool';
+$string['apiurltestsuccessfulshort'] = 'Opencast API URL test successful.';
+$string['apiurltestfailedshort'] = 'Opencast API URL test failed!';
+$string['apicreadentialstestsuccessfulshort'] = 'Opencast API User Credentials test successful.';
+$string['apicreadentialstestfailedshort'] = 'Opencast API User Credentials test failed!';
+$string['testtooldisabledbuttontitle'] = 'Unable to conduct the connection test due to unloaded js modules.';
 
 $string['opencast:externalapi'] = 'Access to Opencast API webservices';
 $string['opencast:instructor'] = 'Gives the role of an instructor in Opencast';
