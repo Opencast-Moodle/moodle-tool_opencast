@@ -62,6 +62,56 @@ if ($hassiteconfig) {
             // TODO handle default.
 
             // Todo handle delete.
+            $adminroot = admin_get_root();
+            $toolsettings = $adminroot->locate('tool_opencast');
+            foreach($toolsettings->get_children() as $child) {
+                if(substr($child->name, 0, 28) == 'tool_opencast_configuration_') {
+                    foreach($child->settings as $name => $setting) {
+                        $data = $setting->get_setting();
+                        if (is_null($data)) {
+                            $data = $setting->get_defaultsetting();
+                            $setting->write_setting($data);
+                        }
+                    }
+                }
+            }
+
+            // Block settings.
+            if (core_plugin_manager::instance()->get_plugin_info('block_opencast')) {
+                $blocksettings = $adminroot->locate('block_opencast');
+                foreach($blocksettings->get_children() as $category) {
+                    if($category instanceof admin_category) {
+                        foreach($category->get_children() as $child) {
+                            foreach ($child->settings as $name => $setting) {
+                                $data = $setting->get_setting();
+                                if (is_null($data)) {
+                                    $data = $setting->get_defaultsetting();
+                                    if(!is_null($data)) {
+                                        $setting->write_setting($data);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Activity settings.
+            if (core_plugin_manager::instance()->get_plugin_info('mod_opencast')) {
+                $modsettings = $adminroot->locate('modsettingopencast');
+                foreach ($modsettings->settings as $name => $setting) {
+                    $data = $setting->get_setting();
+                    if (is_null($data)) {
+                        $data = $setting->get_defaultsetting();
+                        $setting->write_setting($data);
+                    }
+                }
+            }
+
+            // TODO filter repository?
+
+
+
 
         });
 
