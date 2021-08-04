@@ -134,12 +134,11 @@ class api extends \curl {
      * @throws \moodle_exception
      */
     public function __construct($instanceid = null, $settings = array(), $customconfigs = array()) {
-        // TODO check if working with other plugins
         parent::__construct($settings);
 
         $instanceid = intval($instanceid);
 
-        $ocinstances = json_decode(get_config('tool_opencast', 'ocinstances'));
+        $ocinstances = settings_api::get_ocinstances();
         $key = array_search(true, array_column($ocinstances, 'isdefault'));
 
         // If there is no custom configs to set, we go for the stored configs.
@@ -476,11 +475,9 @@ class api extends \curl {
 
             $resource = '/api/version';
 
-            // TODO
-            $api = new api();
-            $result = json_decode($api->oc_get($resource));
+            $result = json_decode($this->oc_get($resource));
 
-            if ($api->get_http_code() != 200) {
+            if ($this->get_http_code() != 200) {
                 throw new \moodle_exception('Opencast system not reachable.');
             }
             self::$supportedapilevel = $result->versions;

@@ -36,7 +36,8 @@ export const init = (instancesinputid) => {
         {key: 'addinstance', component: 'tool_opencast'},
         {key: 'delete_instance', component: 'tool_opencast'},
         {key: 'delete_instance_confirm', component: 'tool_opencast'},
-        {key: 'delete', component: 'moodle'}
+        {key: 'delete', component: 'moodle'},
+        {key: 'isdefault', component: 'tool_opencast'},
     ];
     str.get_strings(strings).then(function (jsstrings) {
         // Style hidden input.
@@ -69,6 +70,21 @@ export const init = (instancesinputid) => {
                         input.checked = cell.getValue();
                         input.addEventListener('click', function () {
                             cell.getRow().update({'isvisible': $(this).prop('checked') ? 1 : 0});
+                        });
+                        return input;
+                    }
+                },
+                {
+                    title: jsstrings[6],
+                    field: "isdefault",
+                    hozAlign: "center",
+                    widthGrow: 0,
+                    formatter: function (cell) {
+                        var input = document.createElement('input');
+                        input.type = 'checkbox';
+                        input.checked = cell.getValue();
+                        input.addEventListener('click', function () {
+                            cell.getRow().update({'isdefault': $(this).prop('checked') ? 1 : 0});
                         });
                         return input;
                     }
@@ -110,7 +126,7 @@ export const init = (instancesinputid) => {
                 for (i=0; i<ids.length; i++) {
                     let nextElem = i + 1;
                     if (nextElem === ids.length) {
-                        nextid = ids[i];
+                        nextid = ids[i] + 1;
                     } else if (ids[nextElem] !== ids[i] + 1) {
                         nextid = ids[i] + 1;
                         break;

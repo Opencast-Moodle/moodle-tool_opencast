@@ -51,7 +51,7 @@ class settings_api extends \curl
      * @return string
      */
     public static function get_apiurl($ocinstanceid) {
-        $ocinstances = json_decode(get_config('tool_opencast', 'ocinstances'));
+        $ocinstances = self::get_ocinstances();
         $key = array_search(true, array_column($ocinstances, 'isdefault'));
         if ($ocinstances[$key]->id === $ocinstanceid) {
             return get_config('tool_opencast', 'apiurl');
@@ -61,9 +61,18 @@ class settings_api extends \curl
     }
 
     public static function get_ocinstance($ocinstanceid) {
-        $ocinstances = json_decode(get_config('tool_opencast', 'ocinstances'));
+        $ocinstances = self::get_ocinstances();
         $key = array_search($ocinstanceid, array_column($ocinstances, 'id'));
         return $ocinstances[$key];
+    }
+
+    public static function get_default_ocinstance() {
+        $ocinstances = self::get_ocinstances();
+        $key = array_search(true, array_column($ocinstances, 'isdefault'));
+        if($key) {
+            return $ocinstances[$key];
+        }
+        return null;
     }
 
     public static function get_ocinstances() {

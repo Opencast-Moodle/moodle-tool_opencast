@@ -24,6 +24,7 @@
  */
 
 use tool_opencast\admin_setting_configeditabletable;
+use tool_opencast\admin_setting_configtextwithvalidation;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -59,70 +60,10 @@ if ($hassiteconfig) {
             $PAGE->requires->js_call_amd('tool_opencast/opencasttesttool', 'init');
         }
 
-        // TODO hide
-        // TODO add general description describing the settings and effects.
-        $instancesconfig = new admin_setting_configtext('tool_opencast/ocinstances',
+        $instancesconfig = new admin_setting_configtextwithvalidation('tool_opencast/ocinstances',
             get_string('ocinstances', 'tool_opencast'),
             get_string('ocinstancesdesc',
                 'tool_opencast'), '[{"id":1,"name":"Default","isvisible":true,"isdefault":true}]');
-        $instancesconfig->set_updatedcallback(function () {
-            // TODO move this function somewhere else.
-
-            // TODO handle default.
-
-            // Todo handle delete.
-            $adminroot = admin_get_root();
-            $toolsettings = $adminroot->locate('tool_opencast');
-            foreach($toolsettings->get_children() as $child) {
-                if(substr($child->name, 0, 28) == 'tool_opencast_configuration_') {
-                    foreach($child->settings as $name => $setting) {
-                        $data = $setting->get_setting();
-                        if (is_null($data)) {
-                            $data = $setting->get_defaultsetting();
-                            $setting->write_setting($data);
-                        }
-                    }
-                }
-            }
-
-            // Block settings.
-            if (core_plugin_manager::instance()->get_plugin_info('block_opencast')) {
-                $blocksettings = $adminroot->locate('block_opencast');
-                foreach($blocksettings->get_children() as $category) {
-                    if($category instanceof admin_category) {
-                        foreach($category->get_children() as $child) {
-                            foreach ($child->settings as $name => $setting) {
-                                $data = $setting->get_setting();
-                                if (is_null($data)) {
-                                    $data = $setting->get_defaultsetting();
-                                    if(!is_null($data)) {
-                                        $setting->write_setting($data);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Activity settings.
-            if (core_plugin_manager::instance()->get_plugin_info('mod_opencast')) {
-                $modsettings = $adminroot->locate('modsettingopencast');
-                foreach ($modsettings->settings as $name => $setting) {
-                    $data = $setting->get_setting();
-                    if (is_null($data)) {
-                        $data = $setting->get_defaultsetting();
-                        $setting->write_setting($data);
-                    }
-                }
-            }
-
-            // TODO filter repository?
-
-
-
-
-        });
 
 
         // Crashes if plugins.php is opened because css cannot be included anymore.

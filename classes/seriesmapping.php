@@ -23,6 +23,8 @@
  */
 
 namespace tool_opencast;
+use tool_opencast\local\settings_api;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -57,10 +59,7 @@ class seriesmapping extends \core\persistent {
             'ocinstanceid' => array(
                 'type' => PARAM_INT,
                 'default' => function(){
-                    // todo that doesnt work anymore -> use setting
-                    global $DB;
-                    $defaultinstance = $DB->get_record('tool_opencast_oc_instances', array('isdefault' => true));
-                    return $defaultinstance->id;
+                    return settings_api::get_default_ocinstance()->id;
                 }
             ),
            'isdefault' => array(

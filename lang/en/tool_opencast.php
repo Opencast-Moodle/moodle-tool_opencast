@@ -57,12 +57,14 @@ $string['ocinstances'] = 'Opencast Instances';
 $string['ocinstancesdesc'] = 'Defines a list of Opencast Instances to which the Opencast plugins can connect.';
 $string['name'] = 'Name';
 $string['isvisible'] = 'Is visible to teachers';
+$string['isdefault'] = 'Default';
 $string['addinstance'] = 'Add instance';
 $string['delete_instance'] = 'Delete instance';
 $string['delete_instance_confirm'] = 'Do you really want to delete this instance?<br>
 Teachers will not be able to see videos used in this instance anymore.<br>
 <b>Caution:</b> All data related to this instance will be lost.<br><br>
 The deletion will be performed after you click on "Save changes" on the main settings page.';
+$string['errornumdefaultinstances'] = 'There must be exactly one default Opencast instance.';
 
 $string['opencast:externalapi'] = 'Access to Opencast API webservices';
 $string['opencast:instructor'] = 'Gives the role of an instructor in Opencast';
