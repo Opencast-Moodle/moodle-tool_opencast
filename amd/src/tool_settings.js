@@ -41,6 +41,11 @@ export const init = (instancesinputid) => {
     str.get_strings(strings).then(function (jsstrings) {
         // Style hidden input.
         var instancesinput = $('#' + instancesinputid);
+
+        if(!instancesinput.length) {
+            return;
+        }
+
         instancesinput.parent().hide();
         instancesinput.parent().next().hide(); // Default value.
 
