@@ -53,13 +53,10 @@ export const init = (instancesinputid) => {
             data: JSON.parse(instancesinput.val()),
             layout: "fitColumns",
             dataChanged: function (data) {
-                // TODO make sure that there is at least one.
-             //    data = data.filter(value => value.name); // todo warn user instead if name is empty
                 instancesinput.val(JSON.stringify(data));
             },
             columns: [
                 {title: 'ID', field: "id", widthGrow: 0},
-                // TODO allow admins to change the ID (should only be used for importing settings)
                 {title: jsstrings[0], field: "name", editor: "input", widthGrow: 2,},
                 {
                     title: jsstrings[1],
@@ -104,13 +101,27 @@ export const init = (instancesinputid) => {
 
         $('#addrow-instancestable').click(function () {
             var instances = JSON.parse(instancesinput.val());
-            var id = 0;
-            instances.forEach(function (x) {
-                if (x.id > id) {
-                    id = x.id;
+            var ids = instances.map(x => x.id);
+            ids.sort();
+            var nextid = 0;
+            var i;
+
+            if(ids.includes(1)) {
+                for (i=0; i<ids.length; i++) {
+                    let nextElem = i + 1;
+                    if (nextElem === ids.length) {
+                        nextid = ids[i];
+                    } else if (ids[nextElem] !== ids[i] + 1) {
+                        nextid = ids[i] + 1;
+                        break;
+                    }
                 }
-            });
-            instancestable.addRow({'id': id + 1, 'isvisible': false, 'isdefault': false});
+            }
+            else {
+                nextid = 1;
+            }
+
+            instancestable.addRow({'id': nextid, 'isvisible': false, 'isdefault': false});
         });
     });
 };
