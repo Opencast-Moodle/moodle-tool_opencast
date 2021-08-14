@@ -68,7 +68,7 @@ $services = array(
             'core_user_get_users_by_field',
         ),
         'restrictedusers' => 1, // If 1, the administrator must manually select which user can use this service.
-        // (Administration > Plugins > Web services > Manage services > Authorised users)
+        // (Administration > Plugins > Web services > Manage services > Authorised users).
         'enabled' => 1, // If 0, then token linked to this service won't work.
     )
 );

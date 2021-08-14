@@ -67,13 +67,13 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         }
 
         // Remove unique key.
-        $dbman->drop_key($table, new xmldb_key('fk_course',XMLDB_KEY_FOREIGN_UNIQUE, array('courseid'), 'course', array('id')));
+        $dbman->drop_key($table, new xmldb_key('fk_course', XMLDB_KEY_FOREIGN_UNIQUE, array('courseid'), 'course', array('id')));
 
         // Check that each course has only exactly one series.
         $sql = "SELECT courseid, COUNT(id) FROM {tool_opencast_series} GROUP BY courseid ";
         $courseentries = $DB->get_records_sql($sql);
-        foreach($courseentries as $entry) {
-            if(intval($entry->count) > 1) {
+        foreach ($courseentries as $entry) {
+            if (intval($entry->count) > 1) {
                 // This should not happen. But if it does, simply select the first one as default.
                 // 1. Set all to 0.
                 $DB->set_field('tool_opencast_series', 'isdefault', 0, ['courseid' => $entry->courseid]);

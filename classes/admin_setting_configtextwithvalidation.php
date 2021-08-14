@@ -48,7 +48,7 @@ class admin_setting_configtextwithvalidation extends \admin_setting_configtext
         if ($parentvalidated == true) {
             $ocinstances = json_decode($data);
             $isdefault = array_column($ocinstances, 'isdefault');
-            if(array_sum($isdefault) !== 1) {
+            if (array_sum($isdefault) !== 1) {
                 return get_string('errornumdefaultinstances', 'tool_opencast');
             }
         }
@@ -57,13 +57,13 @@ class admin_setting_configtextwithvalidation extends \admin_setting_configtext
 
     public function write_setting($data) {
         $failed = parent::write_setting($data);
-        if(!$failed) {
+        if (!$failed) {
             // Propagate changes to plugins.
             $adminroot = admin_get_root();
             $toolsettings = $adminroot->locate('tool_opencast');
-            foreach($toolsettings->get_children() as $child) {
-                if(substr($child->name, 0, 28) == 'tool_opencast_configuration_') {
-                    foreach($child->settings as $name => $setting) {
+            foreach ($toolsettings->get_children() as $child) {
+                if (substr($child->name, 0, 28) == 'tool_opencast_configuration_') {
+                    foreach ($child->settings as $name => $setting) {
                         $data = $setting->get_setting();
                         if (is_null($data)) {
                             $data = $setting->get_defaultsetting();
@@ -76,14 +76,14 @@ class admin_setting_configtextwithvalidation extends \admin_setting_configtext
             // Block settings.
             if (core_plugin_manager::instance()->get_plugin_info('block_opencast')) {
                 $blocksettings = $adminroot->locate('block_opencast');
-                foreach($blocksettings->get_children() as $category) {
-                    if($category instanceof admin_category) {
-                        foreach($category->get_children() as $child) {
+                foreach ($blocksettings->get_children() as $category) {
+                    if ($category instanceof admin_category) {
+                        foreach ($category->get_children() as $child) {
                             foreach ($child->settings as $name => $setting) {
                                 $data = $setting->get_setting();
                                 if (is_null($data)) {
                                     $data = $setting->get_defaultsetting();
-                                    if(!is_null($data)) {
+                                    if (!is_null($data)) {
                                         $setting->write_setting($data);
                                     }
                                 }

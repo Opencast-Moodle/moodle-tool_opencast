@@ -23,6 +23,7 @@
  */
 
 namespace tool_opencast;
+
 use tool_opencast\local\settings_api;
 
 defined('MOODLE_INTERNAL') || die;
@@ -34,7 +35,8 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2018 Tobias Reischmann WWU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class seriesmapping extends \core\persistent {
+class seriesmapping extends \core\persistent
+{
 
     /** Table name for the persistent. */
     const TABLE = 'tool_opencast_series';
@@ -58,12 +60,12 @@ class seriesmapping extends \core\persistent {
             ),
             'ocinstanceid' => array(
                 'type' => PARAM_INT,
-                'default' => function(){
+                'default' => function () {
                     return settings_api::get_default_ocinstance()->id;
                 }
             ),
-           'isdefault' => array(
-              'type' => PARAM_BOOL,
+            'isdefault' => array(
+                'type' => PARAM_BOOL,
             ),
         );
     }
@@ -71,7 +73,7 @@ class seriesmapping extends \core\persistent {
     public static function get_record($filters = array(), $skipdefault = false) {
         // TODO later deprecate skipdefault and remove this compatibility stuff.
         // Keep it compatible with old versions.
-        if(!$skipdefault && !array_key_exists('isdefault', $filters)) {
+        if (!$skipdefault && !array_key_exists('isdefault', $filters)) {
             $filters['isdefault'] = '1';
         }
 

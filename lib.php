@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * 
+ *
  * @package    tool_opencast
  * @copyright  2021 Farbod Zamani Boroujeni, ELAN e.V.
  * @author     Farbod Zamani Boroujeni <zamani@elan-ev.de>
@@ -41,7 +41,7 @@ function tool_opencast_test_url_connection() {
     // Initialise the costum config array.
     $customconfigs = array();
     $customconfigs['apiurl'] = $apiurl;
-    
+
     // Username and password are optional here and they will be used to get api info correctly.
     if (!empty($apiusername)) {
         $customconfigs['apiusername'] = $apiusername;
@@ -58,7 +58,7 @@ function tool_opencast_test_url_connection() {
     if ($customizedapi->connection_test_url() == false) {
         // Redirect back to admin page with related error message.
         redirect(new \moodle_url('/admin/settings.php?section=tool_opencast'),
-            get_string('apiurltestfailedlong', 'tool_opencast') , 0, \core\output\notification::NOTIFY_ERROR);
+            get_string('apiurltestfailedlong', 'tool_opencast'), 0, \core\output\notification::NOTIFY_ERROR);
     }
 
     // In case given URL is valid, we now check if the username and password is provided.
@@ -72,7 +72,7 @@ function tool_opencast_test_url_connection() {
     if (empty($apiusername) || empty($apipassword)) {
         // Redirect back to admin page with a warning message to inform admin that credentials are not yet provided.
         redirect(new \moodle_url('/admin/settings.php?section=tool_opencast'),
-            get_string('apiurltestsucceedbutnocredentialslong', 'tool_opencast') , 0, \core\output\notification::NOTIFY_WARNING);
+            get_string('apiurltestsucceedbutnocredentialslong', 'tool_opencast'), 0, \core\output\notification::NOTIFY_WARNING);
     }
 
     // When we reach here, it means that everything went fine, so we leave it to the admin_settings to handel the rest from here.
@@ -100,13 +100,13 @@ function tool_opencast_test_connection_with_credentials() {
 
     // Get an api instance with optional entries.
     $customizedapi = new \tool_opencast\local\api(array(), $customconfigs);
-    
+
     // Check the creadentials.
     if ($customizedapi->connection_test_credentials() == false) {
         // Redirect back to admin page with related error message.
         redirect(new \moodle_url('/admin/settings.php?section=tool_opencast'),
-            get_string('apicreadentialstestfailedlong', 'tool_opencast') , 0, \core\output\notification::NOTIFY_ERROR);
+            get_string('apicreadentialstestfailedlong', 'tool_opencast'), 0, \core\output\notification::NOTIFY_ERROR);
     }
-    
+
     // When we reach here, it means that everything went fine, so we leave it to the admin_settings to handel the rest from here.
 }

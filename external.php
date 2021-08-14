@@ -37,7 +37,8 @@ require_once($CFG->libdir . '/authlib.php');
  * @copyright  2018 Tobias Reischmann <tobias.reischmann@wi.uni-muenster.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tool_opencast_external extends external_api {
+class tool_opencast_external extends external_api
+{
 
     /**
      * Describes the parameters for getting courses for a opencast instructor.
@@ -84,7 +85,7 @@ class tool_opencast_external extends external_api {
     /**
      * Get all courses for a user, in which he has the capabilities of a instructor.
      *
-     * @param  string $username user name
+     * @param string $username user name
      * @return array list of course ids
      * @throws coding_exception
      * @throws dml_exception
@@ -100,7 +101,7 @@ class tool_opencast_external extends external_api {
     /**
      * Get all courses for a user, in which he has the capabilities of a learner.
      *
-     * @param  string $username user name
+     * @param string $username user name
      * @return array list of course ids
      * @throws coding_exception
      * @throws dml_exception
@@ -116,7 +117,7 @@ class tool_opencast_external extends external_api {
     /**
      * Get all courses for a user, in which he has the capabilities of a learner.
      *
-     * @param  string $username user name
+     * @param string $username user name
      * @return array list of course ids
      * @throws coding_exception
      * @throws dml_exception
@@ -235,8 +236,8 @@ class tool_opencast_external extends external_api {
         return new external_function_parameters(
             array(
                 'apiurl' => new external_value(PARAM_TEXT, 'Opencast API URL'),
-                'apiusername'  => new external_value(PARAM_TEXT, 'Opencast API User'),
-                'apipassword'  => new external_value(PARAM_RAW, 'Opencast API Password'),
+                'apiusername' => new external_value(PARAM_TEXT, 'Opencast API User'),
+                'apipassword' => new external_value(PARAM_RAW, 'Opencast API Password'),
             )
         );
     }
@@ -244,9 +245,9 @@ class tool_opencast_external extends external_api {
     /**
      * Perform the connection test via Ajax call to be able to show it in Modal.
      *
-     * @param  string $apiurl Opencast API URL
-     * @param  string $apiusername Opencast API username
-     * @param  string $apipassword Opencast API password
+     * @param string $apiurl Opencast API URL
+     * @param string $apiusername Opencast API username
+     * @param string $apipassword Opencast API password
      * @return array
      * @throws coding_exception
      * @throws dml_exception
@@ -266,24 +267,29 @@ class tool_opencast_external extends external_api {
 
         // Initialise the result array.
         $result = array();
-        
+
         // We assume that both tests are successful, so we define the success p tags for both.
-        $result['testurl'] = \html_writer::tag('p', get_string('apiurltestsuccessfulshort', 'tool_opencast'), array('class' => 'alert alert-success'));
-        $result['testcreadentials'] = html_writer::tag('p', get_string('apicreadentialstestsuccessfulshort', 'tool_opencast'), array('class' => 'alert alert-success'));
-        
+        $result['testurl'] = \html_writer::tag('p', get_string('apiurltestsuccessfulshort', 'tool_opencast'),
+            array('class' => 'alert alert-success'));
+        $result['testcreadentials'] = html_writer::tag('p', get_string('apicreadentialstestsuccessfulshort', 'tool_opencast'),
+            array('class' => 'alert alert-success'));
+
         // Get the a customized api instance to use.
-        $customizedapi = new \tool_opencast\local\api(array(), array('apiurl' => $params['apiurl'], 'apiusername' => $params['apiusername'], 'apipassword' => $params['apipassword']));
-        
+        $customizedapi = new \tool_opencast\local\api(array(), array('apiurl' => $params['apiurl'],
+            'apiusername' => $params['apiusername'], 'apipassword' => $params['apipassword']));
+
         // First we test the URL.
         if ($customizedapi->connection_test_url() == false) {
             // In case it failed, we replace the succes p tag with error p tag.
-            $result['testurl'] = \html_writer::tag('p', get_string('apiurltestfailedshort', 'tool_opencast'), array('class' => 'alert alert-danger'));
+            $result['testurl'] = \html_writer::tag('p', get_string('apiurltestfailedshort', 'tool_opencast'),
+                array('class' => 'alert alert-danger'));
         }
 
         // After that we test the Credentials.
         if ($customizedapi->connection_test_credentials() == false) {
             // In case it failed, we replace the succes p tag with error p tag.
-            $result['testcreadentials'] = html_writer::tag('p', get_string('apicreadentialstestfailedshort', 'tool_opencast'), array('class' => 'alert alert-danger'));
+            $result['testcreadentials'] = html_writer::tag('p', get_string('apicreadentialstestfailedshort', 'tool_opencast'),
+                array('class' => 'alert alert-danger'));
         }
 
         // Finally, we concatenate both test results and return it.
