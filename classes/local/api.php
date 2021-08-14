@@ -128,6 +128,7 @@ class api extends \curl {
 
     /**
      * Constructor of the Opencast API.
+     * @param int $instanceid Opencast instance id
      * @param array $settings additional curl settings.
      * @param array $customconfigs custom api config.
      * @throws \dml_exception

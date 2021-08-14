@@ -44,10 +44,9 @@ require_once($CFG->dirroot . '/lib/filelib.php');
 class settings_api extends \curl
 {
 
-
     /**
      * Returns the api url of an Opencast instance.
-     * @param int $ocinstance
+     * @param int $ocinstanceid
      * @return string
      */
     public static function get_apiurl($ocinstanceid) {
@@ -60,12 +59,21 @@ class settings_api extends \curl
         }
     }
 
+    /**
+     * Return the settings of an Opencast instance.
+     * @param int $ocinstanceid
+     * @return mixed
+     */
     public static function get_ocinstance($ocinstanceid) {
         $ocinstances = self::get_ocinstances();
         $key = array_search($ocinstanceid, array_column($ocinstances, 'id'));
         return $ocinstances[$key];
     }
 
+    /**
+     * Returns the default Opencast instance.
+     * @return mixed|null
+     */
     public static function get_default_ocinstance() {
         $ocinstances = self::get_ocinstances();
         $key = array_search(true, array_column($ocinstances, 'isdefault'));
@@ -75,10 +83,20 @@ class settings_api extends \curl
         return null;
     }
 
+    /**
+     * Returns all available Opencast instances.
+     * @return mixed
+     * @throws \dml_exception
+     */
     public static function get_ocinstances() {
         return json_decode(get_config('tool_opencast', 'ocinstances'));
     }
 
+    /**
+     * Returns the number of available Opencast instances.
+     * @return int|void
+     * @throws \dml_exception
+     */
     public static function num_ocinstances() {
         return count(self::get_ocinstances());
     }

@@ -40,8 +40,8 @@ class admin_setting_configtextwithvalidation extends \admin_setting_configtext
 {
     /**
      * Validate data before storage
-     * @param string data
-     * @return mixed true if ok string if error found
+     * @param mixed $data
+     * @return bool|string true if ok string if error found
      */
     public function validate($data) {
         $parentvalidated = parent::validate($data);
@@ -55,6 +55,11 @@ class admin_setting_configtextwithvalidation extends \admin_setting_configtext
         return $parentvalidated;
     }
 
+    /**
+     * Write settings and propagate changes to plugins.
+     * @param mixed $data
+     * @return bool|\lang_string|mixed|string empty string if successful, otherwise error message
+     */
     public function write_setting($data) {
         $failed = parent::write_setting($data);
         if (!$failed) {

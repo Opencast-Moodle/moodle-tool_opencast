@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Helper functions for tool_opencast.
  *
  * @package    tool_opencast
  * @copyright  2021 Farbod Zamani Boroujeni, ELAN e.V.

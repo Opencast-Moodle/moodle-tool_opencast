@@ -70,6 +70,12 @@ class seriesmapping extends \core\persistent
         );
     }
 
+    /**
+     * Retrieves a database record of the tool_opencast_series table.
+     * @param array $filters
+     * @param false $skipdefault
+     * @return false|seriesmapping
+     */
     public static function get_record($filters = array(), $skipdefault = false) {
         // TODO later deprecate skipdefault and remove this compatibility stuff.
         // Keep it compatible with old versions.

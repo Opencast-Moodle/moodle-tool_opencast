@@ -17,7 +17,7 @@
 /**
  * Exception, which is thrown when the tool settings are emtpy.
  *
- * @package    block_opencast
+ * @package    tool_opencast
  * @copyright  2021 Tamara Gunkel, University of Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Exception, which is thrown when the tool settings are empty.
  *
- * @package    block_opencast
+ * @package    tool_opencast
  * @copyright  2021 Tamara Gunkel, University of Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
