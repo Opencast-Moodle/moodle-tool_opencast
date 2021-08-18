@@ -143,7 +143,7 @@ if ($hassiteconfig) {
                 'class' => 'btn btn-warning disabled testtool-modal',
                 'disabled' => 'disabled',
                 'title' => get_string('testtooldisabledbuttontitle', 'tool_opencast'),
-                'data-instanceid' => ($instance->isdefault) ? '': $instance->id
+                'data-instanceid' => ($instance->isdefault) ? '' : $instance->id
             ];
             $connectiontoolbutton = html_writer::tag('button', get_string('testtoolurl', 'tool_opencast'), $attributes);
             // Place the button inside the header description.
