@@ -41,23 +41,28 @@ function($, Ajax, Str, ModalFactory, Notification) {
      * Register button activation.
      */
     TestTool.prototype.activateButton = function() {
-        if($('#testtool-modal').is(':visible') && $('#testtool-modal').hasClass('disabled')) {
-            $('#testtool-modal').removeAttr('disabled');
-            $('#testtool-modal').removeAttr('title');
-            $('#testtool-modal').removeClass('disabled btn-warning');
-            $('#testtool-modal').addClass('btn-secondary');
-        }
+        $('.testtool-modal').each(function() {
+            if($(this).is(':visible') && $(this).hasClass('disabled')) {
+                $(this).removeAttr('disabled');
+                $(this).removeAttr('title');
+                $(this).removeClass('disabled btn-warning');
+                $(this).addClass('btn-secondary');
+            }
+        });
     };
     /**
      * Register event listener.
      */
     TestTool.prototype.registerClickEvent = function() {
-        $('#testtool-modal').click(function(e) {
+        $('.testtool-modal').click(function(e) {
             e.preventDefault();
+            var instanceid = $(e.target).data('instanceid');
+            var suffix = (instanceid) ? '_' + instanceid : '';
 
-            var apiurl = $('#admin-apiurl').find('input').val();
-            var apiusername = $('#admin-apiusername').find('input').val();
-            var apipassword = $('#admin-apipassword').find('input').val();
+
+            var apiurl = $('#admin-apiurl' + suffix).find('input').val();
+            var apiusername = $('#admin-apiusername' + suffix).find('input').val();
+            var apipassword = $('#admin-apipassword' + suffix).find('input').val();
 
             var args = {
                 'apiurl': apiurl,

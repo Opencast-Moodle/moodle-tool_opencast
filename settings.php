@@ -51,14 +51,6 @@ if ($hassiteconfig) {
             }
         }
     } else {
-        // Require the lib to use in set_updatedcallback method(s).
-        require_once($CFG->dirroot . '/admin/tool/opencast/lib.php');
-
-        // To add connection test tool required js to the page.
-        if (isset($PAGE) and is_callable(array($PAGE->requires, 'js'))) {
-            $PAGE->requires->jquery();
-            $PAGE->requires->js_call_amd('tool_opencast/opencasttesttool', 'init');
-        }
 
         $instancesconfig = new admin_setting_configtextwithvalidation('tool_opencast/ocinstances',
             get_string('ocinstances', 'tool_opencast'),
@@ -68,6 +60,8 @@ if ($hassiteconfig) {
 
         // Crashes if plugins.php is opened because css cannot be included anymore.
         if ($PAGE->state !== moodle_page::STATE_IN_BODY) {
+            $PAGE->requires->jquery();
+            $PAGE->requires->js_call_amd('tool_opencast/opencasttesttool', 'init');
             $PAGE->requires->js_call_amd('tool_opencast/tool_settings', 'init', [$instancesconfig->get_id()]);
             $PAGE->requires->css('/admin/tool/opencast/css/tabulator.min.css');
             $PAGE->requires->css('/admin/tool/opencast/css/tabulator_bootstrap4.min.css');
@@ -99,20 +93,16 @@ if ($hassiteconfig) {
 
                 $apiurlsetting = new admin_setting_configtext('tool_opencast/apiurl', get_string('apiurl', 'tool_opencast'),
                     get_string('apiurldesc', 'tool_opencast'), 'https://stable.opencast.org', PARAM_URL);
-                // Set updatedcallback for API URL to validate the given url.
-                $apiurlsetting->set_updatedcallback('tool_opencast_test_url_connection');
                 $settings->add($apiurlsetting);
 
                 $apiusernamesetting = new admin_setting_configtext('tool_opencast/apiusername',
                     get_string('apiusername', 'tool_opencast'),
                     get_string('apiusernamedesc', 'tool_opencast'), 'admin');
-                $apiusernamesetting->set_updatedcallback('tool_opencast_test_connection_with_credentials');
                 $settings->add($apiusernamesetting);
 
                 $apipasswordsetting = new admin_setting_configpasswordunmask('tool_opencast/apipassword',
                     get_string('apipassword', 'tool_opencast'),
                     get_string('apipassworddesc', 'tool_opencast'), 'opencast');
-                $apipasswordsetting->set_updatedcallback('tool_opencast_test_connection_with_credentials');
                 $settings->add($apipasswordsetting);
 
                 $settings->add(new admin_setting_configduration('tool_opencast/connecttimeout',
@@ -131,19 +121,16 @@ if ($hassiteconfig) {
                 $apiurlsetting = new admin_setting_configtext('tool_opencast/apiurl_' . $instance->id,
                     get_string('apiurl', 'tool_opencast'),
                     get_string('apiurldesc', 'tool_opencast'), 'https://stable.opencast.org', PARAM_URL);
-                $apiurlsetting->set_updatedcallback('tool_opencast_test_url_connection');
                 $settings->add($apiurlsetting);
 
                 $apiusernamesetting = new admin_setting_configtext('tool_opencast/apiusername_' . $instance->id,
                     get_string('apiusername', 'tool_opencast'),
                     get_string('apiusernamedesc', 'tool_opencast'), 'admin');
-                $apiusernamesetting->set_updatedcallback('tool_opencast_test_connection_with_credentials');
                 $settings->add($apiusernamesetting);
 
                 $apipasswordsetting = new admin_setting_configpasswordunmask('tool_opencast/apipassword_' . $instance->id,
                     get_string('apipassword', 'tool_opencast'),
                     get_string('apipassworddesc', 'tool_opencast'), 'opencast');
-                $apipasswordsetting->set_updatedcallback('tool_opencast_test_connection_with_credentials');
                 $settings->add($apipasswordsetting);
 
                 $settings->add(new admin_setting_configduration('tool_opencast/connecttimeout_' . $instance->id,
@@ -153,10 +140,10 @@ if ($hassiteconfig) {
 
             // Provide Connection Test Tool button.
             $attributes = [
-                'id' => 'testtool-modal',
-                'class' => 'btn btn-warning disabled',
+                'class' => 'btn btn-warning disabled testtool-modal',
                 'disabled' => 'disabled',
-                'title' => get_string('testtooldisabledbuttontitle', 'tool_opencast')
+                'title' => get_string('testtooldisabledbuttontitle', 'tool_opencast'),
+                'data-instanceid' => ($instance->isdefault) ? '': $instance->id
             ];
             $connectiontoolbutton = html_writer::tag('button', get_string('testtoolurl', 'tool_opencast'), $attributes);
             // Place the button inside the header description.

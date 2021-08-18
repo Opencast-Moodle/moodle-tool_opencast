@@ -498,22 +498,13 @@ class api extends \curl {
 
         // Define header array.
         $header = array();
-
-        if ($this->username && $this->password) {
-            $header = $this->get_authentication_header();
-        }
-
         $header[] = 'Content-Type: application/json';
         $this->setHeader($header);
         $this->setopt(array('CURLOPT_HEADER' => false));
 
         // The "/api" resource endpoint returns key characteristics of the API such as the server name and the default version.
         $resource = $url . '/api';
-        $serverinfo = $this->get($resource);
-
-        // It might happen that admin only wants to check the url without credentials,
-        // in this case, the "/api" endpoint call returns 200 response code but not related info,
-        // which is enough to say that URL is fine.
+        $this->get($resource);
 
         // If the connection fails or the Opencast instance could not be found, we return false.
         if ($this->get_http_code() != 200) {

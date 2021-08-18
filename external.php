@@ -275,7 +275,7 @@ class tool_opencast_external extends external_api
             array('class' => 'alert alert-success'));
 
         // Get the a customized api instance to use.
-        $customizedapi = new \tool_opencast\local\api(array(), array('apiurl' => $params['apiurl'],
+        $customizedapi = new \tool_opencast\local\api(null, array(), array('apiurl' => $params['apiurl'],
             'apiusername' => $params['apiusername'], 'apipassword' => $params['apipassword']));
 
         // First we test the URL.
