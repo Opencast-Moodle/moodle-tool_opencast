@@ -4,6 +4,7 @@
         <location>amd/src/tabulator.js</location>
         <name>Tabulator</name>
         <version>4.9.3</version>
-        <license>MIT License</license>
+        <license>MIT</license>
+        <licenseversion></licenseversion>
     </library>
 </libraries>
