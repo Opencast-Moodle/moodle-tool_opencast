@@ -56,7 +56,7 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018013002, 'error', 'opencast');
     }
 
-    if ($oldversion < 2021072000) {
+    if ($oldversion < 2021091200) {
         // Architecture change: Multiple series per course.
         $table = new xmldb_table('tool_opencast_series');
         $field = new xmldb_field('isdefault', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 1, 'series');
@@ -114,7 +114,7 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         $table->add_key('unq_course_series_ocinstance', XMLDB_KEY_UNIQUE, array('courseid', 'ocinstanceid', 'series'));
 
         // Opencast savepoint reached.
-        upgrade_plugin_savepoint(true, 2021072000, 'tool', 'opencast');
+        upgrade_plugin_savepoint(true, 2021091200, 'tool', 'opencast');
     }
 
     return true;
