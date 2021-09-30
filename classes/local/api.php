@@ -26,13 +26,13 @@
 
 namespace tool_opencast\local;
 
-use local_chunkupload\chunkupload_form_element;
 use local_chunkupload\local\chunkupload_file;
 use tool_opencast\empty_configuration_exception;
 
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . '/lib/filelib.php');
+require_once($CFG->dirroot . '/admin/tool/opencast/tests/helper/api_testable.php');
 
 /**
  * API for opencast
@@ -124,6 +124,13 @@ class api extends \curl {
      */
     public static function get_courses_series_title($courseid) {
         return self::get_courses_series_title_prefix() . $courseid;
+    }
+
+    public static function get_instance($instanceid = null, $settings = array(), $customconfigs = array()) {
+        if (defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING) {
+            return new \api_testable();
+        }
+        return new api($instanceid, $settings, $customconfigs);
     }
 
     /**
@@ -249,7 +256,6 @@ class api extends \curl {
      * @throws \moodle_exception
      */
     public function oc_get($resource, $runwithroles = array()) {
-
         $url = $this->baseurl . $resource;
 
         $this->resetHeader();
