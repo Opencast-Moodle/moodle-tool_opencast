@@ -44,6 +44,9 @@ class api_testable extends api {
     public function __construct() {
         // Needed to persist responses across requests.
         $this->jsonresponses = json_decode(get_config('block_opencast', 'api_testable_responses'), true);
+        if(!$this->jsonresponses) {
+            $this->jsonresponses = [];
+        }
     }
 
     public function get_http_code() {
