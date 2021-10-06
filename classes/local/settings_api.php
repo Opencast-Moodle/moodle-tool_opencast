@@ -77,7 +77,7 @@ class settings_api extends \curl
     public static function get_default_ocinstance() {
         $ocinstances = self::get_ocinstances();
         $key = array_search(true, array_column($ocinstances, 'isdefault'));
-        if ($key) {
+        if ($key !== false) {
             return $ocinstances[$key];
         }
         return null;
