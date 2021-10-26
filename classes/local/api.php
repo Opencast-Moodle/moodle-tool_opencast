@@ -125,6 +125,16 @@ class api extends \curl {
         return self::get_courses_series_title_prefix() . $courseid;
     }
 
+    /**
+     * Returns the real api or test api depending on the environment.
+     *
+     * @param null $instanceid Opencast instance id
+     * @param array $settings
+     * @param array $customconfigs
+     * @return api|api_testable
+     * @throws \dml_exception
+     * @throws \moodle_exception
+     */
     public static function get_instance($instanceid = null, $settings = array(), $customconfigs = array()) {
         if (defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING && get_config('tool_opencast', 'apiurl') == 'http://testapi:8080') {
             return new api_testable();
