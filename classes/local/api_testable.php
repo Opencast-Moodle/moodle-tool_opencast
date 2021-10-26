@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use tool_opencast\local\api;
+namespace tool_opencast\local;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -123,6 +123,10 @@ class api_testable extends api {
     }
 
     public function supports_api_level($level) {
+        return true;
+    }
+
+    public function connection_test_url() {
         return true;
     }
 }

@@ -129,6 +129,16 @@ jobs:
         if: matrix.database == 'pgsql' && matrix.moodle-branch == 'master'
         run: docker run -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_HOST_AUTH_METHOD=trust -d postgres:10
 
+      - name: Check out opencast-docker
+        uses: actions/checkout@v2
+        with:
+          repository: opencast/opencast-docker
+          ref: ${{ matrix.opencast }}
+          path: opencast-docker
+
+      - name: Start Opencast
+        run: docker-compose -p opencast-allinone -f opencast-docker/docker-compose/docker-compose.allinone.h2.yml up -d
+
       - name: Check out repository code
         uses: actions/checkout@v2
         with:
