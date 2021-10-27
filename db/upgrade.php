@@ -117,5 +117,35 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2021091200, 'tool', 'opencast');
     }
 
+    if ($oldversion < 2021102700) {
+        $columns = $DB->get_columns('tool_opencast_series');
+        $isdefaultfield = $columns['isdefault'];
+
+        if ($isdefaultfield->__get("type") == "bytea") {
+            # Change type of field isdefault on table tool_opencast_series to int.
+            // Changing type of field isdefault on table tool_opencast_series to int.
+            $table = new xmldb_table('tool_opencast_series');
+            $oldfield = new xmldb_field('isdefault', XMLDB_TYPE_BINARY);
+            $dbman->rename_field($table, $oldfield, 'isdefault_old');
+
+            $newfield = new xmldb_field('isdefault', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0, 'series');
+            $dbman->add_field($table, $newfield);
+
+            // Loop through records because casting in sql depends on database type.
+            foreach ($DB->get_records('tool_opencast_series') as $record) {
+                if ($record->isdefault_old) {
+                    $record->isdefault = 1;
+                    $DB->update_record('tool_opencast_series', $record);
+                }
+            }
+
+            // Launch change of type for field isdefault.
+            $dbman->drop_field($table, new xmldb_field('isdefault_old'));
+        }
+
+        // Opencast savepoint reached.
+        upgrade_plugin_savepoint(true, 2021102700, 'tool', 'opencast');
+    }
+
     return true;
 }

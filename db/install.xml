@@ -9,7 +9,7 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="series" TYPE="char" LENGTH="36" NOTNULL="true" SEQUENCE="false" COMMENT="identifier of the series"/>
-        <FIELD NAME="isdefault" TYPE="binary" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="isdefault" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="ocinstanceid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
