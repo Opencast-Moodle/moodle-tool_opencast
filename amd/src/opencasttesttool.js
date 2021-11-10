@@ -21,81 +21,81 @@
  * @copyright  2021 Farbod Zamani (zamani@elan-ev.de)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- define([
-    'jquery',
-    'core/ajax',
-    'core/str',
-    'core/modal_factory',
-    'core/notification'],
-function($, Ajax, Str, ModalFactory, Notification) {
-
-    /**
-     * TestTool class.
-     */
-    var TestTool = function() {
-        this.activateButton();
-        this.registerClickEvent();
-    };
-
-    /**
-     * Register button activation.
-     */
-    TestTool.prototype.activateButton = function() {
-        $('.testtool-modal').each(function() {
-            if($(this).is(':visible') && $(this).hasClass('disabled')) {
-                $(this).removeAttr('disabled');
-                $(this).removeAttr('title');
-                $(this).removeClass('disabled btn-warning');
-                $(this).addClass('btn-secondary');
-            }
-        });
-    };
-    /**
-     * Register event listener.
-     */
-    TestTool.prototype.registerClickEvent = function() {
-        $('.testtool-modal').click(function(e) {
-            e.preventDefault();
-            var instanceid = $(e.target).data('instanceid');
-            var suffix = (instanceid) ? '_' + instanceid : '';
-
-
-            var apiurl = $('#admin-apiurl' + suffix).find('input').val();
-            var apiusername = $('#admin-apiusername' + suffix).find('input').val();
-            var apipassword = $('#admin-apipassword' + suffix).find('input').val();
-
-            var args = {
-                'apiurl': apiurl,
-                'apiusername': apiusername,
-                'apipassword' : apipassword
-            };
-
-            // Get options.
-            var request = [{methodname: 'tool_opencast_connection_test_tool', args: args}];
-            var promise = Ajax.call(request);
-
-            var titlePromise = Str.get_string('testtoolurl', 'tool_opencast');
-            var modalPromise = ModalFactory.create({type: ModalFactory.types.CANCEL});
-            $.when(promise[0], titlePromise, modalPromise).then(function(connectionTestResponse, title, modal) {
-                modal.setTitle(title);
-                modal.setBody(connectionTestResponse.testresult);
-
-                modal.show();
-                return modal;
-            }).catch(Notification.exception);
-        });
-    };
-
-    return /** @alias tool_opencast/opencasttesttool */ {
+define([
+        'jquery',
+        'core/ajax',
+        'core/str',
+        'core/modal_factory',
+        'core/notification'],
+    function($, Ajax, Str, ModalFactory, Notification) {
 
         /**
-         * Initialise the module.
-         *
-         * @method init
-         * @return {TestTool}
+         * TestTool class.
          */
-        'init': function() {
-            return new TestTool();
-        }
-    };
-});
+        var TestTool = function() {
+            this.activateButton();
+            this.registerClickEvent();
+        };
+
+        /**
+         * Register button activation.
+         */
+        TestTool.prototype.activateButton = function() {
+            $('.testtool-modal').each(function() {
+                if ($(this).is(':visible') && $(this).hasClass('disabled')) {
+                    $(this).removeAttr('disabled');
+                    $(this).removeAttr('title');
+                    $(this).removeClass('disabled btn-warning');
+                    $(this).addClass('btn-secondary');
+                }
+            });
+        };
+        /**
+         * Register event listener.
+         */
+        TestTool.prototype.registerClickEvent = function() {
+            $('.testtool-modal').click(function(e) {
+                e.preventDefault();
+                var instanceid = $(e.target).data('instanceid');
+                var suffix = (instanceid) ? '_' + instanceid : '';
+
+
+                var apiurl = $('#admin-apiurl' + suffix).find('input').val();
+                var apiusername = $('#admin-apiusername' + suffix).find('input').val();
+                var apipassword = $('#admin-apipassword' + suffix).find('input').val();
+
+                var args = {
+                    'apiurl': apiurl,
+                    'apiusername': apiusername,
+                    'apipassword': apipassword
+                };
+
+                // Get options.
+                var request = [{methodname: 'tool_opencast_connection_test_tool', args: args}];
+                var promise = Ajax.call(request);
+
+                var titlePromise = Str.get_string('testtoolurl', 'tool_opencast');
+                var modalPromise = ModalFactory.create({type: ModalFactory.types.CANCEL});
+                $.when(promise[0], titlePromise, modalPromise).then(function(connectionTestResponse, title, modal) {
+                    modal.setTitle(title);
+                    modal.setBody(connectionTestResponse.testresult);
+
+                    modal.show();
+                    return modal;
+                }).catch(Notification.exception);
+            });
+        };
+
+        return /** @alias tool_opencast/opencasttesttool */ {
+
+            /**
+             * Initialise the module.
+             *
+             * @method init
+             * @return {TestTool}
+             */
+            'init': function() {
+                return new TestTool();
+            }
+        };
+    });

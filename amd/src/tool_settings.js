@@ -39,11 +39,11 @@ export const init = (instancesinputid) => {
         {key: 'delete', component: 'moodle'},
         {key: 'isdefault', component: 'tool_opencast'},
     ];
-    str.get_strings(strings).then(function (jsstrings) {
+    str.get_strings(strings).then(function(jsstrings) {
         // Style hidden input.
         var instancesinput = $('#' + instancesinputid);
 
-        if(!instancesinput.length) {
+        if (!instancesinput.length) {
             return;
         }
 
@@ -53,22 +53,22 @@ export const init = (instancesinputid) => {
         var instancestable = new Tabulator("#instancestable", {
             data: JSON.parse(instancesinput.val()),
             layout: "fitColumns",
-            dataChanged: function (data) {
+            dataChanged: function(data) {
                 instancesinput.val(JSON.stringify(data));
             },
             columns: [
                 {title: 'ID', field: "id", widthGrow: 0},
-                {title: jsstrings[0], field: "name", editor: "input", widthGrow: 2,},
+                {title: jsstrings[0], field: "name", editor: "input", widthGrow: 2},
                 {
                     title: jsstrings[1],
                     field: "isvisible",
                     hozAlign: "center",
                     widthGrow: 0,
-                    formatter: function (cell) {
+                    formatter: function(cell) {
                         var input = document.createElement('input');
                         input.type = 'checkbox';
                         input.checked = cell.getValue();
-                        input.addEventListener('click', function () {
+                        input.addEventListener('click', function() {
                             cell.getRow().update({'isvisible': $(this).prop('checked') ? 1 : 0});
                         });
                         return input;
@@ -79,11 +79,11 @@ export const init = (instancesinputid) => {
                     field: "isdefault",
                     hozAlign: "center",
                     widthGrow: 0,
-                    formatter: function (cell) {
+                    formatter: function(cell) {
                         var input = document.createElement('input');
                         input.type = 'checkbox';
                         input.checked = cell.getValue();
-                        input.addEventListener('click', function () {
+                        input.addEventListener('click', function() {
                             cell.getRow().update({'isdefault': $(this).prop('checked') ? 1 : 0});
                         });
                         return input;
@@ -94,18 +94,18 @@ export const init = (instancesinputid) => {
                     width: 40,
                     headerSort: false,
                     hozAlign: "center",
-                    formatter: function () {
+                    formatter: function() {
                         return '<i class="icon fa fa-trash fa-fw"></i>';
                     },
-                    cellClick: function (e, cell) {
+                    cellClick: function(e, cell) {
                         ModalFactory.create({
                             type: ModalFactory.types.SAVE_CANCEL,
                             title: jsstrings[3],
                             body: jsstrings[4]
                         })
-                            .then(function (modal) {
+                            .then(function(modal) {
                                 modal.setSaveButtonText(jsstrings[5]);
-                                modal.getRoot().on(ModalEvents.save, function () {
+                                modal.getRoot().on(ModalEvents.save, function() {
                                     cell.getRow().delete();
                                 });
                                 modal.show();
@@ -115,15 +115,15 @@ export const init = (instancesinputid) => {
             ],
         });
 
-        $('#addrow-instancestable').click(function () {
+        $('#addrow-instancestable').click(function() {
             var instances = JSON.parse(instancesinput.val());
             var ids = instances.map(x => x.id);
             ids.sort();
             var nextid = 0;
             var i;
 
-            if(ids.includes(1)) {
-                for (i=0; i<ids.length; i++) {
+            if (ids.includes(1)) {
+                for (i = 0; i < ids.length; i++) {
                     let nextElem = i + 1;
                     if (nextElem === ids.length) {
                         nextid = ids[i] + 1;
@@ -132,8 +132,7 @@ export const init = (instancesinputid) => {
                         break;
                     }
                 }
-            }
-            else {
+            } else {
                 nextid = 1;
             }
 
