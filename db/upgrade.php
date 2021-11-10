@@ -122,7 +122,6 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         $isdefaultfield = $columns['isdefault'];
 
         if ($isdefaultfield->__get("type") == "bytea") {
-            # Change type of field isdefault on table tool_opencast_series to int.
             // Changing type of field isdefault on table tool_opencast_series to int.
             $table = new xmldb_table('tool_opencast_series');
             $oldfield = new xmldb_field('isdefault', XMLDB_TYPE_BINARY);
