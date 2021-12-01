@@ -209,6 +209,10 @@ class api extends \curl {
         }
     }
 
+    public function set_baseurl($baseurl) {
+        $this->baseurl = $baseurl;
+    }
+
     /**
      * Get http status code
      *
