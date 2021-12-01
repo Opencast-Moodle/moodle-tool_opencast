@@ -209,6 +209,10 @@ class api extends \curl {
         }
     }
 
+    /**
+     * Set base url.
+     * @param string $baseurl
+     */
     public function set_baseurl($baseurl) {
         $this->baseurl = $baseurl;
     }
