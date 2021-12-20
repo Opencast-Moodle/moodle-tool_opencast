@@ -77,7 +77,7 @@ jobs:
 
       - name: Moodle Code Checker
         if: ${{ always() }}
-        run: moodle-plugin-ci codechecker --max-warnings 5
+        run: moodle-plugin-ci codechecker --max-warnings 0
 
       - name: Moodle PHPDoc Checker
         if: ${{ always() }}
@@ -97,7 +97,7 @@ jobs:
 
       - name: Grunt
         if: ${{ always() }}
-        run: moodle-plugin-ci grunt --max-lint-warnings 4
+        run: moodle-plugin-ci grunt --max-lint-warnings 5
 
   test:
     runs-on: ubuntu-latest
