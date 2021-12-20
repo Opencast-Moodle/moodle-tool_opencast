@@ -17,7 +17,6 @@
  * AMD module for opencast connection test tool
  *
  * @module     tool_opencast/opencasttesttool
- * @package    tool_opencast
  * @copyright  2021 Farbod Zamani (zamani@elan-ev.de)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
