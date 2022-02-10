@@ -51,6 +51,10 @@ $string['apicreadentialstestsuccessfulshort'] = 'Opencast API User Credentials t
 $string['apicreadentialstestfailedshort'] = 'Opencast API User Credentials test failed!';
 $string['testtooldisabledbuttontitle'] = 'Unable to conduct the connection test due to unloaded js modules.';
 
+$string['lticonsumerkey'] = 'Consumer key';
+$string['lticonsumerkey_desc'] = 'LTI Consumer key for the integration of Opencast services that require authentication such as Studio or the editor.<br><b>Remark: </b> The LTI settings are not used yet but will be used by the next version of the block. Thus, configuring them is recommended.';
+$string['lticonsumersecret'] = 'Consumer secret';
+$string['lticonsumersecret_desc'] = 'LTI Consumer secret for the integration of Opencast services that require authentication.';
 $string['configuration'] = 'Configuration';
 $string['configuration_instance'] = 'Configuration: {$a}';
 $string['ocinstances'] = 'Opencast Instances';

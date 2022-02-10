@@ -105,6 +105,16 @@ if ($hassiteconfig) {
                     get_string('apipassworddesc', 'tool_opencast'), 'opencast');
                 $settings->add($apipasswordsetting);
 
+                $lticonsumerkeysetting = new admin_setting_configtext('tool_opencast/lticonsumerkey',
+                    get_string('lticonsumerkey', 'tool_opencast'),
+                    get_string('lticonsumerkey_desc', 'tool_opencast'), "");
+                $settings->add($lticonsumerkeysetting);
+
+                $lticonsumersecretsetting = new admin_setting_configpasswordunmask('tool_opencast/lticonsumersecret',
+                    get_string('lticonsumersecret', 'tool_opencast'),
+                    get_string('lticonsumersecret_desc', 'tool_opencast'), "");
+                $settings->add($lticonsumersecretsetting);
+
                 $settings->add(new admin_setting_configduration('tool_opencast/connecttimeout',
                     get_string('connecttimeout', 'tool_opencast'),
                     get_string('connecttimeoutdesc', 'tool_opencast'), 1));
@@ -132,6 +142,16 @@ if ($hassiteconfig) {
                     get_string('apipassword', 'tool_opencast'),
                     get_string('apipassworddesc', 'tool_opencast'), 'opencast');
                 $settings->add($apipasswordsetting);
+
+                $lticonsumerkeysetting = new admin_setting_configtext('tool_opencast/lticonsumerkey_' . $instance->id,
+                    get_string('lticonsumerkey', 'tool_opencast'),
+                    get_string('lticonsumerkey_desc', 'tool_opencast'), "");
+                $settings->add($lticonsumerkeysetting);
+
+                $lticonsumersecretsetting = new admin_setting_configpasswordunmask('tool_opencast/lticonsumersecret_' . $instance->id,
+                    get_string('lticonsumersecret', 'tool_opencast'),
+                    get_string('lticonsumersecret_desc', 'tool_opencast'), "");
+                $settings->add($lticonsumersecretsetting);
 
                 $settings->add(new admin_setting_configduration('tool_opencast/connecttimeout_' . $instance->id,
                     get_string('connecttimeout', 'tool_opencast'),
