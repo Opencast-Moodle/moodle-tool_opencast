@@ -27,8 +27,6 @@ namespace tool_opencast;
 use admin_category;
 use core_plugin_manager;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Admin setting class for OC instances setting.
  *
@@ -36,8 +34,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2021 Tamara Gunkel, University of Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class admin_setting_configtextwithvalidation extends \admin_setting_configtext
-{
+class admin_setting_configtextwithvalidation extends \admin_setting_configtext {
     /**
      * Validate data before storage
      * @param mixed $data

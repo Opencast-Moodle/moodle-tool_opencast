@@ -24,8 +24,6 @@
 
 namespace tool_opencast\local;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * API used for testing
  *
@@ -33,8 +31,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2021 Tamara Gunkel <tamara.gunkel@wi.uni-muenster.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class api_testable extends api
-{
+class api_testable extends api {
 
     /** @var array array of json responses per endpoint */
     private $jsonresponses;

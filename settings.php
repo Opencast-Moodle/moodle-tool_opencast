@@ -148,7 +148,8 @@ if ($hassiteconfig) {
                     get_string('lticonsumerkey_desc', 'tool_opencast'), "");
                 $settings->add($lticonsumerkeysetting);
 
-                $lticonsumersecretsetting = new admin_setting_configpasswordunmask('tool_opencast/lticonsumersecret_' . $instance->id,
+                $lticonsumersecretsetting = new admin_setting_configpasswordunmask(
+                    'tool_opencast/lticonsumersecret_' . $instance->id,
                     get_string('lticonsumersecret', 'tool_opencast'),
                     get_string('lticonsumersecret_desc', 'tool_opencast'), "");
                 $settings->add($lticonsumersecretsetting);

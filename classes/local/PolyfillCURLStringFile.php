@@ -31,8 +31,7 @@ namespace tool_opencast\local;
  * @copyright  2021 Tamara Gunkel <tamara.gunkel@wi.uni-muenster.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class PolyfillCURLStringFile extends \CURLFile
-{
+class PolyfillCURLStringFile extends \CURLFile {
     /** @var string File data */
     private $data;
 

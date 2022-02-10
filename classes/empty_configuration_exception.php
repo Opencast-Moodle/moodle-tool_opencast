@@ -24,10 +24,6 @@
 
 namespace tool_opencast;
 
-
-defined('MOODLE_INTERNAL') || die();
-
-
 /**
  * Exception, which is thrown when the tool settings are empty.
  *
@@ -35,7 +31,6 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2021 Tamara Gunkel, University of Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class empty_configuration_exception extends \moodle_exception
-{
+class empty_configuration_exception extends \moodle_exception {
 
 }

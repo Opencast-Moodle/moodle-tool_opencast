@@ -41,8 +41,7 @@ require_once($CFG->dirroot . '/lib/filelib.php');
  * @copyright  2021 Tamara Gunkel <tamara.gunkel@wi.uni-muenster.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class settings_api extends \curl
-{
+class settings_api extends \curl {
 
     /**
      * Returns the api url of an Opencast instance.

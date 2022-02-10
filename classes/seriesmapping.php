@@ -26,8 +26,6 @@ namespace tool_opencast;
 
 use tool_opencast\local\settings_api;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Persistable of seriesmapping
  *
@@ -35,8 +33,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2018 Tobias Reischmann WWU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class seriesmapping extends \core\persistent
-{
+class seriesmapping extends \core\persistent {
 
     /** Table name for the persistent. */
     const TABLE = 'tool_opencast_series';

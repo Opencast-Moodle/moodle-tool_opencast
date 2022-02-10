@@ -37,8 +37,7 @@ require_once($CFG->libdir . '/authlib.php');
  * @copyright  2018 Tobias Reischmann <tobias.reischmann@wi.uni-muenster.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tool_opencast_external extends external_api
-{
+class tool_opencast_external extends external_api {
 
     /**
      * Describes the parameters for getting courses for a opencast instructor.
