@@ -49,7 +49,9 @@ class api extends \curl {
     /** @var string the api password */
     private $password;
     /** @var int the curl timeout in seconds */
-    private $timeout;
+    private $timeout = 1;
+    /** @var int the curl connecttimeout in seconds */
+    private $connecttimeout = 1;
     /** @var string the api baseurl */
     private $baseurl;
 
@@ -163,12 +165,14 @@ class api extends \curl {
             if (!$instanceid || $ocinstances[$key]->id === $instanceid) {
                 $this->username = get_config('tool_opencast', 'apiusername');
                 $this->password = get_config('tool_opencast', 'apipassword');;
-                $this->timeout = get_config('tool_opencast', 'apitimeout');;
+                $this->timeout = get_config('tool_opencast', 'timeout');;
+                $this->connecttimeout = get_config('tool_opencast', 'connecttimeout');;
                 $this->baseurl = get_config('tool_opencast', 'apiurl');
             } else {
                 $this->username = get_config('tool_opencast', 'apiusername_' . $instanceid);
                 $this->password = get_config('tool_opencast', 'apipassword_' . $instanceid);
-                $this->timeout = get_config('tool_opencast', 'apitimeout_' . $instanceid);
+                $this->timeout = get_config('tool_opencast', 'timeout_' . $instanceid);
+                $this->timeout = get_config('tool_opencast', 'connecttimeout_' . $instanceid);
                 $this->baseurl = get_config('tool_opencast', 'apiurl_' . $instanceid);
             }
 
@@ -194,7 +198,15 @@ class api extends \curl {
             }
 
             if (array_key_exists('apitimeout', $customconfigs)) {
-                $this->timeout = $customconfigs['apitimeout'];
+                $this->connecttimeout = $customconfigs['apitimeout'];
+            }
+
+            if (array_key_exists('timeout', $customconfigs)) {
+                $this->timeout = $customconfigs['timeout'];
+            }
+
+            if (array_key_exists('connecttimeout', $customconfigs)) {
+                $this->timeout = $customconfigs['connecttimeout'];
             }
         }
 
@@ -207,6 +219,10 @@ class api extends \curl {
         if (empty($this->baseurl)) {
             throw new empty_configuration_exception('apiurlempty', 'tool_opencast');
         }
+
+        $this->setopt(array(
+            'CURLOPT_TIMEOUT' => $this->timeout,
+            'CURLOPT_CONNECTTIMEOUT' => $this->connecttimeout));
     }
 
     /**
@@ -249,8 +265,6 @@ class api extends \curl {
             $header[] = "X-RUN-WITH-ROLES: " . implode(', ', $runwithroles);
             $this->setHeader($header);
         }
-
-        $this->setopt('CURLOPT_CONNECTTIMEOUT', $this->timeout);
 
         $basicauth = base64_encode($this->username . ":" . $this->password);
 

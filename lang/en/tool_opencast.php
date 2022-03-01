@@ -36,6 +36,8 @@ $string['apiurlempty'] = 'URL of Opencast API is not configured correctly. Go to
 $string['apiusername'] = 'Username of Opencast API user';
 $string['apiusernamedesc'] = 'Configure the username of the Opencast user who is used to do the Opencast API calls. Moodle uses this Opencast user for all communication with Opencast. Authorization is done by adding suitable roles to the call.';
 $string['apiusernameempty'] = 'Username of Opencast API user is not configured correctly. Go to the settings of the Opencast API tool to fix this.';
+$string['timeout'] = 'Overall API request execution timeout';
+$string['timeoutdesc'] = 'Configure the time in seconds each API request to Opencast may take. If Opencast does not finish answering the request within this time, the request is aborted.';
 $string['connecttimeout'] = 'Connection timeout';
 $string['connecttimeoutdesc'] = 'Configure the time in seconds while Moodle is trying to connect to Opencast. If Opencast does not answer within this time, the connection attempt times out.';
 $string['demoservernotification'] = 'The Opencast API tool is currently configured to connect to the <a href="https://stable.opencast.org">public Opencast demo server</a>. You can use this Opencast server for evaluating this plugin.<br />Do not use it for any production purposes. Please <a href="https://docs.opencast.org/">setup your own Opencast server</a> instead.';

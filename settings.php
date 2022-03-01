@@ -115,6 +115,10 @@ if ($hassiteconfig) {
                     get_string('lticonsumersecret_desc', 'tool_opencast'), "");
                 $settings->add($lticonsumersecretsetting);
 
+                $settings->add(new admin_setting_configduration('tool_opencast/timeout',
+                    get_string('timeout', 'tool_opencast'),
+                    get_string('timeoutdesc', 'tool_opencast'), 1));
+
                 $settings->add(new admin_setting_configduration('tool_opencast/connecttimeout',
                     get_string('connecttimeout', 'tool_opencast'),
                     get_string('connecttimeoutdesc', 'tool_opencast'), 1));
@@ -153,6 +157,10 @@ if ($hassiteconfig) {
                     get_string('lticonsumersecret', 'tool_opencast'),
                     get_string('lticonsumersecret_desc', 'tool_opencast'), "");
                 $settings->add($lticonsumersecretsetting);
+
+                $settings->add(new admin_setting_configduration('tool_opencast/timeout_' . $instance->id,
+                    get_string('timeout', 'tool_opencast'),
+                    get_string('timeoutdesc', 'tool_opencast'), 1));
 
                 $settings->add(new admin_setting_configduration('tool_opencast/connecttimeout_' . $instance->id,
                     get_string('connecttimeout', 'tool_opencast'),
