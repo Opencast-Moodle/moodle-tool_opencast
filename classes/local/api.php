@@ -172,7 +172,7 @@ class api extends \curl {
                 $this->username = get_config('tool_opencast', 'apiusername_' . $instanceid);
                 $this->password = get_config('tool_opencast', 'apipassword_' . $instanceid);
                 $this->timeout = get_config('tool_opencast', 'apitimeout_' . $instanceid);
-                $this->timeout = get_config('tool_opencast', 'apiconnecttimeout_' . $instanceid);
+                $this->connecttimeout = get_config('tool_opencast', 'apiconnecttimeout_' . $instanceid);
                 $this->baseurl = get_config('tool_opencast', 'apiurl_' . $instanceid);
             }
 
@@ -198,19 +198,11 @@ class api extends \curl {
             }
 
             if (array_key_exists('apitimeout', $customconfigs)) {
-                $this->connecttimeout = $customconfigs['apitimeout'];
+                $this->timeout = $customconfigs['apitimeout'];
             }
 
             if (array_key_exists('apiconnecttimeout', $customconfigs)) {
                 $this->connecttimeout = $customconfigs['apiconnecttimeout'];
-            }
-
-            if (array_key_exists('timeout', $customconfigs)) {
-                $this->timeout = $customconfigs['timeout'];
-            }
-
-            if (array_key_exists('connecttimeout', $customconfigs)) {
-                $this->timeout = $customconfigs['connecttimeout'];
             }
         }
 
