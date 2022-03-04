@@ -49,9 +49,9 @@ class api extends \curl {
     /** @var string the api password */
     private $password;
     /** @var int the curl timeout in seconds */
-    private $timeout = 1;
+    private $timeout = 2000;
     /** @var int the curl connecttimeout in seconds */
-    private $connecttimeout = 1;
+    private $connecttimeout = 500;
     /** @var string the api baseurl */
     private $baseurl;
 
@@ -165,14 +165,14 @@ class api extends \curl {
             if (!$instanceid || $ocinstances[$key]->id === $instanceid) {
                 $this->username = get_config('tool_opencast', 'apiusername');
                 $this->password = get_config('tool_opencast', 'apipassword');;
-                $this->timeout = get_config('tool_opencast', 'timeout');;
-                $this->connecttimeout = get_config('tool_opencast', 'connecttimeout');;
+                $this->timeout = get_config('tool_opencast', 'apitimeout');;
+                $this->connecttimeout = get_config('tool_opencast', 'apiconnecttimeout');;
                 $this->baseurl = get_config('tool_opencast', 'apiurl');
             } else {
                 $this->username = get_config('tool_opencast', 'apiusername_' . $instanceid);
                 $this->password = get_config('tool_opencast', 'apipassword_' . $instanceid);
-                $this->timeout = get_config('tool_opencast', 'timeout_' . $instanceid);
-                $this->timeout = get_config('tool_opencast', 'connecttimeout_' . $instanceid);
+                $this->timeout = get_config('tool_opencast', 'apitimeout_' . $instanceid);
+                $this->timeout = get_config('tool_opencast', 'apiconnecttimeout_' . $instanceid);
                 $this->baseurl = get_config('tool_opencast', 'apiurl_' . $instanceid);
             }
 
@@ -221,8 +221,8 @@ class api extends \curl {
         }
 
         $this->setopt(array(
-            'CURLOPT_TIMEOUT' => $this->timeout,
-            'CURLOPT_CONNECTTIMEOUT' => $this->connecttimeout));
+            'CURLOPT_TIMEOUT_MS' => $this->timeout,
+            'CURLOPT_CONNECTTIMEOUT_MS' => $this->connecttimeout));
     }
 
     /**
