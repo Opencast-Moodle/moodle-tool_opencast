@@ -201,6 +201,10 @@ class api extends \curl {
                 $this->connecttimeout = $customconfigs['apitimeout'];
             }
 
+            if (array_key_exists('apiconnecttimeout', $customconfigs)) {
+                $this->connecttimeout = $customconfigs['apiconnecttimeout'];
+            }
+
             if (array_key_exists('timeout', $customconfigs)) {
                 $this->timeout = $customconfigs['timeout'];
             }
