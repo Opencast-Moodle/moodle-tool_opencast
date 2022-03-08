@@ -49,7 +49,9 @@ class api extends \curl {
     /** @var string the api password */
     private $password;
     /** @var int the curl timeout in seconds */
-    private $timeout;
+    private $timeout = 2000;
+    /** @var int the curl connecttimeout in seconds */
+    private $connecttimeout = 500;
     /** @var string the api baseurl */
     private $baseurl;
 
@@ -164,11 +166,13 @@ class api extends \curl {
                 $this->username = get_config('tool_opencast', 'apiusername');
                 $this->password = get_config('tool_opencast', 'apipassword');;
                 $this->timeout = get_config('tool_opencast', 'apitimeout');;
+                $this->connecttimeout = get_config('tool_opencast', 'apiconnecttimeout');;
                 $this->baseurl = get_config('tool_opencast', 'apiurl');
             } else {
                 $this->username = get_config('tool_opencast', 'apiusername_' . $instanceid);
                 $this->password = get_config('tool_opencast', 'apipassword_' . $instanceid);
                 $this->timeout = get_config('tool_opencast', 'apitimeout_' . $instanceid);
+                $this->connecttimeout = get_config('tool_opencast', 'apiconnecttimeout_' . $instanceid);
                 $this->baseurl = get_config('tool_opencast', 'apiurl_' . $instanceid);
             }
 
@@ -196,6 +200,10 @@ class api extends \curl {
             if (array_key_exists('apitimeout', $customconfigs)) {
                 $this->timeout = $customconfigs['apitimeout'];
             }
+
+            if (array_key_exists('apiconnecttimeout', $customconfigs)) {
+                $this->connecttimeout = $customconfigs['apiconnecttimeout'];
+            }
         }
 
         // If the admin omitted the protocol part, add the HTTPS protocol on-the-fly.
@@ -207,6 +215,10 @@ class api extends \curl {
         if (empty($this->baseurl)) {
             throw new empty_configuration_exception('apiurlempty', 'tool_opencast');
         }
+
+        $this->setopt(array(
+            'CURLOPT_TIMEOUT_MS' => $this->timeout,
+            'CURLOPT_CONNECTTIMEOUT_MS' => $this->connecttimeout));
     }
 
     /**
@@ -249,8 +261,6 @@ class api extends \curl {
             $header[] = "X-RUN-WITH-ROLES: " . implode(', ', $runwithroles);
             $this->setHeader($header);
         }
-
-        $this->setopt('CURLOPT_CONNECTTIMEOUT', $this->timeout);
 
         $basicauth = base64_encode($this->username . ":" . $this->password);
 
