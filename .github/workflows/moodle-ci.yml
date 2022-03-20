@@ -12,7 +12,7 @@ jobs:
         php: ['7.4']
         moodle-branch: ['MOODLE_311_STABLE']
         database: ['mariadb']
-        opencast: ['9.3']
+        opencast: ['11']
 
     steps:
       - name: Start MariaDB
@@ -108,12 +108,12 @@ jobs:
       fail-fast: false
       matrix:
         php: [ '7.3', '7.4' ]
-        moodle-branch: [ 'MOODLE_39_STABLE', 'MOODLE_310_STABLE', 'MOODLE_311_STABLE' ]
+        moodle-branch: [ 'MOODLE_39_STABLE', 'MOODLE_310_STABLE', 'MOODLE_311_STABLE']
         database: [ 'mariadb', 'pgsql' ]
-        opencast: [ '9.3' ]
+        opencast: [ '11' ]
         include:
-          - { php: '7.4', moodle-branch: 'master', database: 'mariadb', opencast: '9.3' }
-          - { php: '7.4', moodle-branch: 'master', database: 'pgsql', opencast: '9.3' }
+          - { php: '7.4', moodle-branch: 'master', database: 'mariadb', opencast: '11' }
+          - { php: '7.4', moodle-branch: 'master', database: 'pgsql', opencast: '11' }
 
     steps:
       - name: Start MariaDB
