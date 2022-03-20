@@ -161,7 +161,7 @@ class tool_opencast_external extends external_api {
         foreach ($courses as $course) {
             $context = context_course::instance($course->id);
             if (has_capability($capability, $context, $user)) {
-                $result [] = array('id' => $course->id);
+                $result[] = array('id' => $course->id);
             }
         }
         return $result;
