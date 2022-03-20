@@ -64,7 +64,6 @@ class api extends \curl {
      * @return string
      */
     public static function get_sort_param($params) {
-
         if (empty($params)) {
             return '';
         }
@@ -73,6 +72,7 @@ class api extends \curl {
             $sortdir = (SORT_ASC == $sortorder) ? 'ASC' : 'DESC';
             return "&sort={$key}:" . $sortdir;
         }
+        return '';
     }
 
     /**
