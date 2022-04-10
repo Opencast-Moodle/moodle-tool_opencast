@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         php: ['7.4']
-        moodle-branch: ['MOODLE_311_STABLE']
+        moodle-branch: ['master']
         database: ['mariadb']
 
     steps:
@@ -106,25 +106,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ '7.3', '7.4' ]
-        moodle-branch: [ 'MOODLE_39_STABLE', 'MOODLE_310_STABLE', 'MOODLE_311_STABLE']
+        php: [ '7.4' ]
+        moodle-branch: [ 'MOODLE_39_STABLE', 'MOODLE_310_STABLE', 'MOODLE_311_STABLE', 'master']
         database: [ 'mariadb', 'pgsql' ]
-        opencast: [ '11.4' ]
-        include:
-          - { php: '7.4', moodle-branch: 'master', database: 'mariadb', opencast: '11.4' }
-          - { php: '7.4', moodle-branch: 'master', database: 'pgsql', opencast: '11.4' }
+        opencast: [ '11.5' ]
 
     steps:
       - name: Start MariaDB
         if: matrix.database == 'mariadb'
-        run: docker run -p 3306:3306 -e MYSQL_USER=root -e MYSQL_ALLOW_EMPTY_PASSWORD=true -d mariadb:10.5
+        run: docker run -p 3306:3306 -e MYSQL_USER=root -e MYSQL_ALLOW_EMPTY_PASSWORD=true -d mariadb:10
 
       - name: Start PostgreSQL
-        if: matrix.database == 'pgsql' && matrix.moodle-branch != 'master'
-        run: docker run -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_HOST_AUTH_METHOD=trust -d postgres:9.6
-
-      - name: Start PostgreSQL
-        if: matrix.database == 'pgsql' && matrix.moodle-branch == 'master'
+        if: matrix.database == 'pgsql'
         run: docker run -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_HOST_AUTH_METHOD=trust -d postgres:12
 
       - name: Check out opencast-docker
@@ -190,4 +183,4 @@ jobs:
 
       - name: Behat features
         if: ${{ always() }}
-        run: moodle-plugin-ci behat
+        run: moodle-plugin-ci behat --auto-rerun 1
