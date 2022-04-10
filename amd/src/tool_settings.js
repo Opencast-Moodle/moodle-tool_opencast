@@ -21,7 +21,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import Tabulator from 'block_opencast/tabulator';
+import Tabulator from 'tool_opencast/tabulator';
 import $ from 'jquery';
 import ModalFactory from 'core/modal_factory';
 import ModalEvents from 'core/modal_events';
