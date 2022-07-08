@@ -121,7 +121,7 @@ if ($hassiteconfig) {
 
                 $settings->add(new admin_setting_configtext('tool_opencast/apiconnecttimeout',
                     get_string('connecttimeout', 'tool_opencast'),
-                    get_string('connecttimeoutdesc', 'tool_opencast'), 500, PARAM_INT));
+                    get_string('connecttimeoutdesc', 'tool_opencast'), 1000, PARAM_INT));
 
             } else {
                 // Show a notification banner if the plugin is connected to the Opencast demo server.
@@ -164,7 +164,7 @@ if ($hassiteconfig) {
 
                 $settings->add(new admin_setting_configtext('tool_opencast/apiconnecttimeout_' . $instance->id,
                     get_string('connecttimeout', 'tool_opencast'),
-                    get_string('connecttimeoutdesc', 'tool_opencast'), 500, PARAM_INT));
+                    get_string('connecttimeoutdesc', 'tool_opencast'), 1000, PARAM_INT));
             }
 
             // Provide Connection Test Tool button.
