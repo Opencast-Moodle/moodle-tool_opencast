@@ -221,11 +221,19 @@ class api extends \curl {
             'CURLOPT_CONNECTTIMEOUT_MS' => $this->connecttimeout));
     }
 
+    /**
+     * Set curl timout in milliseconds
+     * @param int $timeout curl timeout in milliseconds
+     */
     public function set_timeout($timeout) {
         $this->timeout = $timeout;
         $this->setopt(array('CURLOPT_TIMEOUT_MS' => $this->timeout));
     }
 
+    /**
+     * Set curl connect timout in milliseconds
+     * @param int $connecttimeout curl connect timeout in milliseconds
+     */
     public function set_connecttimeout($connecttimeout) {
         $this->connecttimeout = $connecttimeout;
         $this->setopt(array('CURLOPT_CONNECTTIMEOUT_MS' => $this->connecttimeout));
