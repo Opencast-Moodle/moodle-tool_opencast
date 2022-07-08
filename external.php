@@ -249,6 +249,8 @@ class tool_opencast_external extends external_api {
      * @param string $apiurl Opencast API URL
      * @param string $apiusername Opencast API username
      * @param string $apipassword Opencast API password
+     * @param int $apitimeout Overall API request execution timeout in milliseconds
+     * @param int $apiconnecttimeout Connection timeout in milliseconds
      * @return array
      * @throws coding_exception
      * @throws dml_exception
