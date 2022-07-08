@@ -237,6 +237,8 @@ class tool_opencast_external extends external_api {
                 'apiurl' => new external_value(PARAM_TEXT, 'Opencast API URL'),
                 'apiusername' => new external_value(PARAM_TEXT, 'Opencast API User'),
                 'apipassword' => new external_value(PARAM_RAW, 'Opencast API Password'),
+                'apitimeout' => new external_value(PARAM_INT, 'API timeout'),
+                'apiconnecttimeout' => new external_value(PARAM_INT, 'API connect timeout'),
             )
         );
     }
@@ -253,14 +255,16 @@ class tool_opencast_external extends external_api {
      * @throws invalid_parameter_exception
      * @throws required_capability_exception
      */
-    public static function connection_test_tool($apiurl, $apiusername, $apipassword) {
+    public static function connection_test_tool($apiurl, $apiusername, $apipassword, $apitimeout, $apiconnecttimeout) {
 
         // Validate the parameters.
         $params = self::validate_parameters(self::connection_test_tool_parameters(),
             array(
                 'apiurl' => $apiurl,
                 'apiusername' => $apiusername,
-                'apipassword' => $apipassword
+                'apipassword' => $apipassword,
+                'apitimeout' => $apitimeout,
+                'apiconnecttimeout' => $apiconnecttimeout
             )
         );
 
@@ -275,7 +279,8 @@ class tool_opencast_external extends external_api {
 
         // Get the a customized api instance to use.
         $customizedapi = \tool_opencast\local\api::get_instance(null, array(), array('apiurl' => $params['apiurl'],
-            'apiusername' => $params['apiusername'], 'apipassword' => $params['apipassword']));
+            'apiusername' => $params['apiusername'], 'apipassword' => $params['apipassword'],
+            'apitimeout' => $params['apitimeout'], 'apiconnecttimeout' => $params['apiconnecttimeout']));
 
         // First we test the URL.
         if ($customizedapi->connection_test_url() == false) {
