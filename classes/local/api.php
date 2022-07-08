@@ -48,9 +48,9 @@ class api extends \curl {
     private $username;
     /** @var string the api password */
     private $password;
-    /** @var int the curl timeout in seconds */
+    /** @var int the curl timeout in milliseconds */
     private $timeout = 2000;
-    /** @var int the curl connecttimeout in seconds */
+    /** @var int the curl connecttimeout in milliseconds */
     private $connecttimeout = 500;
     /** @var string the api baseurl */
     private $baseurl;
