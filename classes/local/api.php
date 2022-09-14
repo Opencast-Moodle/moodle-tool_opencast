@@ -522,7 +522,8 @@ class api extends \curl {
     /**
      * Checks if the Opencast API URL is reachable and there is an Opencast instance running on that URL.
      *
-     * @return boolean whether the API URL is reachable or not.
+     * @return int|boolean http status code, if the API URL is not reachable or an Opencast instance
+     * is not running on that URL, and true otherwise.
      */
     public function connection_test_url() {
         $url = $this->baseurl;
@@ -535,34 +536,60 @@ class api extends \curl {
         $this->setHeader($header);
         $this->setopt(array('CURLOPT_HEADER' => false));
 
+        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
+
         // The "/api" resource endpoint returns key characteristics of the API such as the server name and the default version.
         $resource = $url . '/api';
         $this->get($resource);
 
-        // If the connection fails or the Opencast instance could not be found, we return false.
-        if ($this->get_http_code() != 200) {
-            return false;
+        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
+
+        // If the connection fails or the Opencast instance could not be found, return the http code:
+        $http_code = $this->get_http_code();
+        if ($http_code === false) {
+            $http_code = 404; // Not Found
+        }
+        if ($http_code != 200) {
+            return $http_code;
         }
 
-        // Otherwise, we return true.
+        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
+
+        // Otherwise, return true.
         return true;
     }
 
     /**
      * Checks if the Opencast API username and password is valid.
      *
-     * @return boolean whether the given api $level is supported.
+     * @return int|boolean http status code, if the API URL is not reachable, an Opencast instance
+     * is not running on that URL or the credentials are invalid, and true otherwise.
      */
     public function connection_test_credentials() {
         // The "/api" resource endpoint returns information on the logged in user.
         $userinfo = json_decode($this->oc_get('/api/info/me'));
 
-        // If the connection fails or credentials are invalid, we return false.
-        if ($this->get_http_code() != 200 || !$userinfo) {
-            return false;
+        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
+
+        // If the credentials are invalid, return a corresponding http code:
+        if (!$userinfo) {
+            return 400; // Bad Request
         }
 
-        // Otherwise, we return true.
+        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
+
+        // If the connection fails or the Opencast instance could not be found, return the http code:
+        $http_code = $this->get_http_code();
+        if ($http_code === false) {
+            $http_code = 404; // Not Found
+        }
+        if ($http_code != 200) {
+            return $http_code;
+        }
+
+        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
+
+        // Otherwise, return true.
         return true;
     }
 }

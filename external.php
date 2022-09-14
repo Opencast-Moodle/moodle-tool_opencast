@@ -241,6 +241,30 @@ class tool_opencast_external extends external_api {
         );
     }
 
+    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
+
+    private static function connection_test_tool_build_html_alert_tag($connection_test_result,
+                                                                      string $test_successful_string_identifier,
+                                                                      string $test_failed_string_identifier) : string
+    {
+        // Check, if the test was successful:
+        if ($connection_test_result === true) {
+            return html_writer::tag(
+                'p',
+                get_string($test_successful_string_identifier, 'tool_opencast'),
+                array('class' => 'alert alert-success')
+            );
+        }
+
+        return html_writer::tag(
+            'p',
+            get_string($test_failed_string_identifier, 'tool_opencast', $connection_test_result),
+            array('class' => 'alert alert-danger')
+        );
+    }
+
+    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
+
     /**
      * Perform the connection test via Ajax call to be able to show it in Modal.
      *
@@ -253,9 +277,9 @@ class tool_opencast_external extends external_api {
      * @throws invalid_parameter_exception
      * @throws required_capability_exception
      */
-    public static function connection_test_tool($apiurl, $apiusername, $apipassword) {
-
-        // Validate the parameters.
+    public static function connection_test_tool($apiurl, $apiusername, $apipassword)
+    {
+        // Validate the parameters:
         $params = self::validate_parameters(self::connection_test_tool_parameters(),
             array(
                 'apiurl' => $apiurl,
@@ -264,36 +288,37 @@ class tool_opencast_external extends external_api {
             )
         );
 
-        // Initialise the result array.
-        $result = array();
+        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
 
-        // We assume that both tests are successful, so we define the success p tags for both.
-        $result['testurl'] = \html_writer::tag('p', get_string('apiurltestsuccessfulshort', 'tool_opencast'),
-            array('class' => 'alert alert-success'));
-        $result['testcreadentials'] = html_writer::tag('p', get_string('apicreadentialstestsuccessfulshort', 'tool_opencast'),
-            array('class' => 'alert alert-success'));
+        // Get a customized api instance to use:
+        $customizedapi = \tool_opencast\local\api::get_instance(null, array(), array(
+                'apiurl' => $params['apiurl'],
+                'apiusername' => $params['apiusername'],
+                'apipassword' => $params['apipassword']
+        ));
 
-        // Get the a customized api instance to use.
-        $customizedapi = \tool_opencast\local\api::get_instance(null, array(), array('apiurl' => $params['apiurl'],
-            'apiusername' => $params['apiusername'], 'apipassword' => $params['apipassword']));
+        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
 
-        // First we test the URL.
-        if ($customizedapi->connection_test_url() == false) {
-            // In case it failed, we replace the succes p tag with error p tag.
-            $result['testurl'] = \html_writer::tag('p', get_string('apiurltestfailedshort', 'tool_opencast'),
-                array('class' => 'alert alert-danger'));
-        }
+        // Test the URL:
+        $connection_test_url_result = $customizedapi->connection_test_url();
+        $result_html = self::connection_test_tool_build_html_alert_tag(
+            $connection_test_url_result,
+            'apiurltestsuccessfulshort',
+            'apiurltestfailedshort');
 
-        // After that we test the Credentials.
-        if ($customizedapi->connection_test_credentials() == false) {
-            // In case it failed, we replace the succes p tag with error p tag.
-            $result['testcreadentials'] = html_writer::tag('p', get_string('apicreadentialstestfailedshort', 'tool_opencast'),
-                array('class' => 'alert alert-danger'));
-        }
+        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
 
-        // Finally, we concatenate both test results and return it.
+        // Test the Credentials:
+        $connection_test_credentials_result = $customizedapi->connection_test_credentials();
+        $result_html .= self::connection_test_tool_build_html_alert_tag(
+            $connection_test_credentials_result,
+            'apicreadentialstestsuccessfulshort',
+            'apicreadentialstestfailedshort');
+
+        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
+
         return [
-            'testresult' => $result['testurl'] . $result['testcreadentials']
+            'testresult' => $result_html
         ];
     }
 }
