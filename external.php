@@ -241,8 +241,6 @@ class tool_opencast_external extends external_api {
         );
     }
 
-    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
-
     /**
      * Builds a html tag for the alert of the connection test tool.
      *
@@ -270,8 +268,6 @@ class tool_opencast_external extends external_api {
         );
     }
 
-    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
-
     /**
      * Perform the connection test via Ajax call to be able to show it in Modal.
      *
@@ -294,16 +290,12 @@ class tool_opencast_external extends external_api {
             )
         );
 
-        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
-
         // Get a customized api instance to use.
         $customizedapi = \tool_opencast\local\api::get_instance(null, array(), array(
                 'apiurl' => $params['apiurl'],
                 'apiusername' => $params['apiusername'],
                 'apipassword' => $params['apipassword']
         ));
-
-        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
 
         // Test the URL.
         $connectiontesturlresult = $customizedapi->connection_test_url();
@@ -312,16 +304,12 @@ class tool_opencast_external extends external_api {
             'apiurltestsuccessfulshort',
             'apiurltestfailedshort');
 
-        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
-
         // Test the Credentials.
         $connectiontestcredentialsresult = $customizedapi->connection_test_credentials();
         $resulthtml .= self::connection_test_tool_build_html_alert_tag(
             $connectiontestcredentialsresult,
             'apicreadentialstestsuccessfulshort',
             'apicreadentialstestfailedshort');
-
-        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
 
         return [
             'testresult' => $resulthtml

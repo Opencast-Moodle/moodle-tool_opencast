@@ -536,13 +536,9 @@ class api extends \curl {
         $this->setHeader($header);
         $this->setopt(array('CURLOPT_HEADER' => false));
 
-        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
-
         // The "/api" resource endpoint returns key characteristics of the API such as the server name and the default version.
         $resource = $url . '/api';
         $this->get($resource);
-
-        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
 
         // If the connection fails or the Opencast instance could not be found, return the http code.
         $httpcode = $this->get_http_code();
@@ -552,8 +548,6 @@ class api extends \curl {
         if ($httpcode != 200) {
             return $httpcode;
         }
-
-        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
 
         // Otherwise, return true.
         return true;
@@ -569,14 +563,10 @@ class api extends \curl {
         // The "/api" resource endpoint returns information on the logged in user.
         $userinfo = json_decode($this->oc_get('/api/info/me'));
 
-        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
-
         // If the credentials are invalid, return a corresponding http code.
         if (!$userinfo) {
             return 400; // Bad Request.
         }
-
-        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
 
         // If the connection fails or the Opencast instance could not be found, return the http code.
         $httpcode = $this->get_http_code();
@@ -586,8 +576,6 @@ class api extends \curl {
         if ($httpcode != 200) {
             return $httpcode;
         }
-
-        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
 
         // Otherwise, return true.
         return true;
