@@ -549,7 +549,6 @@ class api extends \curl {
             return $httpcode;
         }
 
-        // Otherwise, return true.
         return true;
     }
 
@@ -577,7 +576,6 @@ class api extends \curl {
             return $httpcode;
         }
 
-        // Otherwise, return true.
         return true;
     }
 }
