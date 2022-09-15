@@ -544,13 +544,13 @@ class api extends \curl {
 
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
 
-        // If the connection fails or the Opencast instance could not be found, return the http code:
-        $http_code = $this->get_http_code();
-        if ($http_code === false) {
-            $http_code = 404; // Not Found
+        // If the connection fails or the Opencast instance could not be found, return the http code.
+        $httpcode = $this->get_http_code();
+        if ($httpcode === false) {
+            $httpcode = 404; // Not Found.
         }
-        if ($http_code != 200) {
-            return $http_code;
+        if ($httpcode != 200) {
+            return $httpcode;
         }
 
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
@@ -571,20 +571,20 @@ class api extends \curl {
 
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
 
-        // If the credentials are invalid, return a corresponding http code:
+        // If the credentials are invalid, return a corresponding http code.
         if (!$userinfo) {
-            return 400; // Bad Request
+            return 400; // Bad Request.
         }
 
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
 
-        // If the connection fails or the Opencast instance could not be found, return the http code:
-        $http_code = $this->get_http_code();
-        if ($http_code === false) {
-            $http_code = 404; // Not Found
+        // If the connection fails or the Opencast instance could not be found, return the http code.
+        $httpcode = $this->get_http_code();
+        if ($httpcode === false) {
+            $httpcode = 404; // Not Found.
         }
-        if ($http_code != 200) {
-            return $http_code;
+        if ($httpcode != 200) {
+            return $httpcode;
         }
 
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
