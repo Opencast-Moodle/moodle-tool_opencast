@@ -330,18 +330,6 @@ class api extends \curl {
 
         // Check mimetype.
         $mimetype = mimeinfo('type', $filename);
-        list($mediatype, $subtype) = explode('/', $mimetype);
-
-        if ($mediatype != 'video') {
-
-            $contextid = $storedfile->get_contextid();
-            list($context, $course, $cm) = get_context_info_array($contextid);
-
-            $info = new \stdClass();
-            $info->coursename = $course->fullname . "(ID: {$course->id})";
-            $info->filename = $filename;
-            throw new \moodle_exception('wrongmimetypedetected', 'tool_opencast', '', $info);
-        }
 
         $curlfile->postname = $filename;
         $curlfile->mime = $mimetype;
