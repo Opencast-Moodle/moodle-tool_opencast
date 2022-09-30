@@ -9,7 +9,8 @@ Feature: Setup Opencast instances
     Given I log in as "admin"
     And I navigate to "Plugins > Admin tools > Opencast API > Opencast Instances" in site administration
     And I click on "Add instance" "button"
-    And I set the field with xpath "//div[@id='instancestable']//div[@class='tabulator-table']/div[2]/div[@tabulator-field='name']" to "Second instance"
+    And I click on "//div[@id='instancestable']//div[@class='tabulator-table']/div[2]/div[@tabulator-field='name']" "xpath"
+    And I type "Second instance"
     And I wait "2" seconds
     And I click on "Save changes" "button"
     And I navigate to "Plugins > Admin tools > Opencast API" in site administration

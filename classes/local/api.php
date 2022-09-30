@@ -153,6 +153,8 @@ class api extends \curl {
      * @throws \moodle_exception
      */
     public function __construct($instanceid = null, $settings = array(), $customconfigs = array()) {
+        // Allow access to local ips.
+        $settings['ignoresecurity'] = true;
         parent::__construct($settings);
 
         $instanceid = intval($instanceid);

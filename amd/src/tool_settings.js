@@ -16,15 +16,17 @@
 /**
  * Javascript to initialise the opencast tool settings.
  *
+ * @module     tool_opencast/tool_settings
  * @copyright  2021 Tamara Gunkel, University of Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import Tabulator from 'block_opencast/tabulator';
+import Tabulator from 'tool_opencast/tabulator';
 import $ from 'jquery';
 import ModalFactory from 'core/modal_factory';
 import ModalEvents from 'core/modal_events';
 import * as str from 'core/str';
+import Notification from "core/notification";
 
 export const init = (instancesinputid) => {
 
@@ -108,7 +110,8 @@ export const init = (instancesinputid) => {
                                     cell.getRow().delete();
                                 });
                                 modal.show();
-                            });
+                                return;
+                            }).catch(Notification.exception);
                     }
                 }
             ],
@@ -137,6 +140,7 @@ export const init = (instancesinputid) => {
 
             instancestable.addRow({'id': nextid, 'isvisible': false, 'isdefault': false});
         });
-    });
+        return;
+    }).catch(Notification.exception);
 };
 
