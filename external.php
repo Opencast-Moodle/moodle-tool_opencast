@@ -237,6 +237,8 @@ class tool_opencast_external extends external_api {
                 'apiurl' => new external_value(PARAM_TEXT, 'Opencast API URL'),
                 'apiusername' => new external_value(PARAM_TEXT, 'Opencast API User'),
                 'apipassword' => new external_value(PARAM_RAW, 'Opencast API Password'),
+                'apitimeout' => new external_value(PARAM_INT, 'API timeout'),
+                'apiconnecttimeout' => new external_value(PARAM_INT, 'API connect timeout'),
             )
         );
     }
@@ -274,19 +276,24 @@ class tool_opencast_external extends external_api {
      * @param string $apiurl Opencast API URL
      * @param string $apiusername Opencast API username
      * @param string $apipassword Opencast API password
+     * @param int $apitimeout Overall API request execution timeout in milliseconds
+     * @param int $apiconnecttimeout Connection timeout in milliseconds
      * @return array
      * @throws coding_exception
      * @throws dml_exception
      * @throws invalid_parameter_exception
      * @throws required_capability_exception
      */
-    public static function connection_test_tool($apiurl, $apiusername, $apipassword) {
+    public static function connection_test_tool($apiurl, $apiusername, $apipassword, $apitimeout, $apiconnecttimeout) {
+
         // Validate the parameters.
         $params = self::validate_parameters(self::connection_test_tool_parameters(),
             array(
                 'apiurl' => $apiurl,
                 'apiusername' => $apiusername,
-                'apipassword' => $apipassword
+                'apipassword' => $apipassword,
+                'apitimeout' => $apitimeout,
+                'apiconnecttimeout' => $apiconnecttimeout
             )
         );
 
@@ -294,8 +301,11 @@ class tool_opencast_external extends external_api {
         $customizedapi = \tool_opencast\local\api::get_instance(null, array(), array(
                 'apiurl' => $params['apiurl'],
                 'apiusername' => $params['apiusername'],
-                'apipassword' => $params['apipassword']
+                'apipassword' => $params['apipassword'],
+                'apitimeout' => $params['apitimeout'],
+                'apiconnecttimeout' => $params['apiconnecttimeout']
         ));
+
 
         // Test the URL.
         $connectiontesturlresult = $customizedapi->connection_test_url();

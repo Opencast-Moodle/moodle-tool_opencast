@@ -48,9 +48,9 @@ class api extends \curl {
     private $username;
     /** @var string the api password */
     private $password;
-    /** @var int the curl timeout in seconds */
+    /** @var int the curl timeout in milliseconds */
     private $timeout = 2000;
-    /** @var int the curl connecttimeout in seconds */
+    /** @var int the curl connecttimeout in milliseconds */
     private $connecttimeout = 500;
     /** @var string the api baseurl */
     private $baseurl;
@@ -221,6 +221,24 @@ class api extends \curl {
         $this->setopt(array(
             'CURLOPT_TIMEOUT_MS' => $this->timeout,
             'CURLOPT_CONNECTTIMEOUT_MS' => $this->connecttimeout));
+    }
+
+    /**
+     * Set curl timout in milliseconds
+     * @param int $timeout curl timeout in milliseconds
+     */
+    public function set_timeout($timeout) {
+        $this->timeout = $timeout;
+        $this->setopt(array('CURLOPT_TIMEOUT_MS' => $this->timeout));
+    }
+
+    /**
+     * Set curl connect timout in milliseconds
+     * @param int $connecttimeout curl connect timeout in milliseconds
+     */
+    public function set_connecttimeout($connecttimeout) {
+        $this->connecttimeout = $connecttimeout;
+        $this->setopt(array('CURLOPT_CONNECTTIMEOUT_MS' => $this->connecttimeout));
     }
 
     /**
