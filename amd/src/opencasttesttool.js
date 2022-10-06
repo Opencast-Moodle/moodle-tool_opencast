@@ -62,11 +62,15 @@ define([
                 var apiurl = $('#admin-apiurl' + suffix).find('input').val();
                 var apiusername = $('#admin-apiusername' + suffix).find('input').val();
                 var apipassword = $('#admin-apipassword' + suffix).find('input').val();
+                var apitimeout = $('#admin-apitimeout' + suffix).find('input').val();
+                var apiconnecttimeout = $('#admin-apiconnecttimeout' + suffix).find('input').val();
 
                 var args = {
                     'apiurl': apiurl,
                     'apiusername': apiusername,
-                    'apipassword': apipassword
+                    'apipassword': apipassword,
+                    'apitimeout': apitimeout,
+                    'apiconnecttimeout': apiconnecttimeout
                 };
 
                 // Get options.

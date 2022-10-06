@@ -48,6 +48,8 @@ Feature: Check the connection to Opencast instances
     Then I should see "Opencast API URL test successful."
     And I should see "Opencast API User Credentials test successful."
     And I click on "Cancel" "button" in the "Connection Test Tool" "dialogue"
+    And I set the field "id_s_tool_opencast_apitimeout_2" to "2000"
+    And I set the field "id_s_tool_opencast_apiconnecttimeout_2" to "1000"
     And I click on "button[data-instanceid='2']" "css_element"
     And I wait "3" seconds
     Then I should see "Opencast API URL test failed"
