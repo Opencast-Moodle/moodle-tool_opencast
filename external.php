@@ -237,8 +237,8 @@ class tool_opencast_external extends external_api {
                 'apiurl' => new external_value(PARAM_TEXT, 'Opencast API URL'),
                 'apiusername' => new external_value(PARAM_TEXT, 'Opencast API User'),
                 'apipassword' => new external_value(PARAM_RAW, 'Opencast API Password'),
-                'apitimeout' => new external_value(PARAM_INT, 'API timeout'),
-                'apiconnecttimeout' => new external_value(PARAM_INT, 'API connect timeout'),
+                'apitimeout' => new external_value(PARAM_INT, 'API timeout', VALUE_DEFAULT, 2000),
+                'apiconnecttimeout' => new external_value(PARAM_INT, 'API connect timeout', VALUE_DEFAULT, 1000),
             )
         );
     }
