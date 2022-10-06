@@ -51,7 +51,7 @@ class api extends \curl {
     /** @var int the curl timeout in milliseconds */
     private $timeout = 2000;
     /** @var int the curl connecttimeout in milliseconds */
-    private $connecttimeout = 500;
+    private $connecttimeout = 1000;
     /** @var string the api baseurl */
     private $baseurl;
 
