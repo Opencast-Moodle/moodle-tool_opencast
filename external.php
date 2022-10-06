@@ -306,7 +306,6 @@ class tool_opencast_external extends external_api {
                 'apiconnecttimeout' => $params['apiconnecttimeout']
         ));
 
-
         // Test the URL.
         $connectiontesturlresult = $customizedapi->connection_test_url();
         $resulthtml = self::connection_test_tool_build_html_alert_tag(
