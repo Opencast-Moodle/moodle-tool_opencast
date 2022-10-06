@@ -43,14 +43,13 @@ Feature: Check the connection to Opencast instances
       | ocinstances          | [{"id":1,"name":"OC demo server","isvisible":true,"isdefault":true},{"id":2,"isvisible":1,"isdefault":false,"name":"Invalid server"}] | tool_opencast  |
       | apiurl_2             | http://notexistent.not  | tool_opencast  |
     And I navigate to "Plugins > Admin tools > Opencast API" in site administration
-    And I set the following fields to these values:
-      | Overall API request execution timeout | 2000 |
-      | Connection timeout | 1000 |
     And I click on "button[data-instanceid='']" "css_element"
     And I wait "3" seconds
     Then I should see "Opencast API URL test successful."
     And I should see "Opencast API User Credentials test successful."
     And I click on "Cancel" "button" in the "Connection Test Tool" "dialogue"
+    And I set the field "id_s_tool_opencast_apitimeout_2" to "2000"
+    And I set the field "id_s_tool_opencast_apiconnecttimeout_2" to "1000"
     And I click on "button[data-instanceid='2']" "css_element"
     And I wait "3" seconds
     Then I should see "Opencast API URL test failed"
