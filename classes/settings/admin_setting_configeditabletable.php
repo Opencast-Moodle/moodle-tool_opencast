@@ -22,15 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_opencast;
+namespace tool_opencast\settings;
 
-/**
- * Admin setting class which is used to create an editable table.
- *
- * @package    tool_opencast
- * @copyright  2021 Tamara Gunkel, University of Münster
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class admin_setting_configeditabletable extends \admin_setting {
     /** @var string Id of the div tag */
     private $divid;

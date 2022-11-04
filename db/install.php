@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_opencast\local\settings_api;
+
 /**
  * Initialize settings during install.
  */
@@ -32,6 +34,6 @@ function xmldb_tool_opencast_install() {
     $ocinstance->name = 'Default';
     $ocinstance->isvisible = true;
     $ocinstance->isdefault = true;
-    set_config('ocinstances', json_encode(array($ocinstance)), 'tool_opencast');
+    settings_api::set_ocinstances_to_ocinstance($ocinstance);
 }
 
