@@ -190,7 +190,7 @@ function remove_default_opencast_instance_settings_without_id() : bool {
         replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'lticonsumersecret');
         replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'apitimeout');
         replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'apiconnecttimeout');
-    } catch(Exception $exception) {
+    } catch (Exception $exception) {
         return false;
     }
 

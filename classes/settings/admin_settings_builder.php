@@ -26,19 +26,25 @@ use tool_opencast\local\settings_api;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class admin_settings_builder {
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * The name of the plugin tool_opencast.
+     *
+     * @var string
+     */
+    private const PLUGINNAME = 'tool_opencast';
 
-    private const pluginname = 'tool_opencast';
-    private const defaultinstancesconfig = '[{"id":1,"name":"Default","isvisible":true,"isdefault":true}]';
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * The default Opencast instances config.
+     *
+     * @var string
+     */
+    private const DEFAULTINSTANCESCONFIG = '[{"id":1,"name":"Default","isvisible":true,"isdefault":true}]';
 
     /**
      * Make this class not instantiable.
      */
-    private function __construct() {}
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private function __construct() {
+    }
 
     /**
      * Creates the settings for all Opencast instances and add them to the admin settings page.
@@ -48,23 +54,20 @@ class admin_settings_builder {
     public static function create_settings() : void {
         $instances = settings_api::get_ocinstances();
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         global $ADMIN;
         if (!$ADMIN->fulltree) {
             self::create_settings_no_fulltree($instances);
             return;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         self::create_settings_fulltree($instances);
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     /**
      * Creates the settings for all Opencast instances for no fulltree and adds them to the admin settings page.
+     *
+     * @param $instances
+     * The Opencast instances.
      *
      * @return void
      */
@@ -72,7 +75,7 @@ class admin_settings_builder {
         self::add_admin_category();
         self::add_admin_settingpage('tool_opencast_instances', 'ocinstances');
 
-        if (count($instances) <= 1)  {
+        if (count($instances) <= 1) {
             self::add_admin_settingpage('tool_opencast_configuration', 'configuration');
             return;
         }
@@ -83,18 +86,17 @@ class admin_settings_builder {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     /**
      * Creates the settings for all Opencast instances for fulltree and adds them to the admin settings page.
+     *
+     * @param $instances
+     * The Opencast instances.
      *
      * @return void
      */
     private static function create_settings_fulltree($instances) : void {
         self::add_admin_category();
         self::add_admin_instances_config();
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         foreach ($instances as $instance) {
             $instanceid = $instance->id;
@@ -115,23 +117,19 @@ class admin_settings_builder {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     /**
      * Adds an admin category to the admin settings page.
      *
      * @return void
      */
     private static function add_admin_category() : void {
-        $category = new \admin_category(self::pluginname,
-            new \lang_string('pluginname', self::pluginname)
+        $category = new \admin_category(self::PLUGINNAME,
+            new \lang_string('pluginname', self::PLUGINNAME)
         );
 
         global $ADMIN;
         $ADMIN->add('tools', $category);
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Adds an admin settingpage to the settings.
@@ -142,7 +140,7 @@ class admin_settings_builder {
      * @param string $stringidentifier
      * The identifier for the string, that is used for the displayed name for this settingpage.
      *
-     * @param $stringidentifierarguments
+     * @param stdClass|array $stringidentifierarguments
      * Optional arguments, which the string for the passed identifier requires,
      * that is used for the displayed name for this settingpage.
      *
@@ -154,8 +152,6 @@ class admin_settings_builder {
         self::include_admin_settingpage($settingpage);
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     /**
      * Creates an admin settingpage.
      *
@@ -165,7 +161,7 @@ class admin_settings_builder {
      * @param string $stringidentifier
      * The identifier for the string, that is used for the displayed name for this settingpage.
      *
-     * @param $stringidentifierarguments
+     * @param stdClass|array $stringidentifierarguments
      * Optional arguments, which the string for the passed identifier requires,
      * that is used for the displayed name for this settingpage.
      *
@@ -175,11 +171,9 @@ class admin_settings_builder {
     private static function create_admin_settingpage(string $name, string $stringidentifier,
                                                      $stringidentifierarguments = null) : \admin_settingpage {
         return new \admin_settingpage($name,
-            new \lang_string($stringidentifier, self::pluginname, $stringidentifierarguments)
+            new \lang_string($stringidentifier, self::PLUGINNAME, $stringidentifierarguments)
         );
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Includes an admin settingpage in the admin settings page.
@@ -191,10 +185,8 @@ class admin_settings_builder {
      */
     private static function include_admin_settingpage(\admin_settingpage $settingpage) : void {
         global $ADMIN;
-        $ADMIN->add(self::pluginname, $settingpage);
+        $ADMIN->add(self::PLUGINNAME, $settingpage);
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Adds the admin instances config to the admin settings page.
@@ -203,27 +195,23 @@ class admin_settings_builder {
      * consists of the table with its description of added Opencast instances as well as
      * of the button for adding a new Opencast instance.
      *
-     * @note
-     * Calls self::require_amds with the id of the added admin instances config.
+     * Note, that this function calls self::require_amds with the id of the added admin instances config.
      *
      * @return void
      */
     private static function add_admin_instances_config() : void {
         $instancesconfig = new admin_setting_configtextwithvalidation(
             'tool_opencast/ocinstances',
-            get_string('ocinstances', self::pluginname),
-            get_string('ocinstancesdesc', self::pluginname),
-            self::defaultinstancesconfig
+            get_string('ocinstances', self::PLUGINNAME),
+            get_string('ocinstancesdesc', self::PLUGINNAME),
+            self::DEFAULTINSTANCESCONFIG
         );
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         self::require_amds($instancesconfig->get_id());
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         $instancessettings = new \admin_settingpage(
             'tool_opencast_instances',
-            new \lang_string('ocinstances', self::pluginname)
+            new \lang_string('ocinstances', self::PLUGINNAME)
         );
 
         $instancessettings->add($instancesconfig);
@@ -234,10 +222,8 @@ class admin_settings_builder {
         );
 
         global $ADMIN;
-        $ADMIN->add(self::pluginname, $instancessettings);
+        $ADMIN->add(self::PLUGINNAME, $instancessettings);
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Requires jquery, amds and css for $PAGE.
@@ -262,8 +248,6 @@ class admin_settings_builder {
         $PAGE->requires->css('/admin/tool/opencast/css/tabulator_bootstrap4.min.css');
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     /**
      * Adds a notification banner to the passed admin settingpage for the passed Opencast instance id,
      * if the plugin is connected to the Opencast demo server for this Opencast instance id.
@@ -284,7 +268,7 @@ class admin_settings_builder {
         if (strpos($instanceapiurl, 'stable.opencast.org') !== false) {
             global $OUTPUT;
             $demoservernotification = $OUTPUT->notification(
-                get_string('demoservernotification', self::pluginname),
+                get_string('demoservernotification', self::PLUGINNAME),
                 \core\output\notification::NOTIFY_WARNING
             );
 
@@ -295,8 +279,6 @@ class admin_settings_builder {
             );
         }
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Adds the config settings for fulltree to the passed admin settingpage for the
@@ -358,8 +340,6 @@ class admin_settings_builder {
         );
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     /**
      * Adds an admin setting configtext to the passed admin settingpage.
      *
@@ -378,7 +358,7 @@ class admin_settings_builder {
      * @param string $defaultsetting
      * The default setting for the configtext.
      *
-     * @param $paramtype
+     * @param mixed $paramtype
      * The parameter type of the configtext.
      *
      * @return void
@@ -391,15 +371,13 @@ class admin_settings_builder {
                                                          $paramtype = PARAM_RAW) : void {
         $settingconfigtext = new \admin_setting_configtext(
             $name,
-            get_string($visiblenameidentifier, self::pluginname),
-            get_string($descriptionidentifier, self::pluginname),
+            get_string($visiblenameidentifier, self::PLUGINNAME),
+            get_string($descriptionidentifier, self::PLUGINNAME),
             $defaultsetting,
             $paramtype
         );
         $settings->add($settingconfigtext);
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Adds an admin setting configpasswordunmask to the passed admin settingpage.
@@ -428,14 +406,12 @@ class admin_settings_builder {
                                                                    string $defaultsetting) : void {
         $settingconfigpasswordunmask = new \admin_setting_configpasswordunmask(
             $name,
-            get_string($visiblenameidentifier, self::pluginname),
-            get_string($descriptionidentifier, self::pluginname),
+            get_string($visiblenameidentifier, self::PLUGINNAME),
+            get_string($descriptionidentifier, self::PLUGINNAME),
             $defaultsetting
         );
         $settings->add($settingconfigpasswordunmask);
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Adds the connection test tool to the passed admin settingpage for the passed Opencast instance id,
@@ -459,25 +435,21 @@ class admin_settings_builder {
         $attributes = [
             'class' => 'btn btn-warning disabled testtool-modal',
             'disabled' => 'disabled',
-            'title' => get_string('testtooldisabledbuttontitle', self::pluginname),
+            'title' => get_string('testtooldisabledbuttontitle', self::PLUGINNAME),
             'data-instanceid' => $instanceid
         ];
 
         $connectiontoolbutton = \html_writer::tag(
             'button',
-            get_string('testtoolurl', self::pluginname),
+            get_string('testtoolurl', self::PLUGINNAME),
             $attributes
         );
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // Place the button inside the header description.
         $settings->add(new \admin_setting_heading(
             'tool_opencast/testtoolexternalpage',
-            get_string('testtoolheader', self::pluginname),
-            get_string('testtoolheaderdesc', self::pluginname, $connectiontoolbutton))
+            get_string('testtoolheader', self::PLUGINNAME),
+            get_string('testtoolheaderdesc', self::PLUGINNAME, $connectiontoolbutton))
         );
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

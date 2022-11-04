@@ -40,7 +40,8 @@ class settings_api {
     /**
      * Make this class not instantiable.
      */
-    private function __construct() {}
+    private function __construct() {
+    }
 
     /**
      * Returns the version of the plugin tool_opencast as string
@@ -219,7 +220,7 @@ class settings_api {
     public static function get_ocinstances() : array {
         try {
             $ocinstancesconfig = get_config('tool_opencast', 'ocinstances');
-        } catch(\dml_exception $exception) {
+        } catch (\dml_exception $exception) {
             return array();
         }
 

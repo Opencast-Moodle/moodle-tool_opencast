@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_opencast\settings;
+
 /**
  * Admin setting class which is used to create an editable table.
  *
@@ -21,9 +23,6 @@
  * @copyright  2021 Tamara Gunkel, University of Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_opencast\settings;
-
 class admin_setting_configeditabletable extends \admin_setting {
     /** @var string Id of the div tag */
     private $divid;

@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 
 namespace tool_opencast\local;
 
@@ -19,16 +33,22 @@ class opencast_instance {
      * and is not explicitly associated to Opencast.
      *
      * Note, that a valid id of an Opencast instance is greater than zero.
+     *
+     * @var int
      */
     public int $id;
 
     /**
      * The name of the Opencast instance.
+     *
+     * @var string
      */
     public string $name;
 
     /**
      * The visibility state of the Opencast instance.
+     *
+     * @var bool
      */
     public bool $isvisible;
 
@@ -39,6 +59,8 @@ class opencast_instance {
      * is the default Opencast instance.
      * For this instance, this property is true.
      * For all other instances, this property is false.
+     *
+     * @var bool
      */
     public bool $isdefault;
 
