@@ -17,6 +17,8 @@
 namespace tool_opencast\local;
 
 /**
+ * A class, to represent Opencast instances for Moodle.
+ *
  * An instance of this class represents an Opencast instance for Moodle and has the properties,
  * that are given by or are definable with the admin settings of tool_opencast for an Opencast instance.
  *

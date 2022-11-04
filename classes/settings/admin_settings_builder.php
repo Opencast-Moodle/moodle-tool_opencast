@@ -66,7 +66,7 @@ class admin_settings_builder {
     /**
      * Creates the settings for all Opencast instances for no fulltree and adds them to the admin settings page.
      *
-     * @param $instances
+     * @param array $instances
      * The Opencast instances.
      *
      * @return void
@@ -89,7 +89,7 @@ class admin_settings_builder {
     /**
      * Creates the settings for all Opencast instances for fulltree and adds them to the admin settings page.
      *
-     * @param $instances
+     * @param array $instances
      * The Opencast instances.
      *
      * @return void
