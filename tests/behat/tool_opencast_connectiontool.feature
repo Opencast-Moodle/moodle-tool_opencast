@@ -21,8 +21,8 @@ Feature: Check the connection to Opencast instances
       | Opencast API URL | http://notexistent.not |
     And I click on "Connection Test Tool" "button"
     And I wait "3" seconds
-    Then I should see "Opencast API URL test failed!"
-    And I should see "Opencast API User Credentials test failed!"
+    Then I should see "Opencast API URL test failed"
+    And I should see "Opencast API User Credentials test failed"
 
   @javascript
   Scenario: When the admin is on a configuration section page and the apiusername is incorrect, the connection check with credentials should fail
@@ -33,7 +33,7 @@ Feature: Check the connection to Opencast instances
     And I click on "Connection Test Tool" "button"
     And I wait "3" seconds
     Then I should see "Opencast API URL test successful."
-    And I should see "Opencast API User Credentials test failed!"
+    And I should see "Opencast API User Credentials test failed"
 
   @javascript
   Scenario: When the admin is on the tool_opencast category settings page and two instances are given, the connection check should target both instances individually
@@ -48,7 +48,9 @@ Feature: Check the connection to Opencast instances
     Then I should see "Opencast API URL test successful."
     And I should see "Opencast API User Credentials test successful."
     And I click on "Cancel" "button" in the "Connection Test Tool" "dialogue"
+    And I set the field "id_s_tool_opencast_apitimeout_2" to "2000"
+    And I set the field "id_s_tool_opencast_apiconnecttimeout_2" to "1000"
     And I click on "button[data-instanceid='2']" "css_element"
     And I wait "3" seconds
-    Then I should see "Opencast API URL test failed!"
-    And I should see "Opencast API User Credentials test failed!"
+    Then I should see "Opencast API URL test failed"
+    And I should see "Opencast API User Credentials test failed"

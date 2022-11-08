@@ -32,7 +32,7 @@ use tool_opencast\empty_configuration_exception;
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . '/lib/filelib.php');
-
+require_once($CFG->dirroot . '/admin/tool/opencast/vendor/autoload.php');
 /**
  * API for opencast
  *
@@ -48,12 +48,16 @@ class api extends \curl {
     private $username;
     /** @var string the api password */
     private $password;
-    /** @var int the curl timeout in seconds */
+    /** @var int the curl timeout in milliseconds */
     private $timeout = 2000;
-    /** @var int the curl connecttimeout in seconds */
-    private $connecttimeout = 500;
+    /** @var int the curl connecttimeout in milliseconds */
+    private $connecttimeout = 1000;
     /** @var string the api baseurl */
     private $baseurl;
+    /** @var Opencast the opencast endpoints instance */
+    public $opencastapi;
+    /** @var OcRestClient the opencast REST Client instance */
+    public $opencastrestclient;
 
     /** @var array array of supported api levels */
     private static $supportedapilevel;
@@ -153,6 +157,8 @@ class api extends \curl {
      * @throws \moodle_exception
      */
     public function __construct($instanceid = null, $settings = array(), $customconfigs = array()) {
+        // Allow access to local ips.
+        $settings['ignoresecurity'] = true;
         parent::__construct($settings);
 
         $instanceid = intval($instanceid);
@@ -219,6 +225,35 @@ class api extends \curl {
         $this->setopt(array(
             'CURLOPT_TIMEOUT_MS' => $this->timeout,
             'CURLOPT_CONNECTTIMEOUT_MS' => $this->connecttimeout));
+
+        $config = [
+            'url' => $this->baseurl,
+            'username' => $this->username ,
+            'password' => $this->password,
+            'timeout' => intval($this->timeout)/1000,
+            'connect_timeout' => intval($this->connecttimeout)/1000,
+        ];
+        $this->opencastapi =  new \OpencastApi\Opencast($config);
+        $this->opencastrestclient = new \OpencastApi\Rest\OcRestClient($config);
+    }
+
+    /**
+     * Set curl timout in milliseconds
+     * @param int $timeout curl timeout in milliseconds
+     */
+    public function set_timeout($timeout) {
+        $this->timeout = $timeout;
+        // $this->setopt(array('CURLOPT_TIMEOUT_MS' => $this->timeout));
+    }
+
+    /**
+     * Set curl connect timout in milliseconds
+     * @param int $connecttimeout curl connect timeout in milliseconds
+     */
+    public function set_connecttimeout($connecttimeout) {
+        $this->connecttimeout = $connecttimeout;
+        // $this->setopt(array('CURLOPT_CONNECTTIMEOUT_MS' => $this->connecttimeout));
+
     }
 
     /**
@@ -330,18 +365,6 @@ class api extends \curl {
 
         // Check mimetype.
         $mimetype = mimeinfo('type', $filename);
-        list($mediatype, $subtype) = explode('/', $mimetype);
-
-        if ($mediatype != 'video') {
-
-            $contextid = $storedfile->get_contextid();
-            list($context, $course, $cm) = get_context_info_array($contextid);
-
-            $info = new \stdClass();
-            $info->coursename = $course->fullname . "(ID: {$course->id})";
-            $info->filename = $filename;
-            throw new \moodle_exception('wrongmimetypedetected', 'tool_opencast', '', $info);
-        }
 
         $curlfile->postname = $filename;
         $curlfile->mime = $mimetype;
@@ -507,14 +530,13 @@ class api extends \curl {
     public function supports_api_level($level) {
         if (!self::$supportedapilevel) {
 
-            $resource = '/api/version';
+            $response = $this->opencastapi->baseApi->getVersion();
 
-            $result = json_decode($this->oc_get($resource));
-
-            if ($this->get_http_code() != 200) {
+            if ($response['code'] != 200) {
                 throw new \moodle_exception('Opencast system not reachable.');
             }
-            self::$supportedapilevel = $result->versions;
+            $versions = $response['body'];
+            self::$supportedapilevel = $versions->versions;
         }
         return is_array(self::$supportedapilevel) && in_array($level, self::$supportedapilevel);
     }
@@ -522,47 +544,49 @@ class api extends \curl {
     /**
      * Checks if the Opencast API URL is reachable and there is an Opencast instance running on that URL.
      *
-     * @return boolean whether the API URL is reachable or not.
+     * @return int|boolean http status code, if the API URL is not reachable or an Opencast instance
+     * is not running on that URL, and true otherwise.
      */
     public function connection_test_url() {
-        $url = $this->baseurl;
-
-        $this->resetHeader();
-
-        // Define header array.
-        $header = array();
-        $header[] = 'Content-Type: application/json';
-        $this->setHeader($header);
-        $this->setopt(array('CURLOPT_HEADER' => false));
-
         // The "/api" resource endpoint returns key characteristics of the API such as the server name and the default version.
-        $resource = $url . '/api';
-        $this->get($resource);
-
-        // If the connection fails or the Opencast instance could not be found, we return false.
-        if ($this->get_http_code() != 200) {
-            return false;
+        $response = $this->opencastapi->baseApi->noHeader()->get();
+        // If the connection fails or the Opencast instance could not be found, return the http code.
+        $httpcode = $response['code'];
+        if ($httpcode === false) {
+            $httpcode = 404; // Not Found.
+        }
+        if ($httpcode != 200) {
+            return $httpcode;
         }
 
-        // Otherwise, we return true.
         return true;
     }
 
     /**
      * Checks if the Opencast API username and password is valid.
      *
-     * @return boolean whether the given api $level is supported.
+     * @return int|boolean http status code, if the API URL is not reachable, an Opencast instance
+     * is not running on that URL or the credentials are invalid, and true otherwise.
      */
     public function connection_test_credentials() {
         // The "/api" resource endpoint returns information on the logged in user.
-        $userinfo = json_decode($this->oc_get('/api/info/me'));
+        $response = $this->opencastapi->baseApi->getUserInfo();
+        $userinfo = $response['body'];
 
-        // If the connection fails or credentials are invalid, we return false.
-        if ($this->get_http_code() != 200 || !$userinfo) {
-            return false;
+        // If the credentials are invalid, return a corresponding http code.
+        if (!$userinfo) {
+            return 400; // Bad Request.
         }
 
-        // Otherwise, we return true.
+        // If the connection fails or the Opencast instance could not be found, return the http code.
+        $httpcode = $response['code'];
+        if ($httpcode === false) {
+            $httpcode = 404; // Not Found.
+        }
+        if ($httpcode != 200) {
+            return $httpcode;
+        }
+
         return true;
     }
 }

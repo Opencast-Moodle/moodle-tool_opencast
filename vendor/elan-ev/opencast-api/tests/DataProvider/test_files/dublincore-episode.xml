@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dublincore xmlns="http://www.opencastproject.org/xsd/1.0/dublincore/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <dcterms:title>PHP UNIT TEST INGEST</dcterms:title>
+    <dcterms:subject>PHPUNIT TEST SUBJECT</dcterms:subject>
+    <dcterms:description>PHPUNIT TEST DESCRIPTION</dcterms:description>
+</dublincore>

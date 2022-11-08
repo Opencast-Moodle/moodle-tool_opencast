@@ -1,0 +1,6 @@
+{
+    "name": "moodle/tool_opencast",
+    "require-dev": {
+        "elan-ev/opencast-api": "^1.2"
+    }
+}

@@ -61,7 +61,7 @@ if ($hassiteconfig) {
         // Crashes if plugins.php is opened because css cannot be included anymore.
         if ($PAGE->state !== moodle_page::STATE_IN_BODY) {
             $PAGE->requires->jquery();
-            $PAGE->requires->js_call_amd('tool_opencast/opencasttesttool', 'init');
+            $PAGE->requires->js_call_amd('tool_opencast/tool_testtool', 'init');
             $PAGE->requires->js_call_amd('tool_opencast/tool_settings', 'init', [$instancesconfig->get_id()]);
             $PAGE->requires->css('/admin/tool/opencast/css/tabulator.min.css');
             $PAGE->requires->css('/admin/tool/opencast/css/tabulator_bootstrap4.min.css');
@@ -121,7 +121,7 @@ if ($hassiteconfig) {
 
                 $settings->add(new admin_setting_configtext('tool_opencast/apiconnecttimeout',
                     get_string('connecttimeout', 'tool_opencast'),
-                    get_string('connecttimeoutdesc', 'tool_opencast'), 500, PARAM_INT));
+                    get_string('connecttimeoutdesc', 'tool_opencast'), 1000, PARAM_INT));
 
             } else {
                 // Show a notification banner if the plugin is connected to the Opencast demo server.
@@ -164,7 +164,7 @@ if ($hassiteconfig) {
 
                 $settings->add(new admin_setting_configtext('tool_opencast/apiconnecttimeout_' . $instance->id,
                     get_string('connecttimeout', 'tool_opencast'),
-                    get_string('connecttimeoutdesc', 'tool_opencast'), 500, PARAM_INT));
+                    get_string('connecttimeoutdesc', 'tool_opencast'), 1000, PARAM_INT));
             }
 
             // Provide Connection Test Tool button.

@@ -237,7 +237,36 @@ class tool_opencast_external extends external_api {
                 'apiurl' => new external_value(PARAM_TEXT, 'Opencast API URL'),
                 'apiusername' => new external_value(PARAM_TEXT, 'Opencast API User'),
                 'apipassword' => new external_value(PARAM_RAW, 'Opencast API Password'),
+                'apitimeout' => new external_value(PARAM_INT, 'API timeout', VALUE_DEFAULT, 2000),
+                'apiconnecttimeout' => new external_value(PARAM_INT, 'API connect timeout', VALUE_DEFAULT, 1000),
             )
+        );
+    }
+
+    /**
+     * Builds a html tag for the alert of the connection test tool.
+     *
+     * @param string $connectiontestresult The result of a connection test.
+     * @param string $testsuccessfulstringidentifier The string identifier of a successful connection test.
+     * @param string $testfailedstringidentifier The string identifier of a failed connection test.
+     * @return string The html tag as string.
+     */
+    private static function connection_test_tool_build_html_alert_tag($connectiontestresult,
+                                                                      string $testsuccessfulstringidentifier,
+                                                                      string $testfailedstringidentifier) : string {
+        // Check, if the test was successful.
+        if ($connectiontestresult === true) {
+            return html_writer::tag(
+                'p',
+                get_string($testsuccessfulstringidentifier, 'tool_opencast'),
+                array('class' => 'alert alert-success')
+            );
+        }
+
+        return html_writer::tag(
+            'p',
+            get_string($testfailedstringidentifier, 'tool_opencast', $connectiontestresult),
+            array('class' => 'alert alert-danger')
         );
     }
 
@@ -247,53 +276,52 @@ class tool_opencast_external extends external_api {
      * @param string $apiurl Opencast API URL
      * @param string $apiusername Opencast API username
      * @param string $apipassword Opencast API password
+     * @param int $apitimeout Overall API request execution timeout in milliseconds
+     * @param int $apiconnecttimeout Connection timeout in milliseconds
      * @return array
      * @throws coding_exception
      * @throws dml_exception
      * @throws invalid_parameter_exception
      * @throws required_capability_exception
      */
-    public static function connection_test_tool($apiurl, $apiusername, $apipassword) {
+    public static function connection_test_tool($apiurl, $apiusername, $apipassword, $apitimeout, $apiconnecttimeout) {
 
         // Validate the parameters.
         $params = self::validate_parameters(self::connection_test_tool_parameters(),
             array(
                 'apiurl' => $apiurl,
                 'apiusername' => $apiusername,
-                'apipassword' => $apipassword
+                'apipassword' => $apipassword,
+                'apitimeout' => $apitimeout,
+                'apiconnecttimeout' => $apiconnecttimeout
             )
         );
 
-        // Initialise the result array.
-        $result = array();
+        // Get a customized api instance to use.
+        $customizedapi = \tool_opencast\local\api::get_instance(null, array(), array(
+                'apiurl' => $params['apiurl'],
+                'apiusername' => $params['apiusername'],
+                'apipassword' => $params['apipassword'],
+                'apitimeout' => $params['apitimeout'],
+                'apiconnecttimeout' => $params['apiconnecttimeout']
+        ));
 
-        // We assume that both tests are successful, so we define the success p tags for both.
-        $result['testurl'] = \html_writer::tag('p', get_string('apiurltestsuccessfulshort', 'tool_opencast'),
-            array('class' => 'alert alert-success'));
-        $result['testcreadentials'] = html_writer::tag('p', get_string('apicreadentialstestsuccessfulshort', 'tool_opencast'),
-            array('class' => 'alert alert-success'));
+        // Test the URL.
+        $connectiontesturlresult = $customizedapi->connection_test_url();
+        $resulthtml = self::connection_test_tool_build_html_alert_tag(
+            $connectiontesturlresult,
+            'apiurltestsuccessfulshort',
+            'apiurltestfailedshort');
 
-        // Get the a customized api instance to use.
-        $customizedapi = \tool_opencast\local\api::get_instance(null, array(), array('apiurl' => $params['apiurl'],
-            'apiusername' => $params['apiusername'], 'apipassword' => $params['apipassword']));
+        // Test the Credentials.
+        $connectiontestcredentialsresult = $customizedapi->connection_test_credentials();
+        $resulthtml .= self::connection_test_tool_build_html_alert_tag(
+            $connectiontestcredentialsresult,
+            'apicreadentialstestsuccessfulshort',
+            'apicreadentialstestfailedshort');
 
-        // First we test the URL.
-        if ($customizedapi->connection_test_url() == false) {
-            // In case it failed, we replace the succes p tag with error p tag.
-            $result['testurl'] = \html_writer::tag('p', get_string('apiurltestfailedshort', 'tool_opencast'),
-                array('class' => 'alert alert-danger'));
-        }
-
-        // After that we test the Credentials.
-        if ($customizedapi->connection_test_credentials() == false) {
-            // In case it failed, we replace the succes p tag with error p tag.
-            $result['testcreadentials'] = html_writer::tag('p', get_string('apicreadentialstestfailedshort', 'tool_opencast'),
-                array('class' => 'alert alert-danger'));
-        }
-
-        // Finally, we concatenate both test results and return it.
         return [
-            'testresult' => $result['testurl'] . $result['testcreadentials']
+            'testresult' => $resulthtml
         ];
     }
 }

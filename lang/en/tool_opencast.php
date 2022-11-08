@@ -48,9 +48,9 @@ $string['testtoolheader'] = 'Connection test tool';
 $string['testtoolheaderdesc'] = 'To test the current Opencast API settings use: {$a}';
 $string['testtoolurl'] = 'Connection Test Tool';
 $string['apiurltestsuccessfulshort'] = 'Opencast API URL test successful.';
-$string['apiurltestfailedshort'] = 'Opencast API URL test failed!';
+$string['apiurltestfailedshort'] = 'Opencast API URL test failed with http code: {$a}';
 $string['apicreadentialstestsuccessfulshort'] = 'Opencast API User Credentials test successful.';
-$string['apicreadentialstestfailedshort'] = 'Opencast API User Credentials test failed!';
+$string['apicreadentialstestfailedshort'] = 'Opencast API User Credentials test failed with http code: {$a}';
 $string['testtooldisabledbuttontitle'] = 'Unable to conduct the connection test due to unloaded js modules.';
 
 $string['lticonsumerkey'] = 'Consumer key';
