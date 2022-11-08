@@ -230,10 +230,10 @@ class api extends \curl {
             'url' => $this->baseurl,
             'username' => $this->username ,
             'password' => $this->password,
-            'timeout' => intval($this->timeout)/1000,
-            'connect_timeout' => intval($this->connecttimeout)/1000,
+            'timeout' => (intval($this->timeout) / 1000),
+            'connect_timeout' => (intval($this->connecttimeout) / 1000),
         ];
-        $this->opencastapi =  new \OpencastApi\Opencast($config);
+        $this->opencastapi = new \OpencastApi\Opencast($config);
         $this->opencastrestclient = new \OpencastApi\Rest\OcRestClient($config);
     }
 
