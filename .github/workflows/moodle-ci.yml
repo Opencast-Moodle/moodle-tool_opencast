@@ -30,7 +30,7 @@ jobs:
 
       - name: Get composer cache directory
         id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+        run: echo "dir=$(cd /home/runner/.composer && composer config cache-files-dir)" >> $GITHUB_OUTPUT
       - name: Composer cache
         uses: actions/cache@v3
         with:
@@ -61,7 +61,6 @@ jobs:
         env:
           DB: ${{ matrix.database }}
           MOODLE_BRANCH: ${{ matrix.moodle-branch }}
-          IGNORE_PATHS: 'vendor'
           CODECHECKER_IGNORE_PATHS: 'vendor'
 
       - name: PHP Lint
