@@ -243,7 +243,7 @@ class api extends \curl {
      */
     public function set_timeout($timeout) {
         $this->timeout = $timeout;
-        // $this->setopt(array('CURLOPT_TIMEOUT_MS' => $this->timeout));
+        $this->setopt(array('CURLOPT_TIMEOUT_MS' => $this->timeout));
     }
 
     /**
@@ -252,8 +252,7 @@ class api extends \curl {
      */
     public function set_connecttimeout($connecttimeout) {
         $this->connecttimeout = $connecttimeout;
-        // $this->setopt(array('CURLOPT_CONNECTTIMEOUT_MS' => $this->connecttimeout));
-
+        $this->setopt(array('CURLOPT_CONNECTTIMEOUT_MS' => $this->connecttimeout));
     }
 
     /**
