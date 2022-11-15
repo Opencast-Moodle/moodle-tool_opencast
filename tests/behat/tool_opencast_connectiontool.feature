@@ -43,7 +43,7 @@ Feature: Check the connection to Opencast instances
       | ocinstances          | [{"id":1,"name":"OC demo server","isvisible":true,"isdefault":true},{"id":2,"isvisible":1,"isdefault":false,"name":"Invalid server"}] | tool_opencast  |
       | apiurl_2             | http://notexistent.not  | tool_opencast  |
     And I navigate to "Plugins > Admin tools > Opencast API" in site administration
-    And I click on "button[data-instanceid='']" "css_element"
+    And I click on "button[data-instanceid='1']" "css_element"
     And I wait "3" seconds
     Then I should see "Opencast API URL test successful."
     And I should see "Opencast API User Credentials test successful."
