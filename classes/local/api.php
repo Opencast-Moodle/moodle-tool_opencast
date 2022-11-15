@@ -148,13 +148,13 @@ class api extends \curl {
         if (defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING) {
             $defaultocinstance = settings_api::get_default_ocinstance();
             if ($defaultocinstance === null) {
-                throw new \dml_exception('dmlreadexception', NULL,
+                throw new \dml_exception('dmlreadexception', null,
                     'No default Opencast instance is defined.');
             }
 
             $defaultocinstanceapiurl = settings_api::get_apiurl($defaultocinstance->id);
             if ($defaultocinstanceapiurl === false) {
-                throw new \dml_exception('dmlreadexception', NULL,
+                throw new \dml_exception('dmlreadexception', null,
                     'No api url for the default Opencast instance is defined.');
             }
 
@@ -194,7 +194,7 @@ class api extends \curl {
         if (empty($customconfigs)) {
             $defaultocinstance = settings_api::get_default_ocinstance();
             if ($defaultocinstance === null) {
-                throw new \dml_exception('dmlreadexception', NULL,
+                throw new \dml_exception('dmlreadexception', null,
                     'No default Opencast instance is defined.');
             }
 
