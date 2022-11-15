@@ -19,7 +19,7 @@ namespace tool_opencast\settings;
 use tool_opencast\local\settings_api;
 
 /**
- * Static admin setting builder class, which is used to create and to add admin settings for tool_opencast.
+ * Static admin setting builder class, which is used, to create and to add admin settings for tool_opencast.
  *
  * @package    tool_opencast
  * @copyright  2022 Matthias Kollenbroich, University of Münster
@@ -47,7 +47,7 @@ class admin_settings_builder {
     }
 
     /**
-     * Creates the settings for all Opencast instances and add them to the admin settings page.
+     * Creates the settings for all Opencast instances and adds them to the admin settings page.
      *
      * @return void
      */
@@ -132,7 +132,7 @@ class admin_settings_builder {
     }
 
     /**
-     * Adds an admin settingpage to the settings.
+     * Adds an admin settingpage to the admin settings page.
      *
      * @param string $name
      * The internal name for this settingpage.
@@ -255,13 +255,13 @@ class admin_settings_builder {
      * @param \admin_settingpage $settings
      * The admin settingpage, to add a notification banner to.
      *
-     * @param string $instanceid
+     * @param int $instanceid
      * The id of the Opencast instance, for which the notification banner is added.
      *
      * @return void
      */
     private static function add_notification_banner_for_demo_instance(\admin_settingpage $settings,
-                                                                      string $instanceid) : void {
+                                                                      int $instanceid) : void {
         $instanceapiurl = settings_api::get_apiurl($instanceid);
 
         // Show a notification banner, if the plugin is connected to the Opencast demo server.
@@ -287,13 +287,13 @@ class admin_settings_builder {
      * @param \admin_settingpage $settings
      * The admin settingpage, the config settings are added to.
      *
-     * @param string $instanceid
+     * @param int $instanceid
      * The Opencast instance id, to that the added settings are associated.
      *
      * @return void
      */
     private static function add_config_settings_fulltree(\admin_settingpage $settings,
-                                                         string $instanceid) : void {
+                                                         int $instanceid) : void {
         self::add_admin_setting_configtext($settings,
             'tool_opencast/apiurl_' . $instanceid,
             'apiurl', 'apiurldesc',
@@ -347,7 +347,7 @@ class admin_settings_builder {
      * The admin settingpage, the configtext is added to.
      *
      * @param string $name
-     * The internal name for this configtext.
+     * The internal name for the configtext.
      *
      * @param string $visiblenameidentifier
      * The identifier for the string, that is used for the visible name of the configtext.
@@ -383,10 +383,10 @@ class admin_settings_builder {
      * Adds an admin setting configpasswordunmask to the passed admin settingpage.
      *
      * @param \admin_settingpage $settings
-     * The admin settingpage, the configtext is added to.
+     * The admin settingpage, the configpasswordunmask is added to.
      *
      * @param string $name
-     * The internal name for this configpasswordunmask.
+     * The internal name for the configpasswordunmask.
      *
      * @param string $visiblenameidentifier
      * The identifier for the string, that is used for the visible name of the configpasswordunmask.
@@ -423,20 +423,20 @@ class admin_settings_builder {
      * @param \admin_settingpage $settings
      * The admin settingpage, to add the connection test tool to.
      *
-     * @param string $instanceid
+     * @param int $instanceid
      * The id of the Opencast instance, for which the connection test tool is added and the connection test
      * is performed.
      *
      * @return void
      */
     private static function add_connection_test_tool(\admin_settingpage $settings,
-                                                     string $instanceid) : void {
+                                                     int $instanceid) : void {
         // Provide Connection Test Tool button.
         $attributes = [
             'class' => 'btn btn-warning disabled testtool-modal',
             'disabled' => 'disabled',
             'title' => get_string('testtooldisabledbuttontitle', self::PLUGINNAME),
-            'data-instanceid' => $instanceid
+            'data-instanceid' => strval($instanceid)
         ];
 
         $connectiontoolbutton = \html_writer::tag(

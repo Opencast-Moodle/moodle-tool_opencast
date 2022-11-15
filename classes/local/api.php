@@ -148,12 +148,14 @@ class api extends \curl {
         if (defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING) {
             $defaultocinstance = settings_api::get_default_ocinstance();
             if ($defaultocinstance === null) {
-                throw Exception('No default Opencast instance is defined.');
+                throw new \dml_exception('dmlreadexception', NULL,
+                    'No default Opencast instance is defined.');
             }
 
             $defaultocinstanceapiurl = settings_api::get_apiurl($defaultocinstance->id);
             if ($defaultocinstanceapiurl === false) {
-                throw Exception('No api url for the default Opencast instance is defined.');
+                throw new \dml_exception('dmlreadexception', NULL,
+                    'No api url for the default Opencast instance is defined.');
             }
 
             if ($defaultocinstanceapiurl === 'http://testapi:8080') {
@@ -176,7 +178,6 @@ class api extends \curl {
      * @param array $customconfigs
      * Custom api config.
      *
-     * @throws \Exception
      * @throws \dml_exception
      * @throws \moodle_exception
      */
@@ -193,7 +194,8 @@ class api extends \curl {
         if (empty($customconfigs)) {
             $defaultocinstance = settings_api::get_default_ocinstance();
             if ($defaultocinstance === null) {
-                throw new \Exception('No default Opencast instance is defined.');
+                throw new \dml_exception('dmlreadexception', NULL,
+                    'No default Opencast instance is defined.');
             }
 
             $storedconfigocinstanceid = !$instanceid ? $defaultocinstance->id : $instanceid;

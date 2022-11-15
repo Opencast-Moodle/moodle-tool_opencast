@@ -147,10 +147,14 @@ function xmldb_tool_opencast_upgrade($oldversion) {
     }
 
     // TODO: Insert the correct version here.
-    if ($oldversion <= 2022042300) {
+    $newversion = 2022042301;
+    if ($oldversion < $newversion) {
         if (remove_default_opencast_instance_settings_without_id() === false) {
             return false;
         }
+
+        // Opencast savepoint reached.
+        upgrade_plugin_savepoint(true, $newversion, 'tool', 'opencast');
     }
 
     return true;
@@ -190,7 +194,7 @@ function remove_default_opencast_instance_settings_without_id() : bool {
         replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'lticonsumersecret');
         replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'apitimeout');
         replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'apiconnecttimeout');
-    } catch (Exception $exception) {
+    } catch (\dml_exception $exception) {
         return false;
     }
 
@@ -208,7 +212,7 @@ function remove_default_opencast_instance_settings_without_id() : bool {
  * @param string $name
  * The name of the setting to replace (without the Opencast instance id).
  *
- * @throws \Exception
+ * @throws \dml_exception
  */
 function replace_default_opencast_instance_setting_without_id(int $defaultinstanceid,
                                                               string $name) : void {
@@ -216,11 +220,11 @@ function replace_default_opencast_instance_setting_without_id(int $defaultinstan
 
     $value = get_config($pluginname, $name);
     if ($value === false) {
-        throw new \Exception();
+        throw new \dml_exception('dmlreadexception');
     }
 
     if (unset_config($name, $pluginname) === false) {
-        throw new \Exception();
+        throw new \dml_exception('dmlwriteexception');
     }
 
     set_config($name . '_' . $defaultinstanceid, $value, $pluginname);
