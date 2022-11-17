@@ -145,25 +145,38 @@ class api extends \curl {
     public static function get_instance($instanceid = null,
                                         $settings = array(),
                                         $customconfigs = array()) {
+
+        if (self::use_test_api() === true) {
+            return new api_testable();
+        }
+
+        return new api($instanceid, $settings, $customconfigs);
+    }
+
+    /**
+     * Returns, whether the test api should be used.
+     *
+     * @return bool
+     * @throws \dml_exception
+     */
+    private static function use_test_api() : bool {
         if (defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING) {
             $defaultocinstance = settings_api::get_default_ocinstance();
             if ($defaultocinstance === null) {
-                throw new \dml_exception('dmlreadexception', null,
-                    'No default Opencast instance is defined.');
+                return false;
             }
 
             $defaultocinstanceapiurl = settings_api::get_apiurl($defaultocinstance->id);
             if ($defaultocinstanceapiurl === false) {
-                throw new \dml_exception('dmlreadexception', null,
-                    'No api url for the default Opencast instance is defined.');
+                return false;
             }
 
             if ($defaultocinstanceapiurl === 'http://testapi:8080') {
-                return new api_testable();
+                return true;
             }
         }
 
-        return new api($instanceid, $settings, $customconfigs);
+        return false;
     }
 
     /**
