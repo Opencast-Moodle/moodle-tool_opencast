@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_opencast\local\settings_api;
+
 /**
  * Execute opencast upgrade from the given old version
  *
@@ -91,7 +93,7 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         $ocinstance->name = 'Default';
         $ocinstance->isvisible = true;
         $ocinstance->isdefault = true;
-        set_config('ocinstances', json_encode(array($ocinstance)), 'tool_opencast');
+        settings_api::set_ocinstances_to_ocinstance($ocinstance);
 
         // Add new field to series table.
         $table = new xmldb_table('tool_opencast_series');
@@ -144,5 +146,86 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2021102700, 'tool', 'opencast');
     }
 
+    // TODO: Insert the correct version here.
+    $newversion = 2022042301;
+    if ($oldversion < $newversion) {
+        if (remove_default_opencast_instance_settings_without_id() === false) {
+            return false;
+        }
+
+        // Opencast savepoint reached.
+        upgrade_plugin_savepoint(true, $newversion, 'tool', 'opencast');
+    }
+
     return true;
+}
+
+/**
+ * Removes the settings of the default Opencast instance without an id in their names
+ * from the database and adds those settings with the corresponding id in their names
+ * and their previous values to the database again.
+ *
+ * @return bool
+ * Returns true, if this update of the database was successful, and false otherwise.
+ */
+function remove_default_opencast_instance_settings_without_id() : bool {
+    $helpersettingsname = 'apiurl';
+    $pluginname = 'tool_opencast';
+
+    // Check, if settings without an id in their names exist (for the default Opencast instance).
+    $foundoldsetting = get_config($pluginname, $helpersettingsname);
+    if ($foundoldsetting === false) {
+        return true;
+    }
+
+    // Fetch the default Opencast instance, if any.
+    $defaultocinstance = settings_api::get_default_ocinstance();
+    if ($defaultocinstance === null) {
+        return true;
+    }
+
+    $defaultocinstanceid = $defaultocinstance->id;
+
+    try {
+        replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'apiurl');
+        replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'apiusername');
+        replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'apipassword');
+        replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'lticonsumerkey');
+        replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'lticonsumersecret');
+        replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'apitimeout');
+        replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'apiconnecttimeout');
+    } catch (\dml_exception $exception) {
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Removes the passed setting of the default Opencast instance without an id in its name
+ * from the database and adds that setting with the passed id in its name
+ * and its previous value to the database again.
+ *
+ * @param int $defaultinstanceid
+ * The Opencast instance id of the default Opencast instance.
+ *
+ * @param string $name
+ * The name of the setting to replace (without the Opencast instance id).
+ *
+ * @throws \dml_exception
+ */
+function replace_default_opencast_instance_setting_without_id(int $defaultinstanceid,
+                                                              string $name) : void {
+    $pluginname = 'tool_opencast';
+
+    $value = get_config($pluginname, $name);
+    if ($value === false) {
+        throw new \dml_exception('dmlreadexception');
+    }
+
+    if (unset_config($name, $pluginname) === false) {
+        throw new \dml_exception('dmlwriteexception');
+    }
+
+    set_config($name . '_' . $defaultinstanceid, $value, $pluginname);
 }

@@ -27,6 +27,7 @@
 namespace tool_opencast\local;
 
 use local_chunkupload\local\chunkupload_file;
+use Matrix\Exception;
 use tool_opencast\empty_configuration_exception;
 
 defined('MOODLE_INTERNAL') || die;
@@ -130,53 +131,80 @@ class api extends \curl {
     /**
      * Returns the real api or test api depending on the environment.
      *
-     * @param null $instanceid Opencast instance id
+     * @param int|null $instanceid
+     * Opencast instance id.
+     *
      * @param array $settings
      * @param array $customconfigs
+     *
      * @return api|api_testable
+     *
      * @throws \dml_exception
      * @throws \moodle_exception
      */
-    public static function get_instance($instanceid = null, $settings = array(), $customconfigs = array()) {
-        if (defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING && get_config('tool_opencast', 'apiurl') == 'http://testapi:8080') {
-            return new api_testable();
+    public static function get_instance($instanceid = null,
+                                        $settings = array(),
+                                        $customconfigs = array()) {
+        if (defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING) {
+            $defaultocinstance = settings_api::get_default_ocinstance();
+            if ($defaultocinstance === null) {
+                throw new \dml_exception('dmlreadexception', null,
+                    'No default Opencast instance is defined.');
+            }
+
+            $defaultocinstanceapiurl = settings_api::get_apiurl($defaultocinstance->id);
+            if ($defaultocinstanceapiurl === false) {
+                throw new \dml_exception('dmlreadexception', null,
+                    'No api url for the default Opencast instance is defined.');
+            }
+
+            if ($defaultocinstanceapiurl === 'http://testapi:8080') {
+                return new api_testable();
+            }
         }
+
         return new api($instanceid, $settings, $customconfigs);
     }
 
     /**
      * Constructor of the Opencast API.
-     * @param int $instanceid Opencast instance id
-     * @param array $settings additional curl settings.
-     * @param array $customconfigs custom api config.
+     *
+     * @param int|null $instanceid
+     * Opencast instance id.
+     *
+     * @param array $settings
+     * Additional curl settings.
+     *
+     * @param array $customconfigs
+     * Custom api config.
+     *
      * @throws \dml_exception
      * @throws \moodle_exception
      */
-    public function __construct($instanceid = null, $settings = array(), $customconfigs = array()) {
+    public function __construct($instanceid = null,
+                                $settings = array(),
+                                $customconfigs = array()) {
         // Allow access to local ips.
         $settings['ignoresecurity'] = true;
         parent::__construct($settings);
 
         $instanceid = intval($instanceid);
 
-        $ocinstances = settings_api::get_ocinstances();
-        $key = array_search(true, array_column($ocinstances, 'isdefault'));
-
         // If there is no custom configs to set, we go for the stored configs.
         if (empty($customconfigs)) {
-            if (!$instanceid || $ocinstances[$key]->id === $instanceid) {
-                $this->username = get_config('tool_opencast', 'apiusername');
-                $this->password = get_config('tool_opencast', 'apipassword');;
-                $this->timeout = get_config('tool_opencast', 'apitimeout');;
-                $this->connecttimeout = get_config('tool_opencast', 'apiconnecttimeout');;
-                $this->baseurl = get_config('tool_opencast', 'apiurl');
-            } else {
-                $this->username = get_config('tool_opencast', 'apiusername_' . $instanceid);
-                $this->password = get_config('tool_opencast', 'apipassword_' . $instanceid);
-                $this->timeout = get_config('tool_opencast', 'apitimeout_' . $instanceid);
-                $this->connecttimeout = get_config('tool_opencast', 'apiconnecttimeout_' . $instanceid);
-                $this->baseurl = get_config('tool_opencast', 'apiurl_' . $instanceid);
+            $defaultocinstance = settings_api::get_default_ocinstance();
+            if ($defaultocinstance === null) {
+                throw new \dml_exception('dmlreadexception', null,
+                    'No default Opencast instance is defined.');
             }
+
+            $storedconfigocinstanceid = !$instanceid ? $defaultocinstance->id : $instanceid;
+
+            $this->username         = settings_api::get_apiusername($storedconfigocinstanceid);
+            $this->password         = settings_api::get_apipassword($storedconfigocinstanceid);
+            $this->timeout          = settings_api::get_apitimeout($storedconfigocinstanceid);
+            $this->connecttimeout   = settings_api::get_apiconnecttimeout($storedconfigocinstanceid);
+            $this->baseurl          = settings_api::get_apiurl($storedconfigocinstanceid);
 
             if (empty($this->username)) {
                 throw new empty_configuration_exception('apiusernameempty', 'tool_opencast');
