@@ -27,7 +27,6 @@
 namespace tool_opencast\local;
 
 use local_chunkupload\local\chunkupload_file;
-use Matrix\Exception;
 use tool_opencast\empty_configuration_exception;
 
 defined('MOODLE_INTERNAL') || die;

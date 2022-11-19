@@ -182,7 +182,7 @@ class settings_api {
         $ocinstances = self::get_ocinstances();
 
         foreach ($ocinstances as $ocinstance) {
-            if ($ocinstance->id === $ocinstanceid) {
+            if (intval($ocinstance->id) === intval($ocinstanceid)) {
                 return $ocinstance;
             }
         }
@@ -201,7 +201,7 @@ class settings_api {
         $ocinstances = self::get_ocinstances();
 
         foreach ($ocinstances as $ocinstance) {
-            if ($ocinstance->isdefault === true) {
+            if (boolval($ocinstance->isdefault) === true) {
                 return $ocinstance;
             }
         }

@@ -38,21 +38,21 @@ class opencast_instance {
      *
      * @var int
      */
-    public int $id;
+    public $id;
 
     /**
      * The name of the Opencast instance.
      *
      * @var string
      */
-    public string $name;
+    public $name;
 
     /**
      * The visibility state of the Opencast instance.
      *
      * @var bool
      */
-    public bool $isvisible;
+    public $isvisible;
 
     /**
      * The default state of the Opencast instance.
@@ -64,7 +64,7 @@ class opencast_instance {
      *
      * @var bool
      */
-    public bool $isdefault;
+    public $isdefault;
 
     /**
      * Constructs an instance with the properties of the passed \stdClass instance,
