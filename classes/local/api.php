@@ -54,9 +54,9 @@ class api extends \curl {
     private $connecttimeout = 1000;
     /** @var string the api baseurl */
     private $baseurl;
-    /** @var Opencast the opencast endpoints instance */
+    /** @var \OpencastApi\Opencast the opencast endpoints instance */
     public $opencastapi;
-    /** @var OcRestClient the opencast REST Client instance */
+    /** @var \OpencastApi\Rest\OcRestClient the opencast REST Client instance */
     public $opencastrestclient;
 
     /** @var array array of supported api levels */
