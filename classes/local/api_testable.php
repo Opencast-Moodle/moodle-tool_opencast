@@ -24,6 +24,8 @@
 
 namespace tool_opencast\local;
 
+defined('MOODLE_INTERNAL') || die;
+
 require_once($CFG->dirroot . '/admin/tool/opencast/vendor/autoload.php');
 /**
  * API used for testing
