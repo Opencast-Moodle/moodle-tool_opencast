@@ -24,6 +24,7 @@
 
 namespace tool_opencast\local;
 
+require_once($CFG->dirroot . '/admin/tool/opencast/vendor/autoload.php');
 /**
  * API used for testing
  *
@@ -50,6 +51,22 @@ class api_testable extends api {
         if (!$this->jsonresponses) {
             $this->jsonresponses = [];
         }
+
+        $this->username         = 'opencast';
+        $this->password         = 'admin';
+        $this->timeout          = 2000;
+        $this->connecttimeout   = 1000;
+        $this->baseurl          = 'http://testapi:8080';
+
+        $config = [
+            'url' => $this->baseurl,
+            'username' => $this->username,
+            'password' => $this->password,
+            'timeout' => (intval($this->timeout) / 1000),
+            'connect_timeout' => (intval($this->connecttimeout) / 1000),
+        ];
+        $this->opencastapi = new \OpencastApi\Opencast($config);
+        $this->opencastrestclient = new \OpencastApi\Rest\OcRestClient($config);
     }
 
     /**

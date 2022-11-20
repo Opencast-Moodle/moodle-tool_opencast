@@ -268,7 +268,7 @@ class api extends \curl {
 
         $config = [
             'url' => $this->baseurl,
-            'username' => $this->username ,
+            'username' => $this->username,
             'password' => $this->password,
             'timeout' => (intval($this->timeout) / 1000),
             'connect_timeout' => (intval($this->connecttimeout) / 1000),
