@@ -146,8 +146,7 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2021102700, 'tool', 'opencast');
     }
 
-    // TODO: Insert the correct version here.
-    $newversion = 2022111900;
+    $newversion = 2023030100;
     if ($oldversion < $newversion) {
         if (remove_default_opencast_instance_settings_without_id() === false) {
             return false;
