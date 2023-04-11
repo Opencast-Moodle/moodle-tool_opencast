@@ -1,0 +1,21 @@
+{
+
+    "/services/services.json": {
+        "GET": [
+            {
+                "body": "{\"services\":{\"service\":[{\"type\":\"org.opencastproject.ingest\",\"host\":\"https://stable.opencast.org\",\"path\":\"/ingest\",\"active\":true,\"online\":true,\"maintenance\":false,\"jobproducer\":true,\"onlinefrom\":\"2023-04-06T02:01:58.005+02:00\",\"service_state\":\"NORMAL\",\"state_changed\":\"2023-04-06T02:01:58.005+02:00\",\"error_state_trigger\":0,\"warning_state_trigger\":0}]}}",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/services/services.json?serviceType=org.opencastproject.ingest": {
+        "GET": [
+            {
+                "body": "{\"services\":{\"service\":{\"type\":\"org.opencastproject.ingest\",\"host\":\"https://stable.opencast.org\",\"path\":\"/ingest\",\"active\":true,\"online\":true,\"maintenance\":false,\"jobproducer\":true,\"onlinefrom\":\"2023-04-06T02:01:58.005+02:00\",\"service_state\":\"NORMAL\",\"state_changed\":\"2023-04-06T02:01:58.005+02:00\",\"error_state_trigger\":0,\"warning_state_trigger\":0}}}",
+                "params": "",
+                "status": 200
+            }
+        ]
+    }
+}

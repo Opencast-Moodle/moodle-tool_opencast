@@ -5,30 +5,24 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use OpencastApi\Opencast;
+use \OpencastApi\Mock\OcMockHanlder;
 
-class OcWorkflowsApiTest extends TestCase
+class OcWorkflowsApiTestMock extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
+        $mockResponse = \Tests\DataProvider\SetupDataProvider::getMockResponses('api_workflows');
+        if (empty($mockResponse)) {
+            $this->markTestIncomplete('No mock responses for workflows api could be found!');
+        }
+        $mockHandler = OcMockHanlder::getHandlerStackWithPath($mockResponse);
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
+        $config['handler'] = $mockHandler;
         $ocRestApi = new Opencast($config);
         $this->ocWorkflowsApi = $ocRestApi->workflowsApi;
         $this->ocEventsApi = $ocRestApi->eventsApi;
     }
-
-    /**
-     * @test
-     * @dataProvider \Tests\DataProvider\WorkflowsApiDataProvider::getAllCases()
-     */
-    public function get_all_workflows($params): void
-    {
-        $this->markTestSkipped('Depricated Endpoint (removed from Opencast v12.x)');
-        $response = $this->ocWorkflowsApi->getAll($params);
-
-        $this->assertSame(200, $response['code'], 'Failure to get workflows list');
-    }
-
 
     /**
      * @test
@@ -52,7 +46,7 @@ class OcWorkflowsApiTest extends TestCase
 
         // Get the single definition.
         $filter = array_filter($definitions, function ($wfd) {
-            return $wfd->identifier == 'republish-metadata';
+            return $wfd->identifier == 'noop';
         });
         $definition = $filter[array_keys($filter)[0]];
         $response2 = $this->ocWorkflowsApi->getDefinition($definition->identifier, true, true);

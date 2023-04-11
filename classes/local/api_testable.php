@@ -59,16 +59,6 @@ class api_testable extends api {
         $this->timeout          = 2000;
         $this->connecttimeout   = 1000;
         $this->baseurl          = 'http://testapi:8080';
-
-        $config = [
-            'url' => $this->baseurl,
-            'username' => $this->username,
-            'password' => $this->password,
-            'timeout' => (intval($this->timeout) / 1000),
-            'connect_timeout' => (intval($this->connecttimeout) / 1000),
-        ];
-        $this->opencastapi = new \OpencastApi\Opencast($config);
-        $this->opencastrestclient = new \OpencastApi\Rest\OcRestClient($config);
     }
 
     /**
@@ -79,19 +69,58 @@ class api_testable extends api {
         return $this->httpcode;
     }
 
+    /**
+     * Get json responses as array
+     * @return array json responses.
+     */
+    public function get_json_responses() {
+        return $this->jsonresponses;
+    }
+
 
     /**
      * Create a response for a http call.
      * @param string $resource Resource to which the response is added
      * @param string $method Http method
-     * @param string $response Response that should be returned
+     * @param int $status The http status code to be returned
+     * @param array $headers The response headers to be returned
+     * @param string $body The response body to be returned
+     * @param string $params The params send by request to check for more precise call
+     * @param string $version The response protocol version to be returned
+     * @param string $reason The response Reason phrase (when empty a default will be used based on the status code)
      */
-    public function add_json_response($resource, $method, $response) {
+    public function add_json_response($resource, $method, $status = 200, $body = null, $params = '',
+        $version = '', $reason = null) {
         if (!array_key_exists($resource, $this->jsonresponses)) {
             $this->jsonresponses[$resource] = array();
         }
-        $this->jsonresponses[$resource][$method] = $response;
+        if (!isset($this->jsonresponses[$resource][strtoupper($method)])) {
+            $this->jsonresponses[$resource][strtoupper($method)] = array();
+        }
+        $responseobject = compact('status', 'body', 'version', 'reason', 'params');
+        $this->jsonresponses[$resource][strtoupper($method)][] = $responseobject;
         set_config('api_testable_responses', json_encode($this->jsonresponses), 'block_opencast');
+    }
+
+    /**
+     * set the mock responses and instantiate the Rest Api.
+     */
+    public function set_opencastapi_mock_responses() {
+        $config = [
+            'url' => $this->baseurl,
+            'username' => $this->username,
+            'password' => $this->password,
+            'timeout' => (intval($this->timeout) / 1000),
+            'connect_timeout' => (intval($this->connecttimeout) / 1000),
+        ];
+        $responses = $this->jsonresponses ?? [];
+        $handler = \OpencastApi\Mock\OcMockHanlder::getHandlerStackWithPath($responses);
+        if (empty($handler) || !is_callable($handler) || empty($responses)) {
+            throw new \moodle_exception('nomockhandler', 'tool_opencast');
+        }
+        $config['handler'] = $handler;
+        $this->opencastapi = new \OpencastApi\Opencast($config);
+        $this->opencastrestclient = new \OpencastApi\Rest\OcRestClient($config);
     }
 
     /**

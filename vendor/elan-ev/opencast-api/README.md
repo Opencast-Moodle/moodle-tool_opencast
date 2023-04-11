@@ -1,5 +1,9 @@
 # opencast-php-library
 This PHP composer package is meant to provide a unified easy-to-use Opencast RESTful API library. It has been designed to make most of commonly used REST Endpoints available to the developers of thirt-party applications mainly LMSes such as Stud.IP, Moodle and ILIAS.
+Please refer to the [Change Log](https://github.com/elan-ev/opencast-php-library/blob/master/CHANGELOG.md) for more info.
+
+## Note
+As of version 1.2.0 the main class name has been changed from `OpenCast` to `OpenCast`. Please refer to [Upgrade Log](https://github.com/elan-ev/opencast-php-library/blob/master/UPGRADING.md) for more info.
 
 # Requisitions
 <b>PHP Version 7.2.5 or above</b> as well as <b>cURL</b> are required. Additionaly, the [requirements](https://docs.guzzlephp.org/en/stable/overview.html#requirements) of [guzzlehttp/guzzle](https://packagist.org/packages/guzzlehttp/guzzle#7.0.0) must be fullfiled.

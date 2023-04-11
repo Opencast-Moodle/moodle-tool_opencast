@@ -23,5 +23,18 @@ class SetupDataProvider {
         }
         return $config;
     }
+
+    public static function getMockResponses($fileName): array
+    {
+        $mockResponse = [];
+        $mockResponsesDir = __DIR__ . "/mock_responses";
+        $fileFullName = basename($fileName, ".json") . '.json';
+        $filePath = $mockResponsesDir . "/" . $fileFullName;
+        if (file_exists($filePath)) {
+            $responseStr = file_get_contents($filePath);
+            $mockResponse = json_decode($responseStr, true);
+        }
+        return $mockResponse !== false ? $mockResponse : [];
+    }
 }
 ?>

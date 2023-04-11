@@ -5,13 +5,20 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use OpencastApi\Opencast;
+use \OpencastApi\Mock\OcMockHanlder;
 
-class OcGroupsApiTest extends TestCase
+class OcGroupsApiTestMock extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
+        $mockResponse = \Tests\DataProvider\SetupDataProvider::getMockResponses('api_groups');
+        if (empty($mockResponse)) {
+            $this->markTestIncomplete('No mock responses for groups api could be found!');
+        }
+        $mockHandler = OcMockHanlder::getHandlerStackWithPath($mockResponse);
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
+        $config['handler'] = $mockHandler;
         $ocRestApi = new Opencast($config);
         $this->ocGroupsApi = $ocRestApi->groupsApi;
     }
@@ -22,7 +29,7 @@ class OcGroupsApiTest extends TestCase
      */
     public function get_all_groups($sort, $limit, $offset, $filter): void
     {
-        $response = $this->ocGroupsApi->getAll($sort, $limit, $offset, $filter);
+        $response =  $this->ocGroupsApi->getAll($sort, $limit, $offset, $filter);
         $this->assertSame(200, $response['code'], 'Failure to get groups list');
     }
 
@@ -49,8 +56,7 @@ class OcGroupsApiTest extends TestCase
         $this->assertSame(201, $response1['code'], 'Failure to create a group');
 
         // Get the group.
-        $response3 = $this->ocGroupsApi->get(strtolower($name));
-        // $response3 = $this->ocGroupsApi->get('phpunit_testing_group');
+        $response3 = $this->ocGroupsApi->get($name);
         $this->assertSame(200, $response3['code'], 'Failure to get group');
         $group = $response3['body'];
         $this->assertNotEmpty($group);

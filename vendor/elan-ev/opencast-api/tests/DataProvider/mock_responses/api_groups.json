@@ -1,0 +1,67 @@
+{
+    "/api/groups": {
+        "GET": [
+            {
+                "body": "[{\"identifier\":\"MH_DEFAULT_ORG_SYSTEM_ADMINS\",\"role\":\"ROLE_GROUP_MH_DEFAULT_ORG_SYSTEM_ADMINS\",\"organization\":\"mh_default_org\",\"roles\":\"ROLE_SUDO,ROLE_OAUTH_USER,ROLE_ADMIN,ROLE_ANONYMOUS\",\"members\":\"admin\",\"name\":\"Opencast Project System Administrators\",\"description\":\"System administrators of 'Opencast Project'\"}]",
+                "params": "",
+                "status": 200
+            }
+        ],
+        "POST": [
+            {
+                "body": "",
+                "status": 201
+            }
+        ]
+    },
+    "/api/groups/PHPUNIT_TESTING_GROUP": {
+        "GET": [
+            {
+                "body": "{\"identifier\":\"PHPUNIT_TESTING_GROUP\",\"role\":\"ROLE_GROUP_MH_DEFAULT_ORG_SYSTEM_ADMINS\",\"organization\":\"mh_default_org\",\"roles\":\"ROLE_SUDO,ROLE_OAUTH_USER,ROLE_ADMIN,ROLE_ANONYMOUS\",\"members\":\"admin\",\"name\":\"Opencast Project System Administrators\",\"description\":\"System administrators of 'Opencast Project'\"}",
+                "params": "",
+                "status": 200
+            }
+        ],
+        "PUT": [
+            {
+                "body": "",
+                "params": "",
+                "status": 200
+            }
+        ],
+        "DELETE": [
+            {
+                "body": "",
+                "params": "",
+                "status": 204
+            }
+        ]
+    },
+    "/api/groups/PHPUNIT_TESTING_GROUP/members": {
+        "POST": [
+            {
+                "body": "",
+                "params": {
+                    "unique_request_identifier": "opencast_capture_agent"
+                },
+                "status": 200
+            },
+            {
+                "body": "",
+                "params": {
+                    "unique_request_identifier": "opencast_capture_agent_2"
+                },
+                "status": 204
+            }
+        ]
+    },
+    "/api/groups/PHPUNIT_TESTING_GROUP/members/opencast_capture_agent": {
+        "DELETE": [
+            {
+                "body": "",
+                "params": "",
+                "status": 200
+            }
+        ]
+    }
+}

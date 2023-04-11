@@ -28,6 +28,7 @@ class OcWorkflowsApi extends OcRest
      * ]     
      * 
      * @return array the response result ['code' => 200, 'body' => '{A (potentially empty) list of workflow instances}']
+     * @deprecated since v1.3 because this endpoint is removed from Opencast Verison 12.x, we will no longer support it here.
      */
     public function getAll($params = [])
     {

@@ -1,0 +1,72 @@
+{
+    "/api/events": {
+        "GET": [
+            {
+                "body": "[{\"identifier\": \"ID-3d-print\",\"creator\": \"Administrator\",\"presenter\": [\"Lars Kiesow\"],\"created\": \"2021-04-17T17:22:40Z\",\"is_part_of\": \"ID-openmedia-opencast\",\"subjects\": [],\"start\": \"2021-04-17T17:22:40Z\",\"description\": \"\",\"language\": \"\",\"source\": \"https://data.lkiesow.io\",\"title\": \"3D Print\",\"processing_state\": \"SUCCEEDED\",\"duration\": null,\"license\": \"CC0\",\"archive_version\": 1,\"contributor\": [],\"series\": \"Open Media for Opencast\",\"has_previews\": true,\"location\": \"\",\"rightsholder\": \"\",\"publication_status\": [\"internal\",\"engage-player\"],\"status\": \"EVENTS.EVENTS.STATUS.PROCESSED\"}]",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/api/workflow-definitions": {
+        "GET": [
+            {
+                "body": "[{\"identifier\":\"noop\",\"description\":\"\",\"title\":\"Do nothing (mostly for debugging and maintenance purposes)\",\"tags\":[]}]",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/api/workflow-definitions/noop?withoperations=true&withconfigurationpanel=true": {
+        "GET": [
+            {
+                "body": "{\"identifier\":\"noop\",\"description\":\"\",\"title\":\"Do nothing (mostly for debugging and maintenance purposes)\",\"tags\":[]}",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/api/workflows?withoperations=false&withconfiguration=false": {
+        "POST": [
+            {
+                "body": "{\"identifier\":\"wkf-running\"}",
+                "params": "",
+                "status": 201
+            }
+        ]
+    },
+    "/api/workflows/wkf-running?withoperations=false&withconfiguration=false": {
+        "PUT": [
+            {
+                "body": "",
+                "params": "",
+                "status": 200
+            }
+        ],
+        "DELETE": [
+            {
+                "body": "",
+                "params": "",
+                "status": 204
+            }
+        ]
+    },
+    "/api/workflows/wkf-running": {
+        "DELETE": [
+            {
+                "body": "",
+                "params": "",
+                "status": 204
+            }
+        ]
+    },
+    "/api/workflows/wkf-running?withoperations=true&withconfiguration=true": {
+        "GET": [
+            {
+                "body": "",
+                "params": "",
+                "status": 200
+            }
+        ]
+    }
+}

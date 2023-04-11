@@ -42,9 +42,14 @@ class OcRestClient extends Client
             $this->setVersion($config['version']);
         }
 
-        parent::__construct([
+        $parentConstructorConfig = [
             'base_uri' => $this->baseUri
-        ]);
+        ];
+
+        if (isset($config['handler']) && is_callable($config['handler'])) {
+            $parentConstructorConfig['handler'] = $config['handler'];
+        }
+        parent::__construct($parentConstructorConfig);
     }
 
     public function registerHeaderException($header, $path) {

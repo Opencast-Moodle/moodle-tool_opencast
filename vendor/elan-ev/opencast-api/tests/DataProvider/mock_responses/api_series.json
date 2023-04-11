@@ -1,0 +1,142 @@
+{
+    "/api/series": {
+        "GET": [
+            {
+                "body": "[{\"identifier\":\"ID-blender-foundation\",\"license\":\"\",\"creator\":\"Administrator\",\"created\":\"2023-04-06T00:03:00Z\",\"subjects\":[],\"organizers\":[],\"description\":\"\",\"publishers\":[\"Blender Foundation\"],\"language\":\"\",\"contributors\":[],\"title\":\"Blender Foundation Productions\",\"rightsholder\":\"\"},{\"identifier\":\"ID-wiki-commons\",\"license\":\"\",\"creator\":\"Administrator\",\"created\":\"2023-04-06T00:03:00Z\",\"subjects\":[],\"organizers\":[],\"description\":\"\",\"publishers\":[\"Wiki Commons\"],\"language\":\"\",\"contributors\":[],\"title\":\"Wiki Commons Content\",\"rightsholder\":\"\"},{\"identifier\":\"ID-av-portal\",\"license\":\"\",\"creator\":\"Administrator\",\"created\":\"2023-04-06T00:03:00Z\",\"subjects\":[],\"organizers\":[],\"description\":\"\",\"publishers\":[\"TIB AV-Portal Hannover\"],\"language\":\"\",\"contributors\":[],\"title\":\"AV-Portal Content\",\"rightsholder\":\"\"},{\"identifier\":\"ID-openmedia-opencast\",\"license\":\"\",\"creator\":\"Administrator\",\"created\":\"2023-04-06T00:03:00Z\",\"subjects\":[],\"organizers\":[],\"description\":\"Media snippets published as test media for Opencast.\",\"publishers\":[\"Lars Kiesow\"],\"language\":\"\",\"contributors\":[],\"title\":\"Open Media for Opencast\",\"rightsholder\":\"\"}]",
+                "params": "",
+                "status": 200
+            }
+        ],
+        "POST": [
+            {
+                "body": "{\"identifier\":\"ID-blender-foundation\"}",
+                "params": "",
+                "status": 201
+            }
+        ]
+    },
+    "/api/series?onlyWithWriteAccess=true": {
+        "GET": [
+            {
+                "body": "[{\"identifier\":\"ID-blender-foundation\",\"license\":\"\",\"creator\":\"Administrator\",\"created\":\"2023-04-06T00:03:00Z\",\"subjects\":[],\"organizers\":[],\"description\":\"\",\"publishers\":[\"Blender Foundation\"],\"language\":\"\",\"contributors\":[],\"title\":\"Blender Foundation Productions\",\"rightsholder\":\"\"},{\"identifier\":\"ID-wiki-commons\",\"license\":\"\",\"creator\":\"Administrator\",\"created\":\"2023-04-06T00:03:00Z\",\"subjects\":[],\"organizers\":[],\"description\":\"\",\"publishers\":[\"Wiki Commons\"],\"language\":\"\",\"contributors\":[],\"title\":\"Wiki Commons Content\",\"rightsholder\":\"\"},{\"identifier\":\"ID-av-portal\",\"license\":\"\",\"creator\":\"Administrator\",\"created\":\"2023-04-06T00:03:00Z\",\"subjects\":[],\"organizers\":[],\"description\":\"\",\"publishers\":[\"TIB AV-Portal Hannover\"],\"language\":\"\",\"contributors\":[],\"title\":\"AV-Portal Content\",\"rightsholder\":\"\"},{\"identifier\":\"ID-openmedia-opencast\",\"license\":\"\",\"creator\":\"Administrator\",\"created\":\"2023-04-06T00:03:00Z\",\"subjects\":[],\"organizers\":[],\"description\":\"Media snippets published as test media for Opencast.\",\"publishers\":[\"Lars Kiesow\"],\"language\":\"\",\"contributors\":[],\"title\":\"Open Media for Opencast\",\"rightsholder\":\"\"}]",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/api/series/ID-blender-foundation?withacl=true": {
+        "GET": [
+            {
+                "body": "{\"identifier\":\"ID-blender-foundation\",\"creator\":\"Administrator\",\"opt_out\":false,\"created\":\"2023-04-06T00:03:00Z\",\"subjects\":[],\"description\":\"\",\"language\":\"\",\"acl\":[{\"allow\":true,\"role\":\"ROLE_ANONYMOUS\",\"action\":\"read\"}],\"title\":\"Blender Foundation Productions\",\"license\":\"\",\"organization\":\"mh_default_org\",\"organizers\":[],\"publishers\":[\"Blender Foundation\"],\"contributors\":[],\"rightsholder\":\"\"}",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/api/series/ID-blender-foundation/metadata": {
+        "GET": [
+            {
+                "body": "[{\"flavor\":\"dublincore/series\",\"title\":\"Opencast Series DublinCore\",\"fields\":[{\"readOnly\":false,\"id\":\"title\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.TITLE\",\"type\":\"text\",\"value\":\"Blender Foundation Productions\",\"required\":true},{\"readOnly\":false,\"id\":\"subjects\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.SUBJECT\",\"type\":\"text\",\"value\":[],\"required\":false},{\"readOnly\":false,\"id\":\"description\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.DESCRIPTION\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"translatable\":true,\"readOnly\":false,\"id\":\"language\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.LANGUAGE\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"readOnly\":false,\"id\":\"rightsHolder\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.RIGHTS\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"translatable\":true,\"readOnly\":false,\"id\":\"license\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.LICENSE\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"creator\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.ORGANIZERS\",\"type\":\"mixed_text\",\"value\":[],\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"contributor\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.CONTRIBUTORS\",\"type\":\"mixed_text\",\"value\":[],\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"publisher\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.PUBLISHERS\",\"type\":\"mixed_text\",\"value\":[\"Blender Foundation\"],\"required\":false},{\"readOnly\":true,\"id\":\"createdBy\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.CREATED_BY\",\"type\":\"text\",\"value\":\"Administrator\",\"required\":false},{\"readOnly\":true,\"id\":\"identifier\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.ID\",\"type\":\"text\",\"value\":\"ID-blender-foundation\",\"required\":false}]}]",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/api/series/ID-blender-foundation/metadata?type=dublincore/series": {
+        "GET": [
+            {
+                "body": "[{\"flavor\":\"dublincore/series\",\"title\":\"Opencast Series DublinCore\",\"fields\":[{\"readOnly\":false,\"id\":\"title\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.TITLE\",\"type\":\"text\",\"value\":\"Blender Foundation Productions\",\"required\":true},{\"readOnly\":false,\"id\":\"subjects\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.SUBJECT\",\"type\":\"text\",\"value\":[],\"required\":false},{\"readOnly\":false,\"id\":\"description\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.DESCRIPTION\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"translatable\":true,\"readOnly\":false,\"id\":\"language\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.LANGUAGE\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"readOnly\":false,\"id\":\"rightsHolder\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.RIGHTS\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"translatable\":true,\"readOnly\":false,\"id\":\"license\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.LICENSE\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"creator\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.ORGANIZERS\",\"type\":\"mixed_text\",\"value\":[],\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"contributor\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.CONTRIBUTORS\",\"type\":\"mixed_text\",\"value\":[],\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"publisher\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.PUBLISHERS\",\"type\":\"mixed_text\",\"value\":[\"Blender Foundation\"],\"required\":false},{\"readOnly\":true,\"id\":\"createdBy\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.CREATED_BY\",\"type\":\"text\",\"value\":\"Administrator\",\"required\":false},{\"readOnly\":true,\"id\":\"identifier\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.ID\",\"type\":\"text\",\"value\":\"ID-blender-foundation\",\"required\":false}]}]",
+                "params": "",
+                "status": 200
+            }
+        ],
+        "PUT": [
+            {
+                "body": "[{\"flavor\":\"dublincore/series\",\"title\":\"Opencast Series DublinCore\",\"fields\":[{\"readOnly\":false,\"id\":\"title\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.TITLE\",\"type\":\"text\",\"value\":\"Blender Foundation Productions\",\"required\":true},{\"readOnly\":false,\"id\":\"subjects\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.SUBJECT\",\"type\":\"text\",\"value\":[],\"required\":false},{\"readOnly\":false,\"id\":\"description\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.DESCRIPTION\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"translatable\":true,\"readOnly\":false,\"id\":\"language\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.LANGUAGE\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"readOnly\":false,\"id\":\"rightsHolder\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.RIGHTS\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"translatable\":true,\"readOnly\":false,\"id\":\"license\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.LICENSE\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"creator\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.ORGANIZERS\",\"type\":\"mixed_text\",\"value\":[],\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"contributor\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.CONTRIBUTORS\",\"type\":\"mixed_text\",\"value\":[],\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"publisher\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.PUBLISHERS\",\"type\":\"mixed_text\",\"value\":[\"Blender Foundation\"],\"required\":false},{\"readOnly\":true,\"id\":\"createdBy\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.CREATED_BY\",\"type\":\"text\",\"value\":\"Administrator\",\"required\":false},{\"readOnly\":true,\"id\":\"identifier\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.ID\",\"type\":\"text\",\"value\":\"ID-blender-foundation\",\"required\":false}]}]",
+                "params": {
+                    "unique_request_identifier": "PHP UNIT TEST_"
+                },
+                "status": 200
+            }
+        ],
+        "DELETE": [
+            {
+                "body": "",
+                "params": "",
+                "status": 403
+            }
+        ]
+    },
+    "/api/series/ID-blender-foundation": {
+        "PUT": [
+            {
+                "body": "[{\"flavor\":\"dublincore/series\",\"title\":\"Opencast Series DublinCore\",\"fields\":[{\"readOnly\":false,\"id\":\"title\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.TITLE\",\"type\":\"text\",\"value\":\"Blender Foundation Productions\",\"required\":true},{\"readOnly\":false,\"id\":\"subjects\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.SUBJECT\",\"type\":\"text\",\"value\":[],\"required\":false},{\"readOnly\":false,\"id\":\"description\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.DESCRIPTION\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"translatable\":true,\"readOnly\":false,\"id\":\"language\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.LANGUAGE\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"readOnly\":false,\"id\":\"rightsHolder\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.RIGHTS\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"translatable\":true,\"readOnly\":false,\"id\":\"license\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.LICENSE\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"creator\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.ORGANIZERS\",\"type\":\"mixed_text\",\"value\":[],\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"contributor\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.CONTRIBUTORS\",\"type\":\"mixed_text\",\"value\":[],\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"publisher\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.PUBLISHERS\",\"type\":\"mixed_text\",\"value\":[\"Blender Foundation\"],\"required\":false},{\"readOnly\":true,\"id\":\"createdBy\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.CREATED_BY\",\"type\":\"text\",\"value\":\"Administrator\",\"required\":false},{\"readOnly\":true,\"id\":\"identifier\",\"label\":\"EVENTS.SERIES.DETAILS.METADATA.ID\",\"type\":\"text\",\"value\":\"ID-blender-foundation\",\"required\":false}]}]",
+                "params": "",
+                "status": 200
+            }
+        ],
+        "DELETE": [
+            {
+                "body": "",
+                "params": "",
+                "status": 204
+            }
+        ],
+        "GET": [
+            {
+                "body": "{\"identifier\":\"ID-blender-foundation\",\"creator\":\"Administrator\",\"opt_out\":false,\"created\":\"2023-04-06T00:03:00Z\",\"subjects\":[],\"description\":\"\",\"language\":\"\",\"acl\":[{\"allow\":true,\"role\":\"ROLE_ANONYMOUS\",\"action\":\"read\"}],\"title\":\"Blender Foundation Productions\",\"license\":\"\",\"organization\":\"mh_default_org\",\"organizers\":[],\"publishers\":[\"Blender Foundation\"],\"contributors\":[],\"rightsholder\":\"\"}",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/api/series/ID-blender-foundation/acl": {
+        "GET": [
+            {
+                "body": "[{\"allow\":true,\"role\":\"ROLE_ANONYMOUS\",\"action\":\"read\"}]",
+                "params": "",
+                "status": 200
+            }
+        ],
+        "PUT": [
+            {
+                "body": "[]",
+                "params": {
+                    "unique_request_identifier": "acl=[]"
+                },
+                "status": 200
+            },
+            {
+                "body": "[{\"allow\":true,\"role\":\"ROLE_ANONYMOUS\",\"action\":\"read\"}]",
+                "params": {
+                    "unique_request_identifier": "ROLE_ANONYMOUS"
+                },
+                "status": 200
+            }
+        ]
+    },
+    "/api/series/ID-blender-foundation/properties": {
+        "PUT": [
+            {
+                "body": "{\"ondemand\": \"true\",\"live\": \"false\"}",
+                "params": {
+                    "unique_request_identifier": "ondemand"
+                },
+                "status": 200
+            },
+            {
+                "body": "{\"ondemand\": \"true\",\"live\": \"false\",\"theme\":1000}",
+                "params": {
+                    "unique_request_identifier": "theme"
+                },
+                "status": 200
+            }
+        ],
+        "GET": [
+            {
+                "body": "{\"ondemand\": \"true\",\"live\": \"false\"}",
+                "status": 200
+            }
+        ]
+    }
+}

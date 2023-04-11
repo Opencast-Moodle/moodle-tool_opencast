@@ -95,6 +95,9 @@ class Opencast
         if (!isset($engageConfig['version']) && isset($config['version'])) {
             $engageConfig['version'] = $config['version'];
         }
+        if (!isset($engageConfig['handler']) && isset($config['handler'])) {
+            $engageConfig['handler'] = $config['handler'];
+        }
         $this->engageRestClient = new OcRestClient($engageConfig);
     }
 

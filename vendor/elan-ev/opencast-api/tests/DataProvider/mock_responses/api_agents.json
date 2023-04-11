@@ -1,0 +1,20 @@
+{
+    "/api/agents?limit=4": {
+        "GET": [
+            {
+                "body": "[{\"agent_id\":\"ca24\",\"status\":\"offline\",\"inputs\":[\"default\"],\"update\":\"2018-03-12T18:17:25Z\",\"url\":\"127.0.0.1\"}]",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/api/agents/ca24": {
+        "GET": [
+            {
+                "body": "{\"agent_id\":\"ca24\",\"status\":\"offline\",\"inputs\":[\"default\"],\"update\":\"2018-03-12T18:17:25Z\",\"url\":\"127.0.0.1\"}",
+                "params": "",
+                "status": 200
+            }
+        ]
+    }
+}

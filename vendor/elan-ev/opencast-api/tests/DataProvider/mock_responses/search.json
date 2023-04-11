@@ -1,0 +1,29 @@
+{
+    "/search/episode.json?sid=8010876e-1dce-4d38-ab8d-24b956e3d8b7": {
+        "GET": [
+            {
+                "body": "",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/search/lucene.json?series=true": {
+        "GET": [
+            {
+                "body": "",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/search/series.json?episodes=true": {
+        "GET": [
+            {
+                "body": "",
+                "params": "",
+                "status": 200
+            }
+        ]
+    }
+}

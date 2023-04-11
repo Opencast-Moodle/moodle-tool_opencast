@@ -118,6 +118,7 @@ class OcWorkflow extends OcRest
      * @param string $format (optional) The output format (json or xml) of the response body. (Default value = 'json')
      *
      * @return array the response result ['code' => 200, 'body' => '{A JSON (object) | XML (text) representation of the workflow statistics }']
+     * @deprecated from version v1.3 and will be removed in v1.4
      */
     public function getStatistics($format = '')
     {
@@ -173,6 +174,7 @@ class OcWorkflow extends OcRest
      * @param string $format (optional) The output format (json or xml) of the response body. (Default value = 'json')
      *
      * @return array the response result ['code' => 200, 'body' => '{A JSON (object) | XML (text) representation of the workflow set }']
+     * @deprecated from version v1.3 and will be removed in v1.4
      */
     public function getInstances($params = [], $format = '')
     {

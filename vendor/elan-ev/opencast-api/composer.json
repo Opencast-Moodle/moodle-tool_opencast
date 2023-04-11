@@ -24,7 +24,8 @@
     "autoload": {
         "psr-4": {
             "OpencastApi\\": "src/OpencastApi/",
-            "OpencastApi\\Rest\\": "src/OpencastApi/Rest/"
+            "OpencastApi\\Rest\\": "src/OpencastApi/Rest/",
+            "OpencastApi\\Mock\\": "src/OpencastApi/Mock/"
         }
     },
     "require-dev": {

@@ -5,13 +5,22 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use OpencastApi\Opencast;
+use \OpencastApi\Mock\OcMockHanlder;
 
-class OcAgentsApiTest extends TestCase
+class OcAgentsApiTestMock extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
+
+        $mockResponse = \Tests\DataProvider\SetupDataProvider::getMockResponses('api_agents');
+        if (empty($mockResponse)) {
+            $this->markTestIncomplete('No mock responses for agents api could be found!');
+        }
+
+        $mockHandler = OcMockHanlder::getHandlerStackWithPath($mockResponse);
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
+        $config['handler'] = $mockHandler;
         $ocRestApi = new Opencast($config);
 
         $this->ocAgentsApi = $ocRestApi->agentsApi;
