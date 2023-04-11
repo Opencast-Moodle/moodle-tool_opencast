@@ -83,13 +83,13 @@ class api_testable extends api {
      * @param string $resource Resource to which the response is added
      * @param string $method Http method
      * @param int $status The http status code to be returned
-     * @param array $headers The response headers to be returned
      * @param string $body The response body to be returned
      * @param string $params The params send by request to check for more precise call
+     * @param array $headers The response headers to be returned
      * @param string $version The response protocol version to be returned
      * @param string $reason The response Reason phrase (when empty a default will be used based on the status code)
      */
-    public function add_json_response($resource, $method, $status = 200, $body = null, $params = '',
+    public function add_json_response($resource, $method, $status = 200, $body = null, $params = '', $headers = [],
         $version = '', $reason = null) {
         if (!array_key_exists($resource, $this->jsonresponses)) {
             $this->jsonresponses[$resource] = array();
@@ -97,7 +97,7 @@ class api_testable extends api {
         if (!isset($this->jsonresponses[$resource][strtoupper($method)])) {
             $this->jsonresponses[$resource][strtoupper($method)] = array();
         }
-        $responseobject = compact('status', 'body', 'version', 'reason', 'params');
+        $responseobject = compact('status', 'body', 'version', 'reason', 'params', 'headers');
         $this->jsonresponses[$resource][strtoupper($method)][] = $responseobject;
         set_config('api_testable_responses', json_encode($this->jsonresponses), 'block_opencast');
     }
