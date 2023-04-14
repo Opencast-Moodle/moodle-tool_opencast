@@ -150,7 +150,8 @@ class api extends \curl {
                                         $customconfigs = array()) {
 
         if (self::use_test_api() === true) {
-            return new api_testable();
+            $apitestable = new api_testable($instanceid);
+            return $apitestable;
         }
 
         return new api($instanceid, $settings, $customconfigs);

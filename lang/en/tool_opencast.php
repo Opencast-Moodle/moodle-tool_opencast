@@ -85,3 +85,4 @@ $string['privacy:metadata'] = 'The Opencast API admin tool only provides API end
 
 // Testing API.
 $string['nomockhandler'] = 'The Opencast Api Object is unable to handle the responses for testing purposes.';
+$string['notestingjsonresponses'] = 'The JSON responses are not set, please make sure to use api_testable::add_json_response before running and using the class.';

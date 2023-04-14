@@ -9,11 +9,19 @@ use GuzzleHttp\Exception\RequestException;
 
 class OcMockHanlder
 {
-    public static function getHandlerStackWithPath($data)
+    /**
+     * Returns a closure function that handles the mock request by matching through a given data list
+     *
+     * @param array $data the formatted response data list
+     * @param string $recordFilePath the path to record all incoming requests, which can be used to find out what are the actaul requests.
+     *
+     * @return closure $customHandler the custom handler
+     */
+    public static function getHandlerStackWithPath($data, $recordFilePath = null)
     {
-        $mockResponses = [];
-        $customHandler = function (Request $request) use ($data) {
+        $customHandler = function (Request $request) use ($data, $recordFilePath) {
             $path = $request->getUri()->getPath();
+            $host = $request->getUri()->getHost();
             $query = $request->getUri()->getQuery();
             $method = $request->getMethod();
             $requestBody = $request->getBody()->getContents();
@@ -21,6 +29,11 @@ class OcMockHanlder
             $fullPath = $path;
             if (!empty($query)) {
                 $fullPath .= '?' . urldecode($query);
+            }
+
+            if (!empty($recordFilePath) && is_writable($recordFilePath)) {
+                $recordMessage = '[' . date("d.m.Y H:i:s") . ']: ' . "($method) " . urldecode($request->getUri()->__toString()) . PHP_EOL;
+                file_put_contents($recordFilePath, $recordMessage, FILE_APPEND);
             }
 
             $status = 404;
@@ -39,16 +52,8 @@ class OcMockHanlder
             if ($method === 'PUT' && !empty($requestBody)) {
                 $requestBody = urldecode($requestBody);
             }
-            // if (!empty($requestBody)) {
-            //     if ($method == 'POST') {
-            //         $iswritten = file_put_contents('/Users/farbod/Workspace/AVVP/oc-php-lib-post-params.txt', $requestBody);
-            //     }
-            //     if ($method == 'PUT') {
-            //         $iswritten = file_put_contents('/Users/farbod/Workspace/AVVP/oc-php-lib-put-params.txt', $requestBody);
-            //     }
-            // }
             foreach ($data as $resPath => $resData) {
-                if ($resPath === $fullPath && isset($resData[$method])) {
+                if (self::checkPath($resPath, $fullPath) && isset($resData[$method])) {
                     $resObj = null;
                     if (in_array($method, ['POST', 'PUT']) && is_array($resData[$method]) && count($resData[$method]) > 1) {
                         $filter = array_filter($resData[$method], function ($res) use ($requestBody) {
@@ -74,6 +79,43 @@ class OcMockHanlder
             return $response;
         };
         return $customHandler;
+    }
+
+    /**
+     * Checks if response path and request path are matched.
+     *
+     * @param string $responsePath the response path
+     * @param string $requestPath the request path
+     *
+     * @return bool true if matches, false otherwise
+     */
+    private static function checkPath($responsePath, $requestPath)
+    {
+        $responsePath = urldecode($responsePath);
+        $$requestPath = urldecode($requestPath);
+
+        $resParsedUrl = parse_url($responsePath);
+        $resPath = $resParsedUrl['path'];
+        $resQueryArray = [];
+        if (!empty($resParsedUrl['query'])) {
+            parse_str($resParsedUrl['query'], $resQueryArray);
+        }
+
+        $reqParsedUrl = parse_url($requestPath);
+        $reqPath = $reqParsedUrl['path'];
+        $reqQueryArray = [];
+        if (!empty($reqParsedUrl['query'])) {
+            parse_str($reqParsedUrl['query'], $reqQueryArray);
+        }
+
+        if (!empty($resQueryArray)) {
+            ksort($resQueryArray);
+        }
+        if (!empty($reqQueryArray)) {
+            ksort($reqQueryArray);
+        }
+
+        return $resPath === $reqPath && json_encode($resQueryArray) === json_encode($reqQueryArray);
     }
 }
 ?>
