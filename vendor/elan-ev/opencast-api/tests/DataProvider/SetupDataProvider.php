@@ -15,7 +15,7 @@ class SetupDataProvider {
             'username' => $username,
             'password' => $password,
             'timeout' => $timeout,
-            'version' => '1.6.0',
+            'version' => '1.9.0',
             'connect_timeout' => $connectTimeout
         ];
         if (!empty($version)) {

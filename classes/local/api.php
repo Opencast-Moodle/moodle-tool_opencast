@@ -139,6 +139,7 @@ class api extends \curl {
      *
      * @param array $settings
      * @param array $customconfigs
+     * @param boolean $enableingest whether to enable ingest upload.
      *
      * @return api|api_testable
      *
@@ -147,14 +148,15 @@ class api extends \curl {
      */
     public static function get_instance($instanceid = null,
                                         $settings = array(),
-                                        $customconfigs = array()) {
+                                        $customconfigs = array(),
+                                        $enableingest = false) {
 
         if (self::use_test_api() === true) {
-            $apitestable = new api_testable($instanceid);
+            $apitestable = new api_testable($instanceid, $enableingest);
             return $apitestable;
         }
 
-        return new api($instanceid, $settings, $customconfigs);
+        return new api($instanceid, $settings, $customconfigs, $enableingest);
     }
 
     /**
@@ -195,12 +197,15 @@ class api extends \curl {
      * @param array $customconfigs
      * Custom api config.
      *
+     * @param boolean $enableingest whether to enable ingest upload.
+     *
      * @throws \dml_exception
      * @throws \moodle_exception
      */
     public function __construct($instanceid = null,
                                 $settings = array(),
-                                $customconfigs = array()) {
+                                $customconfigs = array(),
+                                $enableingest = false) {
         // Allow access to local ips.
         $settings['ignoresecurity'] = true;
         parent::__construct($settings);
@@ -274,7 +279,7 @@ class api extends \curl {
             'timeout' => (intval($this->timeout) / 1000),
             'connect_timeout' => (intval($this->connecttimeout) / 1000),
         ];
-        $this->opencastapi = new \OpencastApi\Opencast($config);
+        $this->opencastapi = new \OpencastApi\Opencast($config, [], $enableingest);
         $this->opencastrestclient = new \OpencastApi\Rest\OcRestClient($config);
     }
 

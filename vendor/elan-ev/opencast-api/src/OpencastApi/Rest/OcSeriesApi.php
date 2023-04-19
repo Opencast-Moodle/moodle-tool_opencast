@@ -56,6 +56,78 @@ class OcSeriesApi extends OcRest
         $options = $this->restClient->getQueryParams($query);
         return $this->restClient->performGet($uri, $options);
     }
+
+    /**
+     * Returns the series matching the query parameters as JSON (array).
+     *
+     * @param array $params (optional) The list of query params to pass which can contain the followings:
+     * [
+     *      'q' => '{Free text search}',
+     *      'edit' => '(boolean){Whether this query should return only series that are editable}',
+     *      'fuzzyMatch' => '(boolean){Whether the seriesId can be used for a partial match. The default is an exact match}',
+     *      'seriesId' => '{The series identifier}',
+     *      'seriesTitle' => '{The series title}',
+     *      'creator' => '{The series creator}',
+     *      'contributor' => '{The series contributor}',
+     *      'publisher' => '{The series publisher}',
+     *      'rightsholder' => '{The series rights holder}',
+     *      'createdfrom' => '{Filter results by created from (yyyy-MM-dd'T'HH:mm:ss'Z') }',
+     *      'createdto' => '{Filter results by created to (yyyy-MM-dd'T'HH:mm:ss'Z')) }',
+     *      'language' => '{The series language}',
+     *      'license' => '{The series license}',
+     *      'subject' => '{The series subject}',
+     *      'abstract' => '{The series abstract}',
+     *      'description' => '{The series description}',
+     *      'sort' => '{The sort order. May include any of the following: TITLE, SUBJECT, CREATOR, PUBLISHER, CONTRIBUTOR, ABSTRACT, DESCRIPTION, CREATED, AVAILABLE_FROM, AVAILABLE_TO, LANGUAGE, RIGHTS_HOLDER, SPATIAL, TEMPORAL, IS_PART_OF, REPLACES, TYPE, ACCESS, LICENCE. Add '_DESC' to reverse the sort order (e.g. TITLE_DESC)}',
+     *      'startPage' => '{The page offset}',
+     *      'count' => '{Results per page (max 100)}',
+     * ]
+     *
+     * @return array the response result ['code' => 200, 'body' => '{the series search results as JSON (array)}']
+     */
+    public function getAllFullTextSearch($params = [])
+    {
+        $uri = self::URI . "/series.json";
+
+        $query = [];
+        $acceptableParams = [
+            'q', 'edit', 'fuzzyMatch', 'seriesId', 'seriesTitle',
+            'creator', 'contributor', 'publisher', 'rightsholder', 'createdfrom',
+            'createdto', 'language', 'license', 'subject', 'abstract',
+            'description', 'startPage', 'count'
+        ];
+        foreach ($params as $param_name => $param_value) {
+            if (in_array($param_name, $acceptableParams)) {
+                if ((($param_name == 'edit' || $param_name == 'fuzzyMatch') && is_bool($param_value)) || !empty($param_value)) {
+                    if ($param_name == 'count') {
+                        $param_value = intval($param_value);
+                        $param_value = ($param_value <= 100) ?: 100;
+                    }
+                    $query[$param_name] = $param_value;
+                }
+            }
+        }
+        $sortsASC = [
+            'TITLE', 'SUBJECT', 'CREATOR', 'PUBLISHER',
+            'CONTRIBUTOR', 'ABSTRACT', 'DESCRIPTION', 'CREATED',
+            'AVAILABLE_FROM', 'AVAILABLE_TO','LANGUAGE', 'RIGHTS_HOLDER',
+            'SPATIAL', 'TEMPORAL', 'IS_PART_OF', 'REPLACES', 'TYPE',
+            'ACCESS', 'LICENCE'
+        ];
+        $sortsDESC = array_map(function ($sort) {
+            return "{$sort}_DESC";
+        }, $sortsASC);
+
+        $sorts = array_merge($sortsASC, $sortsDESC);
+        
+        if (array_key_exists('sort', $params) && !empty($params['sort']) &&
+            in_array($params['sort'], $sorts)) {
+            $query['sort'] = $params['sort'];
+        }
+
+        $options = $this->restClient->getQueryParams($query);
+        return $this->restClient->performGet($uri, $options);
+    }
     
     /**
      * Returns a single series.

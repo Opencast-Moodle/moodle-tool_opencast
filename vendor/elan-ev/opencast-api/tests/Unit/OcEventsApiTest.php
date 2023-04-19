@@ -54,7 +54,7 @@ class OcEventsApiTest extends TestCase
      */
     public function get_single_event(string $identifier): string
     {
-        $responseAll =  $this->ocEventsApi->getAll();
+        $responseAll =  $this->ocEventsApi->getAll(['withacl' => true]);
         $this->assertSame(200, $responseAll['code'], 'Failure to get event list');
         $events = $responseAll['body'];
         if (!empty($events)) {
@@ -141,6 +141,32 @@ class OcEventsApiTest extends TestCase
      * @test
      * @depends get_single_event
      */
+    public function add_tracks(string $identifier)
+    {
+        // Add Track no override.
+        $response1 = $this->ocEventsApi->addTrack(
+            $identifier,
+            'captions/vtt+de',
+            \Tests\DataProvider\EventsDataProvider::getVttFile()
+        );
+        $this->assertSame(200, $response1['code'], 'Failure to add Track with no override');
+
+        // Add Track with override.
+        $response2 = $this->ocEventsApi->addTrack(
+            $identifier,
+            'captions/vtt+de',
+            \Tests\DataProvider\EventsDataProvider::getVttFile(),
+            true
+        );
+        $this->assertSame(200, $response2['code'], 'Failure to add Track with override');
+
+        return $identifier;
+    }
+
+    /**
+     * @test
+     * @depends add_tracks
+     */
     public function get_update_delete_acls(string $identifier): string
     {
         // Get ACL.
@@ -222,7 +248,7 @@ class OcEventsApiTest extends TestCase
 
         $publications = $response1['body'];
         if (!empty($publications)) {
-            $publication = $publications[0];
+            $publication = is_array($publications) ? $publications[0] : $publications;
             $response2 = $this->ocEventsApi->getSinglePublication($identifier, $publication->id, true);
             $this->assertSame(200, $response2['code'], 'Failure to get single publication of an event');
 

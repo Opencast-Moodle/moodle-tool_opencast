@@ -12,7 +12,7 @@ class Opencast
     /** @var OpencastApi\Rest\OcRestClient the engage node rest client */
     private $engageRestClient;
 
-    /* 
+    /*
         $config = [
             'url' => 'https://develop.opencast.org/',       // The API url of the opencast instance (required)
             'username' => 'admin',                          // The API username. (required)
@@ -20,6 +20,7 @@ class Opencast
             'timeout' => 0,                                 // The API timeout. In seconds (default 0 to wait indefinitely). (optional)
             'connect_timeout' => 0                          // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
             'version' => null                               // The API Version. (Default null). (optional)
+            'handler' => null                               // The Mock Response Handler with Closure type. (Default null). (optional)
         ]
 
         $engageConfig = [
@@ -29,16 +30,23 @@ class Opencast
             'timeout' => 0,                                 // The API timeout. In seconds (default 0 to wait indefinitely). (optional)
             'connect_timeout' => 0                          // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
             'version' => null                               // The API Version. (Default null). (optional)
+            'handler' => null                               // The Mock Response Handler with Closure type. (Default null). (optional)
         ]
     */
-    public function __construct($config, $engageConfig = [])
+    /**
+     * constructor
+     * @param array $config Configuration
+     * @param array $engageConfig Enage node Configuration
+     * @param boolean $enableingest whether to load ingest or not (Default true)
+     */
+    public function __construct($config, $engageConfig = [], $enableingest = true)
     {
         $this->restClient = new OcRestClient($config);
         $this->setEngageRestClient($config, $engageConfig);
-        $this->setEndpointProperties($config);
+        $this->setEndpointProperties($config, $enableingest);
     }
 
-    private function setEndpointProperties($config)
+    private function setEndpointProperties($config, $enableingest)
     {
         foreach(glob(__DIR__   . '/Rest/*.php') as $classPath) {
             
@@ -58,8 +66,10 @@ class Opencast
             $this->{$propertyName} = new $fullClassName($client);
         }
 
-        // NOTE: services must be instantiated before calling setIngest method!
-        $this->setIngestProperty($config);
+        if ($enableingest) {
+            // NOTE: services must be instantiated before calling setIngest method!
+            $this->setIngestProperty($config);
+        }
     }
 
     private function excludeFilters()

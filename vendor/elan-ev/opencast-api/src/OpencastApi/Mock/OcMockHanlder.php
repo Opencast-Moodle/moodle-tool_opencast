@@ -10,12 +10,13 @@ use GuzzleHttp\Exception\RequestException;
 class OcMockHanlder
 {
     /**
-     * Returns a closure function that handles the mock request by matching through a given data list
+     * Returns a closure function that handles the mock request by matching against a given data list
+     * More information about this method can be found in README.md file.
      *
      * @param array $data the formatted response data list
      * @param string $recordFilePath the path to record all incoming requests, which can be used to find out what are the actaul requests.
      *
-     * @return closure $customHandler the custom handler
+     * @return Closure $customHandler the custom handler
      */
     public static function getHandlerStackWithPath($data, $recordFilePath = null)
     {
@@ -31,7 +32,7 @@ class OcMockHanlder
                 $fullPath .= '?' . urldecode($query);
             }
 
-            if (!empty($recordFilePath) && is_writable($recordFilePath)) {
+            if (!empty($recordFilePath) && file_exists($recordFilePath) && is_writable($recordFilePath)) {
                 $recordMessage = '[' . date("d.m.Y H:i:s") . ']: ' . "($method) " . urldecode($request->getUri()->__toString()) . PHP_EOL;
                 file_put_contents($recordFilePath, $recordMessage, FILE_APPEND);
             }

@@ -49,10 +49,11 @@ class api_testable extends api {
      * Constructor of the Opencast Test API.
      *
      * @param int|null $instanceid Opencast instance id.
+     * @param boolean $enableingest whether to enable ingest upload.
      *
      * @throws \dml_exception
      */
-    public function __construct($instanceid = null) {
+    public function __construct($instanceid = null, $enableingest = false) {
         // Needed to persist responses across requests.
         $this->jsonresponses = json_decode(get_config('tool_opencast', 'api_testable_responses'), true);
         if (empty($this->jsonresponses)) {
@@ -88,7 +89,7 @@ class api_testable extends api {
             throw new \moodle_exception('nomockhandler', 'tool_opencast');
         }
         $config['handler'] = $handler;
-        $this->opencastapi = new \OpencastApi\Opencast($config);
+        $this->opencastapi = new \OpencastApi\Opencast($config, [], $enableingest);
         $this->opencastrestclient = new \OpencastApi\Rest\OcRestClient($config);
     }
 

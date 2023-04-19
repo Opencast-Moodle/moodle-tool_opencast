@@ -42,8 +42,8 @@ class OcSeries extends OcRest
 
     /**
      * Returns a list of identifier and title of all series
-     *
      * @return array the response result ['code' => 200, 'body' => '{JSON (object) list of identifier and title of all series}']
+     * @deprecated since version v1.3, removed from Opencast Version 12
      */
     public function getTitles()
     {
@@ -151,6 +151,7 @@ class OcSeries extends OcRest
      * @param string $format (optional) The output format (json or xml) of the response body. (Default value = 'json')
      *
      * @return array the response result ['code' => 200, 'body' => '{the series search results as JSON (array) or XML (text)}']
+     * @deprecated Deprecated since version 1.3 - since it is removed from Opencast Verrsion 12.
      */
     public function getAll($params = [], $format = '')
     {

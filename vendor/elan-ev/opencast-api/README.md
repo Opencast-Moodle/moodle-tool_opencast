@@ -25,6 +25,7 @@ $config = [
       'timeout' => 0,                                 // The API timeout. In seconds (default 0 to wait indefinitely). (optional)
       'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
       'version' => null,                              // The API Version. (Default null). (optional)
+      'handler' => null                               // The Mock Response Handler with Closure type. (Default null). (optional)
 ];
 
 $engageConfig = [
@@ -34,6 +35,7 @@ $engageConfig = [
       'timeout' => 0,                                 // The API timeout. In seconds (default 0 to wait indefinitely). (optional)
       'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
       'version' => null,                              // The API version. (Default null). (optional)
+      'handler' => null                               // The Mock Response Handler with Closure type. (Default null). (optional)
 ];
 
 use OpencastApi\Opencast;
@@ -70,6 +72,7 @@ $config = [
       'timeout' => 0,                                 // The API timeout. In seconds (default 0 to wait indefinitely). (optional)
       'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
       'version' => null,                              // The API version. (Default null). (optional)
+      'handler' => null                               // The Mock Response Handler with Closure type. (Default null). (optional)
 ];
 
 
@@ -108,9 +111,20 @@ $config = [
       'timeout' => 0,                                 // The API timeout. In seconds (default 0 to wait indefinitely). (optional)
       'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
       'version' => null,                              // The API version. (Default null). (optional)
+      'handler' => null                               // The Mock Response Handler with Closure type. (Default null). (optional)
 ];
 ```
 NOTE: the configuration for presentation (`engage` node) responsible for search has to follow the same definition as normal config. But in case any parameter is missing, the value will be taken from the main config param.
+
+#### Extra: Dynamically loading the ingest endpoint class into Opencast instance.
+As of v1.3 it is possible to enable (Default) or disable  the ingest endpoint to be loaded into `OpencastApi\Opencast` by passing a boolean value as the last argument of the class as follows:
+
+```php
+use OpencastApi\Opencast;
+$opencastApiWithIngest = new Opencast($config, $engageConfig);
+$opencastApiWithoutIngest = new Opencast($config, $engageConfig, false);
+// ...
+```
 
 # Response
 The return result of each call is an `Array` containing the following information:
@@ -243,6 +257,94 @@ $baseResponse = $ocBaseApi->setRequestConnectionTimeout(10)->get();
 
 - `/sysinfo/bundles/version`: (v1.1.1) only bundle version endpoint is available. [Sysinfo Endpoint definitions WiKi](https://github.com/elan-ev/opencast-php-library/wiki/OcSysinfo)
 
+# Mocking Responses
+In order to conduct proper testing, a mocking mechanism is provided.
+## How to use
+### Step 1: Responses Array
+As in the first step it is necessary to have all the responses in an array form, which has to have the following structure:
+
+```php
+$responsesArray = [
+      "/api/events" => [ // Request Path
+            "GET": [ // METHOD
+                  [
+                        "body" => "", //Response body (Default "")
+                        "status": 200, // Status code (Default 200)
+                        "headers": [], // Response headers (Default [])
+                        "version": "", // Protocol version (Default null)
+                        "reason": "", // Reason phrase (when empty a default will be used based on the status code) (Default null)
+                        "params": []  // The optional params to pass to the call (Default [])
+                  ]
+            ],
+            "POST": [ // METHOD
+                  [
+                        "body" => "", //Response body (Default "")
+                        "status": 200, // Status code (Default 200)
+                        "headers": [], // Response headers (Default [])
+                        "version": "", // Protocol version (Default null)
+                        "reason": "", // Reason phrase (when empty a default will be used based on the status code) (Default null)
+                        "params": []  // The optional params to pass to the call (Default [])
+                  ],
+                  [...] // Multiple response data object to have multiple calls to the same path and same method. Please see the NOTE below.
+            ],
+            "PUT": [
+                  [...]
+            ],
+            "DELETE": [
+                  [...]
+            ]
+      ],
+];
+
+```
+NOTE: In order to apply multiple calls to the same path, a unique parameter called `unique_request_identifier` in `params` array must be provided, for example you want to update a series's acl twice with the same path but different acl values: (The value of the unique identifier must be something within the body of the request)
+
+```php
+$responsesArray = [
+      "/api/series/{series id}/acl": [
+            "PUT": [ // PUT METHOD on the same path
+                  [
+                        "body" => "", //Response body (Default "")
+                        "status": 200, // Status code (Default 200)
+                        "params": [  // The optional params to pass to the call (Default [])
+                              "unique_request_identifier": "acl=[]"
+                        ],
+                  ],
+                  [
+                        "body" => "[{\"allow\":true,\"role\":\"ROLE_ANONYMOUS\",\"action\":\"read\"}]", //Response body (Default "")
+                        "status": 200, // Status code (Default 200)
+                        "params": [  // The optional params to pass to the call (Default [])
+                              "unique_request_identifier": "ROLE_ANONYMOUS"
+                        ],
+                  ]
+            ]
+      ],
+];
+
+```
+### Step 2: Creating a new MockHandler instance and passing to the configuration array.
+In order to create a new MockHandler instance, you should use `\OpencastApi\Mock\OcMockHanlder::getHandlerStackWithPath` and pass that instance into the configuration array with handler key, like so:
+```php
+$mockResponses = [...]; // As described above.
+$mockHandler = \OpencastApi\Mock\OcMockHanlder::getHandlerStackWithPath($mockResponses);
+
+$config = [/*the config*/];
+$config['handler'] = $mockHandler;
+$opencast = new \OpencastApi\Opencast($config);
+
+```
+#### Extra: Log requests uri
+if you want to have a list of request uri, you can pass a file path variable as the second argument into the `\OpencastApi\Mock\OcMockHanlder::getHandlerStackWithPath` to write/append every uri into that file, like so;
+```php
+$filePath = '{A valid writeable file path}';
+$mockResponses = [...]; // As described above.
+$mockHandler = \OpencastApi\Mock\OcMockHanlder::getHandlerStackWithPath($mockResponses, $filePath);
+
+$config = [/*the config*/];
+$config['handler'] = $mockHandler;
+$opencast = new \OpencastApi\Opencast($config);
+
+```
 # Naming convention
 ## Classes: 
 Apart from 'Opencast' class, all other classes under `OpencastApi\Rest\` namespace start with `Oc` followed by the name and the endpoint category. For example:

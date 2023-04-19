@@ -336,6 +336,26 @@ class OcEventsApi extends OcRest
         return $this->restClient->performGet($uri);
     }
 
+    /**
+     * Adds the given track to the given flavor in the event. It does not start a workflow.
+     * @param string $eventId the event identifier
+     * @param string $flavor Denotes type and subtype, e.g. 'captions/source+en'
+     * @param file $track The track file
+     * @param boolean $overwriteExisting If true, all other tracks in the specified flavor are REMOVED (Default: false)
+     *
+     * @return array the response result ['code' => 200, 'body' => '{The track was added successfully.}']
+     */
+    public function addTrack($eventId, $flavor, $track, $overwriteExisting = false)
+    {
+        $uri = self::URI . "/{$eventId}/track";
+        $formData['flavor'] = $flavor;
+        $formData['track'] = $track;
+        $formData['overwriteExisting'] = $overwriteExisting;
+
+        $options = $this->restClient->getMultiPartFormParams($formData);
+        return $this->restClient->performPost($uri, $options);
+    }
+
     ## End of [Section 3]: Media.
 
     ## [Section 4]: Metadata.

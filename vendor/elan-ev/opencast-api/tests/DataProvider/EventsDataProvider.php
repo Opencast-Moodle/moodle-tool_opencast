@@ -63,5 +63,10 @@ class EventsDataProvider {
     {
         return Psr7\Utils::tryFopen(__DIR__   . '/test_files/audio_test.mp3', 'r');
     }
+
+    public static function getVttFile()
+    {
+        return Psr7\Utils::tryFopen(__DIR__   . '/test_files/video_test_de.vtt', 'r');
+    }
 }
 ?>

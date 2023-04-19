@@ -27,6 +27,22 @@ class OcSeriesApiTest extends TestCase
         $this->assertSame(200, $response['code'], 'Failure to get series list');
     }
 
+
+    /**
+     * @test
+     */
+    public function get_series_with_full_text_search(): void
+    {
+        $response = $this->ocSeriesApi->getAll();
+        $this->assertSame(200, $response['code'], 'Failure to get series list');
+
+        $series = $response['body'][0];
+        $param['seriesTitle'] = $series->title;
+        $response3 = $this->ocSeriesApi->getAllFullTextSearch($param);
+        $this->markTestIncomplete('As of 18.04.23 this endpoint returns 404 error because of false authentification');
+        $this->assertSame(200, $response3['code'], 'Failure to get a series with full text search');
+    }
+
     /**
      * @test
      */

@@ -27,11 +27,12 @@ class OcIngest extends OcRest
      *
      * @param string $mediaPackage The media package
      * @param string $flavor The kind of media catalog
-     * @param object $file The metadata catalog file 
+     * @param object $file The metadata catalog file
+     * @param string $tags (optional) The tags of the attachment
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) augmented media package}']
      */
-    public function addCatalog($mediaPackage, $flavor, $file)
+    public function addCatalog($mediaPackage, $flavor, $file, $tags = '')
     {
         $uri = self::URI . '/addCatalog';
 
@@ -40,6 +41,10 @@ class OcIngest extends OcRest
             'flavor' => $flavor,
             'dublincore-episode.xml' => $file
         ];
+
+        if (!empty($tags)) {
+            $formData['tags'] = $tags;
+        }
 
         $options = $this->restClient->getMultiPartFormParams($formData);
         return $this->restClient->performPost($uri, $options);
@@ -51,10 +56,11 @@ class OcIngest extends OcRest
      * @param string $mediaPackage The media package
      * @param string $flavor The kind of catalog
      * @param string $url The location of the catalog
+     * @param string $tags (optional) The tags of the attachment
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) augmented media package}']
      */
-    public function addCatalogUrl($mediaPackage, $flavor, $url)
+    public function addCatalogUrl($mediaPackage, $flavor, $url, $tags = '')
     {
         $uri = self::URI . '/addCatalog';
 
@@ -63,6 +69,10 @@ class OcIngest extends OcRest
             'flavor' => $flavor,
             'url' => $url
         ];
+
+        if (!empty($tags)) {
+            $formData['tags'] = $tags;
+        }
 
         $options = $this->restClient->getFormParams($formData);
         return $this->restClient->performPost($uri, $options);
@@ -99,10 +109,11 @@ class OcIngest extends OcRest
      * @param string $mediaPackage The media package
      * @param string $flavor The kind of attachment
      * @param object $file The attachment file
+     * @param string $tags (optional) The tags of the attachment
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) augmented media package}']
      */
-    public function addAttachment($mediaPackage, $flavor, $file)
+    public function addAttachment($mediaPackage, $flavor, $file, $tags = '')
     {
         $uri = self::URI . '/addAttachment';
 
@@ -111,6 +122,10 @@ class OcIngest extends OcRest
             'flavor' => $flavor,
             'attachment.xml' => $file
         ];
+
+        if (!empty($tags)) {
+            $formData['tags'] = $tags;
+        }
 
         $options = $this->restClient->getMultiPartFormParams($formData);
         return $this->restClient->performPost($uri, $options);
@@ -122,10 +137,11 @@ class OcIngest extends OcRest
      * @param string $mediaPackage The media package
      * @param string $flavor The kind of attachment
      * @param string $url The location of the attachment
+     * @param string $tags (optional) The tags of the attachment
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) augmented media package}']
      */
-    public function addAttachmentUrl($mediaPackage, $flavor, $url)
+    public function addAttachmentUrl($mediaPackage, $flavor, $url, $tags = '')
     {
         $uri = self::URI . '/addAttachment';
 
@@ -134,6 +150,10 @@ class OcIngest extends OcRest
             'flavor' => $flavor,
             'url' => $url
         ];
+
+        if (!empty($tags)) {
+            $formData['tags'] = $tags;
+        }
 
         $options = $this->restClient->getFormParams($formData);
         return $this->restClient->performPost($uri, $options);
