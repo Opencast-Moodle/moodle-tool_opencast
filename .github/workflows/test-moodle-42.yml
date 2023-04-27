@@ -11,7 +11,17 @@ jobs:
       matrix:
         php: ['8.1']
         moodle-branch: ['MOODLE_402_STABLE']
-        database: ['mariadb']
+        database: ['pgsql']
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: 'postgres'
+          POSTGRES_HOST_AUTH_METHOD: 'trust'
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
 
     steps:
       - name: Start MariaDB
@@ -114,15 +124,17 @@ jobs:
         database: [ 'pgsql' ]
         opencast: [ '13.5' ]
 
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: 'postgres'
+          POSTGRES_HOST_AUTH_METHOD: 'trust'
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+
     steps:
-      - name: Start MariaDB
-        if: matrix.database == 'mariadb'
-        run: docker run -p 3306:3306 -e MYSQL_USER=root -e MYSQL_ALLOW_EMPTY_PASSWORD=true -d mariadb:10
-
-      - name: Start PostgreSQL
-        if: matrix.database == 'pgsql'
-        run: docker run -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_HOST_AUTH_METHOD=trust -d postgres:12
-
       - name: Check out opencast-docker
         uses: actions/checkout@v3
         with:
