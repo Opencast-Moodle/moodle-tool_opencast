@@ -1,4 +1,4 @@
-name: Moodle Plugin CI
+name: Moodle Plugin CI Moodle 4.2 Test
 
 on: [push]
 
