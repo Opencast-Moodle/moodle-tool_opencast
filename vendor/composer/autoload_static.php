@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit31094404a9f7b2dea43b573984ed3ab0
+class ComposerStaticInitb2ada1c29549f7551088335ef1d38f79
 {
     public static $files = array (
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
@@ -22,6 +22,7 @@ class ComposerStaticInit31094404a9f7b2dea43b573984ed3ab0
         'O' => 
         array (
             'OpencastApi\\Rest\\' => 17,
+            'OpencastApi\\Mock\\' => 17,
             'OpencastApi\\' => 12,
         ),
         'G' => 
@@ -45,6 +46,10 @@ class ComposerStaticInit31094404a9f7b2dea43b573984ed3ab0
         'OpencastApi\\Rest\\' => 
         array (
             0 => __DIR__ . '/..' . '/elan-ev/opencast-api/src/OpencastApi/Rest',
+        ),
+        'OpencastApi\\Mock\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/elan-ev/opencast-api/src/OpencastApi/Mock',
         ),
         'OpencastApi\\' => 
         array (
@@ -71,9 +76,9 @@ class ComposerStaticInit31094404a9f7b2dea43b573984ed3ab0
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit31094404a9f7b2dea43b573984ed3ab0::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit31094404a9f7b2dea43b573984ed3ab0::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit31094404a9f7b2dea43b573984ed3ab0::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitb2ada1c29549f7551088335ef1d38f79::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitb2ada1c29549f7551088335ef1d38f79::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitb2ada1c29549f7551088335ef1d38f79::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -27,3 +27,4 @@
 - Add the series fulltext search query into Series API in: OcSeriesApi->getAllFullTextSearch()
 - The ingest API now allows setting tags when ingesting attachments or catalogs via URL, therefore OcIngest methods including addCatalog, addCatalogUrl, addAttachment and addAttachmentUrl now accept an array parameter containing the tags.
 - Dynamic ingest endpoint loading into Opencast class.
+- Upgrade guzzlehttp/guzzle to 7.5.1
