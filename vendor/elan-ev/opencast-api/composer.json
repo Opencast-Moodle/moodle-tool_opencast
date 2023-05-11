@@ -1,0 +1,44 @@
+{
+    "name": "elan-ev/opencast-api",
+    "description": "A comprehensive PHP library for Opencast",
+    "license": "GPL-3.0-or-later",
+    "keywords": [
+        "Opencast",
+        "API",
+        "RESTful"
+    ],
+    "authors": [
+        {
+            "name": "Farbod Zamani Boroujeni",
+            "email": "zamani@elan-ev.de"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/elan-ev/opencast-php-library/issues"
+    },
+    "homepage": "https://docs.opencast.org/",
+    "require": {
+        "php": ">=7.2.5",
+        "guzzlehttp/guzzle": "7.5.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "OpencastApi\\": "src/OpencastApi/",
+            "OpencastApi\\Rest\\": "src/OpencastApi/Rest/",
+            "OpencastApi\\Mock\\": "src/OpencastApi/Mock/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}

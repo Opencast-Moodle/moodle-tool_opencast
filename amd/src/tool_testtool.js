@@ -16,7 +16,7 @@
 /**
  * AMD module for opencast connection test tool
  *
- * @module     tool_opencast/opencasttesttool
+ * @module     tool_opencast/tool_testtool
  * @copyright  2021 Farbod Zamani (zamani@elan-ev.de)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -71,7 +71,7 @@ define([
                     'apipassword': apipassword,
                     'apitimeout': apitimeout,
                     'apiconnecttimeout': apiconnecttimeout
-                };
+            };
 
                 // Get options.
                 var request = [{methodname: 'tool_opencast_connection_test_tool', args: args}];
@@ -89,7 +89,7 @@ define([
             });
         };
 
-        return /** @alias tool_opencast/opencasttesttool */ {
+        return /** @alias tool_opencast/tool_testtool */ {
 
             /**
              * Initialise the module.

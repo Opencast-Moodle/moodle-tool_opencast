@@ -24,6 +24,9 @@
 
 namespace tool_opencast\local;
 
+defined('MOODLE_INTERNAL') || die;
+
+require_once($CFG->dirroot . '/admin/tool/opencast/vendor/autoload.php');
 /**
  * API used for testing
  *
@@ -39,17 +42,55 @@ class api_testable extends api {
     /** @var int http status code of last request */
     private $httpcode;
 
+    /** @var string version api version to apply for */
+    public $version = '1.9.0';
 
     /**
      * Constructor of the Opencast Test API.
+     *
+     * @param int|null $instanceid Opencast instance id.
+     * @param boolean $enableingest whether to enable ingest upload.
+     *
      * @throws \dml_exception
      */
-    public function __construct() {
+    public function __construct($instanceid = null, $enableingest = false) {
         // Needed to persist responses across requests.
-        $this->jsonresponses = json_decode(get_config('block_opencast', 'api_testable_responses'), true);
-        if (!$this->jsonresponses) {
-            $this->jsonresponses = [];
+        $this->jsonresponses = json_decode(get_config('tool_opencast', 'api_testable_responses'), true);
+        if (empty($this->jsonresponses)) {
+            throw new \moodle_exception('notestingjsonresponses', 'tool_opencast');
         }
+
+        $instanceid = intval($instanceid);
+        $defaultocinstance = settings_api::get_default_ocinstance();
+        if ($defaultocinstance === null) {
+            throw new \dml_exception('dmlreadexception', null,
+                'No default Opencast instance is defined.');
+        }
+
+        $storedconfigocinstanceid = !$instanceid ? $defaultocinstance->id : $instanceid;
+
+        $this->username = settings_api::get_apiusername($storedconfigocinstanceid);
+        $this->password = settings_api::get_apipassword($storedconfigocinstanceid);
+        $this->timeout = settings_api::get_apitimeout($storedconfigocinstanceid);
+        $this->connecttimeout = settings_api::get_apiconnecttimeout($storedconfigocinstanceid);
+        $this->baseurl = settings_api::get_apiurl($storedconfigocinstanceid);
+
+        $config = [
+            'url' => $this->baseurl,
+            'username' => $this->username,
+            'password' => $this->password,
+            'timeout' => (intval($this->timeout) / 1000),
+            'connect_timeout' => (intval($this->connecttimeout) / 1000),
+            'version' => $this->version
+        ];
+
+        $handler = \OpencastApi\Mock\OcMockHanlder::getHandlerStackWithPath($this->jsonresponses);
+        if (empty($handler) || !is_callable($handler)) {
+            throw new \moodle_exception('nomockhandler', 'tool_opencast');
+        }
+        $config['handler'] = $handler;
+        $this->opencastapi = new \OpencastApi\Opencast($config, [], $enableingest);
+        $this->opencastrestclient = new \OpencastApi\Rest\OcRestClient($config);
     }
 
     /**
@@ -60,112 +101,41 @@ class api_testable extends api {
         return $this->httpcode;
     }
 
+    /**
+     * Get json responses as array
+     * @return array json responses.
+     */
+    public function get_json_responses() {
+        return $this->jsonresponses;
+    }
+
 
     /**
-     * Create a response for a http call.
+     * Create and store a response for a http call.
      * @param string $resource Resource to which the response is added
      * @param string $method Http method
-     * @param string $response Response that should be returned
+     * @param int $status The http status code to be returned
+     * @param string $body The response body to be returned
+     * @param string $params The params send by request to check for more precise call
+     * @param array $headers The response headers to be returned
+     * @param string $version The response protocol version to be returned
+     * @param string $reason The response Reason phrase (when empty a default will be used based on the status code)
      */
-    public function add_json_response($resource, $method, $response) {
-        if (!array_key_exists($resource, $this->jsonresponses)) {
-            $this->jsonresponses[$resource] = array();
+    public static function add_json_response($resource, $method, $status = 200, $body = null, $params = '', $headers = [],
+        $version = '', $reason = null) {
+        $jsonresponses = json_decode(get_config('tool_opencast', 'api_testable_responses'), true);
+        if (!is_array($jsonresponses)) {
+            $jsonresponses = [];
         }
-        $this->jsonresponses[$resource][$method] = $response;
-        set_config('api_testable_responses', json_encode($this->jsonresponses), 'block_opencast');
-    }
-
-    /**
-     * Fake a GET call to opencast API.
-     *
-     * @param string $resource path of the resource.
-     * @param array $runwithroles if set, the request is executed within opencast assuming the user has
-     * the specified roles.
-     * @return string JSON String of result.
-     * @throws \moodle_exception
-     */
-    public function oc_get($resource, $runwithroles = array()) {
-        if (array_key_exists($resource, $this->jsonresponses)) {
-
-            if (array_key_exists('get', $this->jsonresponses[$resource])) {
-                $this->httpcode = 200;
-                return $this->jsonresponses[$resource]['get'];
-            }
+        if (!array_key_exists($resource, $jsonresponses)) {
+            $jsonresponses[$resource] = array();
         }
-
-        $this->httpcode = 404;
-        return false;
-    }
-
-    /**
-     * Fake a POST call to opencast API.
-     *
-     * @param string $resource path of the resource.
-     * @param array $params post parameters.
-     * @param array $runwithroles if set, the request is executed within opencast assuming the user has
-     * the specified roles.
-     * @return string JSON String of result.
-     * @throws \moodle_exception
-     */
-    public function oc_post($resource, $params = array(), $runwithroles = array()) {
-        $postresource = $resource . '_' . join(',', array_keys($params));
-
-        if (array_key_exists($postresource, $this->jsonresponses)) {
-            if (array_key_exists('post', $this->jsonresponses[$postresource])) {
-                $this->httpcode = 201;
-                return $this->jsonresponses[$postresource]['post'];
-            }
+        if (!isset($jsonresponses[$resource][strtoupper($method)])) {
+            $jsonresponses[$resource][strtoupper($method)] = array();
         }
-
-        $this->httpcode = 404;
-        return false;
-    }
-
-    /**
-     * Fake a PUT call to opencast API.
-     *
-     * @param string $resource path of the resource.
-     * @param array $params array of parameters.
-     * @param array $runwithroles if set, the request is executed within opencast assuming the user has
-     * the specified roles.
-     * @return string JSON String of result.
-     * @throws \moodle_exception
-     */
-    public function oc_put($resource, $params = array(), $runwithroles = array()) {
-        $putchanges = file_get_contents(__DIR__ . "/../../../../../blocks/opencast/tests/fixtures/api_calls/put/put_changes.json");
-        $putchanges = json_decode($putchanges, true);
-
-        if (array_key_exists($resource, $putchanges)) {
-            // Load new response.
-            if (array_key_exists('method', $putchanges[$resource])) {
-                if ($putchanges[$resource]['method'] == 'get') {
-                    $apicall = file_get_contents(__DIR__ . "/../../../../../blocks/opencast/tests/fixtures/api_calls/get/" .
-                        $putchanges[$resource]['file']);
-                    $apicall = json_decode($apicall);
-                    $this->add_json_response($apicall->resource, 'get', json_encode($apicall->response));
-                }
-            }
-            $this->httpcode = $putchanges[$resource]['http_code'];
-            return true;
-        }
-
-        $this->httpcode = 400;
-        return false;
-    }
-
-    /**
-     * Fake a DELETE call to opencast API.
-     *
-     * @param string $resource path of the resource.
-     * @param array $params array of parameters.
-     * @param array $runwithroles if set, the request is executed within opencast assuming the user has
-     * the specified roles.
-     * @return string JSON String of result.
-     * @throws \moodle_exception
-     */
-    public function oc_delete($resource, $params = array(), $runwithroles = array()) {
-        $this->httpcode = 204;
-        return true;
+        $responseobject = compact('status', 'body', 'version', 'reason', 'params', 'headers');
+        $jsonresponses[$resource][strtoupper($method)][] = $responseobject;
+        set_config('api_testable_responses', json_encode($jsonresponses), 'tool_opencast');
     }
 
     /**

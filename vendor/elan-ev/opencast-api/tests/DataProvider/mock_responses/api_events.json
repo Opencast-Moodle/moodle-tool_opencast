@@ -1,0 +1,175 @@
+{
+    "/api/events": {
+        "GET": [
+            {
+                "body": "[{\"identifier\": \"ID-3d-print\",\"creator\": \"Administrator\",\"presenter\": [\"Lars Kiesow\"],\"created\": \"2021-04-17T17:22:40Z\",\"is_part_of\": \"ID-openmedia-opencast\",\"subjects\": [],\"start\": \"2021-04-17T17:22:40Z\",\"description\": \"\",\"language\": \"\",\"source\": \"https://data.lkiesow.io\",\"title\": \"3D Print\",\"processing_state\": \"SUCCEEDED\",\"duration\": null,\"license\": \"CC0\",\"archive_version\": 1,\"contributor\": [],\"series\": \"Open Media for Opencast\",\"has_previews\": true,\"location\": \"\",\"rightsholder\": \"\",\"publication_status\": [\"internal\",\"engage-player\"],\"status\": \"EVENTS.EVENTS.STATUS.PROCESSED\"}]",
+                "params": "",
+                "status": 200
+            }
+        ],
+        "POST": [
+            {
+                "body": "{\"identifier\": \"ID-3d-print\"}",
+                "params": "{\"acl\":\"--acl\",\"metadata\":\"--metadata\",\"presenter\":\"--Presenter FILE\",\"processing\":\"--processing\"}",
+                "status": 201
+            }
+        ]
+    },
+    "/api/events?filter=is_part_of:ID-openmedia-opencast": {
+        "GET": [
+            {
+                "body": "[{\"identifier\": \"ID-3d-print\",\"creator\": \"Administrator\",\"presenter\": [\"Lars Kiesow\"],\"created\": \"2021-04-17T17:22:40Z\",\"is_part_of\": \"ID-openmedia-opencast\",\"subjects\": [],\"start\": \"2021-04-17T17:22:40Z\",\"description\": \"\",\"language\": \"\",\"source\": \"https://data.lkiesow.io\",\"title\": \"3D Print\",\"processing_state\": \"SUCCEEDED\",\"duration\": null,\"license\": \"CC0\",\"archive_version\": 1,\"contributor\": [],\"series\": \"Open Media for Opencast\",\"has_previews\": true,\"location\": \"\",\"rightsholder\": \"\",\"publication_status\": [\"internal\",\"engage-player\"],\"status\": \"EVENTS.EVENTS.STATUS.PROCESSED\"}]",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/api/events/ID-3d-print": {
+        "GET": [
+            {
+                "body": "{\"identifier\": \"ID-3d-print\",\"creator\": \"Administrator\",\"presenter\": [\"Lars Kiesow\"],\"created\": \"2021-04-17T17:22:40Z\",\"is_part_of\": \"ID-openmedia-opencast\",\"subjects\": [],\"start\": \"2021-04-17T17:22:40Z\",\"description\": \"\",\"language\": \"\",\"source\": \"https://data.lkiesow.io\",\"title\": \"3D Print\",\"processing_state\": \"SUCCEEDED\",\"duration\": null,\"license\": \"CC0\",\"archive_version\": 1,\"contributor\": [],\"series\": \"Open Media for Opencast\",\"has_previews\": true,\"location\": \"\",\"rightsholder\": \"\",\"publication_status\": [\"internal\",\"engage-player\"],\"status\": \"EVENTS.EVENTS.STATUS.PROCESSED\"}",
+                "params": "",
+                "status": 200
+            }
+        ],
+        "POST": [
+            {
+                "body": "",
+                "params": "",
+                "status": 204
+            }
+        ],
+        "DELETE": [
+            {
+                "body": "",
+                "params": "",
+                "status": 204
+            }
+        ]
+    },
+    "/api/events/ID-3d-print/acl": {
+        "GET": [
+            {
+                "body": "[{\"allow\": true,\"role\": \"ROLE_ANONYMOUS\",\"action\": \"read\"}]",
+                "params": "",
+                "status": 200
+            }
+        ],
+        "DELETE": [
+            {
+                "body": "",
+                "params": "",
+                "status": 204
+            }
+        ],
+        "PUT": [
+            {
+                "body": "",
+                "params": "",
+                "status": 204
+            }
+        ]
+    },
+    "/api/events/ID-3d-print/media": {
+        "GET": [
+            {
+                "body": "[{\"identifier\":\"bf1e6a63-895a-42fe-abc6-b4b62ddb3693\",\"has_audio\":true,\"streams\":{\"video-1\":{\"identifier\":\"video-1\",\"framecount\":538,\"framewidth\":1920,\"framerate\":30,\"format\":\"H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10\",\"bitrate\":8005010,\"frameheight\":1080},\"audio-1\":{\"identifier\":\"audio-1\",\"channels\":2,\"framecount\":837,\"format\":\"AAC (Advanced Audio Coding)\",\"bitrate\":95822,\"samplingrate\":48000}},\"description\":\"\",\"is_master_playlist\":false,\"uri\":\"https://stable.opencast.org/assets/assets/ID-3d-print/bf1e6a63-895a-42fe-abc6-b4b62ddb3693/1/3d-print.mp4\",\"has_video\":true,\"tags\":[\"archive\"],\"duration\":17933,\"flavor\":\"presenter/source\",\"size\":18177577,\"checksum\":\"208c25b5f0a7668f4d936cfb11520e6d (md5)\",\"is_live\":false,\"mimetype\":\"video/mp4\",\"element-description\":\"https://stable.opencast.org/assets/assets/ID-3d-print/bf1e6a63-895a-42fe-abc6-b4b62ddb3693/1/3d-print.mp4\"}]",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/api/events/ID-3d-print/metadata": {
+        "GET": [
+            {
+                "body": "[{\"flavor\":\"dublincore/episode\",\"title\":\"EVENTS.EVENTS.DETAILS.CATALOG.EPISODE\",\"fields\":[{\"readOnly\":false,\"id\":\"title\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.TITLE\",\"type\":\"text\",\"value\":\"3D Print\",\"required\":true},{\"readOnly\":false,\"id\":\"subjects\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.SUBJECT\",\"type\":\"text\",\"value\":[],\"required\":false},{\"readOnly\":false,\"id\":\"description\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.DESCRIPTION\",\"type\":\"text_long\",\"value\":\"\",\"required\":false},{\"translatable\":true,\"readOnly\":false,\"id\":\"language\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.LANGUAGE\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"readOnly\":false,\"id\":\"rightsHolder\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.RIGHTS\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"translatable\":true,\"readOnly\":false,\"id\":\"license\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.LICENSE\",\"type\":\"text\",\"value\":\"CC0\",\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"isPartOf\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.SERIES\",\"type\":\"text\",\"value\":\"ID-openmedia-opencast\",\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"creator\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.PRESENTERS\",\"type\":\"mixed_text\",\"value\":[\"Lars Kiesow\"],\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"contributor\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.CONTRIBUTORS\",\"type\":\"mixed_text\",\"value\":[],\"required\":false},{\"readOnly\":false,\"id\":\"startDate\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.START_DATE\",\"type\":\"date\",\"value\":\"2021-04-17\",\"required\":false},{\"readOnly\":false,\"id\":\"startTime\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.START_TIME\",\"type\":\"time\",\"value\":\"17:22\",\"required\":false},{\"readOnly\":false,\"id\":\"duration\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.DURATION\",\"type\":\"text\",\"value\":\"00:00:00\",\"required\":false},{\"readOnly\":false,\"id\":\"location\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.LOCATION\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"readOnly\":false,\"id\":\"source\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.SOURCE\",\"type\":\"text\",\"value\":\"https://data.lkiesow.io\",\"required\":false},{\"readOnly\":true,\"id\":\"created\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.CREATED\",\"type\":\"date\",\"value\":\"2021-04-17T17:22:40.000Z\",\"required\":false},{\"readOnly\":true,\"id\":\"publisher\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.PUBLISHER\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"readOnly\":true,\"id\":\"identifier\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.ID\",\"type\":\"text\",\"value\":\"ID-3d-print\",\"required\":false}]}]",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/api/events/ID-3d-print/metadata?type=dublincore/episode": {
+        "GET": [
+            {
+                "body": "[{\"flavor\":\"dublincore/episode\",\"title\":\"EVENTS.EVENTS.DETAILS.CATALOG.EPISODE\",\"fields\":[{\"readOnly\":false,\"id\":\"title\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.TITLE\",\"type\":\"text\",\"value\":\"3D Print\",\"required\":true},{\"readOnly\":false,\"id\":\"subjects\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.SUBJECT\",\"type\":\"text\",\"value\":[],\"required\":false},{\"readOnly\":false,\"id\":\"description\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.DESCRIPTION\",\"type\":\"text_long\",\"value\":\"\",\"required\":false},{\"translatable\":true,\"readOnly\":false,\"id\":\"language\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.LANGUAGE\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"readOnly\":false,\"id\":\"rightsHolder\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.RIGHTS\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"translatable\":true,\"readOnly\":false,\"id\":\"license\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.LICENSE\",\"type\":\"text\",\"value\":\"CC0\",\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"isPartOf\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.SERIES\",\"type\":\"text\",\"value\":\"ID-openmedia-opencast\",\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"creator\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.PRESENTERS\",\"type\":\"mixed_text\",\"value\":[\"Lars Kiesow\"],\"required\":false},{\"translatable\":false,\"readOnly\":false,\"id\":\"contributor\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.CONTRIBUTORS\",\"type\":\"mixed_text\",\"value\":[],\"required\":false},{\"readOnly\":false,\"id\":\"startDate\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.START_DATE\",\"type\":\"date\",\"value\":\"2021-04-17\",\"required\":false},{\"readOnly\":false,\"id\":\"startTime\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.START_TIME\",\"type\":\"time\",\"value\":\"17:22\",\"required\":false},{\"readOnly\":false,\"id\":\"duration\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.DURATION\",\"type\":\"text\",\"value\":\"00:00:00\",\"required\":false},{\"readOnly\":false,\"id\":\"location\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.LOCATION\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"readOnly\":false,\"id\":\"source\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.SOURCE\",\"type\":\"text\",\"value\":\"https://data.lkiesow.io\",\"required\":false},{\"readOnly\":true,\"id\":\"created\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.CREATED\",\"type\":\"date\",\"value\":\"2021-04-17T17:22:40.000Z\",\"required\":false},{\"readOnly\":true,\"id\":\"publisher\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.PUBLISHER\",\"type\":\"text\",\"value\":\"\",\"required\":false},{\"readOnly\":true,\"id\":\"identifier\",\"label\":\"EVENTS.EVENTS.DETAILS.METADATA.ID\",\"type\":\"text\",\"value\":\"ID-3d-print\",\"required\":false}]}]",
+                "params": "",
+                "status": 200
+            }
+        ],
+        "PUT": [
+            {
+                "body": "",
+                "params": "",
+                "status": 204
+            }
+        ],
+        "DELETE": [
+            {
+                "body": "",
+                "params": "",
+                "status": 403
+            }
+        ]
+    },
+    "/api/events/ID-3d-print/publications?sign=true": {
+        "GET": [
+            {
+                "body": "[{\"metadata\":[{\"flavor\":\"dublincore/episode\",\"size\":-1,\"checksum\":\"\",\"id\":\"e038b71b-0653-44c0-ab24-5e28f8ff6ba2\",\"mediatype\":\"text/xml\",\"url\":\"https://stable.opencast.org/static/mh_default_org/engage-player/ID-3d-print/3d8b48c2-fb4b-4f9e-bb09-a11503b406b1/dublincore.xml\",\"tags\":[]}],\"attachments\":[{\"flavor\":\"presenter/search+preview\",\"ref\":\"track:bf1e6a63-895a-42fe-abc6-b4b62ddb3693\",\"size\":5161,\"checksum\":\"\",\"id\":\"08348a18-b40c-4438-b22f-4b32137e0138\",\"mediatype\":\"image/jpeg\",\"url\":\"https://stable.opencast.org/static/mh_default_org/engage-player/ID-3d-print/957890f8-8829-473c-a2cc-bc54ed3c909a/3d-print_1.000s-search.jpg\",\"tags\":[\"engage-download\"]},{\"flavor\":\"security/xacml+series\",\"ref\":\"\",\"size\":-1,\"checksum\":\"\",\"id\":\"eff1d360-ab1c-4863-b509-20d9af03e76d\",\"mediatype\":\"text/xml\",\"url\":\"https://stable.opencast.org/static/mh_default_org/engage-player/ID-3d-print/security-policy-series/xacml.xml\",\"tags\":[]},{\"flavor\":\"security/xacml+episode\",\"ref\":\"\",\"size\":-1,\"checksum\":\"\",\"id\":\"f67ed6ee-41d9-4d04-ae9b-e8baf0701a05\",\"mediatype\":\"text/xml\",\"url\":\"https://stable.opencast.org/static/mh_default_org/engage-player/ID-3d-print/80636cf9-d58d-4343-a8a3-d53f1a54851a/episode-security.xml\",\"tags\":[]},{\"flavor\":\"presenter/player+preview\",\"ref\":\"track:bf1e6a63-895a-42fe-abc6-b4b62ddb3693\",\"size\":59864,\"checksum\":\"\",\"id\":\"f70ad1a0-cc8b-451a-959d-f1bc977a56d7\",\"mediatype\":\"image/jpeg\",\"url\":\"https://stable.opencast.org/static/mh_default_org/engage-player/ID-3d-print/941b4cad-bf53-476e-b080-7467850d6d85/3d-print_1.000s-player.jpg\",\"tags\":[\"engage-download\"]}],\"channel\":\"engage-player\",\"id\":\"2e9e22b8-8e5e-43f7-ae8d-36bd84d55750\",\"media\":[{\"has_audio\":true,\"framerate\":30,\"description\":\"\",\"bitrate\":7582463,\"is_master_playlist\":false,\"url\":\"https://stable.opencast.org/static/mh_default_org/engage-player/ID-3d-print/1efd2cb1-70c9-4f5f-af8f-20578e13aa4f/3d-print.mp4\",\"has_video\":true,\"tags\":[\"atom\",\"default\",\"engage-download\",\"engage-streaming\",\"rss\"],\"flavor\":\"presenter/preview\",\"duration\":17933,\"size\":17303609,\"framecount\":538,\"checksum\":\"41385dbd9659cf6826ae4131614acaf6 (md5)\",\"width\":1920,\"is_live\":false,\"id\":\"72425120-548c-49ce-91c4-c806bef0cda9\",\"mediatype\":\"video/mp4\",\"height\":1080}],\"mediatype\":\"text/html\",\"url\":\"https://stable.opencast.org/play/ID-3d-print\"}]",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/api/events/ID-3d-print/publications/2e9e22b8-8e5e-43f7-ae8d-36bd84d55750?sign=true": {
+        "GET": [
+            {
+                "body": "{\"metadata\":[{\"flavor\":\"dublincore/episode\",\"size\":-1,\"checksum\":\"\",\"id\":\"e038b71b-0653-44c0-ab24-5e28f8ff6ba2\",\"mediatype\":\"text/xml\",\"url\":\"https://stable.opencast.org/static/mh_default_org/engage-player/ID-3d-print/3d8b48c2-fb4b-4f9e-bb09-a11503b406b1/dublincore.xml\",\"tags\":[]}],\"attachments\":[{\"flavor\":\"presenter/search+preview\",\"ref\":\"track:bf1e6a63-895a-42fe-abc6-b4b62ddb3693\",\"size\":5161,\"checksum\":\"\",\"id\":\"08348a18-b40c-4438-b22f-4b32137e0138\",\"mediatype\":\"image/jpeg\",\"url\":\"https://stable.opencast.org/static/mh_default_org/engage-player/ID-3d-print/957890f8-8829-473c-a2cc-bc54ed3c909a/3d-print_1.000s-search.jpg\",\"tags\":[\"engage-download\"]},{\"flavor\":\"security/xacml+series\",\"ref\":\"\",\"size\":-1,\"checksum\":\"\",\"id\":\"eff1d360-ab1c-4863-b509-20d9af03e76d\",\"mediatype\":\"text/xml\",\"url\":\"https://stable.opencast.org/static/mh_default_org/engage-player/ID-3d-print/security-policy-series/xacml.xml\",\"tags\":[]},{\"flavor\":\"security/xacml+episode\",\"ref\":\"\",\"size\":-1,\"checksum\":\"\",\"id\":\"f67ed6ee-41d9-4d04-ae9b-e8baf0701a05\",\"mediatype\":\"text/xml\",\"url\":\"https://stable.opencast.org/static/mh_default_org/engage-player/ID-3d-print/80636cf9-d58d-4343-a8a3-d53f1a54851a/episode-security.xml\",\"tags\":[]},{\"flavor\":\"presenter/player+preview\",\"ref\":\"track:bf1e6a63-895a-42fe-abc6-b4b62ddb3693\",\"size\":59864,\"checksum\":\"\",\"id\":\"f70ad1a0-cc8b-451a-959d-f1bc977a56d7\",\"mediatype\":\"image/jpeg\",\"url\":\"https://stable.opencast.org/static/mh_default_org/engage-player/ID-3d-print/941b4cad-bf53-476e-b080-7467850d6d85/3d-print_1.000s-player.jpg\",\"tags\":[\"engage-download\"]}],\"channel\":\"engage-player\",\"id\":\"2e9e22b8-8e5e-43f7-ae8d-36bd84d55750\",\"media\":[{\"has_audio\":true,\"framerate\":30,\"description\":\"\",\"bitrate\":7582463,\"is_master_playlist\":false,\"url\":\"https://stable.opencast.org/static/mh_default_org/engage-player/ID-3d-print/1efd2cb1-70c9-4f5f-af8f-20578e13aa4f/3d-print.mp4\",\"has_video\":true,\"tags\":[\"atom\",\"default\",\"engage-download\",\"engage-streaming\",\"rss\"],\"flavor\":\"presenter/preview\",\"duration\":17933,\"size\":17303609,\"framecount\":538,\"checksum\":\"41385dbd9659cf6826ae4131614acaf6 (md5)\",\"width\":1920,\"is_live\":false,\"id\":\"72425120-548c-49ce-91c4-c806bef0cda9\",\"mediatype\":\"video/mp4\",\"height\":1080}],\"mediatype\":\"text/html\",\"url\":\"https://stable.opencast.org/play/ID-3d-print\"}",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/api/events/ID-3d-print/scheduling": {
+        "GET": [
+            {
+                "body": "",
+                "params": "",
+                "status": 204
+            }
+        ],
+        "PUT": [
+            {
+                "body": "",
+                "params": "",
+                "status": 204
+            }
+        ]
+    },
+    "/api/events/ID-3d-print/acl/write": {
+        "POST": [
+            {
+                "body": "",
+                "params": "{\"role\":\"ROLE_STUDENT\"}",
+                "status": 204
+            }
+        ]
+    },
+    "/api/events/ID-3d-print/acl/write/ROLE_PHPUNIT_TESTING_USER_2": {
+        "DELETE": [
+            {
+                "body": "",
+                "params": "",
+                "status": 204
+            }
+        ]
+    },
+    "/api/events/ID-3d-print/track": {
+        "POST": [
+            {
+                "body": "",
+                "params": "",
+                "status": 200
+            }
+        ]
+    }
+}

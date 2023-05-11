@@ -7,4 +7,11 @@
         <license>MIT</license>
         <licenseversion></licenseversion>
     </library>
+    <library>
+        <location>vendor/elan-ev/opencast-api</location>
+        <name>Opencast PHP Library</name>
+        <version>1.3</version>
+        <license>GPL</license>
+        <licenseversion>3.0-or-later</licenseversion>
+    </library>
 </libraries>

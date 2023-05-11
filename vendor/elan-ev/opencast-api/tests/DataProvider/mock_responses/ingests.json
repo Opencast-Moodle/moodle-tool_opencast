@@ -1,0 +1,91 @@
+{
+
+    "/services/services.json": {
+        "GET": [
+            {
+                "body": "{\"services\":{\"service\":[{\"type\":\"org.opencastproject.ingest\",\"host\":\"https://stable.opencast.org\",\"path\":\"/ingest\",\"active\":true,\"online\":true,\"maintenance\":false,\"jobproducer\":true,\"onlinefrom\":\"2023-04-06T02:01:58.005+02:00\",\"service_state\":\"NORMAL\",\"state_changed\":\"2023-04-06T02:01:58.005+02:00\",\"error_state_trigger\":0,\"warning_state_trigger\":0}]}}",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/services/services.json?serviceType=org.opencastproject.ingest": {
+        "GET": [
+            {
+                "body": "{\"services\":{\"service\":{\"type\":\"org.opencastproject.ingest\",\"host\":\"https://stable.opencast.org\",\"path\":\"/ingest\",\"active\":true,\"online\":true,\"maintenance\":false,\"jobproducer\":true,\"onlinefrom\":\"2023-04-06T02:01:58.005+02:00\",\"service_state\":\"NORMAL\",\"state_changed\":\"2023-04-06T02:01:58.005+02:00\",\"error_state_trigger\":0,\"warning_state_trigger\":0}}}",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/ingest/createMediaPackage": {
+        "GET": [
+            {
+                "body": "<mediapackage id=\"9ee74016-2b28-47f9-b959-dcf5a20e08c8\" start=\"2023-04-06T12:10:57Z\"><media/><metadata/><attachments/><publications/></mediapackage>",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/ingest/addCatalog": {
+        "POST": [
+            {
+                "body": "<mediapackage id=\"9ee74016-2b28-47f9-b959-dcf5a20e08c8\" start=\"2023-04-06T12:10:57Z\"><media/><metadata/><attachments/><publications/></mediapackage>",
+                "params": "",
+                "status": 200
+            },
+            {
+                "body": "<mediapackage id=\"9ee74016-2b28-47f9-b959-dcf5a20e08c8\" start=\"2023-04-06T12:10:57Z\"><media/><metadata/><attachments/><publications/></mediapackage>",
+                "params": {
+                    "unique_request_identifier": "url"
+                },
+                "status": 200
+            }
+        ]
+    },
+    "/ingest/addDCCatalog": {
+        "POST": [
+            {
+                "body": "<mediapackage id=\"9ee74016-2b28-47f9-b959-dcf5a20e08c8\" start=\"2023-04-06T12:10:57Z\"><media/><metadata/><attachments/><publications/></mediapackage>",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/ingest/addTrack": {
+        "POST": [
+            {
+                "body": "<mediapackage id=\"9ee74016-2b28-47f9-b959-dcf5a20e08c8\" start=\"2023-04-06T12:10:57Z\"><media/><metadata/><attachments/><publications/></mediapackage>",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/ingest/addAttachment": {
+        "POST": [
+            {
+                "body": "<mediapackage id=\"9ee74016-2b28-47f9-b959-dcf5a20e08c8\" start=\"2023-04-06T12:10:57Z\"><media/><metadata/><attachments/><publications/></mediapackage>",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/ingest/ingest": {
+        "POST": [
+            {
+                "body": "<mediapackage id=\"9ee74016-2b28-47f9-b959-dcf5a20e08c8\" start=\"2023-04-06T12:10:57Z\"><media/><metadata/><attachments/><publications/></mediapackage>",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/ingest/ingest/schedule-and-upload": {
+        "POST": [
+            {
+                "body": "<mediapackage id=\"9ee74016-2b28-47f9-b959-dcf5a20e08c8\" start=\"2023-04-06T12:10:57Z\"><media/><metadata/><attachments/><publications/></mediapackage>",
+                "params": "",
+                "status": 200
+            }
+        ]
+    }
+}

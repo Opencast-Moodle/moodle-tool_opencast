@@ -82,3 +82,7 @@ $string['serverconnectionerror'] = 'There was a problem with the connection to t
 
 // Privacy API.
 $string['privacy:metadata'] = 'The Opencast API admin tool only provides API endpoints and general settings for the set of Opencast plugins. It stores which Opencast series belongs to which Moodle course, but it does not store any personal data.';
+
+// Testing API.
+$string['nomockhandler'] = 'The Opencast Api Object is unable to handle the responses for testing purposes.';
+$string['notestingjsonresponses'] = 'The JSON responses are not set, please make sure to use api_testable::add_json_response before running and using the class.';

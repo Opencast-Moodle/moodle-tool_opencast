@@ -1,0 +1,11 @@
+{
+    "/api/security/sign": {
+        "POST": [
+            {
+                "body": "",
+                "params": "",
+                "status": 200
+            }
+        ]
+    }
+}

@@ -1,0 +1,21 @@
+{
+
+    "/api/statistics/providers?withparameters=false": {
+        "GET": [
+            {
+                "body": "[]",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/api/statistics/providers/a-timeseries-provider": {
+        "GET": [
+            {
+                "body": "",
+                "params": "",
+                "status": 200
+            }
+        ]
+    }
+}
