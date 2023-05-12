@@ -306,12 +306,12 @@ class OcIngest extends OcRest
      *
      * @param string $mediaPackage The XML media package as string
      * @param string $flavor The kind of media track 
-     * @param int $startTime The start time in milliseconds
      * @param object $file The media track file
+     * @param int $startTime The start time in milliseconds
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) augmented media package}']
      */
-    public function addPartialTrack($mediaPackage, $flavor, $startTime = 0, $file)
+    public function addPartialTrack($mediaPackage, $flavor, $file, $startTime = 0)
     {
         $uri = self::URI . "/addPartialTrack";
 
@@ -331,12 +331,12 @@ class OcIngest extends OcRest
      *
      * @param string $mediaPackage The XML media package as string
      * @param string $flavor The kind of media track 
-     * @param int $startTime The start time in milliseconds
      * @param string $url The location of the media
+     * @param int $startTime The start time in milliseconds
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) augmented media package}']
      */
-    public function addPartialTrackUrl($mediaPackage, $flavor, $startTime = 0, $url)
+    public function addPartialTrackUrl($mediaPackage, $flavor, $url, $startTime = 0)
     {
         $uri = self::URI . "/addPartialTrack";
 

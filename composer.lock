@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/elan-ev/opencast-php-library.git",
-                "reference": "1e8a3e6fab1587e5cb0bf006cca4c86060ac77fa"
+                "reference": "49a91cc3f4c8560e7c8ee7c4fd074f01b794c6f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elan-ev/opencast-php-library/zipball/1e8a3e6fab1587e5cb0bf006cca4c86060ac77fa",
-                "reference": "1e8a3e6fab1587e5cb0bf006cca4c86060ac77fa",
+                "url": "https://api.github.com/repos/elan-ev/opencast-php-library/zipball/49a91cc3f4c8560e7c8ee7c4fd074f01b794c6f9",
+                "reference": "49a91cc3f4c8560e7c8ee7c4fd074f01b794c6f9",
                 "shasum": ""
             },
             "require": {
@@ -62,7 +62,7 @@
                 "issues": "https://github.com/elan-ev/opencast-php-library/issues",
                 "source": "https://github.com/elan-ev/opencast-php-library/tree/1.3.0"
             },
-            "time": "2023-05-11T12:04:21+00:00"
+            "time": "2023-05-12T14:05:26+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

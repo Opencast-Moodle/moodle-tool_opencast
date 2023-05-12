@@ -3,7 +3,7 @@
         'name' => 'moodle/tool_opencast',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '4d1d8c2050d6bf94932eecec7fa855d245d75dd6',
+        'reference' => 'c9df482fe67bc694705b45edbdd61238b53a9afc',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'elan-ev/opencast-api' => array(
             'pretty_version' => '1.3.0',
             'version' => '1.3.0.0',
-            'reference' => '1e8a3e6fab1587e5cb0bf006cca4c86060ac77fa',
+            'reference' => '49a91cc3f4c8560e7c8ee7c4fd074f01b794c6f9',
             'type' => 'library',
             'install_path' => __DIR__ . '/../elan-ev/opencast-api',
             'aliases' => array(),
@@ -49,7 +49,7 @@
         'moodle/tool_opencast' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '4d1d8c2050d6bf94932eecec7fa855d245d75dd6',
+            'reference' => 'c9df482fe67bc694705b45edbdd61238b53a9afc',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
