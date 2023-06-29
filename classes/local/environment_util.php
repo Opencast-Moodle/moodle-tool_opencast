@@ -25,8 +25,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2023 Matthias Kollenbroich, University of Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class environment_util
-{
+class environment_util {
     /**
      * Make this class not instantiable.
      */
