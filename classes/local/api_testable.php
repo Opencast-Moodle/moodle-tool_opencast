@@ -45,6 +45,17 @@ class api_testable extends api {
     /** @var string version api version to apply for */
     public $version = '1.9.0';
 
+    /** @var string the username. */
+    private string $username;
+    /** @var string the password. */
+    private string $password;
+    /** @var string the timeout. */
+    private string $timeout;
+    /** @var string the connecttimeout. */
+    private string $connecttimeout;
+    /** @var string the baseurl. */
+    private string $baseurl;
+
     /**
      * Constructor of the Opencast Test API.
      *
