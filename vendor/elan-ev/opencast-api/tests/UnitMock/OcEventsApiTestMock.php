@@ -1,4 +1,4 @@
-<?php 
+<?php
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -19,7 +19,7 @@ class OcEventsApiTestMock extends TestCase
         $mockHandler = OcMockHanlder::getHandlerStackWithPath($mockResponse);
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
         $config['handler'] = $mockHandler;
-        $ocRestApi = new Opencast($config);
+        $ocRestApi = new Opencast($config, [], false);
         $this->ocEventsApi = $ocRestApi->eventsApi;
     }
 
@@ -94,12 +94,12 @@ class OcEventsApiTestMock extends TestCase
     public function create_and_update_event(string $createdEventIdentifier): string
     {
         $responseCreate = $this->ocEventsApi->create(
-            \Tests\DataProvider\EventsDataProvider::getAcls(), 
-            \Tests\DataProvider\EventsDataProvider::getMetadata('presenter'), 
-            \Tests\DataProvider\EventsDataProvider::getProcessing(), 
+            \Tests\DataProvider\EventsDataProvider::getAcls(),
+            \Tests\DataProvider\EventsDataProvider::getMetadata('presenter'),
+            \Tests\DataProvider\EventsDataProvider::getProcessing(),
             '',
-            \Tests\DataProvider\EventsDataProvider::getPresenterFile(), 
-            \Tests\DataProvider\EventsDataProvider::getPresentationFile(), 
+            \Tests\DataProvider\EventsDataProvider::getPresenterFile(),
+            \Tests\DataProvider\EventsDataProvider::getPresentationFile(),
             \Tests\DataProvider\EventsDataProvider::getAudioFile(),
             array($this, 'progressCallback')
         );
@@ -114,7 +114,7 @@ class OcEventsApiTestMock extends TestCase
         );
         $responseUpdate = $this->ocEventsApi->update($createdEventIdentifier, '', $metadata);
         $this->assertSame(204, $responseUpdate['code'], 'Failure to update an event');
-        
+
         return $createdEventIdentifier;
     }
 

@@ -28,8 +28,16 @@
             "OpencastApi\\Mock\\": "src/OpencastApi/Mock/"
         }
     },
+    "scripts": {
+        "sniffer:php7.4": "phpcs -p -v ./src --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 7.4",
+        "sniffer:php8.0": "phpcs -p -v ./src --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.0",
+        "sniffer:php8.1": "phpcs -p -v ./src --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.1",
+        "sniffer:php8.2": "phpcs -p -v ./src --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.2"
+    },
     "require-dev": {
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5",
+        "squizlabs/php_codesniffer": "^3.7",
+        "phpcompatibility/php-compatibility": "^9.3"
     },
     "autoload-dev": {
         "psr-4": {

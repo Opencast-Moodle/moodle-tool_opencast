@@ -6,7 +6,7 @@
  - Error Handling (Version control) [#3](https://github.com/elan-ev/opencast-php-library/issues/3)
  - Add dynamic role headers with "X-RUN-WITH-ROLES" to requests [#2](https://github.com/elan-ev/opencast-php-library/issues/2)
  - A single filter can occur multiple times [#1](https://github.com/elan-ev/opencast-php-library/issues/1)
- 
+
 # 1.1.1
 - Sysinfo Endpoint [#9](https://github.com/elan-ev/opencast-php-library/issues/9)
 - Optional serviceType in getServiceJSON [#10](https://github.com/elan-ev/opencast-php-library/issues/10)
@@ -28,3 +28,11 @@
 - The ingest API now allows setting tags when ingesting attachments or catalogs via URL, therefore OcIngest methods including addCatalog, addCatalogUrl, addAttachment and addAttachmentUrl now accept an array parameter containing the tags.
 - Dynamic ingest endpoint loading into Opencast class.
 - Upgrade guzzlehttp/guzzle to 7.5.1
+
+# 1.4.0
+- Introducing runAsUser method to add X-RUN-AS-USER into the request headers.
+- Introducing OcListProvidersApi REST API service endpoint.
+- Add another array param into response result of the library called 'origin', which contains the information about oriniated request like its path, base url, params and method.
+
+# 1.5.0
+- PHP 8.2 compatibility: prevent dynamic property declarations

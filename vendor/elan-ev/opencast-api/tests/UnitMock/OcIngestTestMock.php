@@ -1,4 +1,4 @@
-<?php 
+<?php
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -19,7 +19,7 @@ class OcIngestTestMock extends TestCase
         $mockHandler = OcMockHanlder::getHandlerStackWithPath($mockResponse);
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
         $config['handler'] = $mockHandler;
-        $ocRestApi = new Opencast($config);
+        $ocRestApi = new Opencast($config, [], true);
         $this->ocIngest = $ocRestApi->ingest;
     }
 
@@ -46,7 +46,7 @@ class OcIngestTestMock extends TestCase
         $mediaPackage = $responseCreateMediaPackage['body'];
         $this->assertNotEmpty($mediaPackage);
         $ingestData['mediaPackage'] = $mediaPackage;
-        
+
         $this->assertNotEmpty($ingestData);
         return $ingestData;
     }
@@ -59,7 +59,7 @@ class OcIngestTestMock extends TestCase
     public function add_catalog_all(array $ingestData): array
     {
         $flavor = 'dublincore/episode';
-        
+
         // Add Catalog with file
         if ($episodeXmlFile = \Tests\DataProvider\IngestDataProvider::getEpisodeXMLFile()) {
             $responseAddCatalogFile = $this->ocIngest->addCatalog($ingestData['mediaPackage'], $flavor, $episodeXmlFile);
@@ -197,7 +197,7 @@ class OcIngestTestMock extends TestCase
             $mediaPackage = $responseAddAttachmentUrl['body'];
             $this->assertNotEmpty($mediaPackage);
         }
-        
+
         $ingestData['mediaPackage'] = $mediaPackage;
 
         $this->assertNotEmpty($ingestData);

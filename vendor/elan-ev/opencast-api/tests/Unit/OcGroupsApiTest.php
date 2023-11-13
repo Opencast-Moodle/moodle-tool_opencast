@@ -1,4 +1,4 @@
-<?php 
+<?php
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -12,7 +12,7 @@ class OcGroupsApiTest extends TestCase
     {
         parent::setUp();
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
-        $ocRestApi = new Opencast($config);
+        $ocRestApi = new Opencast($config, [], false);
         $this->ocGroupsApi = $ocRestApi->groupsApi;
     }
 
@@ -43,22 +43,25 @@ class OcGroupsApiTest extends TestCase
      */
     public function create_get_update_delete_group(string $identifier): string
     {
-        $name = 'PHPUNIT_TESTING_GROUP';
-        // Create
-        $response1 = $this->ocGroupsApi->create($name);
-        $this->assertSame(201, $response1['code'], 'Failure to create a group');
-
+        $name = 'PHPUNIT_TESTING_GROUP_' . uniqid();
         // Get the group.
-        $response3 = $this->ocGroupsApi->get(strtolower($name));
-        // $response3 = $this->ocGroupsApi->get('phpunit_testing_group');
-        $this->assertSame(200, $response3['code'], 'Failure to get group');
-        $group = $response3['body'];
+        $response0 = $this->ocGroupsApi->get(strtolower($name));
+        if ($response0['code'] == 404) {
+            // Create
+            $response1 = $this->ocGroupsApi->create($name);
+            $this->assertSame(201, $response1['code'], 'Failure to create a group');
+        }
+
+        // Get the group again!
+        $response2 = $this->ocGroupsApi->get(strtolower($name));
+        $this->assertSame(200, $response2['code'], 'Failure to get group');
+        $group = $response2['body'];
         $this->assertNotEmpty($group);
         $identifier = $group->identifier;
-        
+
         // Update the group
-        $response4 = $this->ocGroupsApi->update($group->identifier, $name, 'THIS IS AN UPDATED DESC FROM PHPUNIT');
-        $this->assertSame(200, $response4['code'], 'Failure to update group');
+        $response3 = $this->ocGroupsApi->update($group->identifier, $name, 'THIS IS AN UPDATED DESC FROM PHPUNIT');
+        $this->assertSame(200, $response3['code'], 'Failure to update group');
 
         $this->assertNotEmpty($identifier);
         return $identifier;

@@ -1,9 +1,9 @@
-<?php 
+<?php
 namespace Tests\DataProvider;
 use GuzzleHttp\Psr7;
 
 class EventsDataProvider {
-    
+
     public static function getAllCases(): array
     {
         return [
@@ -41,7 +41,7 @@ class EventsDataProvider {
 
     public static function getMetadata($title)
     {
-        return '[{"label":"Opencast Series Dublincore","flavor":"dublincore\/episode","fields":[{"id":"title","value":"PHP UNIT TEST_' . strtotime('now') . '_' . strtoupper($title) . '_{update_replace}"},{"id":"subjects","value":["This is default subject"]},{"id":"description","value":"This is a default description for video"},{"id":"startDate","value":"' . date('Y-m-d') . '"},{"id":"startTime","value":"' . date('H:i:s') . 'Z"}]}]';
+        return '[{"label":"Opencast Event Dublincore","flavor":"dublincore\/episode","fields":[{"id":"title","value":"PHP UNIT TEST_' . strtotime('now') . '_' . strtoupper($title) . '_{update_replace}"},{"id":"subjects","value":["This is default subject"]},{"id":"description","value":"This is a default description for video"},{"id":"startDate","value":"' . date('Y-m-d') . '"},{"id":"startTime","value":"' . date('H:i:s') . 'Z"}]}]';
     }
 
     public static function getProcessing()

@@ -1,4 +1,4 @@
-<?php 
+<?php
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -12,7 +12,7 @@ class OcWorkflowsApiTest extends TestCase
     {
         parent::setUp();
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
-        $ocRestApi = new Opencast($config);
+        $ocRestApi = new Opencast($config, [], false);
         $this->ocWorkflowsApi = $ocRestApi->workflowsApi;
         $this->ocEventsApi = $ocRestApi->eventsApi;
     }
@@ -37,10 +37,21 @@ class OcWorkflowsApiTest extends TestCase
     {
         $data = [];
         // Get event
-        $response0 = $this->ocEventsApi->getAll();
+        $response0 = $this->ocEventsApi->getAll(
+            ['withpublications' => true]
+        );
         $this->assertSame(200, $response0['code'], 'Failure to get events for the workflows!');
         $events = $response0['body'];
-        $event = $events[array_rand($events)];
+        $event = null;
+        foreach ($events as $ev) {
+            if ($ev->status === "EVENTS.EVENTS.STATUS.PROCESSED") {
+                $event = $ev;
+                break;
+            }
+        }
+        if (empty($event)) {
+            $this->markTestSkipped('No proper event found to apply workflow!');
+        }
         $this->assertNotEmpty($event);
         $data['event_identifier'] = $event->identifier;
 
@@ -61,7 +72,7 @@ class OcWorkflowsApiTest extends TestCase
         $this->assertNotEmpty($definition);
         $data['workflow_definition_identifier'] = $definition->identifier;
 
-        
+
         // Create (run) Workflow.
         $response3 = $this->ocWorkflowsApi->run(
             $data['event_identifier'],
@@ -70,18 +81,22 @@ class OcWorkflowsApiTest extends TestCase
         $this->assertSame(201, $response3['code'], 'Failure to create (run) a workflow');
         $workflowId = $response3['body'];
         $this->assertNotEmpty($workflowId);
+        sleep(1);
 
         // Get the workflow.
         $response4 = $this->ocWorkflowsApi->get($workflowId->identifier, true, true);
         $this->assertSame(200, $response4['code'], 'Failure to get a workflow');
+        sleep(1);
 
         // Update workflow.
         $response5 = $this->ocWorkflowsApi->update($workflowId->identifier, 'stopped');
         $this->assertSame(200, $response5['code'], 'Failure to update a workflow');
+        sleep(1);
 
         // Delete the workflow.
         $response6 = $this->ocWorkflowsApi->delete($workflowId->identifier);
         $this->assertSame(204, $response6['code'], 'Failure to delete a workflow');
+        sleep(1);
     }
 }
 ?>

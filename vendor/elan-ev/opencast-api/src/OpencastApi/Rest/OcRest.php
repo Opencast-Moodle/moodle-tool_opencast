@@ -11,9 +11,9 @@ abstract class OcRest {
 
     /**
      * Converts the array of sorting into comma-separated list of sort criteria "Sort:Attr"
-     * 
+     *
      * @param array $sort the array of sorting params
-     * 
+     *
      * @return string consumable sorting string
      */
     protected function convertArrayToSorting($sort) {
@@ -24,9 +24,9 @@ abstract class OcRest {
 
     /**
      * Converts the array of filtering into comma-separated list of filter criteria "Filter:value"
-     * 
+     *
      * @param array $filters the array of filters
-     * 
+     *
      * @return string consumable filtering string
      */
     protected function convertArrayToFiltering($filters) {
@@ -57,6 +57,22 @@ abstract class OcRest {
         if (!empty($roles)) {
             $roles = is_array($roles) ? implode(', ', $roles) : $roles;
             $this->restClient->registerAdditionalHeader('X-RUN-WITH-ROLES', $roles);
+        }
+        return $this;
+    }
+
+    /**
+     * To perform the request with disposable X-RUN-AS-USER header.
+     *
+     * @param string $user the user to run the request with
+     *
+     * @return object $this the class object where the call is requested from.
+     */
+    public function runAsUser($user)
+    {
+        $user = trim($user);
+        if (!empty($user)) {
+            $this->restClient->registerAdditionalHeader('X-RUN-AS-USER', $user);
         }
         return $this;
     }

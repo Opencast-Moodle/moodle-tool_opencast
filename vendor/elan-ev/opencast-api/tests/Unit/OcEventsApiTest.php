@@ -1,4 +1,4 @@
-<?php 
+<?php
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -12,7 +12,7 @@ class OcEventsApiTest extends TestCase
     {
         parent::setUp();
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
-        $ocRestApi = new Opencast($config);
+        $ocRestApi = new Opencast($config, [], false);
         $this->ocEventsApi = $ocRestApi->eventsApi;
     }
 
@@ -23,7 +23,7 @@ class OcEventsApiTest extends TestCase
     public function get_all_events($params): void
     {
         $response =  $this->ocEventsApi->getAll($params);
-        
+
         $this->assertSame(200, $response['code'], 'Failure to get event list');
     }
 
@@ -54,7 +54,7 @@ class OcEventsApiTest extends TestCase
      */
     public function get_single_event(string $identifier): string
     {
-        $responseAll =  $this->ocEventsApi->getAll(['withacl' => true]);
+        $responseAll = $this->ocEventsApi->getAll(['withacl' => true]);
         $this->assertSame(200, $responseAll['code'], 'Failure to get event list');
         $events = $responseAll['body'];
         if (!empty($events)) {
@@ -89,18 +89,19 @@ class OcEventsApiTest extends TestCase
     public function create_and_update_event(string $createdEventIdentifier): string
     {
         $responseCreate = $this->ocEventsApi->create(
-            \Tests\DataProvider\EventsDataProvider::getAcls(), 
-            \Tests\DataProvider\EventsDataProvider::getMetadata('presenter'), 
-            \Tests\DataProvider\EventsDataProvider::getProcessing(), 
+            \Tests\DataProvider\EventsDataProvider::getAcls(),
+            \Tests\DataProvider\EventsDataProvider::getMetadata('presenter'),
+            \Tests\DataProvider\EventsDataProvider::getProcessing(),
             '',
-            \Tests\DataProvider\EventsDataProvider::getPresenterFile(), 
-            \Tests\DataProvider\EventsDataProvider::getPresentationFile(), 
+            \Tests\DataProvider\EventsDataProvider::getPresenterFile(),
+            \Tests\DataProvider\EventsDataProvider::getPresentationFile(),
             \Tests\DataProvider\EventsDataProvider::getAudioFile(),
             array($this, 'progressCallback')
         );
         $this->assertContains($responseCreate['code'], [200, 201], 'Failure to create an event');
         $createdEventIdentifier = $responseCreate['body']->identifier;
         $this->assertNotEmpty($createdEventIdentifier);
+        sleep(5);
 
         $metadata = str_replace(
             '{update_replace}',
@@ -109,7 +110,7 @@ class OcEventsApiTest extends TestCase
         );
         $responseUpdate = $this->ocEventsApi->update($createdEventIdentifier, '', $metadata);
         $this->assertSame(204, $responseUpdate['code'], 'Failure to update an event');
-        
+
         return $createdEventIdentifier;
     }
 
@@ -174,6 +175,16 @@ class OcEventsApiTest extends TestCase
         $this->assertSame(200, $response1['code'], 'Failure to get ACLs of an event');
 
         $acls = $response1['body'];
+        if (empty($acls)) {
+            $response1_1 = $this->ocEventsApi->addSingleAcl($identifier, 'write', 'ROLE_PHPUNIT_TESTING_USER_0');
+            $this->assertSame(204, $response1_1['code'], 'Failure to set single ACL for an event');
+
+            $response1_2 = $this->ocEventsApi->getAcl($identifier);
+            $this->assertSame(200, $response1_2['code'], 'Failure to get ACLs of an event');
+
+            $acls = $response1_2['body'];
+        }
+
         $this->assertNotEmpty($acls);
 
         // Delete all acls.

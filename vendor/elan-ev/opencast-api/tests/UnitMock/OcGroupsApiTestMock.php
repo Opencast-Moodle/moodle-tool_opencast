@@ -1,4 +1,4 @@
-<?php 
+<?php
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -19,7 +19,7 @@ class OcGroupsApiTestMock extends TestCase
         $mockHandler = OcMockHanlder::getHandlerStackWithPath($mockResponse);
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
         $config['handler'] = $mockHandler;
-        $ocRestApi = new Opencast($config);
+        $ocRestApi = new Opencast($config, [], false);
         $this->ocGroupsApi = $ocRestApi->groupsApi;
     }
 
@@ -61,7 +61,7 @@ class OcGroupsApiTestMock extends TestCase
         $group = $response3['body'];
         $this->assertNotEmpty($group);
         $identifier = $group->identifier;
-        
+
         // Update the group
         $response4 = $this->ocGroupsApi->update($group->identifier, $name, 'THIS IS AN UPDATED DESC FROM PHPUNIT');
         $this->assertSame(200, $response4['code'], 'Failure to update group');

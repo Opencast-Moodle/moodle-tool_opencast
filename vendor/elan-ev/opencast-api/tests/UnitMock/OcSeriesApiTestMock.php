@@ -1,4 +1,4 @@
-<?php 
+<?php
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -19,7 +19,7 @@ class OcSeriesApiTestMock extends TestCase
         $mockHandler = OcMockHanlder::getHandlerStackWithPath($mockResponse);
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
         $config['handler'] = $mockHandler;
-        $ocRestApi = new Opencast($config);
+        $ocRestApi = new Opencast($config, [], false);
         $this->ocSeriesApi = $ocRestApi->seriesApi;
     }
 
@@ -91,7 +91,7 @@ class OcSeriesApiTestMock extends TestCase
         $this->assertSame(200, $response1['code'], 'Failure to get series metadata');
         $metadataAll = $response1['body'];
         $this->assertNotEmpty($metadataAll);
-        
+
         // Update all metadata.
         $metadata = str_replace(
             '{update_replace}',
@@ -117,7 +117,7 @@ class OcSeriesApiTestMock extends TestCase
 
         $response4 = $this->ocSeriesApi->updateMetadata($identifier, $dcMetadata, $type);
         $this->assertSame(200, $response4['code'], 'Failure to update series metadata');
-        
+
         // Delete metadata.
         $response5 = $this->ocSeriesApi->deleteMetadata($identifier, $type);
         $this->assertSame(403, $response5['code'], 'Failure to delete type metadata of a series');

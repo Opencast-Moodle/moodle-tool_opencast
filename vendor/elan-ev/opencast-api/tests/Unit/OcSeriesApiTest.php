@@ -1,4 +1,4 @@
-<?php 
+<?php
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -12,7 +12,7 @@ class OcSeriesApiTest extends TestCase
     {
         parent::setUp();
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
-        $ocRestApi = new Opencast($config);
+        $ocRestApi = new Opencast($config, [], false);
         $this->ocSeriesApi = $ocRestApi->seriesApi;
     }
 
@@ -52,6 +52,20 @@ class OcSeriesApiTest extends TestCase
             'onlyWithWriteAccess' => true
         ];
         $response = $this->ocSeriesApi->runWithRoles(['ROLE_ADMIN'])->getAll($params);
+
+        $this->assertSame(200, $response['code'], 'Failure to get series list');
+    }
+
+    /**
+     * @test
+     */
+    public function get_all_series_with_user(): void
+    {
+        $params = [
+            'onlyWithWriteAccess' => true
+        ];
+        $user = '   admin   ';
+        $response = $this->ocSeriesApi->runAsUser($user)->getAll($params);
 
         $this->assertSame(200, $response['code'], 'Failure to get series list');
     }
@@ -102,7 +116,7 @@ class OcSeriesApiTest extends TestCase
         $this->assertSame(200, $response1['code'], 'Failure to get series metadata');
         $metadataAll = $response1['body'];
         $this->assertNotEmpty($metadataAll);
-        
+
         // Update all metadata.
         $metadata = str_replace(
             '{update_replace}',

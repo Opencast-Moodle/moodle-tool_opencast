@@ -1,4 +1,4 @@
-<?php 
+<?php
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -19,7 +19,7 @@ class OcWorkflowsApiTestMock extends TestCase
         $mockHandler = OcMockHanlder::getHandlerStackWithPath($mockResponse);
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
         $config['handler'] = $mockHandler;
-        $ocRestApi = new Opencast($config);
+        $ocRestApi = new Opencast($config, [], false);
         $this->ocWorkflowsApi = $ocRestApi->workflowsApi;
         $this->ocEventsApi = $ocRestApi->eventsApi;
     }
@@ -55,7 +55,7 @@ class OcWorkflowsApiTestMock extends TestCase
         $this->assertNotEmpty($definition);
         $data['workflow_definition_identifier'] = $definition->identifier;
 
-        
+
         // Create (run) Workflow.
         $response3 = $this->ocWorkflowsApi->run(
             $data['event_identifier'],
