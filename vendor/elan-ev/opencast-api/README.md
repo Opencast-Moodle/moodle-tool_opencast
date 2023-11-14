@@ -25,7 +25,7 @@ $config = [
       'timeout' => 0,                                 // The API timeout. In seconds (default 0 to wait indefinitely). (optional)
       'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
       'version' => null,                              // The API Version. (Default null). (optional)
-      'handler' => null                               // The Mock Response Handler with Closure type. (Default null). (optional)
+      'handler' => null                               // The callable Handler or HandlerStack. (Default null). (optional)
 ];
 
 $engageConfig = [
@@ -35,14 +35,14 @@ $engageConfig = [
       'timeout' => 0,                                 // The API timeout. In seconds (default 0 to wait indefinitely). (optional)
       'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
       'version' => null,                              // The API version. (Default null). (optional)
-      'handler' => null                               // The Mock Response Handler with Closure type. (Default null). (optional)
+      'handler' => null                               // The callable Handler or HandlerStack. (Default null). (optional)
 ];
 
 use OpencastApi\Opencast;
 
 // In case of a distributed Opencast setup
 $opencastDualApi = new Opencast($config, $engageConfig);
-// Or simply 
+// Or simply
 $opencastApi = new Opencast($config);
 
 // Accessing Event Endpoints to get all events
@@ -72,7 +72,7 @@ $config = [
       'timeout' => 0,                                 // The API timeout. In seconds (default 0 to wait indefinitely). (optional)
       'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
       'version' => null,                              // The API version. (Default null). (optional)
-      'handler' => null                               // The Mock Response Handler with Closure type. (Default null). (optional)
+      'handler' => null                               // The callable Handler or HandlerStack. (Default null). (optional)
 ];
 
 
@@ -111,7 +111,7 @@ $config = [
       'timeout' => 0,                                 // The API timeout. In seconds (default 0 to wait indefinitely). (optional)
       'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
       'version' => null,                              // The API version. (Default null). (optional)
-      'handler' => null                               // The Mock Response Handler with Closure type. (Default null). (optional)
+      'handler' => null                               // The callable Handler or HandlerStack. (Default null). (optional)
 ];
 ```
 NOTE: the configuration for presentation (`engage` node) responsible for search has to follow the same definition as normal config. But in case any parameter is missing, the value will be taken from the main config param.
@@ -128,12 +128,25 @@ $opencastApiWithoutIngest = new Opencast($config, $engageConfig, false);
 
 # Response
 The return result of each call is an `Array` containing the following information:
+From v1.4 the 5th response parameter 'origin' is available!
 ```php
 [
-      'code' => 200,                // The status code of the response
-      'body' => '',                 // The result of the response. It can be type of string, array or object ('' || [] || {})
-      'reason' => 'OK',             // The reason/message of response
-      'location' => '',             // The location header of the response when available
+      'code' => 200,                            // The status code of the response
+      'body' => '',                             // The result of the response. It can be type of string, array or objec ('' || [] || {})
+      'reason' => 'OK',                         // The reason/message of response
+      'location' => '',                         // The location header of the response when available,
+      'origin' => [                             // The information about the origin of the request (ADDED in v1.4)
+            'base' => 'https://example.com',    // Request base url address
+            'path' => '/api/path',              // Request url path
+            'method' => 'GET',                  // Request method
+            'params' => [                       // Request parameters
+                'query_params' => [],
+                'form_params' => [],
+                'form_multipart_params' => [],
+                'json' => [],
+                'body' => null,
+            ]
+      ]
 ]
 ```
 # Filters and Sorts
@@ -187,6 +200,26 @@ $seriesResponse = $ocSeriesApi->runWithRoles($roles)->getAll(['onlyWithWriteAcce
 ```
 <b>NOTE:</b> Roles can be either an `Array` including each role, or a comma separated string!
 
+# `runAsUser($user)`
+Sometimes it is needed to perform the request with a disposable header of `X-RUN-AS-USER` containing the user id in order for Opencast to assume that this user has access right. This feature is added since v1.4.
+NOTE: This method <b>accepts</b> an `String` defining the user id to check against!
+```php
+// With Opencast generic class
+use OpencastApi\Opencast;
+$opencastApi = new Opencast($config);
+
+// Role
+$user = 'lms-admin';
+$seriesResponse = $opencastApi->seriesApi->runAsUser($user)->getAll(['onlyWithWriteAccess' => true]);
+
+// Or direct class call
+$opencastClient = \OpencastApi\Rest\OcRestClient($config);
+$ocSeriesApi = \OpencastApi\Rest\OcSeriesApi($opencastClient);
+// Role
+$user = 'lms-admin';
+$seriesResponse = $ocSeriesApi->runAsUser($user)->getAll(['onlyWithWriteAccess' => true]);
+```
+
 # `noHeader()`
 In order to perform a request call to an endpoint without any request headers/options, you can use this method <b>before</b> calling the desired function in an endpoint class:
 NOTE: This method <b>accepts</b> nothing (`void`).<br />
@@ -238,7 +271,7 @@ $baseResponse = $ocBaseApi->setRequestConnectionTimeout(10)->get();
 # Available Opencast REST Service Endpoint
 
 - `/api/*`: all known API endpoints of Opencast are available to be used in this library. [API Endpoints definitions WiKi](https://github.com/elan-ev/opencast-php-library/wiki/API-Endpoints)
-  
+
 - `/ingest/*`: all known Ingest endpoints are available. [Ingest Endpoint definitions WiKi](https://github.com/elan-ev/opencast-php-library/wiki/OcIngest)
 
 - `/services/services.json`: only services.json is available. [Services Endpoint definitions WiKi](https://github.com/elan-ev/opencast-php-library/wiki/OcServices)
@@ -346,7 +379,7 @@ $opencast = new \OpencastApi\Opencast($config);
 
 ```
 # Naming convention
-## Classes: 
+## Classes:
 Apart from 'Opencast' class, all other classes under `OpencastApi\Rest\` namespace start with `Oc` followed by the name and the endpoint category. For example:
 - `OcEventsApi` contains 3 parts including Oc + Endpoint Name (Events) + Endpoint Category (Api)
 - `OcServices` contains 2 parts including Oc + Endpoint Name/Category (Services)
@@ -359,7 +392,7 @@ $config = [/*the config*/];
 $opencast = new Opencast($config);
 
 // Accessing OcEventsApi would be like: (without Oc and in camelCase format)
-$ocEventsApi = $opencast->eventsApi; 
+$ocEventsApi = $opencast->eventsApi;
 ```
 # References
 - <a href="https://develop.opencast.org/rest_docs.html" target="_blank">Main Opencast REST Service Documentation</a>

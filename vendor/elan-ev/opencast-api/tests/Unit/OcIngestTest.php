@@ -1,4 +1,4 @@
-<?php 
+<?php
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -12,7 +12,7 @@ class OcIngestTest extends TestCase
     {
         parent::setUp();
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
-        $ocRestApi = new Opencast($config);
+        $ocRestApi = new Opencast($config, [], true);
         $this->ocIngest = $ocRestApi->ingest;
     }
 
@@ -39,7 +39,7 @@ class OcIngestTest extends TestCase
         $mediaPackage = $responseCreateMediaPackage['body'];
         $this->assertNotEmpty($mediaPackage);
         $ingestData['mediaPackage'] = $mediaPackage;
-        
+
         $this->assertNotEmpty($ingestData);
         return $ingestData;
     }
@@ -192,7 +192,7 @@ class OcIngestTest extends TestCase
             $mediaPackage = $responseAddAttachmentUrl['body'];
             $this->assertNotEmpty($mediaPackage);
         }
-        
+
         $ingestData['mediaPackage'] = $mediaPackage;
 
         $this->assertNotEmpty($ingestData);

@@ -1,4 +1,4 @@
-<?php 
+<?php
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -19,7 +19,7 @@ class OcSysinfoTestMock extends TestCase
         $mockHandler = OcMockHanlder::getHandlerStackWithPath($mockResponse);
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
         $config['handler'] = $mockHandler;
-        $ocRestApi = new Opencast($config);
+        $ocRestApi = new Opencast($config, [], false);
         $this->ocSysinfo = $ocRestApi->sysinfo;
     }
 

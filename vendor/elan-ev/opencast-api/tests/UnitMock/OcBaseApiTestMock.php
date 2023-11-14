@@ -1,4 +1,4 @@
-<?php 
+<?php
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -20,7 +20,7 @@ class OcBaseApiTestMock extends TestCase
         $mockHandler = OcMockHanlder::getHandlerStackWithPath($mockResponse);
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
         $config['handler'] = $mockHandler;
-        $ocRestApi = new Opencast($config);
+        $ocRestApi = new Opencast($config, [], false);
 
         $this->ocBaseApi = $ocRestApi->baseApi;
     }

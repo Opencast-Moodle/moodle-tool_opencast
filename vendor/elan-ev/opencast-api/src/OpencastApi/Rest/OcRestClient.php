@@ -16,7 +16,8 @@ class OcRestClient extends Client
     private $headerExceptions = [];
     private $additionalHeaders = [];
     private $noHeader = false;
-    /* 
+    private $origin;
+    /*
         $config = [
             'url' => 'https://develop.opencast.org/',       // The API url of the opencast instance (required)
             'username' => 'admin',                          // The API username. (required)
@@ -24,7 +25,7 @@ class OcRestClient extends Client
             'timeout' => 0,                                 // The API timeout. In seconds (default 0 to wait indefinitely). (optional)
             'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
             'version' => null                               // The API Version. (Default null). (optional)
-            'handler' => null                               // The Mock Response Handler with Closure type. (Default null). (optional)
+            'handler' => null                               // The callable Handler or HandlerStack. (Default null). (optional)
         ]
     */
     public function __construct($config)
@@ -194,11 +195,15 @@ class OcRestClient extends Client
             $location = $response->getHeader('Location');
         }
         $result['location'] = $location;
+
+        $result['origin'] = !empty($this->origin) ? $this->origin : null;
+
         return $result;
     }
 
     public function performGet($uri, $options = [])
     {
+        $this->prepareOrigin($uri, $options, 'GET');
         try {
             $response = $this->get($uri, $this->addRequestOptions($uri, $options));
             return $this->returnResult($response);
@@ -209,6 +214,7 @@ class OcRestClient extends Client
 
     public function performPost($uri, $options = [])
     {
+        $this->prepareOrigin($uri, $options, 'POST');
         try {
             $response = $this->post($uri, $this->addRequestOptions($uri, $options));
             return $this->returnResult($response);
@@ -220,6 +226,7 @@ class OcRestClient extends Client
 
     public function performPut($uri, $options = [])
     {
+        $this->prepareOrigin($uri, $options, 'PUT');
         try {
             $response = $this->put($uri, $this->addRequestOptions($uri, $options));
             return $this->returnResult($response);
@@ -230,6 +237,7 @@ class OcRestClient extends Client
 
     public function performDelete($uri, $options = [])
     {
+        $this->prepareOrigin($uri, $options, 'DELETE');
         try {
             $response = $this->delete($uri, $this->addRequestOptions($uri, $options));
             return $this->returnResult($response);
@@ -245,6 +253,7 @@ class OcRestClient extends Client
         $error['reason'] = $th->getMessage();
         $error['body'] = '';
         $error['location'] = '';
+        $error['origin'] = !empty($this->origin) ? $this->origin : null;
         if (!empty($error['reason'])) {
             return $error;
         }
@@ -305,6 +314,22 @@ class OcRestClient extends Client
             $options['query'] = $queryParams;
         }
         return $options;
+    }
+
+    private function prepareOrigin($uri, $options, $method)
+    {
+        $this->origin = [
+            'base' => $this->baseUri,
+            'path' => $uri,
+            'method' => $method,
+            'params' => [
+                'query_params' => isset($options['query']) ? $options['query'] : [],
+                'form_params' => isset($options['form_params']) ? $options['form_params'] : [],
+                'form_multipart_params' => isset($options['multipart']) ? $options['multipart'] : [],
+                'json' => isset($options['json']) ? $options['json'] : [],
+                'body' => isset($options['body']) ? $options['body'] : null,
+            ]
+        ];
     }
 }
 ?>
