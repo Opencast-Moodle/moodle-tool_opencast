@@ -436,7 +436,7 @@ class admin_settings_builder {
             'class' => 'btn btn-warning disabled testtool-modal',
             'disabled' => 'disabled',
             'title' => get_string('testtooldisabledbuttontitle', self::PLUGINNAME),
-            'data-instanceid' => strval($instanceid)
+            'data-instanceid' => strval($instanceid),
         ];
 
         $connectiontoolbutton = \html_writer::tag(

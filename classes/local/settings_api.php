@@ -221,12 +221,12 @@ class settings_api {
         try {
             $ocinstancesconfig = get_config('tool_opencast', 'ocinstances');
         } catch (\dml_exception $exception) {
-            return array();
+            return [];
         }
 
         $dynamicocinstances = json_decode($ocinstancesconfig);
 
-        $ocinstances = array();
+        $ocinstances = [];
         foreach ($dynamicocinstances as $dynamicocinstance) {
             $ocinstances[] = new opencast_instance($dynamicocinstance);
         }
@@ -243,7 +243,7 @@ class settings_api {
      * The Opencast instance, to that all configured Opencast instances are set to.
      */
     public static function set_ocinstances_to_ocinstance($dynamicocinstance) : void {
-        set_config('ocinstances', json_encode(array($dynamicocinstance)), 'tool_opencast');
+        set_config('ocinstances', json_encode([$dynamicocinstance]), 'tool_opencast');
     }
 
     /**

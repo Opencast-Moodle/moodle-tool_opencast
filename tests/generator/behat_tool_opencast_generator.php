@@ -43,7 +43,7 @@ class behat_tool_opencast_generator extends behat_generator_base {
             'series' => [
                 'singular' => 'series',
                 'datagenerator' => 'series',
-                'required' => ['course', 'series', 'isdefault', 'ocinstanceid']
+                'required' => ['course', 'series', 'isdefault', 'ocinstanceid'],
             ],
         ];
     }
