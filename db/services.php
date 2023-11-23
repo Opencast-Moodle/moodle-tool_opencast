@@ -22,32 +22,32 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$functions = array(
-    'tool_opencast_get_courses_for_learner' => array(
+$functions = [
+    'tool_opencast_get_courses_for_learner' => [
         'classname' => 'tool_opencast_external',
         'methodname' => 'get_courses_for_learner',
         'classpath'   => 'admin/tool/opencast/external.php',
         'description' => 'Service to query the courses in which a user has the capability of a learner',
         'type' => 'read',
         'capabilities' => 'tool/opencast:externalapi',
-    ),
-    'tool_opencast_get_courses_for_instructor' => array(
+    ],
+    'tool_opencast_get_courses_for_instructor' => [
         'classname' => 'tool_opencast_external',
         'methodname' => 'get_courses_for_instructor',
         'classpath'   => 'admin/tool/opencast/external.php',
         'description' => 'Service to query the courses in which a user has the capability of a instructor',
         'type' => 'read',
         'capabilities' => 'tool/opencast:externalapi',
-    ),
-    'tool_opencast_get_groups_for_learner' => array(
+    ],
+    'tool_opencast_get_groups_for_learner' => [
         'classname' => 'tool_opencast_external',
         'methodname' => 'get_groups_for_learner',
         'classpath'   => 'admin/tool/opencast/external.php',
         'description' => 'Service to query the groups in which a user has a membership in',
         'type' => 'read',
         'capabilities' => 'tool/opencast:externalapi, moodle/site:accessallgroups',
-    ),
-    'tool_opencast_connection_test_tool' => array(
+    ],
+    'tool_opencast_connection_test_tool' => [
         'classname'     => 'tool_opencast_external',
         'methodname'    => 'connection_test_tool',
         'classpath'     => 'admin/tool/opencast/external.php',
@@ -56,19 +56,19 @@ $functions = array(
         'capabilities'  => 'tool/opencast:externalapi',
         'ajax'          => true,
         'loginrequired' => true,
-    ),
-);
+    ],
+];
 
-$services = array(
-    'Opencast web service' => array(
-        'functions' => array (
+$services = [
+    'Opencast web service' => [
+        'functions' => [
             'tool_opencast_get_courses_for_learner',
             'tool_opencast_get_courses_for_instructor',
             'tool_opencast_get_groups_for_learner',
             'core_user_get_users_by_field',
-        ),
+        ],
         'restrictedusers' => 1, // If 1, the administrator must manually select which user can use this service.
         // (Administration > Plugins > Web services > Manage services > Authorised users).
         'enabled' => 1, // If 0, then token linked to this service won't work.
-    )
-);
+    ],
+];

@@ -45,26 +45,26 @@ class seriesmapping extends \core\persistent {
      */
     protected static function define_properties() {
 
-        return array(
-            'id' => array(
+        return [
+            'id' => [
                 'type' => PARAM_INT,
-            ),
-            'courseid' => array(
+            ],
+            'courseid' => [
                 'type' => PARAM_INT,
-            ),
-            'series' => array(
+            ],
+            'series' => [
                 'type' => PARAM_ALPHANUMEXT,
-            ),
-            'ocinstanceid' => array(
+            ],
+            'ocinstanceid' => [
                 'type' => PARAM_INT,
                 'default' => function () {
                     return settings_api::get_default_ocinstance()->id;
-                }
-            ),
-            'isdefault' => array(
+                },
+            ],
+            'isdefault' => [
                 'type' => PARAM_BOOL,
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -73,7 +73,7 @@ class seriesmapping extends \core\persistent {
      * @param false $skipdefault
      * @return false|seriesmapping
      */
-    public static function get_record($filters = array(), $skipdefault = false) {
+    public static function get_record($filters = [], $skipdefault = false) {
         // TODO later deprecate skipdefault and remove this compatibility stuff.
         // Keep it compatible with old versions.
         if (!$skipdefault && !array_key_exists('isdefault', $filters)) {

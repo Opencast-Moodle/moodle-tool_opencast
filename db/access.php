@@ -24,30 +24,30 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
+$capabilities = [
 
-    'tool/opencast:instructor' => array(
+    'tool/opencast:instructor' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
-            'editingteacher' => CAP_ALLOW
-        )
-    ),
+        'archetypes' => [
+            'editingteacher' => CAP_ALLOW,
+        ],
+    ],
 
-    'tool/opencast:learner' => array(
+    'tool/opencast:learner' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'student' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW,
-        )
-    ),
+        ],
+    ],
 
-    'tool/opencast:externalapi' => array(
+    'tool/opencast:externalapi' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-        )
-    ),
-);
+        'archetypes' => [
+        ],
+    ],
+];

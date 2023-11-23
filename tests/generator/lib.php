@@ -39,13 +39,13 @@ class tool_opencast_generator extends testing_module_generator {
      */
     public function create_series($data) {
         global $DB;
-        $courses = $DB->get_records('course', array('shortname' => $data['course']));
+        $courses = $DB->get_records('course', ['shortname' => $data['course']]);
 
         $series = (object)[
             'courseid' => reset($courses)->id,
             'series' => $data['series'],
             'isdefault' => $data['isdefault'],
-            'ocinstanceid' => $data['ocinstanceid']
+            'ocinstanceid' => $data['ocinstanceid'],
         ];
         $DB->insert_record('tool_opencast_series', $series);
     }

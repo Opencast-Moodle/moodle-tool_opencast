@@ -44,8 +44,8 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         $table->add_field('series', XMLDB_TYPE_CHAR, '36', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table tool_opencast_series.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-        $table->add_key('fk_course', XMLDB_KEY_FOREIGN_UNIQUE, array('courseid'), 'course', array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('fk_course', XMLDB_KEY_FOREIGN_UNIQUE, ['courseid'], 'course', ['id']);
 
         // Conditionally launch create table for tool_opencast_series.
         if (!$dbman->table_exists($table)) {
@@ -67,7 +67,7 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         }
 
         // Remove unique key.
-        $dbman->drop_key($table, new xmldb_key('fk_course', XMLDB_KEY_FOREIGN_UNIQUE, array('courseid'), 'course', array('id')));
+        $dbman->drop_key($table, new xmldb_key('fk_course', XMLDB_KEY_FOREIGN_UNIQUE, ['courseid'], 'course', ['id']));
 
         // Check that each course has only exactly one series.
         $sql = "SELECT courseid, COUNT(id) FROM {tool_opencast_series} GROUP BY courseid ";
@@ -110,8 +110,8 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         $dbman->change_field_notnull($table, $field);
 
         // Add new foreign key and unique constraint.
-        $table->add_key('fk_course', XMLDB_KEY_FOREIGN, array('courseid'), 'course', array('id'));
-        $table->add_key('unq_course_series_ocinstance', XMLDB_KEY_UNIQUE, array('courseid', 'ocinstanceid', 'series'));
+        $table->add_key('fk_course', XMLDB_KEY_FOREIGN, ['courseid'], 'course', ['id']);
+        $table->add_key('unq_course_series_ocinstance', XMLDB_KEY_UNIQUE, ['courseid', 'ocinstanceid', 'series']);
 
         // Opencast savepoint reached.
         upgrade_plugin_savepoint(true, 2021091200, 'tool', 'opencast');

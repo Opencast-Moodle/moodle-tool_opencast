@@ -47,9 +47,9 @@ class tool_opencast_external extends external_api {
      */
     public static function get_courses_for_instructor_parameters() {
         return new external_function_parameters(
-            array(
+            [
                 'username' => new external_value(core_user::get_property_type('username'), 'User Name'),
-            )
+            ]
         );
     }
 
@@ -61,9 +61,9 @@ class tool_opencast_external extends external_api {
      */
     public static function get_courses_for_learner_parameters() {
         return new external_function_parameters(
-            array(
+            [
                 'username' => new external_value(core_user::get_property_type('username'), 'User Name'),
-            )
+            ]
         );
     }
 
@@ -75,9 +75,9 @@ class tool_opencast_external extends external_api {
      */
     public static function get_groups_for_learner_parameters() {
         return new external_function_parameters(
-            array(
+            [
                 'username' => new external_value(core_user::get_property_type('username'), 'User Name'),
-            )
+            ]
         );
     }
 
@@ -92,7 +92,7 @@ class tool_opencast_external extends external_api {
      * @throws required_capability_exception
      */
     public static function get_courses_for_instructor($username) {
-        self::validate_parameters(self::get_courses_for_instructor_parameters(), array('username' => $username));
+        self::validate_parameters(self::get_courses_for_instructor_parameters(), ['username' => $username]);
 
         return self::get_courses_with_capability($username, 'tool/opencast:instructor');
     }
@@ -108,7 +108,7 @@ class tool_opencast_external extends external_api {
      * @throws required_capability_exception
      */
     public static function get_courses_for_learner($username) {
-        self::validate_parameters(self::get_courses_for_learner_parameters(), array('username' => $username));
+        self::validate_parameters(self::get_courses_for_learner_parameters(), ['username' => $username]);
 
         return self::get_courses_with_capability($username, 'tool/opencast:learner');
     }
@@ -124,7 +124,7 @@ class tool_opencast_external extends external_api {
      * @throws required_capability_exception
      */
     public static function get_groups_for_learner($username) {
-        self::validate_parameters(self::get_groups_for_learner_parameters(), array('username' => $username));
+        self::validate_parameters(self::get_groups_for_learner_parameters(), ['username' => $username]);
 
         $context = context_system::instance();
         if (!has_capability('tool/opencast:externalapi', $context)) {
@@ -136,7 +136,7 @@ class tool_opencast_external extends external_api {
 
         global $DB;
         $user = core_user::get_user_by_username($username);
-        return $DB->get_records('groups_members', array('userid' => $user->id), '', 'groupid as id');
+        return $DB->get_records('groups_members', ['userid' => $user->id], '', 'groupid as id');
     }
 
     /**
@@ -149,7 +149,7 @@ class tool_opencast_external extends external_api {
      * @throws required_capability_exception
      */
     private static function get_courses_with_capability($username, $capability) {
-        $result = array();
+        $result = [];
 
         $context = context_system::instance();
         if (!has_capability('tool/opencast:externalapi', $context)) {
@@ -161,7 +161,7 @@ class tool_opencast_external extends external_api {
         foreach ($courses as $course) {
             $context = context_course::instance($course->id);
             if (has_capability($capability, $context, $user)) {
-                $result[] = array('id' => $course->id);
+                $result[] = ['id' => $course->id];
             }
         }
         return $result;
@@ -175,9 +175,9 @@ class tool_opencast_external extends external_api {
     public static function get_courses_for_instructor_returns() {
         return new external_multiple_structure(
             new external_single_structure(
-                array(
+                [
                     'id' => new external_value(PARAM_INT, 'id of course'),
-                )
+                ]
             )
         );
     }
@@ -190,9 +190,9 @@ class tool_opencast_external extends external_api {
     public static function get_courses_for_learner_returns() {
         return new external_multiple_structure(
             new external_single_structure(
-                array(
+                [
                     'id' => new external_value(PARAM_INT, 'id of course'),
-                )
+                ]
             )
         );
     }
@@ -205,9 +205,9 @@ class tool_opencast_external extends external_api {
     public static function get_groups_for_learner_returns() {
         return new external_multiple_structure(
             new external_single_structure(
-                array(
+                [
                     'id' => new external_value(PARAM_INT, 'id of group'),
-                )
+                ]
             )
         );
     }
@@ -219,9 +219,9 @@ class tool_opencast_external extends external_api {
      */
     public static function connection_test_tool_returns() {
         return new external_single_structure(
-            array(
+            [
                 'testresult' => new external_value(PARAM_RAW, 'Opencast API URL Test result'),
-            )
+            ]
         );
     }
 
@@ -233,13 +233,13 @@ class tool_opencast_external extends external_api {
      */
     public static function connection_test_tool_parameters() {
         return new external_function_parameters(
-            array(
+            [
                 'apiurl' => new external_value(PARAM_TEXT, 'Opencast API URL'),
                 'apiusername' => new external_value(PARAM_TEXT, 'Opencast API User'),
                 'apipassword' => new external_value(PARAM_RAW, 'Opencast API Password'),
                 'apitimeout' => new external_value(PARAM_INT, 'API timeout', VALUE_DEFAULT, 2000),
                 'apiconnecttimeout' => new external_value(PARAM_INT, 'API connect timeout', VALUE_DEFAULT, 1000),
-            )
+            ]
         );
     }
 
@@ -259,14 +259,14 @@ class tool_opencast_external extends external_api {
             return html_writer::tag(
                 'p',
                 get_string($testsuccessfulstringidentifier, 'tool_opencast'),
-                array('class' => 'alert alert-success')
+                ['class' => 'alert alert-success']
             );
         }
 
         return html_writer::tag(
             'p',
             get_string($testfailedstringidentifier, 'tool_opencast', $connectiontestresult),
-            array('class' => 'alert alert-danger')
+            ['class' => 'alert alert-danger']
         );
     }
 
@@ -288,23 +288,23 @@ class tool_opencast_external extends external_api {
 
         // Validate the parameters.
         $params = self::validate_parameters(self::connection_test_tool_parameters(),
-            array(
+            [
                 'apiurl' => $apiurl,
                 'apiusername' => $apiusername,
                 'apipassword' => $apipassword,
                 'apitimeout' => $apitimeout,
-                'apiconnecttimeout' => $apiconnecttimeout
-            )
+                'apiconnecttimeout' => $apiconnecttimeout,
+            ]
         );
 
         // Get a customized api instance to use.
-        $customizedapi = \tool_opencast\local\api::get_instance(null, array(), array(
+        $customizedapi = \tool_opencast\local\api::get_instance(null, [], [
                 'apiurl' => $params['apiurl'],
                 'apiusername' => $params['apiusername'],
                 'apipassword' => $params['apipassword'],
                 'apitimeout' => $params['apitimeout'],
-                'apiconnecttimeout' => $params['apiconnecttimeout']
-        ));
+                'apiconnecttimeout' => $params['apiconnecttimeout'],
+        ]);
 
         // Test the URL.
         $connectiontesturlresult = $customizedapi->connection_test_url();
@@ -321,7 +321,7 @@ class tool_opencast_external extends external_api {
             'apicreadentialstestfailedshort');
 
         return [
-            'testresult' => $resulthtml
+            'testresult' => $resulthtml,
         ];
     }
 }

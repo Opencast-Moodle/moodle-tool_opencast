@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tool_opencast';
-$plugin->release = 'development-version';
-$plugin->version = 2023051200;
-$plugin->requires = 2020061500; // Requires Moodle 3.9+.
-$plugin->maturity = MATURITY_ALPHA;
+$plugin->release = 'v4.3-r1';
+$plugin->version = 2023112200;
+$plugin->requires = 2020061524; // Requires Moodle 3.9+.
+$plugin->maturity = MATURITY_STABLE;

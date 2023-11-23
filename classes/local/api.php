@@ -147,8 +147,8 @@ class api extends \curl {
      * @throws \moodle_exception
      */
     public static function get_instance($instanceid = null,
-                                        $settings = array(),
-                                        $customconfigs = array(),
+                                        $settings = [],
+                                        $customconfigs = [],
                                         $enableingest = false) {
 
         if (self::use_test_api() === true) {
@@ -203,8 +203,8 @@ class api extends \curl {
      * @throws \moodle_exception
      */
     public function __construct($instanceid = null,
-                                $settings = array(),
-                                $customconfigs = array(),
+                                $settings = [],
+                                $customconfigs = [],
                                 $enableingest = false) {
         // Allow access to local ips.
         $settings['ignoresecurity'] = true;
@@ -268,9 +268,9 @@ class api extends \curl {
             throw new empty_configuration_exception('apiurlempty', 'tool_opencast');
         }
 
-        $this->setopt(array(
+        $this->setopt([
             'CURLOPT_TIMEOUT_MS' => $this->timeout,
-            'CURLOPT_CONNECTTIMEOUT_MS' => $this->connecttimeout));
+            'CURLOPT_CONNECTTIMEOUT_MS' => $this->connecttimeout, ]);
 
         $config = [
             'url' => $this->baseurl,
@@ -289,7 +289,7 @@ class api extends \curl {
      */
     public function set_timeout($timeout) {
         $this->timeout = $timeout;
-        $this->setopt(array('CURLOPT_TIMEOUT_MS' => $this->timeout));
+        $this->setopt(['CURLOPT_TIMEOUT_MS' => $this->timeout]);
     }
 
     /**
@@ -298,7 +298,7 @@ class api extends \curl {
      */
     public function set_connecttimeout($connecttimeout) {
         $this->connecttimeout = $connecttimeout;
-        $this->setopt(array('CURLOPT_CONNECTTIMEOUT_MS' => $this->connecttimeout));
+        $this->setopt(['CURLOPT_CONNECTTIMEOUT_MS' => $this->connecttimeout]);
     }
 
     /**
@@ -331,9 +331,9 @@ class api extends \curl {
      * @return array of authentification headers
      * @throws \moodle_exception
      */
-    private function get_authentication_header($runwithroles = array()) {
+    private function get_authentication_header($runwithroles = []) {
 
-        $options = array('CURLOPT_HEADER' => true);
+        $options = ['CURLOPT_HEADER' => true];
         $this->setopt($options);
 
         // Restrict to Roles.
@@ -344,7 +344,7 @@ class api extends \curl {
 
         $basicauth = base64_encode($this->username . ":" . $this->password);
 
-        $header = array();
+        $header = [];
 
         $header[] = sprintf(
             'Authorization: Basic %s', $basicauth
@@ -362,14 +362,14 @@ class api extends \curl {
      * @return string JSON String of result.
      * @throws \moodle_exception
      */
-    public function oc_get($resource, $runwithroles = array()) {
+    public function oc_get($resource, $runwithroles = []) {
         $url = $this->baseurl . $resource;
 
         $this->resetHeader();
         $header = $this->get_authentication_header($runwithroles);
         $header[] = 'Content-Type: application/json';
         $this->setHeader($header);
-        $this->setopt(array('CURLOPT_HEADER' => false));
+        $this->setopt(['CURLOPT_HEADER' => false]);
 
         return $this->get($url);
     }
@@ -460,7 +460,7 @@ class api extends \curl {
      * @return string JSON String of result.
      * @throws \moodle_exception
      */
-    public function oc_post($resource, $params = array(), $runwithroles = array()) {
+    public function oc_post($resource, $params = [], $runwithroles = []) {
 
         $url = $this->baseurl . $resource;
 
@@ -468,12 +468,12 @@ class api extends \curl {
         $header = $this->get_authentication_header($runwithroles);
         $header[] = "Content-Type: multipart/form-data";
         $this->setHeader($header);
-        $this->setopt(array('CURLOPT_HEADER' => false));
+        $this->setopt(['CURLOPT_HEADER' => false]);
 
         $options['CURLOPT_POST'] = 1;
 
         if (is_array($params)) {
-            $this->_tmp_file_post_params = array();
+            $this->_tmp_file_post_params = [];
             foreach ($params as $key => $value) {
                 if ($value instanceof \stored_file) {
                     $value->add_to_curl_request($this, $key);
@@ -505,18 +505,18 @@ class api extends \curl {
      * @return string JSON String of result.
      * @throws \moodle_exception
      */
-    public function oc_put($resource, $params = array(), $runwithroles = array()) {
+    public function oc_put($resource, $params = [], $runwithroles = []) {
 
         $url = $this->baseurl . $resource;
 
         $this->resetHeader();
         $header = $this->get_authentication_header($runwithroles);
         $this->setHeader($header);
-        $this->setopt(array('CURLOPT_HEADER' => false));
+        $this->setopt(['CURLOPT_HEADER' => false]);
 
         $options['CURLOPT_CUSTOMREQUEST'] = "PUT";
         if (is_array($params)) {
-            $this->_tmp_file_post_params = array();
+            $this->_tmp_file_post_params = [];
             foreach ($params as $key => $value) {
                 $this->_tmp_file_post_params[$key] = $value;
             }
@@ -540,18 +540,18 @@ class api extends \curl {
      * @return string JSON String of result.
      * @throws \moodle_exception
      */
-    public function oc_delete($resource, $params = array(), $runwithroles = array()) {
+    public function oc_delete($resource, $params = [], $runwithroles = []) {
 
         $url = $this->baseurl . $resource;
 
         $this->resetHeader();
         $header = $this->get_authentication_header($runwithroles);
         $this->setHeader($header);
-        $this->setopt(array('CURLOPT_HEADER' => false));
+        $this->setopt(['CURLOPT_HEADER' => false]);
 
         $options['CURLOPT_CUSTOMREQUEST'] = "DELETE";
         if (is_array($params)) {
-            $this->_tmp_file_post_params = array();
+            $this->_tmp_file_post_params = [];
             foreach ($params as $key => $value) {
                 $this->_tmp_file_post_params[$key] = $value;
             }

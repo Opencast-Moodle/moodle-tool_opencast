@@ -92,7 +92,7 @@ class api_testable extends api {
             'password' => $this->password,
             'timeout' => (intval($this->timeout) / 1000),
             'connect_timeout' => (intval($this->connecttimeout) / 1000),
-            'version' => $this->version
+            'version' => $this->version,
         ];
 
         $handler = \OpencastApi\Mock\OcMockHanlder::getHandlerStackWithPath($this->jsonresponses);
@@ -139,10 +139,10 @@ class api_testable extends api {
             $jsonresponses = [];
         }
         if (!array_key_exists($resource, $jsonresponses)) {
-            $jsonresponses[$resource] = array();
+            $jsonresponses[$resource] = [];
         }
         if (!isset($jsonresponses[$resource][strtoupper($method)])) {
-            $jsonresponses[$resource][strtoupper($method)] = array();
+            $jsonresponses[$resource][strtoupper($method)] = [];
         }
         $responseobject = compact('status', 'body', 'version', 'reason', 'params', 'headers');
         $jsonresponses[$resource][strtoupper($method)][] = $responseobject;
