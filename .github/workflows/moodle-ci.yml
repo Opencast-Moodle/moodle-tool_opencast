@@ -8,4 +8,4 @@ on: [push, pull_request]
 
 jobs:
   call-moodle-ci-workflow:
-    uses: Opencast-Moodle/moodle-workflows-opencast/.github/workflows/moodle-ci.yml@master
+    uses: Opencast-Moodle/moodle-workflows-opencast/.github/workflows/moodle-ci.yml@update/m404
