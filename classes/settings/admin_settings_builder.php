@@ -302,6 +302,12 @@ class admin_settings_builder {
         );
 
         self::add_admin_setting_configtext($settings,
+            'tool_opencast/apiversion_' . $instanceid,
+            'apiversion', 'apiversiondesc',
+            ''
+        );
+
+        self::add_admin_setting_configtext($settings,
             'tool_opencast/apiusername_' . $instanceid,
             'apiusername', 'apiusernamedesc',
             'admin'

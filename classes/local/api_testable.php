@@ -43,7 +43,7 @@ class api_testable extends api {
     private $httpcode;
 
     /** @var string version api version to apply for */
-    public $version = '1.9.0';
+    public $version;
 
     /** @var string the username. */
     private string $username;
@@ -85,6 +85,10 @@ class api_testable extends api {
         $this->timeout = settings_api::get_apitimeout($storedconfigocinstanceid);
         $this->connecttimeout = settings_api::get_apiconnecttimeout($storedconfigocinstanceid);
         $this->baseurl = settings_api::get_apiurl($storedconfigocinstanceid);
+        $this->version = settings_api::get_apiversion($storedconfigocinstanceid);
+        if (empty($this->version)) {
+            $this->version = '1.10.0';
+        }
 
         $config = [
             'url' => $this->baseurl,

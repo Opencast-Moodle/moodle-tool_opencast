@@ -73,6 +73,22 @@ class settings_api {
     }
 
     /**
+     * Returns the api version of an Opencast instance as string
+     * or false, if the corresponding config was not found.
+     *
+     * @param int $ocinstanceid
+     * The id of the Opencast instance, for that the config is retrieved.
+     *
+     * @return string|bool
+     * The requested config as string or false, if the corresponding config was not found.
+     *
+     * @throws \dml_exception
+     */
+    public static function get_apiversion(int $ocinstanceid) {
+        return get_config('tool_opencast', 'apiversion_' . $ocinstanceid);
+    }
+
+    /**
      * Returns the api username of an Opencast instance as string
      * or false, if the corresponding config was not found.
      *

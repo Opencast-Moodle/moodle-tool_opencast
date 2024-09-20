@@ -54,6 +54,8 @@ class api extends \curl {
     private $connecttimeout = 1000;
     /** @var string the api baseurl */
     private $baseurl;
+    /** @var string the api version */
+    public $version;
     /** @var \OpencastApi\Opencast the opencast endpoints instance */
     public $opencastapi;
     /** @var \OpencastApi\Rest\OcRestClient the opencast REST Client instance */
@@ -227,6 +229,7 @@ class api extends \curl {
             $this->timeout          = settings_api::get_apitimeout($storedconfigocinstanceid);
             $this->connecttimeout   = settings_api::get_apiconnecttimeout($storedconfigocinstanceid);
             $this->baseurl          = settings_api::get_apiurl($storedconfigocinstanceid);
+            $this->version          = settings_api::get_apiversion($storedconfigocinstanceid);
 
             if (empty($this->username)) {
                 throw new empty_configuration_exception('apiusernameempty', 'tool_opencast');
@@ -256,6 +259,10 @@ class api extends \curl {
             if (array_key_exists('apiconnecttimeout', $customconfigs)) {
                 $this->connecttimeout = $customconfigs['apiconnecttimeout'];
             }
+
+            if (array_key_exists('apiversion', $customconfigs)) {
+                $this->version = $customconfigs['version'];
+            }
         }
 
         // If the admin omitted the protocol part, add the HTTPS protocol on-the-fly.
@@ -278,6 +285,7 @@ class api extends \curl {
             'password' => $this->password,
             'timeout' => (intval($this->timeout) / 1000),
             'connect_timeout' => (intval($this->connecttimeout) / 1000),
+            'version' => !empty($this->version) ? $this->version : null,
         ];
         $this->opencastapi = new \OpencastApi\Opencast($config, [], $enableingest);
         $this->opencastrestclient = new \OpencastApi\Rest\OcRestClient($config);
