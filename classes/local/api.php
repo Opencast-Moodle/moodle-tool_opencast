@@ -167,7 +167,7 @@ class api extends \curl {
      * @return bool
      * @throws \dml_exception
      */
-    private static function use_test_api() : bool {
+    private static function use_test_api(): bool {
         if (defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING) {
             $defaultocinstance = settings_api::get_default_ocinstance();
             if ($defaultocinstance === null) {

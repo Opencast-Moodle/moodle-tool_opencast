@@ -253,7 +253,7 @@ class tool_opencast_external extends external_api {
      */
     private static function connection_test_tool_build_html_alert_tag($connectiontestresult,
                                                                       string $testsuccessfulstringidentifier,
-                                                                      string $testfailedstringidentifier) : string {
+                                                                      string $testfailedstringidentifier): string {
         // Check, if the test was successful.
         if ($connectiontestresult === true) {
             return html_writer::tag(
