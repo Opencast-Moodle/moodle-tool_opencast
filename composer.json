@@ -2,5 +2,8 @@
     "name": "moodle/tool_opencast",
     "require": {
         "elan-ev/opencast-api": "1.8"
+    },
+    "config": {
+        "platform-check": false
     }
 }
