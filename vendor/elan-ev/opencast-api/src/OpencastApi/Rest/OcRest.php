@@ -2,6 +2,7 @@
 namespace OpencastApi\Rest;
 
 abstract class OcRest {
+    /** @var OcRestClient */
     protected $restClient;
 
     public function __construct($restClient)

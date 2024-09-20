@@ -1,0 +1,59 @@
+{
+    "/api/playlists": {
+        "GET": [
+            {
+                "body": "[{\"entries\":[{\"contentId\":\"ID-about-opencast\",\"id\":\"ID-entry-opencast\",\"type\":\"EVENT\"},{\"contentId\":\"ID-3d-print\",\"id\":\"ID-entry-print\",\"type\":\"EVENT\"}],\"creator\":\"Opencast\",\"description\":\"This is a playlist about Opencast\",\"id\":\"ID-opencast-playlist\",\"title\":\"Opencast Playlist\",\"updated\":\"2024-02-14T08:56:40Z\",\"accessControlEntries\":[{\"allow\":true,\"role\":\"ROLE_USER_BOB\",\"action\":\"read\"}]},{\"entries\":[{\"contentId\":\"ID-about-opencast\",\"id\":\"ID-about-opencast\",\"type\":\"EVENT\"}],\"creator\":\"Opencast\",\"description\":\"This is a playlist about Opencast\",\"id\":\"ID-another-opencast-playlist\",\"title\":\"Another Opencast Playlist\",\"updated\":\"2024-03-05T15:10:55Z\",\"accessControlEntries\":[{\"allow\":true,\"role\":\"ROLE_USER_BOB\",\"action\":\"read\"}]}]",
+                "params": "",
+                "status": 200
+            }
+        ],
+        "POST": [
+            {
+                "body": "{\"entries\":[{\"contentId\":\"ID-about-opencast\",\"id\":\"ID-entry-opencast\",\"type\":\"EVENT\"}],\"creator\":\"Opencast\",\"description\":\"This is a playlist about Opencast\",\"id\":\"ID-opencast-playlist\",\"title\":\"Opencast Playlist\",\"updated\":\"2024-03-05T15:10:55Z\",\"accessControlEntries\":[{\"allow\":true,\"role\":\"ROLE_USER_BOB\",\"action\":\"read\"}]}",
+                "params": "",
+                "status": 201
+            }
+        ]
+    },
+    "/api/playlists/ID-opencast-playlist": {
+        "GET": [
+            {
+                "body": "{\"entries\":[{\"contentId\":\"ID-about-opencast\",\"id\":\"ID-entry-opencast\",\"type\":\"EVENT\"}],\"creator\":\"Opencast\",\"description\":\"This is a playlist about Opencast\",\"id\":\"ID-opencast-playlist\",\"title\":\"Opencast Playlist\",\"updated\":\"2024-03-05T15:10:55Z\",\"accessControlEntries\":[{\"allow\":true,\"role\":\"ROLE_USER_BOB\",\"action\":\"read\"}]}",
+                "params": "",
+                "status": 200
+            }
+        ],
+        "PUT": [
+            {
+                "body": "{\"entries\":[{\"contentId\":\"ID-about-opencast\",\"id\":\"ID-entry-opencast\",\"type\":\"EVENT\"}],\"creator\":\"Opencast\",\"description\":\"This is a playlist about Opencast\",\"id\":\"ID-opencast-playlist\",\"title\":\"Opencast Playlist\",\"updated\":\"2024-03-05T15:10:55Z\",\"accessControlEntries\":[{\"allow\":true,\"role\":\"ROLE_USER_BOB\",\"action\":\"read\"}]}",
+                "params": "",
+                "status": 200
+            }
+        ],
+        "DELETE": [
+            {
+                "body": "{\"entries\":[{\"contentId\":\"ID-about-opencast\",\"id\":\"ID-entry-opencast\",\"type\":\"EVENT\"}],\"creator\":\"Opencast\",\"description\":\"This is a playlist about Opencast\",\"id\":\"ID-opencast-playlist\",\"title\":\"Opencast Playlist\",\"updated\":\"2024-03-05T15:10:55Z\",\"accessControlEntries\":[{\"allow\":true,\"role\":\"ROLE_USER_BOB\",\"action\":\"read\"}]}",
+                "params": "",
+                "status": 200
+            }
+        ]
+    },
+    "/api/playlists/ID-opencast-playlist/entries": {
+        "POST": [
+            {
+                "body": "{\"entries\":[],\"creator\":\"Opencast\",\"description\":\"This is a playlist about Opencast\",\"id\":\"ID-opencast-playlist\",\"title\":\"Opencast Playlist\",\"updated\":\"2024-03-05T15:10:55Z\",\"accessControlEntries\":[{\"allow\":true,\"role\":\"ROLE_USER_BOB\",\"action\":\"read\"}]}",
+                "params": {
+                    "unique_request_identifier": "playlistEntries=[]"
+                },
+                "status": 200
+            },
+            {
+                "body": "{\"entries\":[{\"contentId\":\"ID-about-opencast\",\"id\":ID-entry-opencast,\"type\":\"EVENT\"}],\"creator\":\"Opencast\",\"description\":\"This is a playlist about Opencast\",\"id\":\"ID-opencast-playlist\",\"title\":\"Opencast Playlist\",\"updated\":\"2024-03-05T15:10:55Z\",\"accessControlEntries\":[{\"allow\":true,\"role\":\"ROLE_USER_BOB\",\"action\":\"read\"}]}",
+                "params": {
+                    "unique_request_identifier": "\"type\":\"EVENT\""
+                },
+                "status": 200
+            }
+        ]
+    }
+}
