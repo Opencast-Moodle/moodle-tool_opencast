@@ -42,8 +42,6 @@ $string['apiurltestsuccessfulshort'] = 'Opencast API URL test successful.';
 $string['apiusername'] = 'Username of Opencast API user';
 $string['apiusernamedesc'] = 'Configure the username of the Opencast user who is used to do the Opencast API calls. Moodle uses this Opencast user for all communication with Opencast. Authorization is done by adding suitable roles to the call.';
 $string['apiusernameempty'] = 'Username of Opencast API user is not configured correctly. Go to the settings of the Opencast API tool to fix this.';
-$string['apiversion'] = 'Opencast API version';
-$string['apiversiondesc'] = 'This is the api version of the opencast instance (e.g. "v1.11.0") to be configured. This would increase the overall performance when configured, because it reduces the automated version extraction step.<br/> Use this link format to get the api version from your opencast: [your opencast address]/docs.html?path=/api#getversiondefault-8';
 $string['configuration'] = 'Configuration';
 $string['configuration_instance'] = 'Configuration: {$a}';
 $string['connecttimeout'] = 'Connection timeout';
