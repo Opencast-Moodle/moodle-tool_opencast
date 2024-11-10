@@ -38,7 +38,7 @@ class environment_util {
      * @return bool Returns, true, if the current application is a CLI application,
      * and false otherwise.
      */
-    public static function is_cli_application() : bool {
+    public static function is_cli_application(): bool {
         return http_response_code() === false;
     }
 
@@ -49,7 +49,7 @@ class environment_util {
      * @return bool Returns, true, if the current application runs in the environment of a moodle-plugin-ci workflow,
      * and false otherwise.
      */
-    public static function is_moodle_plugin_ci_workflow() : bool {
+    public static function is_moodle_plugin_ci_workflow(): bool {
         return !(getenv('is_moodle_plugin_ci_workflow') === false);
     }
 }

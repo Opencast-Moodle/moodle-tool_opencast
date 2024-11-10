@@ -178,7 +178,7 @@ class settings_api {
      * @return opencast_instance|null
      * The corresponding Opencast instance or null.
      */
-    public static function get_ocinstance(int $ocinstanceid) : ?opencast_instance {
+    public static function get_ocinstance(int $ocinstanceid): ?opencast_instance {
         $ocinstances = self::get_ocinstances();
 
         foreach ($ocinstances as $ocinstance) {
@@ -197,7 +197,7 @@ class settings_api {
      * @return opencast_instance|null
      * The corresponding Opencast instance or null.
      */
-    public static function get_default_ocinstance() : ?opencast_instance {
+    public static function get_default_ocinstance(): ?opencast_instance {
         $ocinstances = self::get_ocinstances();
 
         foreach ($ocinstances as $ocinstance) {
@@ -217,7 +217,7 @@ class settings_api {
      * @return array
      * All configured Opencast instances as array.
      */
-    public static function get_ocinstances() : array {
+    public static function get_ocinstances(): array {
         try {
             $ocinstancesconfig = get_config('tool_opencast', 'ocinstances');
         } catch (\dml_exception $exception) {
@@ -242,7 +242,7 @@ class settings_api {
      * @param \stdClass $dynamicocinstance
      * The Opencast instance, to that all configured Opencast instances are set to.
      */
-    public static function set_ocinstances_to_ocinstance($dynamicocinstance) : void {
+    public static function set_ocinstances_to_ocinstance($dynamicocinstance): void {
         set_config('ocinstances', json_encode([$dynamicocinstance]), 'tool_opencast');
     }
 
@@ -252,7 +252,7 @@ class settings_api {
      * @return int
      * The number of configured Opencast instances.
      */
-    public static function num_ocinstances() : int {
+    public static function num_ocinstances(): int {
         return count(self::get_ocinstances());
     }
 }

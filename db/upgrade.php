@@ -167,7 +167,7 @@ function xmldb_tool_opencast_upgrade($oldversion) {
  * @return bool
  * Returns true, if this update of the database was successful, and false otherwise.
  */
-function remove_default_opencast_instance_settings_without_id() : bool {
+function remove_default_opencast_instance_settings_without_id(): bool {
     $helpersettingsname = 'apiurl';
     $pluginname = 'tool_opencast';
 
@@ -214,7 +214,7 @@ function remove_default_opencast_instance_settings_without_id() : bool {
  * @throws \dml_exception
  */
 function replace_default_opencast_instance_setting_without_id(int $defaultinstanceid,
-                                                              string $name) : void {
+                                                              string $name): void {
     $pluginname = 'tool_opencast';
 
     $value = get_config($pluginname, $name);

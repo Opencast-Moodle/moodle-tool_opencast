@@ -51,7 +51,7 @@ class admin_settings_builder {
      *
      * @return void
      */
-    public static function create_settings() : void {
+    public static function create_settings(): void {
         $instances = settings_api::get_ocinstances();
 
         global $ADMIN;
@@ -71,7 +71,7 @@ class admin_settings_builder {
      *
      * @return void
      */
-    private static function create_settings_no_fulltree($instances) : void {
+    private static function create_settings_no_fulltree($instances): void {
         self::add_admin_category();
         self::add_admin_settingpage('tool_opencast_instances', 'ocinstances');
 
@@ -94,7 +94,7 @@ class admin_settings_builder {
      *
      * @return void
      */
-    private static function create_settings_fulltree($instances) : void {
+    private static function create_settings_fulltree($instances): void {
         self::add_admin_category();
         self::add_admin_instances_config();
 
@@ -122,7 +122,7 @@ class admin_settings_builder {
      *
      * @return void
      */
-    private static function add_admin_category() : void {
+    private static function add_admin_category(): void {
         $category = new \admin_category(self::PLUGINNAME,
             new \lang_string('pluginname', self::PLUGINNAME)
         );
@@ -147,7 +147,7 @@ class admin_settings_builder {
      * @return void
      */
     private static function add_admin_settingpage(string $name, string $stringidentifier,
-                                                  $stringidentifierarguments = null) : void {
+                                                  $stringidentifierarguments = null): void {
         $settingpage = self::create_admin_settingpage($name, $stringidentifier, $stringidentifierarguments);
         self::include_admin_settingpage($settingpage);
     }
@@ -169,7 +169,7 @@ class admin_settings_builder {
      * The created admin settingpage.
      */
     private static function create_admin_settingpage(string $name, string $stringidentifier,
-                                                     $stringidentifierarguments = null) : \admin_settingpage {
+                                                     $stringidentifierarguments = null): \admin_settingpage {
         return new \admin_settingpage($name,
             new \lang_string($stringidentifier, self::PLUGINNAME, $stringidentifierarguments)
         );
@@ -183,7 +183,7 @@ class admin_settings_builder {
      *
      * @return void
      */
-    private static function include_admin_settingpage(\admin_settingpage $settingpage) : void {
+    private static function include_admin_settingpage(\admin_settingpage $settingpage): void {
         global $ADMIN;
         $ADMIN->add(self::PLUGINNAME, $settingpage);
     }
@@ -199,7 +199,7 @@ class admin_settings_builder {
      *
      * @return void
      */
-    private static function add_admin_instances_config() : void {
+    private static function add_admin_instances_config(): void {
         $instancesconfig = new admin_setting_configtextwithvalidation(
             'tool_opencast/ocinstances',
             get_string('ocinstances', self::PLUGINNAME),
@@ -233,7 +233,7 @@ class admin_settings_builder {
      *
      * @return void
      */
-    private static function require_amds(string $pluginnameid) : void {
+    private static function require_amds(string $pluginnameid): void {
         global $PAGE;
 
         // Crashes, if plugins.php is opened, because css cannot be included anymore.
@@ -261,7 +261,7 @@ class admin_settings_builder {
      * @return void
      */
     private static function add_notification_banner_for_demo_instance(\admin_settingpage $settings,
-                                                                      int $instanceid) : void {
+                                                                      int $instanceid): void {
         $instanceapiurl = settings_api::get_apiurl($instanceid);
 
         // Show a notification banner, if the plugin is connected to the Opencast demo server.
@@ -293,7 +293,7 @@ class admin_settings_builder {
      * @return void
      */
     private static function add_config_settings_fulltree(\admin_settingpage $settings,
-                                                         int $instanceid) : void {
+                                                         int $instanceid): void {
         self::add_admin_setting_configtext($settings,
             'tool_opencast/apiurl_' . $instanceid,
             'apiurl', 'apiurldesc',
@@ -368,7 +368,7 @@ class admin_settings_builder {
                                                          string $visiblenameidentifier,
                                                          string $descriptionidentifier,
                                                          string $defaultsetting,
-                                                         $paramtype = PARAM_RAW) : void {
+                                                         $paramtype = PARAM_RAW): void {
         $settingconfigtext = new \admin_setting_configtext(
             $name,
             get_string($visiblenameidentifier, self::PLUGINNAME),
@@ -403,7 +403,7 @@ class admin_settings_builder {
                                                                    string $name,
                                                                    string $visiblenameidentifier,
                                                                    string $descriptionidentifier,
-                                                                   string $defaultsetting) : void {
+                                                                   string $defaultsetting): void {
         $settingconfigpasswordunmask = new \admin_setting_configpasswordunmask(
             $name,
             get_string($visiblenameidentifier, self::PLUGINNAME),
@@ -430,7 +430,7 @@ class admin_settings_builder {
      * @return void
      */
     private static function add_connection_test_tool(\admin_settingpage $settings,
-                                                     int $instanceid) : void {
+                                                     int $instanceid): void {
         // Provide Connection Test Tool button.
         $attributes = [
             'class' => 'btn btn-warning disabled testtool-modal',
