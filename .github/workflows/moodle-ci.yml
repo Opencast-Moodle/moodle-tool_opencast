@@ -2,10 +2,10 @@ name: Moodle Plugin CI
 
 ########################################################################################################################
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 ########################################################################################################################
 
 jobs:
   call-moodle-ci-workflow:
-    uses: Opencast-Moodle/moodle-workflows-opencast/.github/workflows/moodle-ci.yml@master
+    uses: Opencast-Moodle/moodle-workflows-opencast/.github/workflows/moodle-ci.yml@main
