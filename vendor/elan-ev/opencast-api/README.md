@@ -26,6 +26,7 @@ $config = [
       'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
       'version' => null,                              // The API Version. (Default null). (optional)
       'handler' => null                               // The callable Handler or HandlerStack. (Default null). (optional)
+      'features' => null                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
 ];
 
 $engageConfig = [
@@ -36,6 +37,7 @@ $engageConfig = [
       'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
       'version' => null,                              // The API version. (Default null). (optional)
       'handler' => null                               // The callable Handler or HandlerStack. (Default null). (optional)
+      'features' => null                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
 ];
 
 use OpencastApi\Opencast;
@@ -73,6 +75,7 @@ $config = [
       'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
       'version' => null,                              // The API version. (Default null). (optional)
       'handler' => null                               // The callable Handler or HandlerStack. (Default null). (optional)
+      'features' => null                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
 ];
 
 
@@ -112,8 +115,11 @@ $config = [
       'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
       'version' => null,                              // The API version. (Default null). (optional)
       'handler' => null                               // The callable Handler or HandlerStack. (Default null). (optional)
+      'features' => null                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
 ];
 ```
+**UPDATE (v1.7.0):** the new items called `features` is added to the configuration array. As of now, it is meant to hanlde the toggle behavior to enable/disable Lucene search endpoint simply by adding `'features' => ['lucene' => true]`. Just keep in mind that this endpoint id off by default and won't work in Opencast 16 onwards. Therefore, developer must be very careful to use this feature and to toggle it!
+
 NOTE: the configuration for presentation (`engage` node) responsible for search has to follow the same definition as normal config. But in case any parameter is missing, the value will be taken from the main config param.
 
 #### Extra: Dynamically loading the ingest endpoint class into Opencast instance.

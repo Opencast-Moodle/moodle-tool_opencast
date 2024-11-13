@@ -13,7 +13,7 @@ class OcIngest extends OcRest
 
     /**
      * Create an empty media package.
-     * 
+     *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) media package}']
      */
     public function createMediaPackage()
@@ -39,12 +39,13 @@ class OcIngest extends OcRest
         $formData = [
             'mediaPackage' => $mediaPackage,
             'flavor' => $flavor,
-            'dublincore-episode.xml' => $file
         ];
 
         if (!empty($tags)) {
             $formData['tags'] = $tags;
         }
+
+        $formData['BODY'] = $file;
 
         $options = $this->restClient->getMultiPartFormParams($formData);
         return $this->restClient->performPost($uri, $options);
@@ -67,12 +68,13 @@ class OcIngest extends OcRest
         $formData = [
             'mediaPackage' => $mediaPackage,
             'flavor' => $flavor,
-            'url' => $url
         ];
 
         if (!empty($tags)) {
             $formData['tags'] = $tags;
         }
+
+        $formData['url'] = $url;
 
         $options = $this->restClient->getFormParams($formData);
         return $this->restClient->performPost($uri, $options);
@@ -84,7 +86,7 @@ class OcIngest extends OcRest
      * @param string $mediaPackage The media package
      * @param string $dublinCore DublinCore catalog
      * @param string $flavor (optional) DublinCore Flavor (Default value=dublincore/episode)
-     * 
+     *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) augmented media package}']
      */
     public function addDCCatalog($mediaPackage, $dublinCore, $flavor = '')
@@ -99,7 +101,7 @@ class OcIngest extends OcRest
             $formData['flavor'] = $flavor;
         }
 
-        $options = $this->restClient->getFormParams($formData);        
+        $options = $this->restClient->getFormParams($formData);
         return $this->restClient->performPost($uri, $options);
     }
 
@@ -120,12 +122,13 @@ class OcIngest extends OcRest
         $formData = [
             'mediaPackage' => $mediaPackage,
             'flavor' => $flavor,
-            'attachment.xml' => $file
         ];
 
         if (!empty($tags)) {
             $formData['tags'] = $tags;
         }
+
+        $formData['BODY'] = $file;
 
         $options = $this->restClient->getMultiPartFormParams($formData);
         return $this->restClient->performPost($uri, $options);
@@ -148,12 +151,13 @@ class OcIngest extends OcRest
         $formData = [
             'mediaPackage' => $mediaPackage,
             'flavor' => $flavor,
-            'url' => $url
         ];
 
         if (!empty($tags)) {
             $formData['tags'] = $tags;
         }
+
+        $formData['url'] = $url;
 
         $options = $this->restClient->getFormParams($formData);
         return $this->restClient->performPost($uri, $options);
@@ -161,14 +165,14 @@ class OcIngest extends OcRest
 
     /**
      * Create and ingest media package from media tracks with additional Dublin Core metadata.
-     * It is mandatory to set a title for the recording. This can be done with the 'title' form field or by supplying a DC catalog with a title included. 
+     * It is mandatory to set a title for the recording. This can be done with the 'title' form field or by supplying a DC catalog with a title included.
      * (deprecated*) The identifier of the newly created media package will be taken from the identifier field or the episode DublinCore catalog (deprecated*).
      * If no identifier is set, a new random UUIDv4 will be generated. This endpoint is not meant to be used by capture agents for scheduled recordings. Its primary use is for manual ingests with command line tools like cURL.
-     * 
+     *
      * Multiple tracks can be ingested by using multiple form fields. It is important to always set the flavor of the next media file before sending the media file itself.
-     * 
-     * (*) The special treatment of the identifier field is deprecated and may be removed in future versions without further notice in favor of a random UUID generation to ensure uniqueness of identifiers. 
-     * 
+     *
+     * (*) The special treatment of the identifier field is deprecated and may be removed in future versions without further notice in favor of a random UUID generation to ensure uniqueness of identifiers.
+     *
      *
      * @param array $flavor (optional) The kind of media track. This has to be specified prior to each media track (default: "presenter/source"):
      * @param array $file (partially optional) media track file, could be null if mediaUri in $params is defined.
@@ -205,15 +209,15 @@ class OcIngest extends OcRest
      *      'type' => '', // Episode metadata value.
      *      'episodeDCCatalogUri' => '', // URL of episode DublinCore Catalog.
      *      'episodeDCCatalog' => '', // URL of episode DublinCore Catalog.
-     *      'seriesDCCatalogUri' => '', // URL of series DublinCore Catalog 
-     *      'seriesDCCatalog' => '', // Series DublinCore Catalog 
-     *      'acl' => '', // Access control list in XACML or JSON form 
+     *      'seriesDCCatalogUri' => '', // URL of series DublinCore Catalog
+     *      'seriesDCCatalog' => '', // Series DublinCore Catalog
+     *      'acl' => '', // Access control list in XACML or JSON form
      *      'tag' => '', // Tag of the next media file
      *      'mediaUri' => '', // URL of a media track file
      * ]
-     * 
+     *
      * @param string $wdID (optional) Workflow definition id
-     * 
+     *
      * @return array the response result ['code' => 200, 'body' => '{Ingest successful. Returns workflow instance as XML (text)']
      */
     public function addMediaPackage($flavor = 'presenter/source', $file = null, $params = [], $wdID = '')
@@ -243,7 +247,7 @@ class OcIngest extends OcRest
         } else {
             $options = $this->restClient->getFormParams($formData);
         }
-        
+
         return $this->restClient->performPost($uri, $options);
     }
 
@@ -268,7 +272,7 @@ class OcIngest extends OcRest
             $formData['workflowInstanceId'] = $workflowInstanceId;
         }
 
-        $options = $this->restClient->getMultiPartFormParams($formData);        
+        $options = $this->restClient->getMultiPartFormParams($formData);
         return $this->restClient->performPost($uri, $options);
     }
 
@@ -305,7 +309,7 @@ class OcIngest extends OcRest
      * Add a partial media track to a given media package using an input stream
      *
      * @param string $mediaPackage The XML media package as string
-     * @param string $flavor The kind of media track 
+     * @param string $flavor The kind of media track
      * @param object $file The media track file
      * @param int $startTime The start time in milliseconds
      *
@@ -319,10 +323,10 @@ class OcIngest extends OcRest
             'mediaPackage' => $mediaPackage,
             'flavor' => $flavor,
             'startTime' => $startTime,
-            'track.mp4' => $file
+            'BODY' => $file
         ];
 
-        $options = $this->restClient->getMultiPartFormParams($formData);        
+        $options = $this->restClient->getMultiPartFormParams($formData);
         return $this->restClient->performPost($uri, $options);
     }
 
@@ -330,7 +334,7 @@ class OcIngest extends OcRest
      * Add a partial media track to a given media package using an URL
      *
      * @param string $mediaPackage The XML media package as string
-     * @param string $flavor The kind of media track 
+     * @param string $flavor The kind of media track
      * @param string $url The location of the media
      * @param int $startTime The start time in milliseconds
      *
@@ -347,13 +351,13 @@ class OcIngest extends OcRest
             'url' => $url
         ];
 
-        $options = $this->restClient->getFormParams($formData);        
+        $options = $this->restClient->getFormParams($formData);
         return $this->restClient->performPost($uri, $options);
     }
 
     /**
      * Add a media track to a given media package using an input stream
-     * 
+     *
      * @param string $mediaPackage The media package
      * @param string $flavor The kind of media track
      * @param object $file The media track file
@@ -375,12 +379,13 @@ class OcIngest extends OcRest
         $formData = [
             'mediaPackage' => $mediaPackage,
             'flavor' => $flavor,
-            'track.mp4' => $file
         ];
 
         if (!empty($tags)) {
             $formData['tags'] = $tags;
         }
+
+        $formData['BODY'] = $file;
 
         $options = $this->restClient->getMultiPartFormParams($formData);
         if (!empty($progressCallable)) {
@@ -392,7 +397,7 @@ class OcIngest extends OcRest
 
     /**
      * Add a media track to a given media package using an URL
-     * 
+     *
      * @param string $mediaPackage The media package
      * @param string $flavor The kind of media track
      * @param string $url The location of the media
@@ -407,14 +412,15 @@ class OcIngest extends OcRest
         $formData = [
             'mediaPackage' => $mediaPackage,
             'flavor' => $flavor,
-            'url' => $url
         ];
 
         if (!empty($tags)) {
             $formData['tags'] = $tags;
         }
 
-        $options = $this->restClient->getFormParams($formData);        
+        $formData['url'] = $url;
+
+        $options = $this->restClient->getFormParams($formData);
         return $this->restClient->performPost($uri, $options);
     }
 
@@ -425,10 +431,11 @@ class OcIngest extends OcRest
      * @param string $mediaPackage The media package
      * @param string $workflowDefinitionId (optional) Workflow definition id
      * @param string $workflowInstanceId (optional) The workflow instance ID to associate this ingest with scheduled events.
+     * @param array $workflowConfiguration Workflow configuration
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) media package}']
      */
-    public function ingest($mediaPackage, $workflowDefinitionId = '', $workflowInstanceId = '')
+    public function ingest($mediaPackage, $workflowDefinitionId = '', $workflowInstanceId = '', $workflowConfiguration = [])
     {
         $uri = self::URI . "/ingest";
         if (!empty($workflowDefinitionId) && empty($workflowInstanceId)) {
@@ -442,6 +449,13 @@ class OcIngest extends OcRest
         if (!empty($workflowDefinitionId) && !empty($workflowInstanceId)) {
             $formData['workflowDefinitionId'] = $workflowDefinitionId;
             $formData['workflowInstanceId'] = $workflowInstanceId;
+        }
+
+        if (!empty($workflowConfiguration)) {
+            // Adding workflow configuration params into the form data one by one.
+            foreach ($workflowConfiguration as $config => $value) {
+                $formData[$config] = $value;
+            }
         }
 
         $options = $this->restClient->getFormParams($formData);

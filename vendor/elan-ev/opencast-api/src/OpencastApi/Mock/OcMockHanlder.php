@@ -50,7 +50,7 @@ class OcMockHanlder
             ];
             $response = new Response($status, $headers, $body, $version, json_encode($reasonData));
 
-            if ($method === 'PUT' && !empty($requestBody)) {
+            if (in_array($method, ['POST', 'PUT']) && !empty($requestBody)) {
                 $requestBody = urldecode($requestBody);
             }
             foreach ($data as $resPath => $resData) {

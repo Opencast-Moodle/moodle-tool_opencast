@@ -206,7 +206,11 @@ class OcIngestTest extends TestCase
     public function ingest(array $ingestData): void
     {
         $workflowDefinitionId = 'schedule-and-upload';
-        $responseIngest = $this->ocIngest->ingest($ingestData['mediaPackage'], $workflowDefinitionId);
+        // Add workflow configuration params.
+        $workflowConfiguration = [
+            'straightToPublishing' => false
+        ];
+        $responseIngest = $this->ocIngest->ingest($ingestData['mediaPackage'], $workflowDefinitionId, '', $workflowConfiguration);
         $this->assertSame(200, $responseIngest['code'], 'Failure to ingest');
         $mediaPackage = $responseIngest['body'];
         $this->assertNotEmpty($mediaPackage);

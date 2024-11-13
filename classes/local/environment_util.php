@@ -16,8 +16,6 @@
 
 namespace tool_opencast\local;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * An environment util for the Opencast Moodle plugins.
  *

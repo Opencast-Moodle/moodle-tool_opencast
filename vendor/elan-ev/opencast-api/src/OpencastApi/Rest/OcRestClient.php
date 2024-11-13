@@ -17,6 +17,7 @@ class OcRestClient extends Client
     private $additionalHeaders = [];
     private $noHeader = false;
     private $origin;
+    private $features = [];
     /*
         $config = [
             'url' => 'https://develop.opencast.org/',       // The API url of the opencast instance (required)
@@ -24,8 +25,9 @@ class OcRestClient extends Client
             'password' => 'opencast',                       // The API password. (required)
             'timeout' => 0,                                 // The API timeout. In seconds (default 0 to wait indefinitely). (optional)
             'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
-            'version' => null                               // The API Version. (Default null). (optional)
-            'handler' => null                               // The callable Handler or HandlerStack. (Default null). (optional)
+            'version' => null,                               // The API Version. (Default null). (optional)
+            'handler' => null,                               // The callable Handler or HandlerStack. (Default null). (optional)
+            'features' => null                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
         ]
     */
     public function __construct($config)
@@ -51,7 +53,23 @@ class OcRestClient extends Client
         if (isset($config['handler']) && is_callable($config['handler'])) {
             $parentConstructorConfig['handler'] = $config['handler'];
         }
+
+        if (isset($config['features'])) {
+            $this->features = $config['features'];
+        }
+
         parent::__construct($parentConstructorConfig);
+    }
+
+    public function readFeatures($key = null) {
+        if (empty($key)) {
+            return $this->features;
+        }
+
+        if (isset($this->features[$key])) {
+            return $this->features[$key];
+        }
+        return false;
     }
 
     public function registerHeaderException($header, $path) {
@@ -140,7 +158,14 @@ class OcRestClient extends Client
     {
         if (empty($this->version)) {
             try {
-                $defaultVersion = $this->performGet('/api/version/default');
+                // We have to use an aux object, in order to prevent overwriting arguments of current object.
+                $aux = clone $this;
+                $aux->enableNoHeader();
+                $options = [];
+                if (!empty($this->username) && !empty($this->password)) {
+                    $options['auth'] = [$this->username, $this->password];
+                }
+                $defaultVersion = $aux->performGet('/api/version/default', $options);
                 if (!empty($defaultVersion['body']) && isset($defaultVersion['body']->default)) {
                     $this->setVersion(str_replace(['application/', 'v', '+json'], ['', '', ''], $defaultVersion['body']->default));
                 } else {

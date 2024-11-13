@@ -43,7 +43,7 @@ class api_testable extends api {
     private $httpcode;
 
     /** @var string version api version to apply for */
-    public $version = '1.9.0';
+    public $version = '1.10.0';
 
     /** @var string the username. */
     private string $username;
