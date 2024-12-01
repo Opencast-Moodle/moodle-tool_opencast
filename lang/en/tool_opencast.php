@@ -35,8 +35,8 @@ $string['apipasswordempty'] = 'Password of Opencast API user is not configured c
 $string['apiurl'] = 'Opencast API URL';
 $string['apiurldesc'] = 'Configure the base URL of the Opencast system. A valid URL is required here. If you omit the protocol part here, \'https://\' is added on-the-fly when doing Opencast API calls.';
 $string['apiurlempty'] = 'URL of Opencast API is not configured correctly. Go to the settings of the Opencast API tool to fix this.';
-$string['apiurltestfailedshort'] = 'Opencast API URL test failed with http code: {$a}';
 $string['apiurltestfailedlong'] = 'There is no Opencast instance running on the given URL.<br />Please use a valid URL in order to avoid fatal error during tasks which use this setting.';
+$string['apiurltestfailedshort'] = 'Opencast API URL test failed with http code: {$a}';
 $string['apiurltestsucceedbutnocredentialslong'] = 'The Opencast API URL is valid, but Username or Password are not yet provided.<br />Please enter valid Username and Password in order to avoid fatal error during tasks which use this setting.';
 $string['apiurltestsuccessfulshort'] = 'Opencast API URL test successful.';
 $string['apiusername'] = 'Username of Opencast API user';
@@ -50,11 +50,11 @@ $string['delete_instance'] = 'Delete instance';
 $string['delete_instance_confirm'] = 'Do you really want to delete this instance?<br>
 Teachers will not be able to see videos used in this instance anymore.<br>
 <b>Caution:</b> All data related to this instance will be lost.<br><br>
-The deletion will be performed after you click on "Save changes" on the main settings page.';
-$string['demoservernotification'] = 'The Opencast API tool is currently configured to connect to the <a href="https://stable.opencast.org">public Opencast demo server</a>. You can use this Opencast server for evaluating this plugin.<br />Do not use it for any production purposes. Please <a href="https://docs.opencast.org/">setup your own Opencast server</a> instead.';
+The deletion will be performed after you click on \'Save changes\' on the main settings page.';
+$string['demoservernotification'] = 'The Opencast API tool is currently configured to connect to the <a href=\'https://stable.opencast.org\'>public Opencast demo server</a>. You can use this Opencast server for evaluating this plugin.<br />Do not use it for any production purposes. Please <a href=\'https://docs.opencast.org/\'>setup your own Opencast server</a> instead.';
 $string['errornumdefaultinstances'] = 'There must be exactly one default Opencast instance.';
-$string['isvisible'] = 'Is visible to teachers';
 $string['isdefault'] = 'Default';
+$string['isvisible'] = 'Is visible to teachers';
 $string['lticonsumerkey'] = 'Consumer key';
 $string['lticonsumerkey_desc'] = 'LTI Consumer key for the integration of Opencast services that require authentication such as Studio or the editor.';
 $string['lticonsumersecret'] = 'Consumer secret';
