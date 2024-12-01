@@ -25,10 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Opencast API';
 $string['addinstance'] = 'Add instance';
-$string['apicreadentialstestfailedlong'] = 'The given Username or Password for the Opencast API is not valid.<br />Please use valid Username and Password in order to avoid fatal error during tasks which use this setting.';
 $string['apicreadentialstestfailedshort'] = 'Opencast API User Credentials test failed with http code: {$a}';
+$string['apicreadentialstestfailedlong'] = 'The given Username or Password for the Opencast API is not valid.<br />Please use valid Username and Password in order to avoid fatal error during tasks which use this setting.';
 $string['apicreadentialstestsuccessfulshort'] = 'Opencast API User Credentials test successful.';
 $string['apipassword'] = 'Password of Opencast API user';
 $string['apipassworddesc'] = 'Configure the password of the Opencast user who is used to do the Opencast API calls.';
@@ -69,6 +68,7 @@ $string['ocinstancesdesc'] = 'Defines a list of Opencast Instances to which the 
 $string['opencast:externalapi'] = 'Access to Opencast API webservices';
 $string['opencast:instructor'] = 'Gives the role of an instructor in Opencast';
 $string['opencast:learner'] = 'Gives the role of a learner in Opencast';
+$string['pluginname'] = 'Opencast API';
 $string['privacy:metadata'] = 'The Opencast API admin tool only provides API endpoints and general settings for the set of Opencast plugins. It stores which Opencast series belongs to which Moodle course, but it does not store any personal data.';
 $string['serverconnectionerror'] = 'There was a problem with the connection to the Opencast server. Please check your Opencast API credentials and your network settings.';
 $string['testtooldisabledbuttontitle'] = 'Unable to conduct the connection test due to unloaded js modules.';

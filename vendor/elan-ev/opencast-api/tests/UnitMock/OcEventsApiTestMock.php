@@ -12,7 +12,7 @@ class OcEventsApiTestMock extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $mockResponse = \Tests\DataProvider\SetupDataProvider::getMockResponses('api_events');
+        $mockResponse = \Tests\DataProvider\SetupDataProvider::getMockResponses(['api_events', 'api_base']);
         if (empty($mockResponse)) {
             $this->markTestIncomplete('No mock responses for events api could be found!');
         }

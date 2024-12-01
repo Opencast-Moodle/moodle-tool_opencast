@@ -19,7 +19,7 @@
     "homepage": "https://docs.opencast.org/",
     "require": {
         "php": ">=7.2.5",
-        "guzzlehttp/guzzle": "7.5.1"
+        "guzzlehttp/guzzle": ">=7.5.1"
     },
     "autoload": {
         "psr-4": {
