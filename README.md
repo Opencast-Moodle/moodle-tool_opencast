@@ -27,7 +27,7 @@ offers webservice endpoints for the opencast role provider.
 Installation
 ------------
 
-* Copy the module code directly to the mod/opencast directory.
+* Copy the module code directly to the admin/tool/opencast directory.
 
 * Log into Moodle as administrator.
 
