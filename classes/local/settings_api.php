@@ -169,6 +169,86 @@ class settings_api {
     }
 
     /**
+     * Get the maintenance mode for a specific Opencast instance.
+     *
+     * This function retrieves the maintenance mode setting for the given Opencast instance.
+     *
+     * @param int $ocinstanceid The ID of the Opencast instance to check the maintenance mode for.
+     *
+     * @return mixed The maintenance mode setting for the specified Opencast instance.
+     *               Returns false if the setting is not found.
+     *
+     * @throws \dml_exception If there's an error retrieving the configuration.
+     */
+    public static function get_maintenancemode(int $ocinstanceid) {
+        return get_config('tool_opencast', maintenance_class::get_mode_full_config_id($ocinstanceid));
+    }
+
+    /**
+     * Get the maintenance notification level for a specific Opencast instance.
+     *
+     * This function retrieves the maintenance notification level setting for the given Opencast instance.
+     *
+     * @param int $ocinstanceid The ID of the Opencast instance to check the maintenance notification level for.
+     *
+     * @return mixed The maintenance notification level setting for the specified Opencast instance.
+     *               Returns false if the setting is not found.
+     *
+     * @throws \dml_exception If there's an error retrieving the configuration.
+     */
+    public static function get_maintenancenotiflevel(int $ocinstanceid) {
+        return get_config('tool_opencast', maintenance_class::get_notificationlevel_full_config_id($ocinstanceid));
+    }
+
+    /**
+     * Get the maintenance message for a specific Opencast instance.
+     *
+     * This function retrieves the maintenance message setting for the given Opencast instance.
+     *
+     * @param int $ocinstanceid The ID of the Opencast instance to retrieve the maintenance message for.
+     *
+     * @return mixed The maintenance message setting for the specified Opencast instance.
+     *               Returns false if the setting is not found.
+     *
+     * @throws \dml_exception If there's an error retrieving the configuration.
+     */
+    public static function get_maintenancemessage(int $ocinstanceid) {
+        return get_config('tool_opencast', maintenance_class::get_message_full_config_id($ocinstanceid));
+    }
+
+    /**
+     * Get the maintenance start date json string for a specific Opencast instance.
+     *
+     * This function retrieves the maintenance start date json string setting for the given Opencast instance.
+     *
+     * @param int $ocinstanceid The ID of the Opencast instance to retrieve the maintenance start date json string for.
+     *
+     * @return mixed The maintenance start date json string setting for the specified Opencast instance.
+     *               Returns false if the setting is not found.
+     *
+     * @throws \dml_exception If there's an error retrieving the configuration.
+     */
+    public static function get_maintenancestartdate(int $ocinstanceid) {
+        return get_config('tool_opencast', maintenance_class::get_startdate_full_config_id($ocinstanceid));
+    }
+
+    /**
+     * Get the maintenance end date json string for a specific Opencast instance.
+     *
+     * This function retrieves the maintenance end date json string setting for the given Opencast instance.
+     *
+     * @param int $ocinstanceid The ID of the Opencast instance to retrieve the maintenance end date json string for.
+     *
+     * @return mixed The maintenance end date json string setting for the specified Opencast instance.
+     *               Returns false if the setting is not found.
+     *
+     * @throws \dml_exception If there's an error retrieving the configuration.
+     */
+    public static function get_maintenancenddate(int $ocinstanceid) {
+        return get_config('tool_opencast', maintenance_class::get_enddate_full_config_id($ocinstanceid));
+    }
+
+    /**
      * Return the Opencast instance for the passed Opencast instance id, if any.
      * If no Opencast instance with this id is configured, null is returned.
      *
