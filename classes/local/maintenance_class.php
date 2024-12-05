@@ -320,7 +320,11 @@ class maintenance_class {
      */
     public function decide_access_bounce() {
         global $CFG, $COURSE, $SITE;
-        $wwwrootparsed = parse_url($CFG->wwwroot);
+        $wwwroot = $CFG->wwwroot;
+        if (defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING) {
+            $wwwroot = $CFG->behat_wwwroot;
+        }
+        $wwwrootparsed = parse_url($wwwroot);
         $iswebrequest = isset($_SERVER['REMOTE_ADDR']); // It is a web call when the REMOTE_ADDR is set in $_SERVER!
 
         // If it is a web request.
@@ -347,7 +351,6 @@ class maintenance_class {
             $blacklist['repository_opencast'] = $wwwrootparsed['path'] . '/repository'; // Match for repository_opencast plugin.
             $blacklist['admin_cron'] = $wwwrootparsed['path'] . '/admin/cron'; // Match for admin cron.
             $blacklist['admin_cron'] = $wwwrootparsed['path'] . '/local'; // Match for local plugins like och5p and och5pcore.
-
 
             // If admin and it is not admin cron page,
             // we let it pass to avoid interrupting any installation, configuration or upgrade.
@@ -453,7 +456,7 @@ class maintenance_class {
         return $result;
     }
 
-    // STATIC HELPER METHODS
+    // STATIC HELPER METHODS!
 
     /**
      * Returns mode choice options for the selection.

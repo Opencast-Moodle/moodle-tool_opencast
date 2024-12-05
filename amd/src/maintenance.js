@@ -16,7 +16,7 @@
 /**
  * Javascript to handle maintenance mode in tool opencast.
  *
- * @module     tool_opencast/tool_maintenance
+ * @module     tool_opencast/maintenance
  * @copyright  2024 Farbod Zamani Boroujeni (zamani@elan-ev.de)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,9 +26,10 @@ import * as Notification from 'core/notification';
 import * as Str from 'core/str';
 import * as Toast from 'core/toast';
 
-
+/**
+ * Initializes the tool maintenance js module.
+ */
 export const init = () => {
-
     // Load strings
     var strings = [
         {key: 'maintenancemode_modal_sync_confirmation_title', component: 'tool_opencast'},
@@ -52,7 +53,7 @@ export const init = () => {
                 });
                 enablingelement.addEventListener('change', (event) => {
                     selects.forEach((select) => {
-                        select.disabled = !event.target.checked
+                        select.disabled = !event.target.checked;
                     });
                 });
             }
@@ -71,24 +72,8 @@ export const init = () => {
 
                 Notification.confirm(
                     jsstrings[0], jsstrings[1], jsstrings[2], null,
-                    () => {
-                        Ajax.call([{
-                            methodname: 'tool_opencast_maintenance_sync',
-                            args: {ocinstanceid: ocinstanceid},
-                        }])[0]
-                        .then((data) => {
-                            if (!data?.status) {
-                                Toast.add(jsstrings[5], {type: 'danger'});
-                                return;
-                            }
-                            Toast.add(jsstrings[6], {type: 'success'});
-                            setTimeout(function() {
-                                window.location.reload();
-                            }, 3000);
-                        })
-                        .catch((error) => Notification.exception(error));
-                    }
-                )
+                    () => performSync(ocinstanceid, jsstrings)
+                );
             });
             // Make the button accessible to use after the listener is added.
             btn.removeAttribute('disabled');
@@ -102,3 +87,37 @@ export const init = () => {
     }).catch(Notification.exception);
 };
 
+/**
+ * Perform sync request via Ajax call.
+ * @param {int} ocinstanceid
+ * @param {array} jsstrings
+ */
+const performSync = (ocinstanceid, jsstrings) => {
+    if (!ocinstanceid) {
+        return;
+    }
+    Ajax.call([{
+        methodname: 'tool_opencast_maintenance_sync',
+        args: {ocinstanceid: ocinstanceid},
+    }])[0]
+    .then((data) => {
+        if (!data?.status) {
+            Toast.add(jsstrings[5], {type: 'danger'});
+            return;
+        }
+        Toast.add(jsstrings[6], {type: 'success'});
+        reloadWithDelay();
+        return;
+    })
+    .catch((error) => Notification.exception(error));
+};
+
+/**
+ * Reloads the current page with a delay.
+ * @param {int} delay default 3000 ms
+ */
+const reloadWithDelay = (delay = 3000) => {
+    setTimeout(() => {
+        window.location.reload();
+    }, delay);
+};

@@ -248,7 +248,7 @@ class admin_settings_builder {
         $PAGE->requires->jquery();
         $PAGE->requires->js_call_amd('tool_opencast/tool_testtool', 'init');
         $PAGE->requires->js_call_amd('tool_opencast/tool_settings', 'init', [$pluginnameid]);
-        $PAGE->requires->js_call_amd('tool_opencast/tool_maintenance', 'init');
+        $PAGE->requires->js_call_amd('tool_opencast/maintenance', 'init');
         $PAGE->requires->css('/admin/tool/opencast/css/tabulator.min.css');
         $PAGE->requires->css('/admin/tool/opencast/css/tabulator_bootstrap4.min.css');
         $PAGE->requires->css('/admin/tool/opencast/css/styles.css');
@@ -569,10 +569,10 @@ class admin_settings_builder {
      * @param int $defaultsetting
      * The default setting timestamp for the configdatetimeselector.
      *
-     * @param boolean $optional
+     * @param bool $optional
      * Flag indicating whether this config should be optional with enable checkbox to disable/enable.
      *
-    *  @param callable|null $validatefunction Validate function or null to clear
+     * @param callable|null $validatefunction Validate function or null to clear
      *
      * @return void
      */

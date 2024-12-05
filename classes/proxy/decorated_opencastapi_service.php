@@ -16,8 +16,8 @@
 
 namespace tool_opencast\proxy;
 
-use \OpencastApi\Rest\OcRest;
-use \tool_opencast\local\maintenance_class;
+use OpencastApi\Rest\OcRest;
+use tool_opencast\local\maintenance_class;
 
 /**
  * A decorated proxy class to wrap around the Opencast API services.

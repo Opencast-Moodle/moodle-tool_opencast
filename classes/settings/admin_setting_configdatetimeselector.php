@@ -197,13 +197,13 @@ class admin_setting_configdatetimeselector extends \admin_setting {
         if (is_array($default)) {
             $defaultinfo = userdate(intval($default), get_string('strftimedatetime', 'langconfig'));
         } else {
-            $defaultinfo = NULL;
+            $defaultinfo = null;
         }
 
         // Support internationalised calendars.
         $calendartype = \core_calendar\type_factory::get_calendar_instance();
 
-        // Set the now datetime as default
+        // Set the now datetime as default.
         $savedtime = time();
         if (!empty($setting)) {
             $savedtime = intval($setting['timestamp']);
@@ -229,11 +229,11 @@ class admin_setting_configdatetimeselector extends \admin_setting {
         }
 
         // Time part is handled the same everywhere.
-        $hours = array();
+        $hours = [];
         for ($i = 0; $i <= 23; $i++) {
             $hours[$i] = sprintf("%02d", $i);
         }
-        $minutes = array();
+        $minutes = [];
         for ($i = 0; $i < 60; $i += 5) {
             $minutes[$i] = sprintf("%02d", $i);
         }
@@ -339,7 +339,7 @@ class admin_setting_configdatetimeselector extends \admin_setting {
 
         $checkboxattrs = [
             'id' => $this->get_enabled_element_id(),
-            'class' => 'form-check-input'
+            'class' => 'form-check-input',
         ];
         $checkboxlabelattrs = ['class' => 'mr-2'];
         $checkboxhtml = \html_writer::checkbox( $this->get_enabled_element_name(),

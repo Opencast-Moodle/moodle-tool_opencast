@@ -26,8 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['addinstance'] = 'Add instance';
-$string['apicreadentialstestfailedshort'] = 'Opencast API User Credentials test failed with http code: {$a}';
 $string['apicreadentialstestfailedlong'] = 'The given Username or Password for the Opencast API is not valid.<br />Please use valid Username and Password in order to avoid fatal error during tasks which use this setting.';
+$string['apicreadentialstestfailedshort'] = 'Opencast API User Credentials test failed with http code: {$a}';
 $string['apicreadentialstestsuccessfulshort'] = 'Opencast API User Credentials test successful.';
 $string['apipassword'] = 'Password of Opencast API user';
 $string['apipassworddesc'] = 'Configure the password of the Opencast user who is used to do the Opencast API calls.';
@@ -66,21 +66,21 @@ $string['maintenanceheader_desc'] = 'In this section the maintenance mode can be
 $string['maintenancemode'] = 'Maintenance mode';
 $string['maintenancemode_btn'] = 'Sync Opencast Maintenance Mode';
 $string['maintenancemode_btn_disabled'] = 'Required js modules are not loaded.';
-$string['maintenancemode_enable'] = 'Enable';
-$string['maintenancemode_end'] = 'Maintenance ends at';
-$string['maintenancemode_end_desc'] = 'The end date and time of maintenance';
 $string['maintenancemode_datetime_expired_error'] = 'This field should not be in the past!';
 $string['maintenancemode_datetime_ge_error'] = 'This field should be before "{$a}"';
 $string['maintenancemode_datetime_le_error'] = 'This field should be after "{$a}"';
 $string['maintenancemode_desc'] = 'Setting maintenance mode to avoid conflict during Opencast downtime.<br>If Read-Only mode is selected, only reading resources from Opencast will be allowed.';
 $string['maintenancemode_disable'] = 'Disable';
+$string['maintenancemode_enable'] = 'Enable';
+$string['maintenancemode_end'] = 'Maintenance ends at';
+$string['maintenancemode_end_desc'] = 'The end date and time of maintenance';
 $string['maintenancemode_message'] = 'Maintenance Message';
 $string['maintenancemode_message_desc'] = 'An error message to display during maintenance.';
-$string['maintenancemode_modal_sync_confirmation_title'] = 'Sync Opencast Maintenance Mode';
-$string['maintenancemode_modal_sync_confirmation_text'] = 'Are you sure to sync the maintenance mode with Opencast? This wil overwrite the current configuration.';
 $string['maintenancemode_modal_sync_confirmation_btn'] = 'Sync';
-$string['maintenancemode_modal_sync_error_title'] = 'Syncing Error';
+$string['maintenancemode_modal_sync_confirmation_text'] = 'Are you sure to sync the maintenance mode with Opencast? This wil overwrite the current configuration.';
+$string['maintenancemode_modal_sync_confirmation_title'] = 'Sync Opencast Maintenance Mode';
 $string['maintenancemode_modal_sync_error_noinstance_message'] = 'Unable to find the Opencast instance id!';
+$string['maintenancemode_modal_sync_error_title'] = 'Syncing Error';
 $string['maintenancemode_modal_sync_failed'] = 'Maintenance Synchronization Unsuccessful!';
 $string['maintenancemode_modal_sync_succeeded'] = 'Maintenance successfully synchronized. The page will refresh in 3 seconds to apply the updated changes.';
 $string['maintenancemode_notiflevel'] = 'Notification Level';

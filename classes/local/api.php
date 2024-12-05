@@ -301,14 +301,18 @@ class api extends \curl {
      *
      * @return \OpencastApi\Opencast A decorated instance of the Opencast API with maintenance-aware service proxy.
      */
-    private function decorate_opencast_api_services(array $config, array $engageconfig = [], bool $enableingest = false): \OpencastApi\Opencast
-    {
-        $decorated_opencast_api = new \OpencastApi\Opencast($config, $engageconfig, $enableingest);
-        $class_vars = get_object_vars($decorated_opencast_api);
-        foreach (array_keys($class_vars) as $name) {
-            $decorated_opencast_api->{$name} = new \tool_opencast\proxy\decorated_opencastapi_service($decorated_opencast_api->{$name}, $this->maintenance);
+    private function decorate_opencast_api_services(
+        array $config,
+        array $engageconfig = [],
+        bool $enableingest = false
+    ): \OpencastApi\Opencast {
+        $decoratedopencastapi = new \OpencastApi\Opencast($config, $engageconfig, $enableingest);
+        $classvars = get_object_vars($decoratedopencastapi);
+        foreach (array_keys($classvars) as $name) {
+            $decoratedopencastapi->{$name} =
+                new \tool_opencast\proxy\decorated_opencastapi_service($decoratedopencastapi->{$name}, $this->maintenance);
         }
-        return $decorated_opencast_api;
+        return $decoratedopencastapi;
     }
 
     /**

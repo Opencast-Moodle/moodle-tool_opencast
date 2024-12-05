@@ -15,13 +15,20 @@ Feature: Configure and check maintenance
     And the following "course enrolments" exist:
       | user     | course | role           |
       | teacher1 | C1     | editingteacher |
-    And I setup the default settigns for opencast plugins
     And the following config values are set as admin:
       | config                      | value                                                         | plugin         |
       | apiurl_1                    | https://stable.opencast.org                                   | tool_opencast  |
       | apipassword_1               | opencast                                                      | tool_opencast  |
       | apiusername_1               | admin                                                         | tool_opencast  |
       | ocinstances                 | [{"id":1,"name":"Default","isvisible":true,"isdefault":true}] | tool_opencast  |
+      | limituploadjobs_1           | 0                                                             | block_opencast |
+      | group_creation_1            | 0                                                             | block_opencast |
+      | group_name_1                | Moodle_course_[COURSEID]                                      | block_opencast |
+      | series_name_1               | Course_Series_[COURSEID]                                      | block_opencast |
+      | enablechunkupload_1         | 0                                                             | block_opencast |
+      | uploadworkflow_1            | schedule-and-upload                                           | block_opencast |
+      | enableuploadwfconfigpanel_1 | 1                                                             | block_opencast |
+      | alloweduploadwfconfigs_1    | straightToPublishing                                          | block_opencast |
 
   @javascript
   Scenario: As an admin I should be able to configure the maintenance for an instance
@@ -78,8 +85,13 @@ Feature: Configure and check maintenance
   @javascript
   Scenario: Teachers should not be able to access the Opencast plugin during maintenance period
     Given I log in as "teacher1"
+    And I setup block plugin
+    And I make sure the block drawer keeps opened
     And I am on "Course 1" course homepage with editing mode on
     And I add the "Opencast Videos" block
+    And I wait "2" seconds
+    And I reload the page
+    And I should see "Opencast Videos"
     And the following config values are set as admin:
     | maintenancemode_1                     | 2                                 | tool_opencast |
     | maintenancemode_notification_level_1  | error                             | tool_opencast |

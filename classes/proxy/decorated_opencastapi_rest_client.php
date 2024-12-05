@@ -16,8 +16,8 @@
 
 namespace tool_opencast\proxy;
 
-use \OpencastApi\Rest\OcRestClient;
-use \tool_opencast\local\maintenance_class;
+use OpencastApi\Rest\OcRestClient;
+use tool_opencast\local\maintenance_class;
 
 /**
  * A decorated proxy class to wrap around the Opencast API Rest Client class.
@@ -43,8 +43,7 @@ class decorated_opencastapi_rest_client {
      * @param array $config The Opencast API configuration
      * @param maintenance_class|null $maintenance The maintenance class
      */
-    public function __construct(array $config, ?maintenance_class $maintenance = null)
-    {
+    public function __construct(array $config, ?maintenance_class $maintenance = null) {
         $this->restclient = new OcRestClient($config);
         $this->maintenance = $maintenance;
     }
@@ -59,8 +58,7 @@ class decorated_opencastapi_rest_client {
      *
      * @return mixed|void The result of the method call, or void if it is in maintenance mode.
      */
-    public function __call(string $method, array $args)
-    {
+    public function __call(string $method, array $args) {
         if (!empty($this->maintenance) && !$this->maintenance->can_access($method)) {
             $this->maintenance->decide_access_bounce();
             return;
