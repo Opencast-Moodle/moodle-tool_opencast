@@ -99,6 +99,7 @@ Feature: Configure and check maintenance
     | maintenancemode_startdate_1           | {"enabled":false}                 | tool_opencast |
     | maintenancemode_enddate_1             | {"enabled":false}                 | tool_opencast |
     When I reload the page
+    And I wait "2" seconds
     And I click on "Add video" "button"
     Then I should see "Opencast Maintenance Notification" in the "#user-notifications" "css_element"
     And I should not see "Videos available in this course" in the "#region-main" "css_element"

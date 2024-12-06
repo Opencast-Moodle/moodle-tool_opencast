@@ -321,14 +321,15 @@ class maintenance_class {
     public function decide_access_bounce() {
         global $CFG, $COURSE, $SITE;
         $wwwroot = $CFG->wwwroot;
-        if (defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING) {
-            $wwwroot = $CFG->behat_wwwroot;
-        }
         $wwwrootparsed = parse_url($wwwroot);
         $iswebrequest = isset($_SERVER['REMOTE_ADDR']); // It is a web call when the REMOTE_ADDR is set in $_SERVER!
 
+        $isbahat = defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING;
+        $iscli = defined('CLI_SCRIPT') && CLI_SCRIPT;
+        $isphpunit = defined('PHPUNIT_TEST') && PHPUNIT_TEST;
+
         // If it is a web request.
-        if ($iswebrequest) {
+        if ($iswebrequest && !$iscli && !$isphpunit) {
             // We have to carefully decide whether to redirect back to the referer or the course page.
             // The reason for this check is to avoid redirecting loops!
             $referer = get_local_referer(false);
@@ -339,10 +340,24 @@ class maintenance_class {
             $requesttarget = parse_url($initiator);
             $tagetpath = $requesttarget['path'] ?? '';
 
+            // We handle behat test process right here before going further.
+            if ($isbahat) {
+                $behatredirectbackurl = $referer;
+                if (empty($behatredirectbackurl) && $COURSE && !empty($COURSE->id)) {
+                    $behatredirectbackurl = new \moodle_url('/course/view.php', ['id' => $COURSE->id]);
+                }
+                if (!empty($behatredirectbackurl)) {
+                    redirect($behatredirectbackurl);
+                } else {
+                    throw new \moodle_exception('maintenance_exception_message', self::PLUGINNAME);
+                }
+            }
+
             $whitelist = [];
             $whitelist[] = $wwwrootparsed['path'];
             $whitelist[] = $wwwrootparsed['path'] . '/course/view.php';
             $whitelist[] = $wwwrootparsed['path'] . '/my';
+            $whitelist[] = $wwwrootparsed['path'] . '/course';
 
             $blacklist = [];
             $blacklist['block_opencast'] = $wwwrootparsed['path'] . '/blocks/opencast'; // Match for block_opencast plugin.
@@ -385,7 +400,7 @@ class maintenance_class {
             close_window(0, true);
         }
 
-        // If it is not yet returned, it has to throw an error.
+        // If it is not yet returned, it has to throw an error, this should also cover requests coming from unit tests.
         throw new \moodle_exception('maintenance_exception_message', self::PLUGINNAME);
     }
 
