@@ -338,7 +338,7 @@ class maintenance_class {
 
             $initiator = qualified_me();
             $requesttarget = parse_url($initiator);
-            $tagetpath = !empty($requesttarget['path']) ? rtrim($requesttarget['path'], '/')  : '';
+            $tagetpath = !empty($requesttarget['path']) ? rtrim($requesttarget['path'], '/') : '';
 
             $whitelist = [];
             $whitelist[] = $wwwrootparsed['path'];
