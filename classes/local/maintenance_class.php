@@ -320,13 +320,26 @@ class maintenance_class {
      */
     public function decide_access_bounce() {
         global $CFG, $COURSE, $SITE;
-        $wwwroot = $CFG->wwwroot;
-        $wwwrootparsed = parse_url($wwwroot);
-        $iswebrequest = isset($_SERVER['REMOTE_ADDR']); // It is a web call when the REMOTE_ADDR is set in $_SERVER!
 
         $isbahat = defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING;
         $iscli = defined('CLI_SCRIPT') && CLI_SCRIPT;
         $isphpunit = defined('PHPUNIT_TEST') && PHPUNIT_TEST;
+
+        $wwwroot = $CFG->wwwroot;
+
+        // Hanlde behat wwwroot.
+        if ($isbahat && empty($wwwroot)) {
+            $wwwroot = $CFG->behat_wwwroot;
+        }
+
+        $wwwrootparsed = parse_url($wwwroot);
+
+        // Make sure path exists in wwwrootparsed.
+        if (empty($wwwrootparsed) || !isset($wwwrootparsed['path'])) {
+            $wwwrootparsed['path'] = '';
+        }
+
+        $iswebrequest = isset($_SERVER['REMOTE_ADDR']); // It is a web call when the REMOTE_ADDR is set in $_SERVER!
 
         // If it is a web request.
         if ($iswebrequest && !$iscli && !$isphpunit) {
