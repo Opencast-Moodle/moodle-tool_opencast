@@ -340,19 +340,6 @@ class maintenance_class {
             $requesttarget = parse_url($initiator);
             $tagetpath = !empty($requesttarget['path']) ? rtrim($requesttarget['path'], '/')  : '';
 
-            // We handle behat test process right here before going further.
-            if ($isbahat) {
-                $behatredirectbackurl = $referer;
-                if (empty($behatredirectbackurl) && $COURSE && !empty($COURSE->id)) {
-                    $behatredirectbackurl = new \moodle_url('/course/view.php', ['id' => $COURSE->id]);
-                }
-                if (!empty($behatredirectbackurl)) {
-                    redirect($behatredirectbackurl);
-                } else {
-                    throw new \moodle_exception('maintenance_exception_message', self::PLUGINNAME);
-                }
-            }
-
             $whitelist = [];
             $whitelist[] = $wwwrootparsed['path'];
             $whitelist[] = $wwwrootparsed['path'] . '/course/view.php';
