@@ -334,11 +334,11 @@ class maintenance_class {
             // The reason for this check is to avoid redirecting loops!
             $referer = get_local_referer(false);
             $requestedfrom = parse_url($referer);
-            $frompath = $requestedfrom['path'] ?? '';
+            $frompath = !empty($requestedfrom['path']) ? rtrim($requestedfrom['path'], '/') : '';
 
             $initiator = qualified_me();
             $requesttarget = parse_url($initiator);
-            $tagetpath = $requesttarget['path'] ?? '';
+            $tagetpath = !empty($requesttarget['path']) ? rtrim($requesttarget['path'], '/')  : '';
 
             // We handle behat test process right here before going further.
             if ($isbahat) {
@@ -357,6 +357,7 @@ class maintenance_class {
             $whitelist[] = $wwwrootparsed['path'];
             $whitelist[] = $wwwrootparsed['path'] . '/course/view.php';
             $whitelist[] = $wwwrootparsed['path'] . '/my';
+            $whitelist[] = $wwwrootparsed['path'] . '/my/courses.php';
             $whitelist[] = $wwwrootparsed['path'] . '/course';
 
             $blacklist = [];
@@ -373,8 +374,12 @@ class maintenance_class {
                 return;
             }
 
-            // Exception: when the call is targeting to go up to course level, we pass!
-            if (in_array($tagetpath, $whitelist)) {
+            $fromblacklisted = $this->is_path_blacklisted($frompath, $blacklist);
+            $targetblacklisted = $this->is_path_blacklisted($tagetpath, $blacklist);
+
+            // Exception: Calls going up to course from blacklist, or nothing to do with blacklist, we do nothing!
+            if ((in_array($tagetpath, $whitelist) && $fromblacklisted) ||
+                (in_array($frompath, $whitelist) && !$targetblacklisted)) {
                 return;
             }
 
@@ -387,7 +392,7 @@ class maintenance_class {
             // We now have to decide whether to redirect back or close the window!
 
             // If the requested action is from any of the white lists, we will redirect back to the same url.
-            if (in_array($frompath, $whitelist)) {
+            if (in_array($frompath, $whitelist) && $targetblacklisted) {
                 redirect($referer);
             }
 
@@ -402,6 +407,28 @@ class maintenance_class {
 
         // If it is not yet returned, it has to throw an error, this should also cover requests coming from unit tests.
         throw new \moodle_exception('maintenance_exception_message', self::PLUGINNAME);
+    }
+
+
+    /**
+     * Checks if a given path is blacklisted.
+     *
+     * This function determines whether the provided path matches any of the entries
+     * in the blacklist array. It uses a case-sensitive partial string match.
+     *
+     * @param string $path The path to check against the blacklist.
+     * @param array $blacklist An array of blacklisted path patterns.
+     *
+     * @return bool Returns true if the path matches any blacklist entry, false otherwise.
+     */
+    private function is_path_blacklisted(string $path, array $blacklist) {
+        if (empty($path) || empty($blacklist)) {
+            return false;
+        }
+        $filterred = array_filter($blacklist, function ($v, $k) use ($path) {
+            return strpos($path, $v) !== false;
+        }, ARRAY_FILTER_USE_BOTH);
+        return !empty($filterred);
     }
 
     /**
