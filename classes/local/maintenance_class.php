@@ -371,16 +371,16 @@ class maintenance_class {
             // If admin and it is not admin cron page,
             // we let it pass to avoid interrupting any installation, configuration or upgrade.
             if (is_siteadmin() && strpos($frompath, $blacklist['admin_cron']) === false) {
-                return;
+                return ['code' => 404];
             }
 
             $fromblacklisted = $this->is_path_blacklisted($frompath, $blacklist);
             $targetblacklisted = $this->is_path_blacklisted($tagetpath, $blacklist);
 
             // Exception: Calls going up to course from blacklist, or nothing to do with blacklist, we do nothing!
-            if ((in_array($tagetpath, $whitelist) && $fromblacklisted) ||
-                (in_array($frompath, $whitelist) && !$targetblacklisted)) {
-                return;
+            if ((!$fromblacklisted && !$targetblacklisted) || // Outside reaching or loading opencast.
+                (in_array($tagetpath, $whitelist) && $fromblacklisted)) { // Going back from plugin to course or somewhere else
+                return ['code' => 404];
             }
 
             // Is ajax or popup, we throw error to make sure the user gets the correct form of notification.
@@ -431,20 +431,20 @@ class maintenance_class {
         return !empty($filterred);
     }
 
+
     /**
-     * Handles the display of maintenace notification message.
+     * Displays a notification message based on the maintenance mode settings.
      *
-     * It prepares the message and the notification level, then makes sure that the nofictiation message gets printed only once,
-     * or it is removed from standard Moodle notification queue when the maintenance period is over.
+     * This function retrieves the formatted maintenance message, the notification level,
+     * and checks if the maintenance mode is activated. It then uses the Moodle Page API
+     * to load the 'tool_opencast/maintenance' JavaScript module and passes the necessary
+     * parameters to display the notification.
      *
-     * Using \core\notification::add to add a notification and $SESSION->notifications to remove and check the existance.
-     *
-     * @uses \core\notification
-     * @uses $SESSION->notifications
+     * @global moodle_page $PAGE The global Moodle page object.
      * @return void
      */
     public function handle_notification_message_display() {
-        global $SESSION;
+        global $PAGE;
 
         // Get the formatted message.
         $message = $this->get_formatted_message();
@@ -456,30 +456,12 @@ class maintenance_class {
         // Get the level.
         $level = $this->get_notiflevel();
 
-        // Get the session notifications.
-        $notifications = isset($SESSION->notifications) ? $SESSION->notifications : [];
+        // We notify only when it is activated!
+        $notify = $this->is_activated();
 
-        // Filter out existing maintenance notifications.
-        $existingnotifications = array_filter($notifications, function ($notification) use ($message, $level) {
-            return trim($notification->message) === trim($message) && $notification->type === $level;
-        });
-
-        // Check if the notification is already printed.
-        $isprinted = !empty($existingnotifications);
-
-        // When it is activated, we print notification only once!
-        if (!$isprinted && $this->is_activated()) {
-            \core\notification::add($message, $level);
-        } else if ($isprinted && !$this->is_activated()) {
-            // This is a rare case, where the maintenance is deactivated, but message are still going to be printed.
-            // We simple take them out of the session!
-            $targetedindecies = array_keys($existingnotifications);
-            rsort($targetedindecies); // Descending sort, to maintain the integrity of the session array while unset.
-            foreach ($targetedindecies as $index) {
-                if (isset($SESSION->notifications[$index])) {
-                    unset($SESSION->notifications[$index]);
-                }
-            }
+        // Make sure that the $PAGE is ready for notifications js module load.
+        if ($PAGE) {
+            $PAGE->requires->js_call_amd('tool_opencast/maintenance', 'notification', [$message, $level, $notify]);
         }
     }
 

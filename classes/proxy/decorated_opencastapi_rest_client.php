@@ -60,8 +60,7 @@ class decorated_opencastapi_rest_client {
      */
     public function __call(string $method, array $args) {
         if (!empty($this->maintenance) && !$this->maintenance->can_access($method)) {
-            $this->maintenance->decide_access_bounce();
-            return;
+            return $this->maintenance->decide_access_bounce();
         }
         $returedresult = call_user_func_array([$this->restclient, $method], $args);
         if ($returedresult === $this->restclient) {

@@ -63,8 +63,7 @@ class decorated_opencastapi_service {
     public function __call(string $method, array $args) {
         // Maintenance feature checker.
         if (!empty($this->maintenance) && !$this->maintenance->can_access($method)) {
-            $this->maintenance->decide_access_bounce();
-            return;
+            return $this->maintenance->decide_access_bounce();
         }
         $response = call_user_func_array([$this->apiservice, $method], $args);
 

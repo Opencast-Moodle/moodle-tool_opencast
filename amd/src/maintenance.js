@@ -121,3 +121,22 @@ const reloadWithDelay = (delay = 3000) => {
         window.location.reload();
     }, delay);
 };
+
+/**
+ * Opencast Tool maintenance notification handler.
+ *
+ * It is used to make sure that there is only one maintenance notification printed at a time.
+ *
+ * @param {string} message
+ * @param {string} level
+ * @param {bool} notify
+ */
+export const notification = (message, level, notify) => {
+    if (!window?.ocMaintenanceNotified && notify) {
+        Notification.addNotification({
+            message: message,
+            type: level
+        });
+        window.ocMaintenanceNotified = true;
+    }
+};

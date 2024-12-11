@@ -417,8 +417,7 @@ class api extends \curl {
 
         // Check for maintenance first.
         if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
-            $this->maintenance->decide_access_bounce();
-            return;
+            return $this->maintenance->decide_access_bounce();
         }
 
         $url = $this->baseurl . $resource;
@@ -522,8 +521,7 @@ class api extends \curl {
 
         // Check for maintenance first.
         if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
-            $this->maintenance->decide_access_bounce();
-            return;
+            return $this->maintenance->decide_access_bounce();
         }
 
         $url = $this->baseurl . $resource;
@@ -573,8 +571,7 @@ class api extends \curl {
 
         // Check for maintenance first.
         if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
-            $this->maintenance->decide_access_bounce();
-            return;
+            return $this->maintenance->decide_access_bounce();
         }
 
         $url = $this->baseurl . $resource;
@@ -614,8 +611,7 @@ class api extends \curl {
 
         // Check for maintenance first.
         if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
-            $this->maintenance->decide_access_bounce();
-            return;
+            return $this->maintenance->decide_access_bounce();
         }
 
         $url = $this->baseurl . $resource;
