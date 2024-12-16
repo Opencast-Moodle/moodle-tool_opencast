@@ -59,6 +59,16 @@ $functions = [
         'ajax'          => true,
         'loginrequired' => true,
     ],
+    'tool_opencast_maintenance_sync' => [
+        'classname'     => 'tool_opencast_external',
+        'methodname'    => 'maintenance_sync',
+        'classpath'     => 'admin/tool/opencast/external.php',
+        'description'   => 'Service to Sync Maintenance Mode with Opencast',
+        'type'          => 'read',
+        'capabilities'  => 'tool/opencast:externalapi',
+        'ajax'          => true,
+        'loginrequired' => true,
+    ],
 ];
 
 $services = [

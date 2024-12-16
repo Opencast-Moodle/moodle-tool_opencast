@@ -226,6 +226,19 @@ class tool_opencast_external extends external_api {
     }
 
     /**
+     * Describes the maintenance_sync return value.
+     *
+     * @return external_single_structure array the result of the connection test
+     */
+    public static function maintenance_sync_returns() {
+        return new external_single_structure(
+            [
+                'status' => new external_value(PARAM_BOOL, 'Maintenance Synchronization result status'),
+            ]
+        );
+    }
+
+    /**
      * Describes the parameters for testing the connection.
      *
      * @return external_function_parameters
@@ -239,6 +252,20 @@ class tool_opencast_external extends external_api {
                 'apipassword' => new external_value(PARAM_RAW, 'Opencast API Password'),
                 'apitimeout' => new external_value(PARAM_INT, 'API timeout', VALUE_DEFAULT, 2000),
                 'apiconnecttimeout' => new external_value(PARAM_INT, 'API connect timeout', VALUE_DEFAULT, 1000),
+            ]
+        );
+    }
+
+    /**
+     * Describes the parameters for syncing the maintenance.
+     *
+     * @return external_function_parameters
+     * @throws coding_exception
+     */
+    public static function maintenance_sync_parameters() {
+        return new external_function_parameters(
+            [
+                'ocinstanceid' => new external_value(PARAM_INT, 'Opencast instance id'),
             ]
         );
     }
@@ -322,6 +349,35 @@ class tool_opencast_external extends external_api {
 
         return [
             'testresult' => $resulthtml,
+        ];
+    }
+
+    /**
+     * Perform fetching and syncing maintenance mode data from Opencast.
+     *
+     * @param int $ocinstanceid Opencast instance id.
+     * @return array
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     * @throws required_capability_exception
+     */
+    public static function maintenance_sync($ocinstanceid) {
+
+        // Validate the parameters.
+        $params = self::validate_parameters(self::maintenance_sync_parameters(),
+            [
+                'ocinstanceid' => $ocinstanceid,
+            ]
+        );
+
+        // Get a customized api instance to use.
+        $api = \tool_opencast\local\api::get_instance($params['ocinstanceid']);
+
+        $result = $api->sync_maintenance_with_opencast();
+
+        return [
+            'status' => $result,
         ];
     }
 }

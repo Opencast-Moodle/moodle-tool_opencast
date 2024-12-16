@@ -1,0 +1,4 @@
+div#dateselector-calendar-panel {
+    /* Set higher than the z-index of the htmleditor */
+    z-index: 10 !important; /* stylelint-disable-line */
+}
