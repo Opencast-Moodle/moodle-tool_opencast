@@ -27,6 +27,7 @@
 namespace tool_opencast\local;
 
 use local_chunkupload\local\chunkupload_file;
+use tool_opencast\api\handler\api_handler_stack;
 use tool_opencast\empty_configuration_exception;
 
 defined('MOODLE_INTERNAL') || die;
@@ -279,6 +280,8 @@ class api extends \curl {
             'timeout' => (intval($this->timeout) / 1000),
             'connect_timeout' => (intval($this->connecttimeout) / 1000),
         ];
+        $apihandlerstack = new api_handler_stack();
+        $config['handler'] = $apihandlerstack->get_handler_stack();
         $this->opencastapi = new \OpencastApi\Opencast($config, [], $enableingest);
         $this->opencastrestclient = new \OpencastApi\Rest\OcRestClient($config);
     }
@@ -620,7 +623,7 @@ class api extends \curl {
 
         // If the credentials are invalid, return a corresponding http code.
         if (!$userinfo) {
-            return 400; // Bad Request.
+            return !empty($response['code']) ? $response['code'] : 400; // Bad Request.
         }
 
         // If the connection fails or the Opencast instance could not be found, return the http code.
