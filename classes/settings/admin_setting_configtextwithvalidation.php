@@ -57,7 +57,8 @@ class admin_setting_configtextwithvalidation extends \admin_setting_configtext {
             $toolsettings = $adminroot->locate('tool_opencast');
             foreach ($toolsettings->get_children() as $child) {
                 if (substr($child->name, 0, 28) == 'tool_opencast_configuration_') {
-                    foreach ($child->settings as $name => $setting) {
+                    $toolchildsettings = property_exists($child, 'settings') ? $child->settings : [];
+                    foreach ($toolchildsettings as $name => $setting) {
                         $data = $setting->get_setting();
                         if (is_null($data)) {
                             $data = $setting->get_defaultsetting();
@@ -73,7 +74,8 @@ class admin_setting_configtextwithvalidation extends \admin_setting_configtext {
                 foreach ($blocksettings->get_children() as $category) {
                     if ($category instanceof admin_category) {
                         foreach ($category->get_children() as $child) {
-                            foreach ($child->settings as $name => $setting) {
+                            $blockchildsettings = property_exists($child, 'settings') ? $child->settings : [];
+                            foreach ($blockchildsettings as $name => $setting) {
                                 $data = $setting->get_setting();
                                 if (is_null($data)) {
                                     $data = $setting->get_defaultsetting();
@@ -90,7 +92,8 @@ class admin_setting_configtextwithvalidation extends \admin_setting_configtext {
             // Activity settings.
             if (core_plugin_manager::instance()->get_plugin_info('mod_opencast')) {
                 $modsettings = $adminroot->locate('modsettingopencast');
-                foreach ($modsettings->settings as $name => $setting) {
+                $modchildsettings = property_exists($modsettings, 'settings') ? $modsettings->settings : [];
+                foreach ($modchildsettings as $name => $setting) {
                     $data = $setting->get_setting();
                     if (is_null($data)) {
                         $data = $setting->get_defaultsetting();
