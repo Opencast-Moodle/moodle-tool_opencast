@@ -58,6 +58,8 @@ class api extends \curl {
     public $opencastapi;
     /** @var \OpencastApi\Rest\OcRestClient the opencast REST Client instance */
     public $opencastrestclient;
+    /** @var \tool_opencast\local\maintenance_class the maintenance class instance */
+    public $maintenance;
 
     /** @var array array of supported api levels */
     private static $supportedapilevel;
@@ -227,6 +229,7 @@ class api extends \curl {
             $this->timeout          = settings_api::get_apitimeout($storedconfigocinstanceid);
             $this->connecttimeout   = settings_api::get_apiconnecttimeout($storedconfigocinstanceid);
             $this->baseurl          = settings_api::get_apiurl($storedconfigocinstanceid);
+            $this->maintenance      = new maintenance_class($storedconfigocinstanceid);
 
             if (empty($this->username)) {
                 throw new empty_configuration_exception('apiusernameempty', 'tool_opencast');
@@ -279,8 +282,56 @@ class api extends \curl {
             'timeout' => (intval($this->timeout) / 1000),
             'connect_timeout' => (intval($this->connecttimeout) / 1000),
         ];
-        $this->opencastapi = new \OpencastApi\Opencast($config, [], $enableingest);
-        $this->opencastrestclient = new \OpencastApi\Rest\OcRestClient($config);
+        $this->opencastapi = $this->decorate_opencast_api_services($config, [], $enableingest);
+        $this->opencastrestclient = new \tool_opencast\proxy\decorated_opencastapi_rest_client($config, $this->maintenance);
+
+        // We notify the maintenance directly in constructor, to cover almost every external use of this class.
+        $this->notify_maintenance();
+    }
+
+    /**
+     * Decorates the Opencast API services with maintenance-aware proxy.
+     *
+     * This function creates a new Opencast API instance and wraps each of its services
+     * with a decorated proxy that is aware of the maintenance status.
+     *
+     * @param array $config The configuration array for the Opencast API.
+     * @param array $engageconfig Optional. The engage configuration array for the Opencast API. Default is an empty array.
+     * @param bool $enableingest Optional. Whether to enable ingest functionality. Default is false.
+     *
+     * @return \OpencastApi\Opencast A decorated instance of the Opencast API with maintenance-aware service proxy.
+     */
+    private function decorate_opencast_api_services(
+        array $config,
+        array $engageconfig = [],
+        bool $enableingest = false
+    ): \OpencastApi\Opencast {
+        $decoratedopencastapi = new \OpencastApi\Opencast($config, $engageconfig, $enableingest);
+        $classvars = get_object_vars($decoratedopencastapi);
+        foreach (array_keys($classvars) as $name) {
+            $decoratedopencastapi->{$name} =
+                new \tool_opencast\proxy\decorated_opencastapi_service($decoratedopencastapi->{$name}, $this->maintenance);
+        }
+        return $decoratedopencastapi;
+    }
+
+    /**
+     * Notifies about maintenance status and handles maintenance message display.
+     *
+     * This function checks if maintenance is set and, if so, handles the display
+     * of maintenance notification messages.
+     *
+     * @return void
+     */
+    private function notify_maintenance() {
+
+        // When the maintenance is not set, we do nothing!
+        if (empty($this->maintenance)) {
+            return;
+        }
+
+        // We now handle maintenance messages notification display.
+        $this->maintenance->handle_notification_message_display();
     }
 
     /**
@@ -363,6 +414,12 @@ class api extends \curl {
      * @throws \moodle_exception
      */
     public function oc_get($resource, $runwithroles = []) {
+
+        // Check for maintenance first.
+        if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
+            return $this->maintenance->decide_access_bounce();
+        }
+
         $url = $this->baseurl . $resource;
 
         $this->resetHeader();
@@ -462,6 +519,11 @@ class api extends \curl {
      */
     public function oc_post($resource, $params = [], $runwithroles = []) {
 
+        // Check for maintenance first.
+        if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
+            return $this->maintenance->decide_access_bounce();
+        }
+
         $url = $this->baseurl . $resource;
 
         $this->resetHeader();
@@ -507,6 +569,11 @@ class api extends \curl {
      */
     public function oc_put($resource, $params = [], $runwithroles = []) {
 
+        // Check for maintenance first.
+        if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
+            return $this->maintenance->decide_access_bounce();
+        }
+
         $url = $this->baseurl . $resource;
 
         $this->resetHeader();
@@ -541,6 +608,11 @@ class api extends \curl {
      * @throws \moodle_exception
      */
     public function oc_delete($resource, $params = [], $runwithroles = []) {
+
+        // Check for maintenance first.
+        if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
+            return $this->maintenance->decide_access_bounce();
+        }
 
         $url = $this->baseurl . $resource;
 
@@ -633,5 +705,36 @@ class api extends \curl {
         }
 
         return true;
+    }
+
+    /**
+     * Synchronizes the maintenance status with Opencast.
+     *
+     * This function attempts to retrieve the maintenance status from Opencast
+     * and update the local maintenance mode accordingly. It is an experimental
+     * feature as the corresponding functionality may not yet exist in Opencast.
+     *
+     * @return bool Returns true if the maintenance mode was successfully updated,
+     *              false if the update failed or the required properties/methods
+     *              are not available.
+     */
+    public function sync_maintenance_with_opencast() {
+        // This an experimental feature, because the feature does not exist in Opencast yet.
+        if ($this->maintenance && $this->opencastapi && property_exists($this->opencastapi->baseApi, 'getMaintenance')) {
+            $response = $this->opencastapi->baseApi->getMaintenance();
+            if ($response['code'] != 200) {
+                return false;
+            }
+            $maintenanceobj = $response['body'];
+            $inmaintenance = isset($maintenanceobj->in_maintenance) ? (bool) $maintenanceobj->in_maintenance : false;
+            $readonly = isset($maintenanceobj->read_only) ? (bool) $maintenanceobj->read_only : false;
+            $maintenancemode = $inmaintenance ? maintenance_class::MODE_ENABLE : maintenance_class::MODE_DISABLE;
+            if ($inmaintenance && $readonly) {
+                $maintenancemode = maintenance_class::MODE_READONLY;
+            }
+            return $this->maintenance->update_mode_from_opencast($maintenancemode);
+        }
+
+        return false;
     }
 }
