@@ -17,6 +17,7 @@
 namespace tool_opencast\settings;
 
 use tool_opencast\local\settings_api;
+use tool_opencast\local\maintenance_class;
 
 /**
  * Static admin setting builder class, which is used, to create and to add admin settings for tool_opencast.
@@ -111,6 +112,7 @@ class admin_settings_builder {
 
             self::add_notification_banner_for_demo_instance($settings, $instanceid);
             self::add_config_settings_fulltree($settings, $instanceid);
+            self::add_maintenance_mode_block($settings, $instanceid);
             self::add_connection_test_tool($settings, $instanceid);
 
             self::include_admin_settingpage($settings);
@@ -241,11 +243,15 @@ class admin_settings_builder {
             return;
         }
 
+        // Important for maintenance start and end date calendar js.
+        form_init_date_js();
         $PAGE->requires->jquery();
         $PAGE->requires->js_call_amd('tool_opencast/tool_testtool', 'init');
         $PAGE->requires->js_call_amd('tool_opencast/tool_settings', 'init', [$pluginnameid]);
+        $PAGE->requires->js_call_amd('tool_opencast/maintenance', 'init');
         $PAGE->requires->css('/admin/tool/opencast/css/tabulator.min.css');
         $PAGE->requires->css('/admin/tool/opencast/css/tabulator_bootstrap4.min.css');
+        $PAGE->requires->css('/admin/tool/opencast/css/styles.css');
     }
 
     /**
@@ -414,6 +420,180 @@ class admin_settings_builder {
     }
 
     /**
+     * Adds an admin setting configselect to the passed admin settingpage.
+     *
+     * @param \admin_settingpage $settings
+     * The admin settingpage, the configselect is added to.
+     *
+     * @param string $name
+     * The internal name for the configselect.
+     *
+     * @param string $visiblenameidentifier
+     * The identifier for the string, that is used for the visible name of the configselect.
+     *
+     * @param string $descriptionidentifier
+     * The identifier for the string, that is used for the visible description of the configselect.
+     *
+     * @param string $defaultsetting
+     * The default setting for the configselect.
+     *
+     * @param array $choices
+     * The choices options of the configselect.
+     *
+     * @return void
+     */
+    private static function add_admin_setting_configselect(\admin_settingpage $settings,
+                                                            string $name,
+                                                            string $visiblenameidentifier,
+                                                            string $descriptionidentifier,
+                                                            string $defaultsetting,
+                                                            array $choices): void {
+        $settingconfigselect = new \admin_setting_configselect(
+            $name,
+            get_string($visiblenameidentifier, self::PLUGINNAME),
+            get_string($descriptionidentifier, self::PLUGINNAME),
+            $defaultsetting,
+            $choices
+        );
+        $settings->add($settingconfigselect);
+    }
+
+    /**
+     * Adds an admin setting configtextarea to the passed admin settingpage.
+     *
+     * @param \admin_settingpage $settings
+     * The admin settingpage, the configtextarea is added to.
+     *
+     * @param string $name
+     * The internal name for the configtextarea.
+     *
+     * @param string $visiblenameidentifier
+     * The identifier for the string, that is used for the visible name of the configtextarea.
+     *
+     * @param string $descriptionidentifier
+     * The identifier for the string, that is used for the visible description of the configtextarea.
+     *
+     * @param string $defaultsetting
+     * The default setting for the configtextarea.
+     *
+     * @param mixed $paramtype
+     * The parameter type of the configtext.
+     *
+     * @param string $cols
+     * The number of columns to make the editor.
+     *
+     * @param string $rows
+     * The number of rows to make the editor.
+     *
+     * @return void
+     */
+    private static function add_admin_setting_configtextarea(\admin_settingpage $settings,
+                                                            string $name,
+                                                            string $visiblenameidentifier,
+                                                            string $descriptionidentifier,
+                                                            string $defaultsetting,
+                                                            $paramtype = PARAM_RAW,
+                                                            string $cols='60',
+                                                            string $rows='8'): void {
+        $settingconfigtextarea = new admin_setting_configtextarea(
+            $name,
+            get_string($visiblenameidentifier, self::PLUGINNAME),
+            get_string($descriptionidentifier, self::PLUGINNAME),
+            $defaultsetting, $paramtype, $cols, $rows
+        );
+        $settings->add($settingconfigtextarea);
+    }
+
+
+    /**
+     * Adds an admin setting confightmleditor to the passed admin settingpage.
+     *
+     * @param \admin_settingpage $settings
+     * The admin settingpage, the confightmleditor is added to.
+     *
+     * @param string $name
+     * The internal name for the confightmleditor.
+     *
+     * @param string $visiblenameidentifier
+     * The identifier for the string, that is used for the visible name of the confightmleditor.
+     *
+     * @param string $descriptionidentifier
+     * The identifier for the string, that is used for the visible description of the confightmleditor.
+     *
+     * @param string $defaultsetting
+     * The default setting for the confightmleditor.
+     *
+     * @param mixed $paramtype
+     * The parameter type of the configtext.
+     *
+     * @param string $cols
+     * The number of columns to make the editor.
+     *
+     * @param string $rows
+     * The number of rows to make the editor.
+     *
+     * @return void
+     */
+    private static function add_admin_setting_confightmleditor(\admin_settingpage $settings,
+                                                            string $name,
+                                                            string $visiblenameidentifier,
+                                                            string $descriptionidentifier,
+                                                            string $defaultsetting,
+                                                            $paramtype = PARAM_RAW,
+                                                            string $cols='60',
+                                                            string $rows='8'): void {
+        $settingconfightmleditor = new \admin_setting_confightmleditor(
+            $name,
+            get_string($visiblenameidentifier, self::PLUGINNAME),
+            get_string($descriptionidentifier, self::PLUGINNAME),
+            $defaultsetting, $paramtype, $cols, $rows
+        );
+        $settings->add($settingconfightmleditor);
+    }
+
+    /**
+     * Adds an admin setting configdatetimeselector to the passed admin settingpage.
+     *
+     * @param \admin_settingpage $settings
+     * The admin settingpage, the configdatetimeselector is added to.
+     *
+     * @param string $name
+     * The internal name for the configdatetimeselector.
+     *
+     * @param string $visiblenameidentifier
+     * The identifier for the string, that is used for the visible name of the configdatetimeselector.
+     *
+     * @param string $descriptionidentifier
+     * The identifier for the string, that is used for the visible description of the configdatetimeselector.
+     *
+     * @param int $defaultsetting
+     * The default setting timestamp for the configdatetimeselector.
+     *
+     * @param bool $optional
+     * Flag indicating whether this config should be optional with enable checkbox to disable/enable.
+     *
+     * @param callable|null $validatefunction Validate function or null to clear
+     *
+     * @return void
+     */
+    private static function add_admin_setting_configdatetimeselector(\admin_settingpage $settings,
+                                                            string $name,
+                                                            string $visiblenameidentifier,
+                                                            string $descriptionidentifier,
+                                                            int $defaultsetting = 0,
+                                                            bool $optional = false,
+                                                            ?callable $validatefunction = null): void {
+        $settingconfigdatetimeselector = new admin_setting_configdatetimeselector(
+            $name,
+            get_string($visiblenameidentifier, self::PLUGINNAME),
+            get_string($descriptionidentifier, self::PLUGINNAME),
+            $defaultsetting, $optional
+        );
+        $settingconfigdatetimeselector->set_validate_function($validatefunction);
+        $settings->add($settingconfigdatetimeselector);
+    }
+
+    /**
      * Adds the connection test tool to the passed admin settingpage for the passed Opencast instance id,
      * where a button with its description is added to the passed admin settingpage,
      * that can be clicked, to perform this connection test to the corresponding Opencast instance.
@@ -451,5 +631,105 @@ class admin_settings_builder {
             get_string('testtoolheader', self::PLUGINNAME),
             get_string('testtoolheaderdesc', self::PLUGINNAME, $connectiontoolbutton))
         );
+    }
+
+    /**
+     * Adds the maintenance mode block to the passed admin setting page for the given Opencast instance ID.
+     *
+     * This block includes a button to sync the maintenance mode settings with the corresponding Opencast instance,
+     * a dropdown to select the maintenance mode, a dropdown to select the notification level, a textarea/htmleditor to enter the
+     * maintenance message, and two datetime selectors to set the start and end dates of the maintenance period.
+     *
+     * @param \admin_settingpage $settings The admin setting page to add the maintenance mode block to.
+     * @param int $instanceid The ID of the Opencast instance to add the maintenance mode block for.
+     * @return void
+     */
+    private static function add_maintenance_mode_block(\admin_settingpage $settings,
+                                                        int $instanceid): void {
+
+        // Prepare the Opencast maintenance sync button.
+        $attributes = [
+            'class' => 'btn btn-warning disabled maintenance-sync-btn mb-3 mt-2',
+            'disabled' => 'disabled',
+            'title' => get_string('maintenancemode_btn_disabled', self::PLUGINNAME),
+            'data-ocinstanceid' => strval($instanceid),
+        ];
+        // Get the API fetch (sync) button HTML.
+        $apifetchbutton = \html_writer::tag(
+            'button',
+            get_string('maintenancemode_btn', self::PLUGINNAME),
+            $attributes
+        );
+        // Place the button inside the header description.
+        $settings->add(new \admin_setting_heading(
+            'tool_opencast/maintenancemodesection',
+            get_string('maintenanceheader', self::PLUGINNAME),
+            get_string('maintenanceheader_desc', self::PLUGINNAME, $apifetchbutton))
+        );
+
+        // Render the maintenance mode option.
+        // Record ID outside in order to apply hide_if dependency option.
+        $maintenancemodeid = maintenance_class::get_mode_full_config_id($instanceid, true);
+        self::add_admin_setting_configselect($settings,
+            $maintenancemodeid,
+            'maintenancemode', 'maintenancemode_desc',
+            maintenance_class::MODE_DISABLE,
+            maintenance_class::get_admin_settings_mode_choices()
+        );
+
+        // Render the maintenance notify level option.
+        $maintenancemodenotiflevelid = maintenance_class::get_notificationlevel_full_config_id($instanceid, true);
+        self::add_admin_setting_configselect($settings,
+            $maintenancemodenotiflevelid,
+            'maintenancemode_notiflevel', 'maintenancemode_notiflevel_desc',
+            \core\output\notification::NOTIFY_WARNING,
+            maintenance_class::get_admin_settings_notiflevel_choices()
+        );
+        // Apply hide_if dependency option.
+        $settings->hide_if($maintenancemodenotiflevelid, $maintenancemodeid, 'eq', maintenance_class::MODE_DISABLE);
+
+        // Render the maintenance message option.
+        $maintenancemessageid = maintenance_class::get_message_full_config_id($instanceid, true);
+        self::add_admin_setting_confightmleditor($settings,
+            $maintenancemessageid,
+            'maintenancemode_message', 'maintenancemode_message_desc',
+            '',
+        );
+        // Apply hide_if dependency option.
+        $settings->hide_if($maintenancemessageid, $maintenancemodeid, 'eq', maintenance_class::MODE_DISABLE);
+
+        // Render the maintenance start date options.
+        $maintenancestartdateid = maintenance_class::get_startdate_full_config_id($instanceid, true);
+        self::add_admin_setting_configdatetimeselector($settings,
+            $maintenancestartdateid,
+            'maintenancemode_start', 'maintenancemode_start_desc',
+            0,
+            true,
+            maintenance_class::maintenance_datetime_validation(
+                $maintenancestartdateid,
+                maintenance_class::get_enddate_full_config_id($instanceid),
+                'maintenancemode_end',
+                '>='
+            )
+        );
+        // Apply hide_if dependency option.
+        $settings->hide_if($maintenancestartdateid, $maintenancemodeid, 'eq', maintenance_class::MODE_DISABLE);
+
+        // Render the maintenance end date options.
+        $maintenanceenddateid = maintenance_class::get_enddate_full_config_id($instanceid, true);
+        self::add_admin_setting_configdatetimeselector($settings,
+            $maintenanceenddateid,
+            'maintenancemode_end', 'maintenancemode_end_desc',
+            0,
+            true,
+            maintenance_class::maintenance_datetime_validation(
+                $maintenanceenddateid,
+                maintenance_class::get_startdate_full_config_id($instanceid),
+                'maintenancemode_start',
+                '<='
+            )
+        );
+        // Apply hide_if dependency option.
+        $settings->hide_if($maintenanceenddateid, $maintenancemodeid, 'eq', maintenance_class::MODE_DISABLE);
     }
 }
