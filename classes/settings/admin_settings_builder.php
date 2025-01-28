@@ -116,7 +116,10 @@ class admin_settings_builder {
             self::add_connection_test_tool($settings, $instanceid);
 
             self::include_admin_settingpage($settings);
+
+            self::add_admin_upload_settings();
         }
+
     }
 
     /**
@@ -225,6 +228,21 @@ class admin_settings_builder {
 
         global $ADMIN;
         $ADMIN->add(self::PLUGINNAME, $instancessettings);
+    }
+
+    private static function add_admin_upload_settings(): void {
+
+        // Seite für Upload Settings hinzufügen
+        $uploadsettings = self::create_admin_settingpage('tool_opencast_upload',
+                    'upload');
+
+        // Upload timeout Setting hinzfügen
+        self::add_admin_setting_configtext($uploadsettings, 'tool_opencast/uploadtimeout',
+                'uploadtimeout',
+                'uploadtimeoutdesc', 60, PARAM_INT);
+
+        global $ADMIN;
+        $ADMIN->add(self::PLUGINNAME, $uploadsettings);
     }
 
     /**
@@ -345,6 +363,7 @@ class admin_settings_builder {
             PARAM_INT
         );
     }
+
 
     /**
      * Adds an admin setting configtext to the passed admin settingpage.

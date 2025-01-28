@@ -129,3 +129,7 @@ $string['testtoolurl'] = 'Connection Test Tool';
 $string['timeout'] = 'Overall API request execution timeout';
 $string['timeoutdesc'] = 'Configure the time in milliseconds each API request to Opencast may take. If Opencast does not finish answering the request within this time, the request is aborted.';
 $string['wrongmimetypedetected'] = 'Wrong mimetype was detected, while trying to upload {$a->filename} from course {$a->coursename}. You can only upload video files!';
+
+$string['upload'] = 'Upload';
+$string['uploadtimeout'] = 'Moodle to Opencast upload timeout';
+$string['uploadtimeoutdesc'] = 'Configure the time in seconds a single video upload may take during the background uploading task.';
