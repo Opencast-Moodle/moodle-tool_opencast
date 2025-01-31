@@ -18,6 +18,15 @@ namespace tool_opencast\settings;
 
 use tool_opencast\local\settings_api;
 use tool_opencast\local\maintenance_class;
+use block_opencast\setting_helper; // TODO: migrieren
+use block_opencast\opencast_connection_exception; // TODO: migrieren
+use block_opencast\admin_setting_configtextvalidate; // TODO: migrieren
+use block_opencast\admin_setting_hiddenhelpbtn; // TODO: migrieren
+use block_opencast\setting_default_manager; // TODO: migrieren
+
+
+use tool_opencast\empty_configuration_exception;
+
 
 /**
  * Static admin setting builder class, which is used, to create and to add admin settings for tool_opencast.
@@ -78,13 +87,14 @@ class admin_settings_builder {
 
         if (count($instances) <= 1) {
             self::add_admin_settingpage('tool_opencast_configuration', 'configuration');
-            return;
+        } else{
+            foreach ($instances as $instance) {
+                self::add_admin_settingpage('tool_opencast_configuration_' . $instance->id,
+                    'configuration_instance', $instance->name);
+            }
         }
 
-        foreach ($instances as $instance) {
-            self::add_admin_settingpage('tool_opencast_configuration_' . $instance->id,
-                'configuration_instance', $instance->name);
-        }
+        self::add_admin_settingpage('tool_opencast_sharedsettings', 'shared_settings');
     }
 
     /**
@@ -117,8 +127,11 @@ class admin_settings_builder {
 
             self::include_admin_settingpage($settings);
 
-            self::add_admin_upload_settings();
+            self::add_admin_general_settings($settings, $instanceid, $instance);
+
         }
+
+        self::add_admin_shared_settings();
 
     }
 
@@ -230,19 +243,322 @@ class admin_settings_builder {
         $ADMIN->add(self::PLUGINNAME, $instancessettings);
     }
 
-    private static function add_admin_upload_settings(): void {
+    private static function add_admin_shared_settings(): void {
 
-        // Seite für Upload Settings hinzufügen
-        $uploadsettings = self::create_admin_settingpage('tool_opencast_upload',
-                    'upload');
+        // Shared Settings Page
+        $sharedsettings = self::create_admin_settingpage('tool_opencast_sharedsettings',
+                    'shared_settings');
 
-        // Upload timeout Setting hinzfügen
-        self::add_admin_setting_configtext($uploadsettings, 'tool_opencast/uploadtimeout',
-                'uploadtimeout',
-                'uploadtimeoutdesc', 60, PARAM_INT);
+        // Cache Validtime
+        self::add_admin_setting_configtext($sharedsettings, 'tool_opencast/cachevalidtime',
+            'cachevalidtime',
+            'cachevalidtime_desc', 500, PARAM_INT);
+
+        // Upload timeout
+        self::add_admin_setting_configtext($sharedsettings, 'tool_opencast/uploadtimeout',
+            'uploadtimeout',
+            'uploadtimeoutdesc', 60, PARAM_INT);
+
+        // Failedupload retrylimit
+        self::add_admin_setting_configtext($sharedsettings, 'tool_opencast/faileduploadretrylimit',
+        'faileduploadretrylimit',
+        'faileduploadretrylimitdesc', 0, PARAM_INT);
 
         global $ADMIN;
-        $ADMIN->add(self::PLUGINNAME, $uploadsettings);
+        $ADMIN->add(self::PLUGINNAME, $sharedsettings);
+    }
+
+    private static function add_admin_general_settings($settings, $instanceid, $instance): void {
+
+        global $PAGE, $CFG;
+
+        // General Settings Page
+        $generalsettings = self::create_admin_settingpage('tool_opencast_generalsettings_' . $instanceid,
+                    'general_settings');
+
+
+        $opencasterror = false;
+
+        // Initialize the default settings for each instance.
+        setting_default_manager::init_regirstered_defaults($instanceid);
+
+        // Setup js.
+        $rolesdefault = setting_default_manager::get_default_roles();
+        $metadatadefault = setting_default_manager::get_default_metadata();
+        $metadataseriesdefault = setting_default_manager::get_default_metadataseries();
+        $defaulttranscriptionflavors = setting_default_manager::get_default_transcriptionflavors();
+
+        $generalsettings->add(new admin_setting_hiddenhelpbtn('tool_opencast/hiddenhelpname_' . $instanceid,
+            'helpbtnname_' . $instanceid, 'descriptionmdfn', 'tool_opencast'));
+        $generalsettings->add(new admin_setting_hiddenhelpbtn('tool_opencast/hiddenhelpparams_' . $instanceid,
+            'helpbtnparams_' . $instanceid, 'catalogparam', 'tool_opencast'));
+        $generalsettings->add(new admin_setting_hiddenhelpbtn('tool_opencast/hiddenhelpdescription_' . $instanceid,
+            'helpbtndescription_' . $instanceid, 'descriptionmdfd', 'tool_opencast'));
+        $generalsettings->add(new admin_setting_hiddenhelpbtn('tool_opencast/hiddenhelpdefaultable_' . $instanceid,
+            'helpbtndefaultable_' . $instanceid, 'descriptionmddefaultable', 'tool_opencast'));
+        $generalsettings->add(new admin_setting_hiddenhelpbtn('tool_opencast/hiddenhelpbatchable_' . $instanceid,
+            'helpbtnbatchable_' . $instanceid, 'descriptionmdbatchable', 'tool_opencast'));
+        $generalsettings->add(new admin_setting_hiddenhelpbtn('tool_opencast/hiddenhelpreadonly_' . $instanceid,
+            'helpbtnreadonly_' . $instanceid, 'descriptionmdreadonly', 'tool_opencast'));
+
+        $rolessetting = new \admin_setting_configtext('tool_opencast/roles_' . $instanceid,
+            get_string('aclrolesname', 'tool_opencast'),
+            get_string('aclrolesnamedesc',
+                'tool_opencast'), $rolesdefault);
+
+        $dcmitermsnotice = get_string('dcmitermsnotice', 'tool_opencast');
+        $metadatasetting = new \admin_setting_configtext('tool_opencast/metadata_' . $instanceid,
+            get_string('metadata', 'tool_opencast'),
+            get_string('metadatadesc', 'tool_opencast') . $dcmitermsnotice, $metadatadefault);
+
+        $metadataseriessetting = new \admin_setting_configtext('tool_opencast/metadataseries_' . $instanceid,
+            get_string('metadataseries', 'tool_opencast'),
+            get_string('metadataseriesdesc', 'tool_opencast') . $dcmitermsnotice, $metadataseriesdefault);
+
+        $transcriptionflavors = new \admin_setting_configtext('tool_opencast/transcriptionflavors_' . $instanceid,
+            get_string('transcriptionflavors', 'tool_opencast'),
+            get_string('transcriptionflavors_desc', 'tool_opencast'), $defaulttranscriptionflavors);
+
+        // Crashes if plugins.php is opened because css cannot be included anymore.
+        if ($PAGE->state !== \moodle_page::STATE_IN_BODY) {
+            $PAGE->requires->js_call_amd('tool_opencast/tool_settings', 'init', [
+                $rolessetting->get_id(),
+                $metadatasetting->get_id(),
+                $metadataseriessetting->get_id(),
+                $transcriptionflavors->get_id(),
+                $instanceid,
+            ]);
+        }
+
+        // Limit uploadjobs
+        $url = new \moodle_url('/admin/tool/task/scheduledtasks.php');
+        $link = \html_writer::link($url, get_string('pluginname', 'tool_task'), ['target' => '_blank']);
+        $generalsettings->add(
+            new \admin_setting_configtext('tool_opencast/limituploadjobs_' . $instanceid,
+                get_string('limituploadjobs', 'tool_opencast'),
+                get_string('limituploadjobsdesc', 'tool_opencast', $link), 1, PARAM_INT));
+
+        $workflowchoices = setting_helper::load_workflow_choices($instanceid, 'upload');
+        if ($workflowchoices instanceof opencast_connection_exception ||
+            $workflowchoices instanceof empty_configuration_exception) {
+            $opencasterror = $workflowchoices->getMessage();
+            $workflowchoices = [null => get_string('adminchoice_noconnection', 'tool_opencast')];
+        }
+
+        $generalsettings->add(new \admin_setting_configselect('tool_opencast/uploadworkflow_' . $instanceid,
+            get_string('uploadworkflow', 'tool_opencast'),
+            get_string('uploadworkflowdesc', 'tool_opencast'),
+            'ng-schedule-and-upload', $workflowchoices
+        ));
+
+        $generalsettings->add(new \admin_setting_configcheckbox('tool_opencast/enableuploadwfconfigpanel_' . $instanceid,
+            get_string('enableuploadwfconfigpanel', 'tool_opencast'),
+            get_string('enableuploadwfconfigpaneldesc', 'tool_opencast'),
+            0
+        ));
+
+        $generalsettings->add(new \admin_setting_configtext('tool_opencast/alloweduploadwfconfigs_' . $instanceid,
+            get_string('alloweduploadwfconfigs', 'tool_opencast'),
+            get_string('alloweduploadwfconfigsdesc', 'tool_opencast'),
+            '',
+            PARAM_TEXT
+        ));
+
+        $generalsettings->hide_if('tool_opencast/alloweduploadwfconfigs_' . $instanceid,
+            'tool_opencast/enableuploadwfconfigpanel_' . $instanceid, 'notchecked');
+
+        $generalsettings->add(new \admin_setting_configcheckbox('tool_opencast/publishtoengage_' . $instanceid,
+            get_string('publishtoengage', 'tool_opencast'),
+            get_string('publishtoengagedesc', 'tool_opencast'),
+            0
+        ));
+
+        $generalsettings->add(new \admin_setting_configcheckbox('tool_opencast/ingestupload_' . $instanceid,
+            get_string('ingestupload', 'tool_opencast'),
+            get_string('ingestuploaddesc', 'tool_opencast'),
+            0
+        ));
+
+        $generalsettings->add(new \admin_setting_configcheckbox('tool_opencast/reuseexistingupload_' . $instanceid,
+            get_string('reuseexistingupload', 'tool_opencast'),
+            get_string('reuseexistinguploaddesc', 'tool_opencast'),
+            0
+        ));
+
+        $generalsettings->hide_if('tool_opencast/reuseexistingupload_' . $instanceid,
+            'tool_opencast/ingestupload_' . $instanceid, 'checked');
+
+        $generalsettings->add(new \admin_setting_configcheckbox('tool_opencast/allowunassign_' . $instanceid,
+            get_string('allowunassign', 'tool_opencast'),
+            get_string('allowunassigndesc', 'tool_opencast'),
+            0
+        ));
+
+        $workflowchoices = setting_helper::load_workflow_choices($instanceid, 'delete');
+        if ($workflowchoices instanceof opencast_connection_exception ||
+            $workflowchoices instanceof empty_configuration_exception) {
+            $opencasterror = $workflowchoices->getMessage();
+            $workflowchoices = [null => get_string('adminchoice_noconnection', 'tool_opencast')];
+        }
+
+        $generalsettings->add(new \admin_setting_configselect('tool_opencast/deleteworkflow_' . $instanceid,
+                get_string('deleteworkflow', 'tool_opencast'),
+                get_string('deleteworkflowdesc', 'tool_opencast'),
+                null, $workflowchoices)
+        );
+
+        $generalsettings->add(new \admin_setting_configcheckbox('tool_opencast/adhocfiledeletion_' . $instanceid,
+            get_string('adhocfiledeletion', 'tool_opencast'),
+            get_string('adhocfiledeletiondesc', 'tool_opencast'),
+            0
+        ));
+
+        $generalsettings->add(new \admin_setting_filetypes('tool_opencast/uploadfileextensions_' . $instanceid,
+            new \lang_string('uploadfileextensions', 'tool_opencast'),
+            get_string('uploadfileextensionsdesc', 'tool_opencast', $CFG->wwwroot . '/admin/tool/filetypes/index.php')
+        ));
+
+        $generalsettings->add(new \admin_setting_configtext('tool_opencast/maxseries_' . $instanceid,
+            new \lang_string('maxseries', 'tool_opencast'),
+            get_string('maxseriesdesc', 'tool_opencast'), 3, PARAM_INT
+        ));
+
+        // Batch upload setting.
+        $uploadtimeouturl = new \moodle_url('/admin/settings.php?section=tool_opencast_sharedsettings');
+        $uploadtimeoutlink = \html_writer::link($uploadtimeouturl,
+            get_string('uploadtimeout', 'tool_opencast'), ['target' => '_blank']);
+
+        $octoolshorturl = '/admin/settings.php?section=tool_opencast_configuration';
+        if ($multiocinstance) {
+            $octoolshorturl .= '_' . $instanceid;
+        }
+        $toolopencastinstanceurl = new \moodle_url($octoolshorturl);
+        $toolopencastinstancelink = \html_writer::link($toolopencastinstanceurl,
+            get_string('configuration_instance', 'tool_opencast', $instance->name), ['target' => '_blank']);
+        $stringobj = new \stdClass();
+        $stringobj->uploadtimeoutlink = $uploadtimeoutlink;
+        $stringobj->toolopencastinstancelink = $toolopencastinstancelink;
+        $generalsettings->add(new \admin_setting_configcheckbox('tool_opencast/batchuploadenabled_' . $instanceid,
+            get_string('batchupload_setting', 'tool_opencast'),
+            get_string('batchupload_setting_desc', 'tool_opencast', $stringobj),
+            1
+        ));
+
+        $generalsettings->add(
+            new \admin_setting_heading('tool_opencast/groupseries_header_' . $instanceid,
+                get_string('groupseries_header', 'tool_opencast'),
+                ''));
+
+        $generalsettings->add(
+            new \admin_setting_configcheckbox('tool_opencast/group_creation_' . $instanceid,
+                get_string('groupcreation', 'tool_opencast'),
+                get_string('groupcreationdesc', 'tool_opencast'), 0
+            ));
+
+        $generalsettings->add(
+            new \admin_setting_configtext('tool_opencast/group_name_' . $instanceid,
+                get_string('groupname', 'tool_opencast'),
+                get_string('groupnamedesc', 'tool_opencast'), 'Moodle_course_[COURSEID]', PARAM_TEXT));
+
+        $generalsettings->add(
+            new \admin_setting_configtext('tool_opencast/series_name_' . $instanceid,
+                get_string('seriesname', 'tool_opencast'),
+                get_string('seriesnamedesc', 'tool_opencast', $link), 'Course_Series_[COURSEID]', PARAM_TEXT));
+
+        $generalsettings->add(
+            new \admin_setting_heading('tool_opencast/roles_header_' . $instanceid,
+                get_string('aclrolesname', 'tool_opencast'),
+                ''));
+
+
+        $workflowchoices = setting_helper::load_workflow_choices($instanceid, 'archive');
+        if ($workflowchoices instanceof opencast_connection_exception ||
+            $workflowchoices instanceof empty_configuration_exception) {
+            $opencasterror = $workflowchoices->getMessage();
+            $workflowchoices = [null => get_string('adminchoice_noconnection', 'tool_opencast')];
+        }
+        $generalsettings->add(new \admin_setting_configselect('tool_opencast/workflow_roles_' . $instanceid,
+                get_string('workflowrolesname', 'tool_opencast'),
+                get_string('workflowrolesdesc', 'tool_opencast'),
+                null, $workflowchoices)
+        );
+
+        $generalsettings->add($rolessetting);
+        $generalsettings->add(new admin_setting_configeditabletable('tool_opencast/rolestable_' .
+            $instanceid, 'rolestable_' . $instanceid,
+            get_string('addrole', 'tool_opencast')));
+
+        $roleownersetting = new admin_setting_configtextvalidate('tool_opencast/aclownerrole_' . $instanceid,
+            get_string('aclownerrole', 'tool_opencast'),
+            get_string('aclownerrole_desc', 'tool_opencast'), '');
+        $roleownersetting->set_validate_function([setting_helper::class, 'validate_aclownerrole_setting']);
+        $generalsettings->add($roleownersetting);
+
+        $generalsettings->add(
+            new \admin_setting_heading('tool_opencast/metadata_header_' . $instanceid,
+                get_string('metadata', 'tool_opencast'),
+                ''));
+
+        $generalsettings->add($metadatasetting);
+        $generalsettings->add(new admin_setting_configeditabletable('tool_opencast/metadatatable_' .
+            $instanceid, 'metadatatable_' . $instanceid,
+            get_string('addcatalog', 'tool_opencast')));
+
+        $generalsettings->add(
+            new \admin_setting_heading('tool_opencast/metadataseries_header_' . $instanceid,
+                get_string('metadataseries', 'tool_opencast'),
+                ''));
+
+        $generalsettings->add($metadataseriessetting);
+        $generalsettings->add(new admin_setting_configeditabletable('tool_opencast/metadataseriestable_' .
+            $instanceid, 'metadataseriestable_' . $instanceid,
+            get_string('addcatalog', 'tool_opencast')));
+
+        // $opencasterror = false;
+
+        // // Initialize the default settings for each instance.
+        // setting_default_manager::init_regirstered_defaults($instance->id);
+
+        // // Setup js.
+        // $rolesdefault = setting_default_manager::get_default_roles();
+        // $metadatadefault = setting_default_manager::get_default_metadata();
+        // $metadataseriesdefault = setting_default_manager::get_default_metadataseries();
+        // $defaulttranscriptionflavors = setting_default_manager::get_default_transcriptionflavors();
+
+        // $generalsettings->add(new admin_setting_hiddenhelpbtn('block_opencast/hiddenhelpname_' . $instance->id,
+        //     'helpbtnname_' . $instance->id, 'descriptionmdfn', 'block_opencast'));
+        // $generalsettings->add(new admin_setting_hiddenhelpbtn('block_opencast/hiddenhelpparams_' . $instance->id,
+        //     'helpbtnparams_' . $instance->id, 'catalogparam', 'block_opencast'));
+        // $generalsettings->add(new admin_setting_hiddenhelpbtn('block_opencast/hiddenhelpdescription_' . $instance->id,
+        //     'helpbtndescription_' . $instance->id, 'descriptionmdfd', 'block_opencast'));
+        // $generalsettings->add(new admin_setting_hiddenhelpbtn('block_opencast/hiddenhelpdefaultable_' . $instance->id,
+        //     'helpbtndefaultable_' . $instance->id, 'descriptionmddefaultable', 'block_opencast'));
+        // $generalsettings->add(new admin_setting_hiddenhelpbtn('block_opencast/hiddenhelpbatchable_' . $instance->id,
+        //     'helpbtnbatchable_' . $instance->id, 'descriptionmdbatchable', 'block_opencast'));
+        // $generalsettings->add(new admin_setting_hiddenhelpbtn('block_opencast/hiddenhelpreadonly_' . $instance->id,
+        //     'helpbtnreadonly_' . $instance->id, 'descriptionmdreadonly', 'block_opencast'));
+
+        // $rolessetting = new admin_setting_configtext('block_opencast/roles_' . $instance->id,
+        //     get_string('aclrolesname', 'block_opencast'),
+        //     get_string('aclrolesnamedesc',
+        //         'block_opencast'), $rolesdefault);
+
+        // $dcmitermsnotice = get_string('dcmitermsnotice', 'block_opencast');
+        // $metadatasetting = new admin_setting_configtext('block_opencast/metadata_' . $instance->id,
+        //     get_string('metadata', 'block_opencast'),
+        //     get_string('metadatadesc', 'block_opencast') . $dcmitermsnotice, $metadatadefault);
+
+        // $metadataseriessetting = new admin_setting_configtext('block_opencast/metadataseries_' . $instance->id,
+        //     get_string('metadataseries', 'block_opencast'),
+        //     get_string('metadataseriesdesc', 'block_opencast') . $dcmitermsnotice, $metadataseriesdefault);
+
+        // $transcriptionflavors = new admin_setting_configtext('block_opencast/transcriptionflavors_' . $instance->id,
+        //     get_string('transcriptionflavors', 'block_opencast'),
+        //     get_string('transcriptionflavors_desc', 'block_opencast'), $defaulttranscriptionflavors);
+
+        global $ADMIN;
+        $ADMIN->add(self::PLUGINNAME, $generalsettings);
+
     }
 
     /**
