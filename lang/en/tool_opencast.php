@@ -467,6 +467,7 @@ $string['heading_permanent'] = 'Permanent';
 $string['heading_position'] = 'Position';
 $string['heading_readonly'] = 'Read Only';
 $string['heading_required'] = 'Required';
+$string['heading_role'] = 'Role';
 $string['delete_role'] = 'Delete role';
 $string['delete_confirm_role'] = 'Are you sure you want to delete this role?';
 $string['transcription_flavor_confirm_delete'] = 'Are you sure you want to delete this flavor option pair?';
@@ -475,3 +476,5 @@ $string['transcription_flavor_key'] = 'Flavor key';
 $string['transcription_flavor_value'] = 'Flavor value';
 $string['transcriptionaction_thead'] = 'Actions';
 $string['readonly_disabled_tooltip_text'] = 'Unable to set readonly option while it is set to be required.';
+
+$string['groupseries_header'] = 'Group and Series';

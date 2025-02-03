@@ -272,6 +272,9 @@ class admin_settings_builder {
 
         global $PAGE, $CFG;
 
+        $ocinstances = settings_api::get_ocinstances();
+        $multiocinstance = count($ocinstances) > 1;
+
         // General Settings Page
         $generalsettings = self::create_admin_settingpage('tool_opencast_generalsettings_' . $instanceid,
                     'general_settings');
@@ -284,6 +287,7 @@ class admin_settings_builder {
 
         // Setup js.
         $rolesdefault = setting_default_manager::get_default_roles();
+        error_log('roles: ' . print_r($rolesdefault, true));
         $metadatadefault = setting_default_manager::get_default_metadata();
         $metadataseriesdefault = setting_default_manager::get_default_metadataseries();
         $defaulttranscriptionflavors = setting_default_manager::get_default_transcriptionflavors();
@@ -303,8 +307,11 @@ class admin_settings_builder {
 
         $rolessetting = new \admin_setting_configtext('tool_opencast/roles_' . $instanceid,
             get_string('aclrolesname', 'tool_opencast'),
-            get_string('aclrolesnamedesc',
-                'tool_opencast'), $rolesdefault);
+            get_string('aclrolesnamedesc', 'tool_opencast'),
+            $rolesdefault);
+        error_log('rolesetting: ' . print_r($rolessetting, true));
+        error_log('rolesetting id: ' . print_r($rolessetting->get_id(), true));
+
 
         $dcmitermsnotice = get_string('dcmitermsnotice', 'tool_opencast');
         $metadatasetting = new \admin_setting_configtext('tool_opencast/metadata_' . $instanceid,
@@ -321,7 +328,7 @@ class admin_settings_builder {
 
         // Crashes if plugins.php is opened because css cannot be included anymore.
         if ($PAGE->state !== \moodle_page::STATE_IN_BODY) {
-            $PAGE->requires->js_call_amd('tool_opencast/tool_settings', 'init', [
+            $PAGE->requires->js_call_amd('tool_opencast/tool_settings', 'init_block', [
                 $rolessetting->get_id(),
                 $metadatasetting->get_id(),
                 $metadataseriessetting->get_id(),
@@ -581,7 +588,7 @@ class admin_settings_builder {
         form_init_date_js();
         $PAGE->requires->jquery();
         $PAGE->requires->js_call_amd('tool_opencast/tool_testtool', 'init');
-        $PAGE->requires->js_call_amd('tool_opencast/tool_settings', 'init', [$pluginnameid]);
+        $PAGE->requires->js_call_amd('tool_opencast/tool_settings', 'init_tool', [$pluginnameid]);
         $PAGE->requires->js_call_amd('tool_opencast/maintenance', 'init');
         $PAGE->requires->css('/admin/tool/opencast/css/tabulator.min.css');
         $PAGE->requires->css('/admin/tool/opencast/css/tabulator_bootstrap4.min.css');

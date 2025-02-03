@@ -28,7 +28,12 @@ import ModalEvents from 'core/modal_events';
 import * as str from 'core/str';
 import Notification from "core/notification";
 
-export const init = (rolesinputid, metadatainputid, metadataseriesinputid, transcriptionflavorinputid, ocinstanceid) => {
+/* eslint-disable no-console */
+
+
+export const init_block = (rolesinputid, metadatainputid, metadataseriesinputid, transcriptionflavorinputid, ocinstanceid) => {
+
+    console.log("Hello WOrld");
 
     // Load strings
     var strings = [
@@ -121,7 +126,15 @@ export const init = (rolesinputid, metadatainputid, metadataseriesinputid, trans
         }
 
         // Style hidden input.
+        console.log('rolesinputid:', rolesinputid);  // Logs the full object
+
         var rolesinput = $('#' + rolesinputid);
+
+        console.log('rolesinput:', rolesinput);  // Logs the full object
+        console.log('rolesinput: ' + JSON.stringify(rolesinput, null, 2));
+        console.log('rolesinput val:', rolesinput.val());  // Logs the full object
+
+
         rolesinput.parent().hide();
         rolesinput.parent().next().hide(); // Default value.
 
@@ -575,105 +588,128 @@ export const init = (rolesinputid, metadatainputid, metadataseriesinputid, trans
             }
         }
 
-        // Style hidden input.
-        var instancesinput = $('#' + instancesinputid);
+        console.log("Bye WOrld");
 
-        if (!instancesinput.length) {
-            return;
-        }
-
-        instancesinput.parent().hide();
-        instancesinput.parent().next().hide(); // Default value.
-
-        var instancestable = new Tabulator("#instancestable", {
-            data: JSON.parse(instancesinput.val()),
-            layout: "fitColumns",
-            dataChanged: function(data) {
-                instancesinput.val(JSON.stringify(data));
-            },
-            columns: [
-                {title: 'ID', field: "id", widthGrow: 0},
-                {title: jsstrings[0], field: "name", editor: "input", widthGrow: 2},
-                {
-                    title: jsstrings[1],
-                    field: "isvisible",
-                    hozAlign: "center",
-                    widthGrow: 0,
-                    formatter: function(cell) {
-                        var input = document.createElement('input');
-                        input.type = 'checkbox';
-                        input.checked = cell.getValue();
-                        input.addEventListener('click', function() {
-                            cell.getRow().update({'isvisible': $(this).prop('checked') ? 1 : 0});
-                        });
-                        return input;
-                    }
-                },
-                {
-                    title: jsstrings[6],
-                    field: "isdefault",
-                    hozAlign: "center",
-                    widthGrow: 0,
-                    formatter: function(cell) {
-                        var input = document.createElement('input');
-                        input.type = 'checkbox';
-                        input.checked = cell.getValue();
-                        input.addEventListener('click', function() {
-                            cell.getRow().update({'isdefault': $(this).prop('checked') ? 1 : 0});
-                        });
-                        return input;
-                    }
-                },
-                {
-                    title: "",
-                    width: 40,
-                    headerSort: false,
-                    hozAlign: "center",
-                    formatter: function() {
-                        return '<i class="icon fa fa-trash fa-fw"></i>';
-                    },
-                    cellClick: function(e, cell) {
-                        ModalFactory.create({
-                            type: ModalFactory.types.SAVE_CANCEL,
-                            title: jsstrings[3],
-                            body: jsstrings[4]
-                        })
-                            .then(function(modal) {
-                                modal.setSaveButtonText(jsstrings[5]);
-                                modal.getRoot().on(ModalEvents.save, function() {
-                                    cell.getRow().delete();
-                                });
-                                modal.show();
-                                return;
-                            }).catch(Notification.exception);
-                    }
-                }
-            ],
-        });
-
-        $('#addrow-instancestable').click(function() {
-            var instances = JSON.parse(instancesinput.val());
-            var ids = instances.map(x => x.id);
-            ids.sort();
-            var nextid = 0;
-            var i;
-
-            if (ids.includes(1)) {
-                for (i = 0; i < ids.length; i++) {
-                    let nextElem = i + 1;
-                    if (nextElem === ids.length) {
-                        nextid = ids[i] + 1;
-                    } else if (ids[nextElem] !== ids[i] + 1) {
-                        nextid = ids[i] + 1;
-                        break;
-                    }
-                }
-            } else {
-                nextid = 1;
-            }
-
-            instancestable.addRow({'id': nextid, 'isvisible': false, 'isdefault': false});
-        });
         return;
     }).catch(Notification.exception);
+};
+
+
+    export const init_tool = (instancesinputid) => {
+
+        console.log("Hello Dude");
+
+        // Load strings
+        var strings = [
+            {key: 'name', component: 'tool_opencast'},
+            {key: 'isvisible', component: 'tool_opencast'},
+            {key: 'addinstance', component: 'tool_opencast'},
+            {key: 'delete_instance', component: 'tool_opencast'},
+            {key: 'delete_instance_confirm', component: 'tool_opencast'},
+            {key: 'delete', component: 'moodle'},
+            {key: 'isdefault', component: 'tool_opencast'},
+        ];
+        str.get_strings(strings).then(function(jsstrings) {
+            // Style hidden input.
+            var instancesinput = $('#' + instancesinputid);
+
+            if (!instancesinput.length) {
+                return;
+            }
+
+            instancesinput.parent().hide();
+            instancesinput.parent().next().hide(); // Default value.
+
+            var instancestable = new Tabulator("#instancestable", {
+                data: JSON.parse(instancesinput.val()),
+                layout: "fitColumns",
+                dataChanged: function(data) {
+                    instancesinput.val(JSON.stringify(data));
+                },
+                columns: [
+                    {title: 'ID', field: "id", widthGrow: 0},
+                    {title: jsstrings[0], field: "name", editor: "input", widthGrow: 2},
+                    {
+                        title: jsstrings[1],
+                        field: "isvisible",
+                        hozAlign: "center",
+                        widthGrow: 0,
+                        formatter: function(cell) {
+                            var input = document.createElement('input');
+                            input.type = 'checkbox';
+                            input.checked = cell.getValue();
+                            input.addEventListener('click', function() {
+                                cell.getRow().update({'isvisible': $(this).prop('checked') ? 1 : 0});
+                            });
+                            return input;
+                        }
+                    },
+                    {
+                        title: jsstrings[6],
+                        field: "isdefault",
+                        hozAlign: "center",
+                        widthGrow: 0,
+                        formatter: function(cell) {
+                            var input = document.createElement('input');
+                            input.type = 'checkbox';
+                            input.checked = cell.getValue();
+                            input.addEventListener('click', function() {
+                                cell.getRow().update({'isdefault': $(this).prop('checked') ? 1 : 0});
+                            });
+                            return input;
+                        }
+                    },
+                    {
+                        title: "",
+                        width: 40,
+                        headerSort: false,
+                        hozAlign: "center",
+                        formatter: function() {
+                            return '<i class="icon fa fa-trash fa-fw"></i>';
+                        },
+                        cellClick: function(e, cell) {
+                            ModalFactory.create({
+                                type: ModalFactory.types.SAVE_CANCEL,
+                                title: jsstrings[3],
+                                body: jsstrings[4]
+                            })
+                                .then(function(modal) {
+                                    modal.setSaveButtonText(jsstrings[5]);
+                                    modal.getRoot().on(ModalEvents.save, function() {
+                                        cell.getRow().delete();
+                                    });
+                                    modal.show();
+                                    return;
+                                }).catch(Notification.exception);
+                        }
+                    }
+                ],
+            });
+
+            $('#addrow-instancestable').click(function() {
+                var instances = JSON.parse(instancesinput.val());
+                var ids = instances.map(x => x.id);
+                ids.sort();
+                var nextid = 0;
+                var i;
+
+                if (ids.includes(1)) {
+                    for (i = 0; i < ids.length; i++) {
+                        let nextElem = i + 1;
+                        if (nextElem === ids.length) {
+                            nextid = ids[i] + 1;
+                        } else if (ids[nextElem] !== ids[i] + 1) {
+                            nextid = ids[i] + 1;
+                            break;
+                        }
+                    }
+                } else {
+                    nextid = 1;
+                }
+
+                instancestable.addRow({'id': nextid, 'isvisible': false, 'isdefault': false});
+            });
+            return;
+        }).catch(Notification.exception);
+
 };
