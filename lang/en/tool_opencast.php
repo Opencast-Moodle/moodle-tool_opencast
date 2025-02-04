@@ -44,6 +44,11 @@ $string['apiusernamedesc'] = 'Configure the username of the Opencast user who is
 $string['apiusernameempty'] = 'Username of Opencast API user is not configured correctly. Go to the settings of the Opencast API tool to fix this.';
 $string['configuration'] = 'Configuration';
 $string['configuration_instance'] = 'Configuration: {$a}';
+$string['general_instance'] = 'General Settings: {$a}';
+$string['appearance_instance'] = 'Appearance Settings: {$a}';
+$string['additional_instance'] = 'Additional Settings: {$a}';
+$string['ltimodule_instance'] = 'LTI Module Settings: {$a}';
+
 $string['connecttimeout'] = 'Connection timeout';
 $string['connecttimeoutdesc'] = 'Configure the time in milliseconds while Moodle is trying to connect to Opencast. If Opencast does not answer within this time, the connection attempt times out.';
 $string['delete_instance'] = 'Delete instance';
@@ -132,6 +137,10 @@ $string['wrongmimetypedetected'] = 'Wrong mimetype was detected, while trying to
 
 $string['shared_settings'] = 'Shared settings';
 $string['general_settings'] = 'General settings';
+$string['appearance_settings'] = 'Appearance';
+$string['additional_settings'] = 'Additional features';
+$string['ltimodule_settings'] = 'LTI module features';
+
 
 $string['blocksettings'] = 'Settings for a block instance';
 
@@ -468,6 +477,20 @@ $string['heading_position'] = 'Position';
 $string['heading_readonly'] = 'Read Only';
 $string['heading_required'] = 'Required';
 $string['heading_role'] = 'Role';
+$string['addlti_settingheader'] = 'Add Opencast LTI series modules to courses';
+$string['addltiepisode_settingheader'] = 'Add Opencast LTI episode modules to courses';
+$string['appearance_overview_settingheader'] = 'Overview page';
+$string['uploadsettings'] = 'Settings for the chunkuploader';
+$string['opencaststudiointegration'] = 'Opencast studio integration';
+$string['opencasteditorintegration'] = 'Opencast Editor integration';
+$string['engageplayerintegration'] = 'Engage player integration';
+$string['notifications_settings_header'] = 'Notifications';
+$string['acl_settingheader'] = 'Control episode visibility';
+$string['addactivity_settingheader'] = 'Add Opencast Activity modules to courses';
+$string['transcriptionsettingsheader'] = 'Settings for Transcription';
+$string['liveupdate_settingheader'] = 'Live Status Update';
+$string['swprivacynotice_settingheader'] = 'Workflows Privacy Notice';
+
 $string['delete_role'] = 'Delete role';
 $string['delete_confirm_role'] = 'Are you sure you want to delete this role?';
 $string['transcription_flavor_confirm_delete'] = 'Are you sure you want to delete this flavor option pair?';

@@ -31,7 +31,7 @@ import Notification from "core/notification";
 /* eslint-disable no-console */
 
 
-export const init_block = (rolesinputid, metadatainputid, metadataseriesinputid, transcriptionflavorinputid, ocinstanceid) => {
+export const init_general_settings = (rolesinputid, metadatainputid, metadataseriesinputid, ocinstanceid) => {
 
     console.log("Hello WOrld");
 
@@ -66,64 +66,6 @@ export const init_block = (rolesinputid, metadatainputid, metadataseriesinputid,
         {key: 'heading_batchable', component: 'tool_opencast'},
     ];
     str.get_strings(strings).then(function(jsstrings) {
-
-        // We need to check and apply the transcription section first,
-        // because it might be rendered in different sections (additional features)
-        var hastranscription = false;
-        var transcriptionflavorinput = $('#' + transcriptionflavorinputid);
-        if (transcriptionflavorinput.is(':visible')) {
-            hastranscription = true;
-            transcriptionflavorinput.parent().hide();
-            transcriptionflavorinput.parent().next().hide(); // Default value.
-        }
-        // Transcription flavor.
-        // We run this part if only the transcription is available.
-        if (hastranscription) {
-            // Because flavors are introduced in a way that it needs to take its value from the default,
-            // and the input value is not set via an upgrade, therefore, we would need to introduce a new
-            // way of extracting defaults and put it as its value.
-            extractDefaults(transcriptionflavorinput);
-            var transcriptionflavoroptions = new Tabulator("#transcriptionflavorsoptions_" + ocinstanceid, {
-                data: JSON.parse(transcriptionflavorinput.val()),
-                layout: "fitColumns",
-                dataChanged: function(data) {
-                    data = data.filter(value => value.key && value.value);
-                    transcriptionflavorinput.val(JSON.stringify(data));
-                },
-                columns: [
-                    {title: jsstrings[15], field: "key", headerSort: false, editor: "input", widthGrow: 1},
-                    {title: jsstrings[16], field: "value", headerSort: false, editor: "input", widthGrow: 1},
-                    {
-                        title: "",
-                        width: 40,
-                        headerSort: false,
-                        hozAlign: "center",
-                        formatter: function() {
-                            return '<i class="icon fa fa-trash fa-fw"></i>';
-                        },
-                        cellClick: function(e, cell) {
-                            ModalFactory.create({
-                                type: ModalFactory.types.SAVE_CANCEL,
-                                title: jsstrings[17],
-                                body: jsstrings[18]
-                            })
-                                .then(function(modal) {
-                                    modal.setSaveButtonText(jsstrings[17]);
-                                    modal.getRoot().on(ModalEvents.save, function() {
-                                        cell.getRow().delete();
-                                    });
-                                    modal.show();
-                                    return;
-                                }).catch(Notification.exception);
-                        }
-                    }
-                ],
-            });
-
-            $('#addrow-transcriptionflavorsoptions_' + ocinstanceid).click(function() {
-                transcriptionflavoroptions.addRow({'key': '', 'value': ''});
-            });
-        }
 
         // Style hidden input.
         console.log('rolesinputid:', rolesinputid);  // Logs the full object
@@ -571,23 +513,6 @@ export const init_block = (rolesinputid, metadatainputid, metadataseriesinputid,
             metadataseriestable.addRow({'datatype': 'text', 'required': 0, 'readonly': 0, 'param_json': null});
         });
 
-        /**
-         * Gets the default input value and replace it with actual value if it values are not initialised
-         *
-         * @param {object} input
-         */
-        function extractDefaults(input) {
-            var value = input.val();
-            if (value == '') {
-                var defaultstext = input.parent().next().text();
-                defaultstext = defaultstext != '' ?
-                    defaultstext.slice(defaultstext.indexOf('['), defaultstext.lastIndexOf(']') + 1) : '';
-                if (defaultstext != '') {
-                    input.val(defaultstext);
-                }
-            }
-        }
-
         console.log("Bye WOrld");
 
         return;
@@ -711,5 +636,121 @@ export const init_block = (rolesinputid, metadatainputid, metadataseriesinputid,
             });
             return;
         }).catch(Notification.exception);
+
+};
+
+export const init_additional_settings = (transcriptionflavorinputid, ocinstanceid) => {
+
+    console.log("Hello WOrld");
+
+    // Load strings
+    var strings = [
+        {key: 'name', component: 'tool_opencast'},
+        {key: 'isvisible', component: 'tool_opencast'},
+        {key: 'addinstance', component: 'tool_opencast'},
+        {key: 'delete_instance', component: 'tool_opencast'},
+        {key: 'delete_instance_confirm', component: 'tool_opencast'},
+        {key: 'delete', component: 'moodle'},
+        {key: 'isdefault', component: 'tool_opencast'},
+        {key: 'heading_role', component: 'tool_opencast'},
+        {key: 'heading_actions', component: 'tool_opencast'},
+        {key: 'heading_permanent', component: 'tool_opencast'},
+        {key: 'delete_role', component: 'tool_opencast'},
+        {key: 'delete_confirm_role', component: 'tool_opencast'},
+        {key: 'delete_metadata', component: 'tool_opencast'},
+        {key: 'delete_confirm_metadata', component: 'tool_opencast'},
+        {key: 'heading_name', component: 'tool_opencast'},
+        {key: 'heading_datatype', component: 'tool_opencast'},
+        {key: 'heading_description', component: 'tool_opencast'},
+        {key: 'heading_required', component: 'tool_opencast'},
+        {key: 'heading_readonly', component: 'tool_opencast'},
+        {key: 'heading_params', component: 'tool_opencast'},
+        {key: 'heading_defaultable', component: 'tool_opencast'},
+        {key: 'transcription_flavor_key', component: 'tool_opencast'},
+        {key: 'transcription_flavor_value', component: 'tool_opencast'},
+        {key: 'transcription_flavor_delete', component: 'tool_opencast'},
+        {key: 'transcription_flavor_confirm_delete', component: 'tool_opencast'},
+        {key: 'readonly_disabled_tooltip_text', component: 'tool_opencast'},
+        {key: 'heading_batchable', component: 'tool_opencast'},
+    ];
+    str.get_strings(strings).then(function(jsstrings) {
+
+        // We need to check and apply the transcription section first,
+        // because it might be rendered in different sections (additional features)
+        var hastranscription = false;
+        var transcriptionflavorinput = $('#' + transcriptionflavorinputid);
+        if (transcriptionflavorinput.is(':visible')) {
+            hastranscription = true;
+            transcriptionflavorinput.parent().hide();
+            transcriptionflavorinput.parent().next().hide(); // Default value.
+        }
+        // Transcription flavor.
+        // We run this part if only the transcription is available.
+        if (hastranscription) {
+            // Because flavors are introduced in a way that it needs to take its value from the default,
+            // and the input value is not set via an upgrade, therefore, we would need to introduce a new
+            // way of extracting defaults and put it as its value.
+            extractDefaults(transcriptionflavorinput);
+            var transcriptionflavoroptions = new Tabulator("#transcriptionflavorsoptions_" + ocinstanceid, {
+                data: JSON.parse(transcriptionflavorinput.val()),
+                layout: "fitColumns",
+                dataChanged: function(data) {
+                    data = data.filter(value => value.key && value.value);
+                    transcriptionflavorinput.val(JSON.stringify(data));
+                },
+                columns: [
+                    {title: jsstrings[15], field: "key", headerSort: false, editor: "input", widthGrow: 1},
+                    {title: jsstrings[16], field: "value", headerSort: false, editor: "input", widthGrow: 1},
+                    {
+                        title: "",
+                        width: 40,
+                        headerSort: false,
+                        hozAlign: "center",
+                        formatter: function() {
+                            return '<i class="icon fa fa-trash fa-fw"></i>';
+                        },
+                        cellClick: function(e, cell) {
+                            ModalFactory.create({
+                                type: ModalFactory.types.SAVE_CANCEL,
+                                title: jsstrings[17],
+                                body: jsstrings[18]
+                            })
+                                .then(function(modal) {
+                                    modal.setSaveButtonText(jsstrings[17]);
+                                    modal.getRoot().on(ModalEvents.save, function() {
+                                        cell.getRow().delete();
+                                    });
+                                    modal.show();
+                                    return;
+                                }).catch(Notification.exception);
+                        }
+                    }
+                ],
+            });
+
+            $('#addrow-transcriptionflavorsoptions_' + ocinstanceid).click(function() {
+                transcriptionflavoroptions.addRow({'key': '', 'value': ''});
+            });
+        }
+
+        /**
+         * Gets the default input value and replace it with actual value if it values are not initialised
+         *
+         * @param {object} input
+         */
+        function extractDefaults(input) {
+            var value = input.val();
+            if (value == '') {
+                var defaultstext = input.parent().next().text();
+                defaultstext = defaultstext != '' ?
+                    defaultstext.slice(defaultstext.indexOf('['), defaultstext.lastIndexOf(']') + 1) : '';
+                if (defaultstext != '') {
+                    input.val(defaultstext);
+                }
+            }
+        }
+
+        return;
+    }).catch(Notification.exception);
 
 };

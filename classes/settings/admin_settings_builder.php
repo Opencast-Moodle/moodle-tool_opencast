@@ -23,6 +23,10 @@ use block_opencast\opencast_connection_exception; // TODO: migrieren
 use block_opencast\admin_setting_configtextvalidate; // TODO: migrieren
 use block_opencast\admin_setting_hiddenhelpbtn; // TODO: migrieren
 use block_opencast\setting_default_manager; // TODO: migrieren
+use block_opencast\local\visibility_helper; // TODO: migrieren
+use block_opencast\local\ltimodulemanager; // TODO: migrieren
+
+
 
 
 use tool_opencast\empty_configuration_exception;
@@ -87,10 +91,20 @@ class admin_settings_builder {
 
         if (count($instances) <= 1) {
             self::add_admin_settingpage('tool_opencast_configuration', 'configuration');
+            self::add_admin_settingpage('tool_opencast_generalsettings_1', 'general_settings');
+            self::add_admin_settingpage('tool_opencast_appearancesettings_1', 'appearance_settings');
+            self::add_admin_settingpage('tool_opencast_additionalsettings_1', 'additional_settings');
+            self::add_admin_settingpage('tool_opencast_ltimodulesettings_1', 'ltimodule_settings');
+
+
         } else{
             foreach ($instances as $instance) {
-                self::add_admin_settingpage('tool_opencast_configuration_' . $instance->id,
-                    'configuration_instance', $instance->name);
+                self::add_admin_settingpage('tool_opencast_configuration_' . $instance->id, 'configuration_instance', $instance->name);
+                self::add_admin_settingpage('tool_opencast_generalsettings_' . $instance->id, 'general_instance', $instance->name);
+                self::add_admin_settingpage('tool_opencast_appearancesettings_' . $instance->id, 'appearance_instance', $instance->name);
+                self::add_admin_settingpage('tool_opencast_additionalsettings_' . $instance->id, 'additional_instance', $instance->name);
+                self::add_admin_settingpage('tool_opencast_ltimodulesettings_' . $instanceid, 'ltimodule_instance', $instance->name);
+
             }
         }
 
@@ -116,8 +130,7 @@ class admin_settings_builder {
                 $settings = self::create_admin_settingpage('tool_opencast_configuration',
                     'configuration');
             } else {
-                $settings = self::create_admin_settingpage('tool_opencast_configuration_' . $instanceid,
-                    'configuration_instance', $instance->name);
+                $settings = self::create_admin_settingpage('tool_opencast_configuration_' . $instanceid, 'configuration_instance', $instance->name);
             }
 
             self::add_notification_banner_for_demo_instance($settings, $instanceid);
@@ -128,6 +141,10 @@ class admin_settings_builder {
             self::include_admin_settingpage($settings);
 
             self::add_admin_general_settings($settings, $instanceid, $instance);
+            self::add_admin_appearance_settings($settings, $instanceid, $instance);
+            self::add_admin_additional_settings($settings, $instanceid, $instance);
+            self::add_admin_ltimodule_settings($settings, $instanceid, $instance);
+
 
         }
 
@@ -245,6 +262,8 @@ class admin_settings_builder {
 
     private static function add_admin_shared_settings(): void {
 
+        global $ADMIN;
+
         // Shared Settings Page
         $sharedsettings = self::create_admin_settingpage('tool_opencast_sharedsettings',
                     'shared_settings');
@@ -264,20 +283,493 @@ class admin_settings_builder {
         'faileduploadretrylimit',
         'faileduploadretrylimitdesc', 0, PARAM_INT);
 
-        global $ADMIN;
         $ADMIN->add(self::PLUGINNAME, $sharedsettings);
     }
 
+    private static function add_admin_appearance_settings($settings, $instanceid, $instance): void {
+
+        global $ADMIN;
+
+            // Settings page: Appearance settings.
+            $appearancesettings = self::create_admin_settingpage('tool_opencast_appearancesettings_' . $instance->id, 'appearance_settings');
+
+            $appearancesettings->add(
+                new \admin_setting_heading('tool_opencast/appearance_overview_' . $instance->id,
+                    get_string('appearance_overview_settingheader', 'tool_opencast'),
+                    ''));
+
+            $appearancesettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/showpublicationchannels_' . $instance->id,
+                    get_string('appearance_overview_settingshowpublicationchannels', 'tool_opencast'),
+                    get_string('appearance_overview_settingshowpublicationchannels_desc', 'tool_opencast'), 1));
+
+            $appearancesettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/showenddate_' . $instance->id,
+                    get_string('appearance_overview_settingshowenddate', 'tool_opencast'),
+                    get_string('appearance_overview_settingshowenddate_desc', 'tool_opencast'), 1));
+
+            $appearancesettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/showlocation_' . $instance->id,
+                    get_string('appearance_overview_settingshowlocation', 'tool_opencast'),
+                    get_string('appearance_overview_settingshowlocation_desc', 'tool_opencast'), 1));
+
+            $ADMIN->add(self::PLUGINNAME, $appearancesettings);
+    }
+
+    private static function add_admin_additional_settings($settings, $instanceid, $instance): void {
+
+        global $ADMIN, $CFG, $PAGE;
+
+            // Settings page: Additional settings.
+            $additionalsettings = self::create_admin_settingpage('tool_opencast_additionalsettings_' . $instance->id, 'additional_settings');
+            $ADMIN->add(self::PLUGINNAME, $additionalsettings);
+
+            $installedplugins = \core_plugin_manager::instance()->get_installed_plugins('local');
+            $chunkuploadisinstalled = array_key_exists('chunkupload', $installedplugins);
+            if ($chunkuploadisinstalled) {
+
+                $additionalsettings->add(
+                    new \admin_setting_heading('tool_opencast/upload_' . $instance->id,
+                        get_string('uploadsettings', 'tool_opencast'),
+                        ''));
+
+                $additionalsettings->add(
+                    new \admin_setting_configcheckbox('tool_opencast/enablechunkupload_' . $instance->id,
+                        get_string('enablechunkupload', 'tool_opencast'),
+                        get_string('enablechunkupload_desc', 'tool_opencast'), true));
+
+                $sizelist = [-1, 53687091200, 21474836480, 10737418240, 5368709120, 2147483648, 1610612736, 1073741824,
+                    536870912, 268435456, 134217728, 67108864, ];
+                $filesizes = [];
+                foreach ($sizelist as $sizebytes) {
+                    $filesizes[(string)intval($sizebytes)] = display_size($sizebytes);
+                }
+
+                $additionalsettings->add(new \admin_setting_configselect('tool_opencast/uploadfilelimit_' . $instance->id,
+                    get_string('uploadfilelimit', 'tool_opencast'),
+                    get_string('uploadfilelimitdesc', 'tool_opencast'),
+                    2147483648, $filesizes));
+                if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                    $additionalsettings->hide_if('tool_opencast/uploadfilelimit_' . $instance->id,
+                        'tool_opencast/enablechunkupload_' . $instance->id, 'notchecked');
+                }
+
+                $additionalsettings->add(
+                    new \admin_setting_configcheckbox('tool_opencast/offerchunkuploadalternative_' . $instance->id,
+                        get_string('offerchunkuploadalternative', 'tool_opencast'),
+                        get_string('offerchunkuploadalternative_desc', 'tool_opencast',
+                            get_string('usedefaultfilepicker', 'tool_opencast')), true));
+                if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                    $additionalsettings->hide_if('tool_opencast/offerchunkuploadalternative_' . $instance->id,
+                        'tool_opencast/enablechunkupload_' . $instance->id, 'notchecked');
+                }
+            }
+
+            $additionalsettings->add(
+                new \admin_setting_heading('tool_opencast/opencast_studio_' . $instance->id,
+                    get_string('opencaststudiointegration', 'tool_opencast'),
+                    ''));
+
+            $additionalsettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/enable_opencast_studio_link_' . $instance->id,
+                    get_string('enableopencaststudiolink', 'tool_opencast'),
+                    get_string('enableopencaststudiolink_desc', 'tool_opencast'), 0));
+
+            // New tab config for Studio.
+            $additionalsettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/open_studio_in_new_tab_' . $instance->id,
+                    get_string('opencaststudionewtab', 'tool_opencast'),
+                    get_string('opencaststudionewtab_desc', 'tool_opencast'), 1));
+
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/opencast_studio_baseurl_' . $instance->id,
+                    get_string('opencaststudiobaseurl', 'tool_opencast'),
+                    get_string('opencaststudiobaseurl_desc', 'tool_opencast'), ''));
+
+            // Studio redirect button settings.
+            $additionalsettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/show_opencast_studio_return_btn_' . $instance->id,
+                    get_string('enableopencaststudioreturnbtn', 'tool_opencast'),
+                    get_string('enableopencaststudioreturnbtn_desc', 'tool_opencast'), 0));
+
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/opencast_studio_return_btn_label_' . $instance->id,
+                    get_string('opencaststudioreturnbtnlabel', 'tool_opencast'),
+                    get_string('opencaststudioreturnbtnlabel_desc', 'tool_opencast'),
+                    ''));
+
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/opencast_studio_return_url_' . $instance->id,
+                    get_string('opencaststudioreturnurl', 'tool_opencast'),
+                    get_string('opencaststudioreturnurl_desc', 'tool_opencast'),
+                    '/blocks/opencast/index.php?courseid=[COURSEID]&ocinstanceid=[OCINSTANCEID]'));
+
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/opencast_studio_custom_settings_filename_' . $instance->id,
+                    get_string('opencaststudiocustomsettingsfilename', 'tool_opencast'),
+                    get_string('opencaststudiocustomsettingsfilename_desc', 'tool_opencast'),
+                    ''));
+
+            // Opencast Editor Integration in additional feature settings.
+            $additionalsettings->add(
+                new \admin_setting_heading('tool_opencast/opencast_videoeditor_' . $instance->id,
+                    get_string('opencasteditorintegration', 'tool_opencast'),
+                    ''));
+
+            // The Generall Integration Permission.
+            $additionalsettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/enable_opencast_editor_link_' . $instance->id,
+                    get_string('enableopencasteditorlink', 'tool_opencast'),
+                    get_string('enableopencasteditorlink_desc', 'tool_opencast'), 0));
+
+            // The External base url to call editor (if any). The opencast instance URL will be used if empty.
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/editorbaseurl_' . $instance->id,
+                    get_string('editorbaseurl', 'tool_opencast'),
+                    get_string('editorbaseurl_desc', 'tool_opencast'), ""));
+
+            // The Editor endpoint url. It defines where to look for the editor in base url.
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/editorendpointurl_' . $instance->id,
+                    get_string('editorendpointurl', 'tool_opencast'),
+                    get_string('editorendpointurl_desc', 'tool_opencast'), "/editor-ui/index.html?mediaPackageId="));
+
+            // Opencast Video Player in additional feature settings.
+            $additionalsettings->add(
+                new \admin_setting_heading('tool_opencast/opencast_access_video_' . $instance->id,
+                    get_string('engageplayerintegration', 'tool_opencast'),
+                    ''));
+
+            // The link to the engage player.
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/engageurl_' . $instance->id,
+                    get_string('engageurl', 'tool_opencast'),
+                    get_string('engageurl_desc', 'tool_opencast'), ""));
+
+            // Notifications in additional features settings.
+            $additionalsettings->add(
+                new \admin_setting_heading('tool_opencast/notifications_' . $instance->id,
+                    get_string('notifications_settings_header', 'tool_opencast'),
+                    ''));
+
+            $additionalsettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/eventstatusnotificationenabled_' . $instance->id,
+                    get_string('notificationeventstatus', 'tool_opencast'),
+                    get_string('notificationeventstatus_desc', 'tool_opencast'), 0));
+
+            $additionalsettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/eventstatusnotifyteachers_' . $instance->id,
+                    get_string('notificationeventstatusteachers', 'tool_opencast'),
+                    get_string('notificationeventstatusteachers_desc', 'tool_opencast'), 0));
+            if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                $additionalsettings->hide_if('tool_opencast/eventstatusnotifyteachers_' . $instance->id,
+                    'tool_opencast/eventstatusnotificationenabled_' . $instance->id, 'notchecked');
+            }
+
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/eventstatusnotificationdeletion_' . $instance->id,
+                    get_string('notificationeventstatusdeletion', 'tool_opencast'),
+                    get_string('notificationeventstatusdeletion_desc', 'tool_opencast'), 0, PARAM_INT));
+
+
+            // Control ACL section.
+            $additionalsettings->add(
+                new \admin_setting_heading('tool_opencast/acl_settingheader_' . $instance->id,
+                    get_string('acl_settingheader', 'tool_opencast'),
+                    ''));
+
+            // Control ACL: Enable feature.
+            $additionalsettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/aclcontrol_' . $instance->id,
+                    get_string('acl_settingcontrol', 'tool_opencast'),
+                    get_string('acl_settingcontrol_desc', 'tool_opencast'), 1));
+
+            $additionalsettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/aclcontrolafter_' . $instance->id,
+                    get_string('acl_settingcontrolafter', 'tool_opencast'),
+                    get_string('acl_settingcontrolafter_desc', 'tool_opencast'), 1));
+
+            // Control ACL: Enable group restriction.
+            $additionalsettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/aclcontrolgroup_' . $instance->id,
+                    get_string('acl_settingcontrolgroup', 'tool_opencast'),
+                    get_string('acl_settingcontrolgroup_desc', 'tool_opencast'), 1));
+            if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                $additionalsettings->hide_if('tool_opencast/aclcontrolgroup_' . $instance->id,
+                    'tool_opencast/aclcontrolafter_' . $instance->id, 'notchecked');
+            }
+
+            // Control ACL: Waiting time for scheduled visibility change.
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/aclcontrolwaitingtime_' . $instance->id,
+                    get_string('acl_settingcontrolwaitingtime', 'tool_opencast'),
+                    get_string('acl_settingcontrolwaitingtime_desc', 'tool_opencast'),
+                    visibility_helper::DEFAULT_WAITING_TIME, PARAM_INT));
+            if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                $additionalsettings->hide_if('tool_opencast/aclcontrolwaitingtime_' . $instance->id,
+                    'tool_opencast/aclcontrolafter_' . $instance->id, 'notchecked');
+            }
+
+            if (\core_plugin_manager::instance()->get_plugin_info('mod_opencast')) {
+
+                // Add Opencast Activity modules section.
+                $additionalsettings->add(
+                    new \admin_setting_heading('tool_opencast/addactivity_settingheader_' . $instance->id,
+                        get_string('addactivity_settingheader', 'tool_opencast'),
+                        ''));
+
+                // Add Opencast Activity series modules: Enable feature.
+                $additionalsettings->add(
+                    new \admin_setting_configcheckbox('tool_opencast/addactivityenabled_' . $instance->id,
+                        get_string('addactivity_settingenabled', 'tool_opencast'),
+                        get_string('addactivity_settingenabled_desc', 'tool_opencast'), 0));
+
+                // Add Opencast Activity series modules: Default Opencast Activity series module title.
+                $additionalsettings->add(
+                    new \admin_setting_configtext('tool_opencast/addactivitydefaulttitle_' . $instance->id,
+                        get_string('addactivity_settingdefaulttitle', 'tool_opencast'),
+                        get_string('addactivity_settingdefaulttitle_desc', 'tool_opencast'),
+                        get_string('addactivity_defaulttitle', 'tool_opencast'),
+                        PARAM_TEXT));
+                if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                    $additionalsettings->hide_if('tool_opencast/addactivitydefaulttitle_' . $instance->id,
+                        'tool_opencast/addactivityenabled_' . $instance->id, 'notchecked');
+                }
+
+                // Add Opencast Activity series modules: Intro.
+                $additionalsettings->add(
+                    new \admin_setting_configcheckbox('tool_opencast/addactivityintro_' . $instance->id,
+                        get_string('addactivity_settingintro', 'tool_opencast'),
+                        get_string('addactivity_settingintro_desc', 'tool_opencast'), 0));
+                if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                    $additionalsettings->hide_if('tool_opencast/addactivityintro_' . $instance->id,
+                        'tool_opencast/addactivityenabled_' . $instance->id, 'notchecked');
+                }
+
+                // Add Opencast Activity series modules: Section.
+                $additionalsettings->add(
+                    new \admin_setting_configcheckbox('tool_opencast/addactivitysection_' . $instance->id,
+                        get_string('addactivity_settingsection', 'tool_opencast'),
+                        get_string('addactivity_settingsection_desc', 'tool_opencast'), 0));
+                if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                    $additionalsettings->hide_if('tool_opencast/addactivitysection_' . $instance->id,
+                        'tool_opencast/addactivityenabled_' . $instance->id, 'notchecked');
+                }
+
+                // Add Opencast Activity series modules: Availability.
+                $url = new \moodle_url('/admin/settings.php?section=optionalsubsystems');
+                $link = \html_writer::link($url, get_string('advancedfeatures', 'admin'), ['target' => '_blank']);
+                $description = get_string('addactivity_settingavailability_desc', 'tool_opencast') . '<br />' .
+                    get_string('addactivity_settingavailability_note', 'tool_opencast', $link);
+                $additionalsettings->add(
+                    new \admin_setting_configcheckbox('tool_opencast/addactivityavailability_' . $instance->id,
+                        get_string('addactivity_settingavailability', 'tool_opencast'),
+                        $description, 0));
+                if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                    $additionalsettings->hide_if('tool_opencast/addactivityavailability_' . $instance->id,
+                        'tool_opencast/addactivityenabled_' . $instance->id, 'notchecked');
+                }
+
+                // Add Opencast Activity episode modules: Enable feature.
+                $additionalsettings->add(
+                    new \admin_setting_configcheckbox('tool_opencast/addactivityepisodeenabled_' . $instance->id,
+                        get_string('addactivityepisode_settingenabled', 'tool_opencast'),
+                        get_string('addactivityepisode_settingenabled_desc', 'tool_opencast'), 0));
+
+                // Add Opencast Activity episode modules: Intro.
+                $additionalsettings->add(
+                    new \admin_setting_configcheckbox('tool_opencast/addactivityepisodeintro_' . $instance->id,
+                        get_string('addactivityepisode_settingintro', 'tool_opencast'),
+                        get_string('addactivityepisode_settingintro_desc', 'tool_opencast'), 0));
+                if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                    $additionalsettings->hide_if('tool_opencast/addactivityepisodeintro_' . $instance->id,
+                        'tool_opencast/addactivityepisodeenabled_' . $instance->id, 'notchecked');
+                }
+
+                // Add Opencast Activity episode modules: Section.
+                $additionalsettings->add(
+                    new \admin_setting_configcheckbox('tool_opencast/addactivityepisodesection_' . $instance->id,
+                        get_string('addactivityepisode_settingsection', 'tool_opencast'),
+                        get_string('addactivityepisode_settingsection_desc', 'tool_opencast'), 0));
+                if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                    $additionalsettings->hide_if('tool_opencast/addactivityepisodesection_' . $instance->id,
+                        'tool_opencast/addactivityepisodeenabled_' . $instance->id, 'notchecked');
+                }
+
+                // Add Opencast Activity episode modules: Availability.
+                $url = new \moodle_url('/admin/settings.php?section=optionalsubsystems');
+                $link = \html_writer::link($url, get_string('advancedfeatures', 'admin'), ['target' => '_blank']);
+                $description = get_string('addactivityepisode_settingavailability_desc', 'tool_opencast') . '<br />' .
+                    get_string('addactivity_settingavailability_note', 'tool_opencast', $link);
+                $additionalsettings->add(
+                    new \admin_setting_configcheckbox('tool_opencast/addactivityepisodeavailability_' . $instance->id,
+                        get_string('addactivityepisode_settingavailability', 'tool_opencast'),
+                        $description, 0));
+                if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                    $additionalsettings->hide_if('tool_opencast/addactivityepisodeavailability_' . $instance->id,
+                        'tool_opencast/addactivityepisodeenabled_' . $instance->id, 'notchecked');
+                }
+            }
+
+            // Transcription upload settings.
+            $additionalsettings->add(
+                new \admin_setting_heading('tool_opencast/transcription_header_' . $instance->id,
+                    get_string('transcriptionsettingsheader', 'tool_opencast'),
+                    ''));
+
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/transcriptionworkflow_' . $instance->id,
+                    get_string('transcriptionworkflow', 'tool_opencast'),
+                    get_string('transcriptionworkflow_desc', 'tool_opencast'), '', PARAM_TEXT));
+
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/deletetranscriptionworkflow_' . $instance->id,
+                    get_string('deletetranscriptionworkflow', 'tool_opencast'),
+                    get_string('deletetranscriptionworkflow_desc', 'tool_opencast'), '', PARAM_TEXT));
+            $additionalsettings->hide_if('tool_opencast/deletetranscriptionworkflow_' . $instance->id,
+                'tool_opencast/transcriptionworkflow_' . $instance->id, 'eq', '');
+
+            $additionalsettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/allowdownloadtranscription_' . $instance->id,
+                    get_string('allowdownloadtranscriptionsetting', 'tool_opencast'),
+                    get_string('allowdownloadtranscriptionsetting_desc', 'tool_opencast'), 1));
+            $additionalsettings->hide_if('tool_opencast/allowdownloadtranscription_' . $instance->id,
+                'tool_opencast/transcriptionworkflow_' . $instance->id, 'eq', '');
+
+            $defaulttranscriptionflavors = setting_default_manager::get_default_transcriptionflavors();
+
+            $transcriptionflavors = new \admin_setting_configtext('tool_opencast/transcriptionflavors_' . $instanceid,
+            get_string('transcriptionflavors', 'tool_opencast'),
+            get_string('transcriptionflavors_desc', 'tool_opencast'), $defaulttranscriptionflavors);
+
+            // Crashes if plugins.php is opened because css cannot be included anymore.
+            if ($PAGE->state !== \moodle_page::STATE_IN_BODY) {
+                $PAGE->requires->js_call_amd('tool_opencast/tool_settings', 'init_additional_settings', [
+                    $transcriptionflavors->get_id(),
+                    $instanceid,
+                ]);
+            }
+
+            $additionalsettings->add($transcriptionflavors);
+            $additionalsettings->add(
+                new admin_setting_configeditabletable_with_buttontext(
+                    'tool_opencast/transcriptionflavorsoptions_' . $instance->id,
+                    'transcriptionflavorsoptions_' . $instance->id,
+                    get_string('addtranscriptionflavor', 'tool_opencast')));
+
+            $additionalsettings->hide_if('tool_opencast/transcriptionflavorsoptions_' . $instance->id,
+                'tool_opencast/transcriptionworkflow_' . $instance->id, 'eq', '');
+
+            $additionalsettings->add(new \admin_setting_configtext('tool_opencast/maxtranscriptionupload_' . $instance->id,
+                new \lang_string('maxtranscriptionupload', 'tool_opencast'),
+                get_string('maxtranscriptionupload_desc', 'tool_opencast'), 3, PARAM_INT
+            ));
+            $additionalsettings->hide_if('tool_opencast/maxtranscriptionupload_' . $instance->id,
+                'tool_opencast/transcriptionworkflow_' . $instance->id, 'eq', '');
+
+            $additionalsettings->add(
+                new \admin_setting_filetypes('tool_opencast/transcriptionfileextensions_' . $instance->id,
+                    new \lang_string('transcriptionfileextensions', 'tool_opencast'),
+                    get_string('transcriptionfileextensions_desc', 'tool_opencast',
+                        $CFG->wwwroot . '/admin/tool/filetypes/index.php')
+                ));
+            $additionalsettings->hide_if('tool_opencast/transcriptionfileextensions_' . $instance->id,
+                'tool_opencast/transcriptionworkflow_' . $instance->id, 'eq', '');
+            // End of transcription upload settings.
+            // Live Status Update.
+            // Setting for live status update for processing as well as uploading events.
+            $additionalsettings->add(
+                new \admin_setting_heading('tool_opencast/liveupdate_settingheader_' . $instance->id,
+                    get_string('liveupdate_settingheader', 'tool_opencast'),
+                    ''));
+
+            // Enables live status update here.
+            $additionalsettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/liveupdateenabled_' . $instance->id,
+                    get_string('liveupdate_settingenabled', 'tool_opencast'),
+                    get_string('liveupdate_settingenabled_desc', 'tool_opencast'), 1));
+
+            // Setting for reload timeout after an event has new changes.
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/liveupdatereloadtimeout_' . $instance->id,
+                    get_string('liveupdate_reloadtimeout', 'tool_opencast'),
+                    get_string('liveupdate_reloadtimeout_desc', 'tool_opencast'), 3, PARAM_INT));
+            $additionalsettings->hide_if('tool_opencast/liveupdatereloadtimeout_' . $instance->id,
+                'tool_opencast/liveupdateenabled_' . $instance->id, 'notchecked');
+
+            // Privacy notice display additional settings.
+            $additionalsettings->add(
+                new \admin_setting_heading('tool_opencast/swprivacynotice_header_' . $instance->id,
+                    get_string('swprivacynotice_settingheader', 'tool_opencast'),
+                    ''));
+
+            $additionalsettings->add(
+                new \admin_setting_confightmleditor('tool_opencast/swprivacynoticeinfotext_' . $instance->id,
+                    get_string('swprivacynotice_settinginfotext', 'tool_opencast'),
+                    get_string('swprivacynotice_settinginfotext_desc', 'tool_opencast'), null));
+
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/swprivacynoticewfds_' . $instance->id,
+                    get_string('swprivacynotice_settingwfds', 'tool_opencast'),
+                    get_string('swprivacynotice_settingwfds_desc', 'tool_opencast'), null));
+            // Providing hide_if for this setting.
+            $additionalsettings->hide_if('tool_opencast/swprivacynoticewfds_' . $instance->id,
+                'tool_opencast/swprivacynoticeinfotext_' . $instance->id, 'eq', '');
+
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/swprivacynoticetitle_' . $instance->id,
+                    get_string('swprivacynotice_settingtitle', 'tool_opencast'),
+                    get_string('swprivacynotice_settingtitle_desc', 'tool_opencast'), null));
+            // Providing hide_if for this setting.
+            $additionalsettings->hide_if('tool_opencast/swprivacynoticetitle_' . $instance->id,
+                'tool_opencast/swprivacynoticeinfotext_' . $instance->id, 'eq', '');
+            // End of privacy notice.
+
+            // Additional Settings.
+            // Terms of use. Downlaod channel. Custom workflows channel. Support email.
+            $additionalsettings->add(
+                new \admin_setting_heading('tool_opencast/download_settingheader_' . $instance->id,
+                    get_string('additional_settings', 'tool_opencast'),
+                    ''));
+
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/download_channel_' . $instance->id,
+                    get_string('download_setting', 'tool_opencast'),
+                    get_string('download_settingdesc', 'tool_opencast'), "api"));
+
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/direct_access_channel_' . $instance->id,
+                    get_string('directaccess_setting', 'tool_opencast'),
+                    get_string('directaccess_settingdesc', 'tool_opencast'), ''));
+
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/workflow_tags_' . $instance->id,
+                    get_string('workflowtags_setting', 'tool_opencast'),
+                    get_string('workflowtags_settingdesc', 'tool_opencast'), null));
+
+            $additionalsettings->add(
+                new \admin_setting_configtext('tool_opencast/support_email_' . $instance->id,
+                    get_string('support_setting', 'tool_opencast'),
+                    get_string('support_settingdesc', 'tool_opencast'), null));
+
+            $additionalsettings->add(new \admin_setting_confightmleditor(
+                'tool_opencast/termsofuse_' . $instance->id,
+                get_string('termsofuse', 'tool_opencast'),
+                get_string('termsofuse_desc', 'tool_opencast'), null));
+
+    }
+
+
+
     private static function add_admin_general_settings($settings, $instanceid, $instance): void {
 
-        global $PAGE, $CFG;
+        global $PAGE, $CFG, $ADMIN;
 
         $ocinstances = settings_api::get_ocinstances();
         $multiocinstance = count($ocinstances) > 1;
 
-        // General Settings Page
-        $generalsettings = self::create_admin_settingpage('tool_opencast_generalsettings_' . $instanceid,
-                    'general_settings');
+        // General Settings Pageblock_
+        $generalsettings = self::create_admin_settingpage('tool_opencast_generalsettings_' . $instanceid, 'general_settings');
 
 
         $opencasterror = false;
@@ -290,7 +782,6 @@ class admin_settings_builder {
         error_log('roles: ' . print_r($rolesdefault, true));
         $metadatadefault = setting_default_manager::get_default_metadata();
         $metadataseriesdefault = setting_default_manager::get_default_metadataseries();
-        $defaulttranscriptionflavors = setting_default_manager::get_default_transcriptionflavors();
 
         $generalsettings->add(new admin_setting_hiddenhelpbtn('tool_opencast/hiddenhelpname_' . $instanceid,
             'helpbtnname_' . $instanceid, 'descriptionmdfn', 'tool_opencast'));
@@ -322,17 +813,13 @@ class admin_settings_builder {
             get_string('metadataseries', 'tool_opencast'),
             get_string('metadataseriesdesc', 'tool_opencast') . $dcmitermsnotice, $metadataseriesdefault);
 
-        $transcriptionflavors = new \admin_setting_configtext('tool_opencast/transcriptionflavors_' . $instanceid,
-            get_string('transcriptionflavors', 'tool_opencast'),
-            get_string('transcriptionflavors_desc', 'tool_opencast'), $defaulttranscriptionflavors);
 
         // Crashes if plugins.php is opened because css cannot be included anymore.
         if ($PAGE->state !== \moodle_page::STATE_IN_BODY) {
-            $PAGE->requires->js_call_amd('tool_opencast/tool_settings', 'init_block', [
+            $PAGE->requires->js_call_amd('tool_opencast/tool_settings', 'init_general_settings', [
                 $rolessetting->get_id(),
                 $metadatasetting->get_id(),
                 $metadataseriessetting->get_id(),
-                $transcriptionflavors->get_id(),
                 $instanceid,
             ]);
         }
@@ -521,51 +1008,177 @@ class admin_settings_builder {
             $instanceid, 'metadataseriestable_' . $instanceid,
             get_string('addcatalog', 'tool_opencast')));
 
-        // $opencasterror = false;
-
-        // // Initialize the default settings for each instance.
-        // setting_default_manager::init_regirstered_defaults($instance->id);
-
-        // // Setup js.
-        // $rolesdefault = setting_default_manager::get_default_roles();
-        // $metadatadefault = setting_default_manager::get_default_metadata();
-        // $metadataseriesdefault = setting_default_manager::get_default_metadataseries();
-        // $defaulttranscriptionflavors = setting_default_manager::get_default_transcriptionflavors();
-
-        // $generalsettings->add(new admin_setting_hiddenhelpbtn('block_opencast/hiddenhelpname_' . $instance->id,
-        //     'helpbtnname_' . $instance->id, 'descriptionmdfn', 'block_opencast'));
-        // $generalsettings->add(new admin_setting_hiddenhelpbtn('block_opencast/hiddenhelpparams_' . $instance->id,
-        //     'helpbtnparams_' . $instance->id, 'catalogparam', 'block_opencast'));
-        // $generalsettings->add(new admin_setting_hiddenhelpbtn('block_opencast/hiddenhelpdescription_' . $instance->id,
-        //     'helpbtndescription_' . $instance->id, 'descriptionmdfd', 'block_opencast'));
-        // $generalsettings->add(new admin_setting_hiddenhelpbtn('block_opencast/hiddenhelpdefaultable_' . $instance->id,
-        //     'helpbtndefaultable_' . $instance->id, 'descriptionmddefaultable', 'block_opencast'));
-        // $generalsettings->add(new admin_setting_hiddenhelpbtn('block_opencast/hiddenhelpbatchable_' . $instance->id,
-        //     'helpbtnbatchable_' . $instance->id, 'descriptionmdbatchable', 'block_opencast'));
-        // $generalsettings->add(new admin_setting_hiddenhelpbtn('block_opencast/hiddenhelpreadonly_' . $instance->id,
-        //     'helpbtnreadonly_' . $instance->id, 'descriptionmdreadonly', 'block_opencast'));
-
-        // $rolessetting = new admin_setting_configtext('block_opencast/roles_' . $instance->id,
-        //     get_string('aclrolesname', 'block_opencast'),
-        //     get_string('aclrolesnamedesc',
-        //         'block_opencast'), $rolesdefault);
-
-        // $dcmitermsnotice = get_string('dcmitermsnotice', 'block_opencast');
-        // $metadatasetting = new admin_setting_configtext('block_opencast/metadata_' . $instance->id,
-        //     get_string('metadata', 'block_opencast'),
-        //     get_string('metadatadesc', 'block_opencast') . $dcmitermsnotice, $metadatadefault);
-
-        // $metadataseriessetting = new admin_setting_configtext('block_opencast/metadataseries_' . $instance->id,
-        //     get_string('metadataseries', 'block_opencast'),
-        //     get_string('metadataseriesdesc', 'block_opencast') . $dcmitermsnotice, $metadataseriesdefault);
-
-        // $transcriptionflavors = new admin_setting_configtext('block_opencast/transcriptionflavors_' . $instance->id,
-        //     get_string('transcriptionflavors', 'block_opencast'),
-        //     get_string('transcriptionflavors_desc', 'block_opencast'), $defaulttranscriptionflavors);
-
-        global $ADMIN;
         $ADMIN->add(self::PLUGINNAME, $generalsettings);
 
+    }
+
+    private static function add_admin_ltimodule_settings($settings, $instanceid, $instance): void {
+
+        global $PAGE, $CFG, $ADMIN;
+
+        $ltimodulesettings = self::create_admin_settingpage('tool_opencast_ltimodulesettings_' . $instanceid, 'ltimodule_settings');
+
+            // Add LTI series modules section.
+            $ltimodulesettings->add(
+                new \admin_setting_heading('tool_opencast/addlti_settingheader_' . $instance->id,
+                    get_string('addlti_settingheader', 'tool_opencast'),
+                    ''));
+
+            // Add LTI series modules: Enable feature.
+            $ltimodulesettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/addltienabled_' . $instance->id,
+                    get_string('addlti_settingenabled', 'tool_opencast'),
+                    get_string('addlti_settingenabled_desc', 'tool_opencast'), 0));
+
+            // Add LTI series modules: Default LTI series module title.
+            $ltimodulesettings->add(
+                new \admin_setting_configtext('tool_opencast/addltidefaulttitle_' . $instance->id,
+                    get_string('addlti_settingdefaulttitle', 'tool_opencast'),
+                    get_string('addlti_settingdefaulttitle_desc', 'tool_opencast'),
+                    get_string('addlti_defaulttitle', 'tool_opencast'),
+                    PARAM_TEXT));
+            if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                $ltimodulesettings->hide_if('tool_opencast/addltidefaulttitle_' . $instance->id,
+                    'tool_opencast/addltienabled_' . $instance->id, 'notchecked');
+            }
+
+            // Add LTI series modules: Preconfigured LTI tool.
+            $tools = ltimodulemanager::get_preconfigured_tools();
+            // If there are any tools to be selected.
+            if (count($tools) > 0) {
+                $ltimodulesettings->add(
+                    new \admin_setting_configselect('tool_opencast/addltipreconfiguredtool_' . $instance->id,
+                        get_string('addlti_settingpreconfiguredtool', 'tool_opencast'),
+                        get_string('addlti_settingpreconfiguredtool_desc', 'tool_opencast'),
+                        null,
+                        $tools));
+
+                // If there aren't any preconfigured tools to be selected.
+            } else {
+                // Add an empty element to at least create the setting when the plugin is installed.
+                // Additionally, show some information text where to add preconfigured tools.
+                $url = new \moodle_url('/admin/settings.php?section=modsettinglti');
+                $link = \html_writer::link($url, get_string('manage_tools', 'mod_lti'), ['target' => '_blank']);
+                $description = get_string('addlti_settingpreconfiguredtool_notools', 'tool_opencast', $link);
+                $ltimodulesettings->add(
+                    new \admin_setting_configempty('tool_opencast/addltipreconfiguredtool_' . $instance->id,
+                        get_string('addlti_settingpreconfiguredtool', 'tool_opencast'),
+                        $description));
+            }
+            if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                $ltimodulesettings->hide_if('tool_opencast/addltipreconfiguredtool_' . $instance->id,
+                    'tool_opencast/addltienabled_' . $instance->id, 'notchecked');
+            }
+
+            // Add LTI series modules: Intro.
+            $ltimodulesettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/addltiintro_' . $instance->id,
+                    get_string('addlti_settingintro', 'tool_opencast'),
+                    get_string('addlti_settingintro_desc', 'tool_opencast'), 0));
+            if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                $ltimodulesettings->hide_if('tool_opencast/addltiintro_' . $instance->id,
+                    'tool_opencast/addltienabled_' . $instance->id, 'notchecked');
+            }
+
+            // Add LTI series modules: Section.
+            $ltimodulesettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/addltisection_' . $instance->id,
+                    get_string('addlti_settingsection', 'tool_opencast'),
+                    get_string('addlti_settingsection_desc', 'tool_opencast'), 0));
+            if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                $ltimodulesettings->hide_if('tool_opencast/addltisection_' . $instance->id,
+                    'tool_opencast/addltienabled_' . $instance->id, 'notchecked');
+            }
+
+            // Add LTI series modules: Availability.
+            $url = new \moodle_url('/admin/settings.php?section=optionalsubsystems');
+            $link = \html_writer::link($url, get_string('advancedfeatures', 'admin'), ['target' => '_blank']);
+            $description = get_string('addlti_settingavailability_desc', 'tool_opencast') . '<br />' .
+                get_string('addlti_settingavailability_note', 'tool_opencast', $link);
+            $ltimodulesettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/addltiavailability_' . $instance->id,
+                    get_string('addlti_settingavailability', 'tool_opencast'),
+                    $description, 0));
+            if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                $ltimodulesettings->hide_if('tool_opencast/addltiavailability_' . $instance->id,
+                    'tool_opencast/addltienabled_' . $instance->id, 'notchecked');
+            }
+
+            // Add LTI episode modules section.
+            $ltimodulesettings->add(
+                new \admin_setting_heading('tool_opencast/addltiepisode_settingheader_' . $instance->id,
+                    get_string('addltiepisode_settingheader', 'tool_opencast'),
+                    ''));
+
+            // Add LTI episode modules: Enable feature.
+            $ltimodulesettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/addltiepisodeenabled_' . $instance->id,
+                    get_string('addltiepisode_settingenabled', 'tool_opencast'),
+                    get_string('addltiepisode_settingenabled_desc', 'tool_opencast'), 0));
+
+            // Add LTI episode modules: Preconfigured LTI tool.
+            $tools = ltimodulemanager::get_preconfigured_tools();
+            // If there are any tools to be selected.
+            if (count($tools) > 0) {
+                $ltimodulesettings->add(
+                    new \admin_setting_configselect('tool_opencast/addltiepisodepreconfiguredtool_' . $instance->id,
+                        get_string('addltiepisode_settingpreconfiguredtool', 'tool_opencast'),
+                        get_string('addltiepisode_settingpreconfiguredtool_desc', 'tool_opencast'),
+                        null,
+                        $tools));
+
+                // If there aren't any preconfigured tools to be selected.
+            } else {
+                // Add an empty element to at least create the setting when the plugin is installed.
+                // Additionally, show some information text where to add preconfigured tools.
+                $url = new \moodle_url('/admin/settings.php?section=modsettinglti');
+                $link = \html_writer::link($url, get_string('manage_tools', 'mod_lti'), ['target' => '_blank']);
+                $description = get_string('addltiepisode_settingpreconfiguredtool_notools', 'tool_opencast', $link);
+                $ltimodulesettings->add(
+                    new \admin_setting_configempty('tool_opencast/addltiepisodepreconfiguredtool_' . $instance->id,
+                        get_string('addltiepisode_settingpreconfiguredtool', 'tool_opencast'),
+                        $description));
+            }
+            if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                $ltimodulesettings->hide_if('tool_opencast/addltiepisodepreconfiguredtool_' . $instance->id,
+                    'tool_opencast/addltiepisodeenabled_' . $instance->id, 'notchecked');
+            }
+
+            // Add LTI episode modules: Intro.
+            $ltimodulesettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/addltiepisodeintro_' . $instance->id,
+                    get_string('addltiepisode_settingintro', 'tool_opencast'),
+                    get_string('addltiepisode_settingintro_desc', 'tool_opencast'), 0));
+            if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                $ltimodulesettings->hide_if('tool_opencast/addltiepisodeintro_' . $instance->id,
+                    'tool_opencast/addltiepisodeenabled_' . $instance->id, 'notchecked');
+            }
+
+            // Add LTI episode modules: Section.
+            $ltimodulesettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/addltiepisodesection_' . $instance->id,
+                    get_string('addltiepisode_settingsection', 'tool_opencast'),
+                    get_string('addltiepisode_settingsection_desc', 'tool_opencast'), 0));
+            if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                $ltimodulesettings->hide_if('tool_opencast/addltiepisodesection_' . $instance->id,
+                    'tool_opencast/addltiepisodeenabled_' . $instance->id, 'notchecked');
+            }
+
+            // Add LTI episode modules: Availability.
+            $url = new \moodle_url('/admin/settings.php?section=optionalsubsystems');
+            $link = \html_writer::link($url, get_string('advancedfeatures', 'admin'), ['target' => '_blank']);
+            $description = get_string('addltiepisode_settingavailability_desc', 'tool_opencast') . '<br />' .
+                get_string('addlti_settingavailability_note', 'tool_opencast', $link);
+            $ltimodulesettings->add(
+                new \admin_setting_configcheckbox('tool_opencast/addltiepisodeavailability_' . $instance->id,
+                    get_string('addltiepisode_settingavailability', 'tool_opencast'),
+                    $description, 0));
+            if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+                $ltimodulesettings->hide_if('tool_opencast/addltiepisodeavailability_' . $instance->id,
+                    'tool_opencast/addltiepisodeenabled_' . $instance->id, 'notchecked');
+            }
+
+            $ADMIN->add(self::PLUGINNAME, $ltimodulesettings);
     }
 
     /**
