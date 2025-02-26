@@ -420,7 +420,8 @@ class api extends \curl {
      */
     public function oc_get($resource, $runwithroles = []) {
 
-        throw new \coding_exception(__FUNCTION__ . '() has been removed.');
+        throw new \coding_exception(__FUNCTION__ . '() has been marked as deprecated,' .
+            ' please use "Opencast PHP Library" via `opencastapi` property instead.');
         // Check for maintenance first.
         if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
             return $this->maintenance->decide_access_bounce();
@@ -527,8 +528,8 @@ class api extends \curl {
      */
     public function oc_post($resource, $params = [], $runwithroles = []) {
 
-        throw new \coding_exception(__FUNCTION__ . '() has been removed.');
-
+        throw new \coding_exception(__FUNCTION__ . '() has been marked as deprecated,' .
+            ' please use "Opencast PHP Library" via `opencastapi` property instead.');
         // Check for maintenance first.
         if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
             return $this->maintenance->decide_access_bounce();
@@ -581,8 +582,8 @@ class api extends \curl {
      */
     public function oc_put($resource, $params = [], $runwithroles = []) {
 
-        throw new \coding_exception(__FUNCTION__ . '() has been removed.');
-
+        throw new \coding_exception(__FUNCTION__ . '() has been marked as deprecated,' .
+            ' please use "Opencast PHP Library" via `opencastapi` property instead.');
         // Check for maintenance first.
         if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
             return $this->maintenance->decide_access_bounce();
@@ -625,7 +626,8 @@ class api extends \curl {
      */
     public function oc_delete($resource, $params = [], $runwithroles = []) {
 
-        throw new \coding_exception(__FUNCTION__ . '() has been removed.');
+        throw new \coding_exception(__FUNCTION__ . '() has been marked as deprecated,' .
+            ' please use "Opencast PHP Library" via `opencastapi` property instead.');
 
         // Check for maintenance first.
         if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
