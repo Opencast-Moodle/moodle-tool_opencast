@@ -415,9 +415,13 @@ class api extends \curl {
      * the specified roles.
      * @return string JSON String of result.
      * @throws \moodle_exception
+     * @throws \coding_exception
+     * @deprecated since v4.5-r4.
      */
     public function oc_get($resource, $runwithroles = []) {
 
+        throw new \coding_exception(__FUNCTION__ . '() has been marked as deprecated,' .
+            ' please use "Opencast PHP Library" via `opencastapi` property instead.');
         // Check for maintenance first.
         if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
             return $this->maintenance->decide_access_bounce();
@@ -519,9 +523,13 @@ class api extends \curl {
      * the specified roles.
      * @return string JSON String of result.
      * @throws \moodle_exception
+     * @throws \coding_exception
+     * @deprecated since v4.5-r4.
      */
     public function oc_post($resource, $params = [], $runwithroles = []) {
 
+        throw new \coding_exception(__FUNCTION__ . '() has been marked as deprecated,' .
+            ' please use "Opencast PHP Library" via `opencastapi` property instead.');
         // Check for maintenance first.
         if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
             return $this->maintenance->decide_access_bounce();
@@ -569,9 +577,13 @@ class api extends \curl {
      * the specified roles.
      * @return string JSON String of result.
      * @throws \moodle_exception
+     * @throws \coding_exception
+     * @deprecated since v4.5-r4.
      */
     public function oc_put($resource, $params = [], $runwithroles = []) {
 
+        throw new \coding_exception(__FUNCTION__ . '() has been marked as deprecated,' .
+            ' please use "Opencast PHP Library" via `opencastapi` property instead.');
         // Check for maintenance first.
         if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
             return $this->maintenance->decide_access_bounce();
@@ -609,8 +621,13 @@ class api extends \curl {
      * the specified roles.
      * @return string JSON String of result.
      * @throws \moodle_exception
+     * @throws \coding_exception
+     * @deprecated since v4.5-r4.
      */
     public function oc_delete($resource, $params = [], $runwithroles = []) {
+
+        throw new \coding_exception(__FUNCTION__ . '() has been marked as deprecated,' .
+            ' please use "Opencast PHP Library" via `opencastapi` property instead.');
 
         // Check for maintenance first.
         if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
