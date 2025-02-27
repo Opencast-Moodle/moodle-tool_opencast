@@ -104,8 +104,8 @@ class admin_settings_builder {
                 self::add_admin_settingpage('tool_opencast_generalsettings_' . $instance->id, 'general_instance', $instance->name);
                 self::add_admin_settingpage('tool_opencast_appearancesettings_' . $instance->id, 'appearance_instance', $instance->name);
                 self::add_admin_settingpage('tool_opencast_additionalsettings_' . $instance->id, 'additional_instance', $instance->name);
-                self::add_admin_settingpage('tool_opencast_ltimodulesettings_' . $instanceid, 'ltimodule_instance', $instance->name);
-                self::add_admin_settingpage('tool_opencast_importvideossettings_' . $instanceid, 'importvideos_instance', $instance->name);
+                self::add_admin_settingpage('tool_opencast_ltimodulesettings_' . $instance->id, 'ltimodule_instance', $instance->name);
+                self::add_admin_settingpage('tool_opencast_importvideossettings_' . $instance->id, 'importvideos_instance', $instance->name);
 
             }
         }
