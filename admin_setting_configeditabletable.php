@@ -14,7 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace tool_opencast\settings;
+/**
+ * Admin setting class which is used to create an editable table.
+ *
+ * @package    tool_opencast
+ * @copyright  2021 Tamara Gunkel, University of Münster
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+namespace tool_opencast;
+
+use admin_setting;
 
 /**
  * Admin setting class which is used to create an editable table.
@@ -23,72 +33,7 @@ namespace tool_opencast\settings;
  * @copyright  2021 Tamara Gunkel, University of Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class admin_setting_configeditabletable extends \admin_setting {
-    /** @var string Id of the div tag */
-    private $divid;
-
-    /**
-     * Not a setting, just an editable table.
-     * @param string $name Setting name
-     * @param string $divid Id of the div tag
-     */
-    public function __construct($name, $divid) {
-        $this->nosave = true;
-        $this->divid = $divid;
-        parent::__construct($name, '', '', '');
-    }
-
-    /**
-     * Always returns true
-     *
-     * @return bool Always returns true
-     */
-    public function get_setting() {
-        return true;
-    }
-
-    /**
-     * Always returns true
-     *
-     * @return bool Always returns true
-     */
-    public function get_defaultsetting() {
-        return true;
-    }
-
-    /**
-     * Never write settings
-     *
-     * @param mixed $data Gets converted to str for comparison against yes value
-     * @return string Always returns an empty string
-     */
-    public function write_setting($data) {
-        // Do not write any setting.
-        return '';
-    }
-
-    /**
-     * Returns an HTML string
-     *
-     * @param string $data
-     * @param string $query
-     * @return string Returns an HTML string
-     */
-    public function output_html($data, $query = '') {
-        return '<div class="row justify-content-end"><div class="mt-3 col-sm-9 p-0" id="' . $this->divid .
-            '"></div></div><button class="btn btn-primary mt-3 float-right" type="button" id="addrow-' . $this->divid . '">' .
-            get_string('addinstance', 'tool_opencast') . '</button>';
-    }
-}
-
-/**
- * Admin setting class which is used to create an editable table.
- *
- * @package    tool_opencast
- * @copyright  2021 Tamara Gunkel, University of Münster
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-class admin_setting_configeditabletable_with_buttontext extends \admin_setting {
+class admin_setting_configeditabletable extends admin_setting {
 
     /** @var string Id of the div tag */
     private $divid;

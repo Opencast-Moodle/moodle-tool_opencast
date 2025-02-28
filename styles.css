@@ -1,0 +1,129 @@
+/* Styles for the buttons in the block view */
+.opencast-addvideo-wrap.overview {
+    text-align: center;
+}
+
+.opencast-batchupload-wrap.overview {
+    text-align: center;
+}
+
+.opencast-recordvideo-wrap.overview {
+    text-align: center;
+}
+
+/* Styles for the buttons on the overview page */
+.opencast-recordvideo-wrap {
+    margin: 10px 0;
+}
+
+.opencast-batchupload-wrap {
+    margin: 10px 0;
+}
+
+/* Styles for the recordings list in the block view */
+.opencast-vlist {
+    margin-left: 0;
+    list-style: none;
+    border-top: 1px solid #dedede;
+    border-bottom: 1px solid #dedede;
+    padding: 10px 0;
+}
+
+.opencast-vlist .smallicon {
+    margin-right: 5px;
+}
+
+.opencast-more-wrap {
+    text-align: right;
+}
+
+/* Styles for the overview page */
+#page-blocks-opencast-index h2 ~ .resettable {
+    display: none;
+}
+
+#page-blocks-opencast-index #region-main h2 {
+    margin-top: 50px;
+}
+
+#page-blocks-opencast-index #region-main h2:first-of-type {
+    margin-top: inherit;
+}
+
+/* Styles for the admin settings page */
+#page-admin-blocks-opencast-adminsettings #roles_table .fitemtitle {
+    width: 0;
+}
+
+#page-admin-blocks-opencast-adminsettings #roles_table .felement {
+    margin-left: 0;
+}
+
+/* Styles for the add video page */
+#page-admin-tool-opencast-addvideo .form-filetypes-descriptions ul {
+    margin-bottom: 0;
+}
+
+#page-admin-tool-opencast-addvideo .form-filetypes-descriptions li {
+    font-size: 0;
+    display: inline-block;
+}
+
+#page-admin-tool-opencast-addvideo .form-filetypes-descriptions li .text-dark {
+    font-size: 12px;
+}
+
+#page-admin-tool-opencast-addvideo #fitem_id_video_presenter p,
+#page-admin-tool-opencast-addvideo #fitem_id_video_presenter_chunk p,
+#page-admin-tool-opencast-addvideo #fitem_id_video_presentation p,
+#page-admin-tool-opencast-addvideo #fitem_id_video_presentation_chunk p {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+}
+
+#page-admin-tool-opencast-addvideo .form-filetypes-descriptions ul {
+    margin-bottom: 0;
+}
+
+/* Hide empty label columns in tables on admin settings page. */
+#page-admin-blocks-opencast-adminsettings .generaltable .col-md-3 {
+    display: none;
+}
+
+.inline-action-menu .menubar,
+.download-action-menu .menubar {
+    display: inline-flex !important; /* stylelint-disable-line */
+}
+
+.download-action-menu .dropdown-menu i {
+    display: none;
+}
+
+/* Video Table Styles */
+table.opencast-videos-table.generaltable thead th {
+    vertical-align: middle !important; /* stylelint-disable-line */
+}
+
+table.opencast-videos-table.generaltable thead th.oc-sortable-alignment {
+    overflow: hidden;
+}
+
+table.opencast-videos-table.generaltable thead th.oc-sortable-alignment a {
+    float: left;
+    white-space: nowrap;
+    margin-bottom: 1px;
+}
+
+table.opencast-videos-table.generaltable thead th.oc-sortable-alignment > i {
+    float: left;
+    margin: 4px 0 1px 3px;
+}
+
+/* Styles for Series Table */
+#seriestable .tabulator-row .tabulator-cell {
+    cursor: default !important; /* stylelint-disable-line */
+}
+
+#seriestable .tabulator-row .tabulator-cell input[type="radio"]:not(:checked) {
+    cursor: pointer !important; /* stylelint-disable-line */
+}

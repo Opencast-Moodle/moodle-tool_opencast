@@ -18,13 +18,13 @@ namespace tool_opencast\settings;
 
 use tool_opencast\local\settings_api;
 use tool_opencast\local\maintenance_class;
-use block_opencast\setting_helper; // TODO: migrieren
-use block_opencast\opencast_connection_exception; // TODO: migrieren
-use block_opencast\admin_setting_configtextvalidate; // TODO: migrieren
-use block_opencast\admin_setting_hiddenhelpbtn; // TODO: migrieren
-use block_opencast\setting_default_manager; // TODO: migrieren
-use block_opencast\local\visibility_helper; // TODO: migrieren
-use block_opencast\local\ltimodulemanager; // TODO: migrieren
+use tool_opencast\setting_helper; // TODO: migrieren
+use tool_opencast\opencast_connection_exception; // TODO: migrieren
+use tool_opencast\admin_setting_configtextvalidate; // TODO: migrieren
+use tool_opencast\admin_setting_hiddenhelpbtn; // TODO: migrieren
+use tool_opencast\setting_default_manager; // TODO: migrieren
+use tool_opencast\local\visibility_helper; // TODO: migrieren
+use tool_opencast\local\ltimodulemanager; // TODO: migrieren
 
 
 
