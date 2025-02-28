@@ -48,15 +48,15 @@ $redirecturlcourse = new moodle_url('/course/view.php', ['id' => $courseid]);
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturloverview);
-$PAGE->navbar->add(get_string('addactivity_addbuttontitle', 'block_opencast'), $baseurl);
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturloverview);
+$PAGE->navbar->add(get_string('addactivity_addbuttontitle', 'tool_opencast'), $baseurl);
 
 // Check if the Opencast Activity module feature is enabled and working.
 if (activitymodulemanager::is_enabled_and_working_for_series($ocinstanceid) == false) {
     throw new moodle_exception('add opencast activity series module not enabled or working',
-        'block_opencast', $redirecturloverview);
+        'tool_opencast', $redirecturloverview);
 }
 
 // Capability check.
@@ -68,7 +68,7 @@ $moduleid = activitymodulemanager::get_module_for_series($ocinstanceid, $coursei
 if ($moduleid) {
     // Redirect to Opencast videos overview page.
     redirect($redirecturloverview,
-        get_string('addactivity_moduleexists', 'block_opencast'), null,
+        get_string('addactivity_moduleexists', 'tool_opencast'), null,
         notification::NOTIFY_WARNING);
 }
 
@@ -84,7 +84,7 @@ if ($addactivityform->is_cancelled()) {
 if ($data = $addactivityform->get_data()) {
     // Verify again that we have a title. If not, use the default title.
     if (!$data->title) {
-        $data->title = get_string('addactivity_defaulttitle', 'block_opencast');
+        $data->title = get_string('addactivity_defaulttitle', 'tool_opencast');
     }
 
     // If the intro feature is disabled or if we do not have an intro, use an empty string as intro.
@@ -123,7 +123,7 @@ if ($data = $addactivityform->get_data()) {
     // Ensure that series exists.
     if ($ocseries == null) {
         redirect($redirecturloverview,
-            get_string('series_not_found', 'block_opencast', $data->seriesid),
+            get_string('series_not_found', 'tool_opencast', $data->seriesid),
             null,
             notification::NOTIFY_ERROR);
     }
@@ -138,7 +138,7 @@ if ($data = $addactivityform->get_data()) {
         if ($submitbutton2) {
             // Redirect to course overview.
             redirect($redirecturlcourse,
-                get_string('addactivity_modulecreated', 'block_opencast', $data->title),
+                get_string('addactivity_modulecreated', 'tool_opencast', $data->title),
                 null,
                 notification::NOTIFY_SUCCESS);
 
@@ -146,7 +146,7 @@ if ($data = $addactivityform->get_data()) {
         } else {
             // Redirect to Opencast videos overview page.
             redirect($redirecturloverview,
-                get_string('addactivity_modulecreated', 'block_opencast', $data->title),
+                get_string('addactivity_modulecreated', 'tool_opencast', $data->title),
                 null,
                 notification::NOTIFY_SUCCESS);
         }
@@ -155,14 +155,14 @@ if ($data = $addactivityform->get_data()) {
     } else {
         // Redirect to Opencast videos overview page.
         redirect($redirecturloverview,
-            get_string('addactivity_modulenotcreated', 'block_opencast', $data->title),
+            get_string('addactivity_modulenotcreated', 'tool_opencast', $data->title),
             null,
             notification::NOTIFY_ERROR);
     }
 }
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('addactivity_addbuttontitle', 'block_opencast'));
+echo $OUTPUT->heading(get_string('addactivity_addbuttontitle', 'tool_opencast'));
 
 $addactivityform->display();
 echo $OUTPUT->footer();

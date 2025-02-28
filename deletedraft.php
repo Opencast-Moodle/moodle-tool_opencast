@@ -46,8 +46,8 @@ $PAGE->set_url($baseurl);
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
 
 if ($redirectpage == 'overviewvideos') {
     $redirecturl = new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid,
@@ -56,8 +56,8 @@ if ($redirectpage == 'overviewvideos') {
     $redirecturl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
 }
 
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('deletedraft', 'block_opencast'), $baseurl);
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('deletedraft', 'tool_opencast'), $baseurl);
 
 // Capability check.
 // the one who is allowed to add the video is also allowed to delete the video before it is uploaded.
@@ -73,7 +73,7 @@ foreach ($uploadjobs as $uploadjob) {
     }
 }
 if (!$jobtodelete) {
-    $message = get_string('videodraftnotfound', 'block_opencast');
+    $message = get_string('videodraftnotfound', 'tool_opencast');
     redirect($redirecturl, $message, null, notification::NOTIFY_WARNING);
 }
 $allowedstatuses = [
@@ -81,7 +81,7 @@ $allowedstatuses = [
     upload_helper::STATUS_ARCHIVED_FAILED_UPLOAD,
 ];
 if (!in_array($jobtodelete->status, $allowedstatuses)) {
-    $message = get_string('videodraftnotdeletable', 'block_opencast',
+    $message = get_string('videodraftnotdeletable', 'tool_opencast',
         upload_helper::get_status_string($jobtodelete->status));
     redirect($redirecturl, $message, null, notification::NOTIFY_WARNING);
 }
@@ -90,18 +90,18 @@ if (!in_array($jobtodelete->status, $allowedstatuses)) {
 if (($action == 'delete') && confirm_sesskey()) {
     $deleted = upload_helper::delete_video_draft($jobtodelete);
 
-    $message = $deleted ? get_string('videodraftdeletionsucceeded', 'block_opencast') :
-        get_string('videodraftnotdeletable', 'block_opencast',
+    $message = $deleted ? get_string('videodraftdeletionsucceeded', 'tool_opencast') :
+        get_string('videodraftnotdeletable', 'tool_opencast',
             upload_helper::get_status_string($jobtodelete->status));
     redirect($redirecturl, $message);
 }
 
-$html = $OUTPUT->notification(get_string('deletedraftdesc', 'block_opencast'), 'error');
+$html = $OUTPUT->notification(get_string('deletedraftdesc', 'tool_opencast'), 'error');
 
-$renderer = $PAGE->get_renderer('block_opencast');
+$renderer = $PAGE->get_renderer('tool_opencast');
 $html .= $renderer->render_upload_jobs($ocinstanceid, [$jobtodelete], false);
 
-$label = get_string('dodeletedraft', 'block_opencast');
+$label = get_string('dodeletedraft', 'tool_opencast');
 $params = [
     'identifier' => $identifier,
     'courseid' => $courseid,
@@ -114,6 +114,6 @@ $urldelete = new moodle_url('/admin/tool/opencast/deletedraft.php', $params);
 $html .= $OUTPUT->confirm($label, $urldelete, $redirecturl);
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('deletedraft', 'block_opencast'));
+echo $OUTPUT->heading(get_string('deletedraft', 'tool_opencast'));
 echo $html;
 echo $OUTPUT->footer();

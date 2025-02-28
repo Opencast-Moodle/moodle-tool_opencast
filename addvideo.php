@@ -68,17 +68,17 @@ $pagecontext = upload_helper::get_opencast_upload_context($courseid);
 $PAGE->set_context($pagecontext);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('addvideo', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('addvideo', 'block_opencast'), $baseurl);
+$PAGE->set_title(get_string('addvideo', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('addvideo', 'tool_opencast'), $baseurl);
 
 // Capability check.
 if ($courseid == $SITE->id) {
     // If upload initiated from overview page, check that capability is given in specific course or ownership.
     if (!$series) {
         redirect(new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid, 'series' => null]),
-            get_string('addvideonotallowed', 'block_opencast'), null,
+            get_string('addvideonotallowed', 'tool_opencast'), null,
             notification::NOTIFY_ERROR);
     }
 
@@ -99,14 +99,14 @@ if ($courseid == $SITE->id) {
         if (!$ocseries) {
             redirect(new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid,
                 'series' => $series, ]),
-                get_string('connection_failure', 'block_opencast'), null,
+                get_string('connection_failure', 'tool_opencast'), null,
                 notification::NOTIFY_ERROR);
         }
 
         if (!$apibridge->is_owner($ocseries->acl, $USER->id, $SITE->id)) {
             redirect(new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid,
                 'series' => $series, ]),
-                get_string('addvideonotallowed', 'block_opencast'), null,
+                get_string('addvideonotallowed', 'tool_opencast'), null,
                 notification::NOTIFY_ERROR);
         }
     }
@@ -144,14 +144,14 @@ if ($data = $addvideoform->get_data()) {
     if (!$chunkuploadinstalled || !get_config('tool_opencast', 'enablechunkupload_' . $ocinstanceid) ||
         property_exists($data, 'presenter_already_uploaded') && $data->presenter_already_uploaded) {
         $storedfilepresenter = $addvideoform->save_stored_file('video_presenter', $coursecontext->id,
-            'block_opencast', upload_helper::OC_FILEAREA, $data->video_presenter);
+            'tool_opencast', upload_helper::OC_FILEAREA, $data->video_presenter);
     } else {
         $chunkuploadpresenter = $data->video_presenter_chunk;
     }
     if (!$chunkuploadinstalled || !get_config('tool_opencast', 'enablechunkupload_' . $ocinstanceid) ||
         property_exists($data, 'presentation_already_uploaded') && $data->presentation_already_uploaded) {
         $storedfilepresentation = $addvideoform->save_stored_file('video_presentation', $coursecontext->id,
-            'block_opencast', upload_helper::OC_FILEAREA, $data->video_presentation);
+            'tool_opencast', upload_helper::OC_FILEAREA, $data->video_presentation);
     } else {
         $chunkuploadpresentation = $data->video_presentation_chunk;
     }
@@ -176,7 +176,7 @@ if ($data = $addvideoform->get_data()) {
             $flavorelm = "transcription_flavor_{$transcriptionindex}";
             if (property_exists($data, $fileelm) && property_exists($data, $flavorelm)) {
                 $storedfile = $addvideoform->save_stored_file($fileelm, $coursecontext->id,
-                    'block_opencast', block_opencast\local\attachment_helper::OC_FILEAREA_ATTACHMENT, $data->{$fileelm});
+                    'tool_opencast', tool_opencast\local\attachment_helper::OC_FILEAREA_ATTACHMENT, $data->{$fileelm});
                 $flavor = $data->{$flavorelm};
                 if (isset($storedfile) && $storedfile) {
                     $transcriptions[] = [
@@ -259,7 +259,7 @@ if ($data = $addvideoform->get_data()) {
     // Prepare the visibility object.
     $visibility = new stdClass();
     $visibility->initialvisibilitystatus = !isset($data->initialvisibilitystatus) ?
-        block_opencast_renderer::VISIBLE : $data->initialvisibilitystatus;
+        tool_opencast_renderer::VISIBLE : $data->initialvisibilitystatus;
     $visibility->initialvisibilitygroups = !empty($data->initialvisibilitygroups) ?
         json_encode($data->initialvisibilitygroups) : null;
     // Check if the scheduled visibility is set.
@@ -279,13 +279,13 @@ if ($data = $addvideoform->get_data()) {
 
     // Update all upload jobs.
     upload_helper::save_upload_jobs($ocinstanceid, $courseid, $options, $visibility, $workflowconfiguration);
-    redirect($redirecturl, get_string('uploadjobssaved', 'block_opencast'), null, notification::NOTIFY_SUCCESS);
+    redirect($redirecturl, get_string('uploadjobssaved', 'tool_opencast'), null, notification::NOTIFY_SUCCESS);
 }
 
-$PAGE->requires->js_call_amd('block_opencast/block_form_handler', 'init');
-$renderer = $PAGE->get_renderer('block_opencast');
+$PAGE->requires->js_call_amd('tool_opencast/block_form_handler', 'init');
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('addvideo', 'block_opencast'));
+echo $OUTPUT->heading(get_string('addvideo', 'tool_opencast'));
 $addvideoform->display();
 echo $OUTPUT->footer();

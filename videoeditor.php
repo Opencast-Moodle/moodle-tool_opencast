@@ -52,8 +52,8 @@ require_capability('block/opencast:addvideo', $context);
 $PAGE->set_context($context);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('videoeditor_short', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
+$PAGE->set_title(get_string('videoeditor_short', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
 
 $endpoint = settings_api::get_apiurl($ocinstanceid);
 
@@ -89,17 +89,17 @@ $video = $opencast->get_opencast_video($identifier);
 // Validate the video and make sure the video can be edited by the editor (double check).
 if ((empty($editorbaseurl) || empty($editorendpoint) ||
     !$video || $video->error == true || !$opencast->can_edit_event_in_editor($video->video, $courseid))) {
-    redirect($redirecturl, get_string('videoeditorinvalidconfig', 'block_opencast'), null, notification::NOTIFY_ERROR);
+    redirect($redirecturl, get_string('videoeditorinvalidconfig', 'tool_opencast'), null, notification::NOTIFY_ERROR);
 }
 
 // Create parameters.
 $params = lti_helper::create_lti_parameters($consumerkey, $consumersecret, $ltiendpoint, $editorendpoint);
 
-$renderer = $PAGE->get_renderer('block_opencast');
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('videoeditor_short', 'block_opencast'));
+echo $OUTPUT->heading(get_string('videoeditor_short', 'tool_opencast'));
 echo $renderer->render_lti_form($ltiendpoint, $params);
 
-$PAGE->requires->js_call_amd('block_opencast/block_lti_form_handler', 'init');
+$PAGE->requires->js_call_amd('tool_opencast/block_lti_form_handler', 'init');
 echo $OUTPUT->footer();

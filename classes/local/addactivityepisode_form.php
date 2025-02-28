@@ -51,14 +51,14 @@ class addactivityepisode_form extends moodleform {
         $courseid = $this->_customdata['courseid'];
         $ocinstanceid = $this->_customdata['ocinstanceid'];
 
-        $mform->addElement('text', 'title', get_string('addactivityepisode_formactivitytitle', 'block_opencast'),
+        $mform->addElement('text', 'title', get_string('addactivityepisode_formactivitytitle', 'tool_opencast'),
             ['size' => '40']);
         $mform->setType('title', PARAM_TEXT);
         $mform->setDefault('title',
             activitymodulemanager::get_default_title_for_episode($ocinstanceid, $this->_customdata['episodeuuid']));
         $mform->addRule('title',
-            get_string('addactivityepisode_noemptytitle', 'block_opencast',
-                get_string('addactivityepisode_defaulttitle', 'block_opencast')),
+            get_string('addactivityepisode_noemptytitle', 'tool_opencast',
+                get_string('addactivityepisode_defaulttitle', 'tool_opencast')),
             'required');
 
         if (get_config('mod_opencast', 'global_download_' . $ocinstanceid)) {
@@ -72,7 +72,7 @@ class addactivityepisode_form extends moodleform {
         }
 
         if (get_config('tool_opencast', 'addactivityepisodeintro_' . $ocinstanceid) == true) {
-            $mform->addElement('editor', 'intro', get_string('addactivityepisode_formactivityintro', 'block_opencast'),
+            $mform->addElement('editor', 'intro', get_string('addactivityepisode_formactivityintro', 'tool_opencast'),
                 ['rows' => 5],
                 ['maxfiles' => 0, 'noclean' => true]);
             $mform->setType('intro', PARAM_RAW); // No XSS prevention here, users must be trusted.
@@ -88,7 +88,7 @@ class addactivityepisode_form extends moodleform {
 
             // Add the widget only if we have more than one section.
             if (count($sectionmenu) > 1) {
-                $mform->addElement('select', 'section', get_string('addactivityepisode_formactivitysection', 'block_opencast'),
+                $mform->addElement('select', 'section', get_string('addactivityepisode_formactivitysection', 'tool_opencast'),
                     activitymodulemanager::get_course_sections($courseid));
                 $mform->setType('section', PARAM_INT);
                 $mform->setDefault('section', 0);
@@ -98,7 +98,7 @@ class addactivityepisode_form extends moodleform {
         if (get_config('tool_opencast', 'addactivityepisodeavailability_' . $ocinstanceid) == true &&
             !empty($CFG->enableavailability)) {
             $mform->addElement('textarea', 'availabilityconditionsjson',
-                get_string('addactivityepisode_formactivityavailability', 'block_opencast'));
+                get_string('addactivityepisode_formactivityavailability', 'tool_opencast'));
             frontend::include_all_javascript(get_course($courseid));
         }
 
@@ -129,9 +129,9 @@ class addactivityepisode_form extends moodleform {
         $buttonarray = [];
 
         // Submit buttons.
-        $submitlabel = get_string('addactivityepisode_addbuttontitlereturnoverview', 'block_opencast');
+        $submitlabel = get_string('addactivityepisode_addbuttontitlereturnoverview', 'tool_opencast');
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', $submitlabel);
-        $submit2label = get_string('addactivityepisode_addbuttontitlereturncourse', 'block_opencast');
+        $submit2label = get_string('addactivityepisode_addbuttontitlereturncourse', 'tool_opencast');
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton2', $submit2label);
 
         // Cancel button.

@@ -125,7 +125,7 @@ class massaction_helper {
         if (!empty($defaultactions)) {
             $this->massactions = $defaultactions;
             if (!$this->validate_massactions()) {
-                throw new coding_exception('massaction_invaliddefaultactions', 'block_opencast');
+                throw new coding_exception('massaction_invaliddefaultactions', 'tool_opencast');
             }
         }
     }
@@ -176,7 +176,7 @@ class massaction_helper {
         }
         // Preparing select checkboxes.
         $disabledcheckboxattrs = [
-            'title' => get_string('videostablemassaction_disabled_item', 'block_opencast'),
+            'title' => get_string('videostablemassaction_disabled_item', 'tool_opencast'),
             'disabled' => 'disabled',
         ];
         // A default disabled checkbox.
@@ -229,7 +229,7 @@ class massaction_helper {
         // Bulk actions.
         $html = html_writer::start_div('py-3 px-2 mt-2 mb-2');
         $html .= html_writer::label(
-            get_string('videostablemassaction_label', 'block_opencast'),
+            get_string('videostablemassaction_label', 'tool_opencast'),
             $id,
             false,
             ['class' => 'mr-3'],
@@ -241,7 +241,7 @@ class massaction_helper {
 
         $massactionselectitems = [];
         foreach (array_keys($enabledmassactions) as $makey) {
-            $massactionselectitems[$makey] = get_string('videostable_massaction_' . $makey, 'block_opencast');
+            $massactionselectitems[$makey] = get_string('videostable_massaction_' . $makey, 'tool_opencast');
         }
 
         // Actions mapping hidden input.
@@ -380,7 +380,7 @@ class massaction_helper {
      */
     public function set_action_path_parameter(string $actionname, string $paramkey, string $paramvalue) {
         if (!isset($this->massactions[$actionname]) || empty($paramkey) || empty($paramvalue)) {
-            throw new coding_exception('massaction_invalidactionparam', 'block_opencast');
+            throw new coding_exception('massaction_invalidactionparam', 'tool_opencast');
         }
         $this->massactions[$actionname]['path']['params'][$paramkey] = $paramvalue;
     }

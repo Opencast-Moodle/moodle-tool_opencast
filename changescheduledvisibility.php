@@ -44,16 +44,16 @@ $PAGE->set_url($baseurl);
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
 
 $redirecturl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('changescheduledvisibilityheader', 'block_opencast'), $baseurl);
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('changescheduledvisibilityheader', 'tool_opencast'), $baseurl);
 
 // Check if the ACL control feature is enabled.
 if (get_config('tool_opencast', 'aclcontrolafter_' . $ocinstanceid) != true) {
-    throw new moodle_exception('ACL control feature not enabled', 'block_opencast', $redirecturl);
+    throw new moodle_exception('ACL control feature not enabled', 'tool_opencast', $redirecturl);
 }
 
 // Capability check.
@@ -62,7 +62,7 @@ require_capability('block/opencast:addvideo', $coursecontext);
 
 $scheduledvisibility = visibility_helper::get_uploadjob_scheduled_visibility($uploadjobid);
 if (empty($scheduledvisibility)) {
-    $message = get_string('novisibilityrecordfound', 'block_opencast');
+    $message = get_string('novisibilityrecordfound', 'tool_opencast');
     redirect($redirecturl, $message, null, notification::NOTIFY_ERROR);
 }
 
@@ -71,7 +71,7 @@ $scheduledvisibilityform = new scheduledvisibility_form(null, ['courseid' => $co
 
 // Workflow is not set.
 if (get_config('tool_opencast', 'workflow_roles_' . $ocinstanceid) == "") {
-    $message = get_string('workflownotdefined', 'block_opencast');
+    $message = get_string('workflownotdefined', 'tool_opencast');
     redirect($redirecturl, $message, null, \core\notification::ERROR);
 }
 
@@ -84,7 +84,7 @@ if ($data = $scheduledvisibilityform->get_data()) {
         $scheduledvisibility->scheduledvisibilitytime = $data->scheduledvisibilitytime;
         $scheduledvisibility->scheduledvisibilitystatus = $data->scheduledvisibilitystatus;
         $scheduledvisibilitygroups = null;
-        if ($data->scheduledvisibilitystatus == block_opencast_renderer::GROUP
+        if ($data->scheduledvisibilitystatus == tool_opencast_renderer::GROUP
             && !empty($data->scheduledvisibilitygroups)) {
             $scheduledvisibilitygroups = json_encode($data->scheduledvisibilitygroups);
         }
@@ -92,10 +92,10 @@ if ($data = $scheduledvisibilityform->get_data()) {
         $result = visibility_helper::update_visibility_job($scheduledvisibility);
 
         if ($result) {
-            redirect($redirecturl, get_string('changescheduledvisibilitysuccess', 'block_opencast'), null,
+            redirect($redirecturl, get_string('changescheduledvisibilitysuccess', 'tool_opencast'), null,
                 notification::NOTIFY_SUCCESS);
         } else {
-            redirect($redirecturl, get_string('changescheduledvisibilityfailed', 'block_opencast'),
+            redirect($redirecturl, get_string('changescheduledvisibilityfailed', 'tool_opencast'),
                 null, notification::NOTIFY_ERROR);
         }
     }
@@ -109,9 +109,9 @@ foreach ($metadata as $ms) {
         $title = $ms->value;
     }
 }
-$renderer = $PAGE->get_renderer('block_opencast');
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('changescheduledvisibility', 'block_opencast', $title));
+echo $OUTPUT->heading(get_string('changescheduledvisibility', 'tool_opencast', $title));
 $scheduledvisibilityform->display();
 echo $OUTPUT->footer();

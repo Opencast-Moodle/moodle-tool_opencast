@@ -52,7 +52,7 @@ class changeowner_form extends moodleform {
         $identifier = $this->_customdata['identifier'];
 
         // Get renderer.
-        $renderer = $PAGE->get_renderer('block_opencast', 'importvideos');
+        $renderer = $PAGE->get_renderer('tool_opencast', 'importvideos');
 
         // Add hidden fields for transferring the wizard results and for wizard step processing.
         $mform->addElement('hidden', 'courseid', $this->_customdata['courseid']);
@@ -67,18 +67,18 @@ class changeowner_form extends moodleform {
         if ($this->_customdata['isseries']) {
             if ($this->_customdata['noowner']) {
                 $notification = $renderer->wizard_intro_notification(
-                    get_string('claimownerseries_explanation', 'block_opencast', $this->_customdata['title']));
+                    get_string('claimownerseries_explanation', 'tool_opencast', $this->_customdata['title']));
             } else {
                 $notification = $renderer->wizard_intro_notification(
-                    get_string('changeownerseries_explanation', 'block_opencast', $this->_customdata['title']));
+                    get_string('changeownerseries_explanation', 'tool_opencast', $this->_customdata['title']));
             }
         } else {
             if ($this->_customdata['noowner']) {
                 $notification = $renderer->wizard_intro_notification(
-                    get_string('claimowner_explanation', 'block_opencast', $this->_customdata['title']));
+                    get_string('claimowner_explanation', 'tool_opencast', $this->_customdata['title']));
             } else {
                 $notification = $renderer->wizard_intro_notification(
-                    get_string('changeowner_explanation', 'block_opencast', $this->_customdata['title']));
+                    get_string('changeowner_explanation', 'tool_opencast', $this->_customdata['title']));
             }
         }
 
@@ -86,6 +86,6 @@ class changeowner_form extends moodleform {
         $mform->addElement('html', $this->_customdata['userselector']->display(true));
 
         // Add action buttons.
-        $this->add_action_buttons(true, get_string('changeowner', 'block_opencast'));
+        $this->add_action_buttons(true, get_string('changeowner', 'tool_opencast'));
     }
 }

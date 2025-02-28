@@ -53,7 +53,7 @@ class series_form extends moodleform {
     public function definition() {
         global $USER, $PAGE;
         // Get the renderer to use its methods.
-        $renderer = $PAGE->get_renderer('block_opencast');
+        $renderer = $PAGE->get_renderer('tool_opencast');
         $mform = $this->_form;
 
         $ocinstanceid = $this->_customdata['ocinstanceid'];
@@ -75,9 +75,9 @@ class series_form extends moodleform {
                     'redirectto' => 'manageseries',
                 ]
             );
-            $managedefaultslink = html_writer::link($managedefaultsurl, get_string('managedefaultsforuser', 'block_opencast'));
+            $managedefaultslink = html_writer::link($managedefaultsurl, get_string('managedefaultsforuser', 'tool_opencast'));
             $managedefaultsexplation = html_writer::tag('p',
-                get_string('managedefaultredirectlinkwithexp', 'block_opencast') . $managedefaultslink);
+                get_string('managedefaultredirectlinkwithexp', 'tool_opencast') . $managedefaultslink);
             $mform->addElement('html', $managedefaultsexplation);
         }
 
@@ -104,11 +104,11 @@ class series_form extends moodleform {
             if ($field->datatype == 'autocomplete') {
                 $attributes = [
                     'multiple' => true,
-                    'placeholder' => get_string('metadata_autocomplete_placeholder', 'block_opencast',
-                        $this->try_get_string($field->name, 'block_opencast')),
+                    'placeholder' => get_string('metadata_autocomplete_placeholder', 'tool_opencast',
+                        $this->try_get_string($field->name, 'tool_opencast')),
                     'showsuggestions' => true, // If true, admin is able to add suggestion via admin page. Otherwise no suggestions!
-                    'noselectionstring' => get_string('metadata_autocomplete_noselectionstring', 'block_opencast',
-                        $this->try_get_string($field->name, 'block_opencast')),
+                    'noselectionstring' => get_string('metadata_autocomplete_noselectionstring', 'tool_opencast',
+                        $this->try_get_string($field->name, 'tool_opencast')),
                     'tags' => true,
                 ];
                 // Check if the metadata_catalog field is creator or contributor, to pass some suggestions.
@@ -133,14 +133,14 @@ class series_form extends moodleform {
 
             $attributes['class'] = 'ignoredirty';
             // Get the created element back from addElement function, in order to further use its attrs.
-            $element = $mform->addElement($field->datatype, $field->name, $this->try_get_string($field->name, 'block_opencast'),
+            $element = $mform->addElement($field->datatype, $field->name, $this->try_get_string($field->name, 'tool_opencast'),
                 $param, $attributes);
 
             // Check if the description is set for the field, to display it as help icon.
             if (isset($field->description) && !empty($field->description)) {
                 // Use the renderer to generate a help icon with custom text.
                 $element->_helpbutton = $renderer->render_help_icon_with_custom_text(
-                    $this->try_get_string($field->name, 'block_opencast'), $field->description);
+                    $this->try_get_string($field->name, 'tool_opencast'), $field->description);
             }
 
             if ($field->name == 'title') {
@@ -170,7 +170,7 @@ class series_form extends moodleform {
         }
 
         if ($settitle) {
-            $mform->addElement('text', 'title', get_string('title', 'block_opencast'));
+            $mform->addElement('text', 'title', get_string('title', 'tool_opencast'));
             $mform->addRule('title', get_string('required'), 'required');
             $mform->setType('title', PARAM_TEXT);
         }

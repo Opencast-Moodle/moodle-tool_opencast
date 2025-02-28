@@ -245,10 +245,10 @@ class tool_opencast_renderer extends plugin_renderer_base {
      * @param string[] $headers
      * @param string[] $columns
      * @param string $baseurl
-     * @return \block_opencast\local\flexible_table
+     * @return \tool_opencast\local\flexible_table
      */
     public function create_videos_tables($id, $headers, $columns, $baseurl) {
-        $table = new block_opencast\local\flexible_table($id);
+        $table = new tool_opencast\local\flexible_table($id);
         $table->set_attribute('cellspacing', '0');
         $table->set_attribute('cellpadding', '3');
         $table->set_attribute('class', 'generaltable opencast-videos-table');
@@ -308,10 +308,10 @@ class tool_opencast_renderer extends plugin_renderer_base {
      * @param string[] $headers
      * @param string[] $columns
      * @param string $baseurl
-     * @return \block_opencast\local\flexible_table
+     * @return \tool_opencast\local\flexible_table
      */
     public function create_series_courses_tables($id, $headers, $columns, $baseurl) {
-        $table = new block_opencast\local\flexible_table($id);
+        $table = new tool_opencast\local\flexible_table($id);
         $table->set_attribute('cellspacing', '0');
         $table->set_attribute('cellpadding', '3');
         $table->set_attribute('class', 'generaltable');
@@ -346,10 +346,10 @@ class tool_opencast_renderer extends plugin_renderer_base {
      * @param string[] $headers
      * @param string[] $columns
      * @param string $baseurl
-     * @return \block_opencast\local\flexible_table
+     * @return \tool_opencast\local\flexible_table
      */
     public function create_overview_videos_table($id, $headers, $columns, $baseurl) {
-        $table = new block_opencast\local\flexible_table($id);
+        $table = new tool_opencast\local\flexible_table($id);
         $table->set_attribute('cellspacing', '0');
         $table->set_attribute('cellpadding', '3');
         $table->set_attribute('class', 'generaltable');

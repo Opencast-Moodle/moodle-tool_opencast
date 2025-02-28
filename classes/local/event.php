@@ -151,7 +151,7 @@ class event {
         $this->acl = $jsonacl;
 
         if (!is_array($this->acl)) {
-            throw new moodle_exception('invalidacldata', 'block_opencast');
+            throw new moodle_exception('invalidacldata', 'tool_opencast');
         }
     }
 

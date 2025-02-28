@@ -44,10 +44,10 @@ $PAGE->set_url($baseurl);
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('managetranscriptions', 'block_opencast'), $baseurl);
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('managetranscriptions', 'tool_opencast'), $baseurl);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
@@ -58,7 +58,7 @@ $video = $apibridge->get_opencast_video($identifier, true);
 if ($video->error || $video->video->processing_state != 'SUCCEEDED' ||
     empty(get_config('tool_opencast', 'transcriptionworkflow_' . $ocinstanceid))) {
     redirect($redirecturl,
-        get_string('unabletomanagetranscriptions', 'block_opencast'), null, notification::NOTIFY_WARNING);
+        get_string('unabletomanagetranscriptions', 'tool_opencast'), null, notification::NOTIFY_WARNING);
 }
 
 // Create new url.
@@ -82,8 +82,8 @@ if (!empty($flavorsconfig)) {
         }
     }
 }
-/** @var block_opencast_renderer $renderer */
-$renderer = $PAGE->get_renderer('block_opencast');
+/** @var tool_opencast_renderer $renderer */
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 // Check if download is enabled.
 $allowdownload = get_config('tool_opencast', 'allowdownloadtranscription_' . $ocinstanceid);
@@ -131,7 +131,7 @@ if ($video->video->publications) {
 $list = array_merge($mediaitems, $attachmentitems);
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('managetranscriptions_header', 'block_opencast'));
-echo \core\notification::info(get_string('managetranscription_overwrite_info', 'block_opencast'));
+echo $OUTPUT->heading(get_string('managetranscriptions_header', 'tool_opencast'));
+echo \core\notification::info(get_string('managetranscription_overwrite_info', 'tool_opencast'));
 echo $renderer->render_manage_transcriptions_table($list, $addnewurl->out(false), $candelete, $allowdownload);
 echo $OUTPUT->footer();

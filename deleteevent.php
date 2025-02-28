@@ -44,8 +44,8 @@ $PAGE->set_url($baseurl);
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
 
 if ($redirectpage == 'overviewvideos') {
     $redirecturl = new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid,
@@ -56,8 +56,8 @@ if ($redirectpage == 'overviewvideos') {
     $redirecturl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
 }
 
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('deleteevent', 'block_opencast'), $baseurl);
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('deleteevent', 'tool_opencast'), $baseurl);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
@@ -70,21 +70,21 @@ if (($action == 'delete') && confirm_sesskey()) {
     // Do action.
     if ($video->video) {
         if ($opencast->trigger_delete_event($video->video->identifier)) {
-            $message = get_string('eventdeletionstarted', 'block_opencast', $video->video);
+            $message = get_string('eventdeletionstarted', 'tool_opencast', $video->video);
             redirect($redirecturl, $message);
         } else {
-            $message = get_string('eventdeletedfailed', 'block_opencast', $video->video);
+            $message = get_string('eventdeletedfailed', 'tool_opencast', $video->video);
             redirect($redirecturl, $message);
         }
     }
 
-    $message = get_string('videonotfound', 'block_opencast');
+    $message = get_string('videonotfound', 'tool_opencast');
     redirect($redirecturl, $message);
 }
 
-$renderer = $PAGE->get_renderer('block_opencast');
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('deleteevent', 'block_opencast'));
+echo $OUTPUT->heading(get_string('deleteevent', 'tool_opencast'));
 echo $renderer->render_video_deletion_info($ocinstanceid, $courseid, $video->video, $redirectpage, $series);
 echo $OUTPUT->footer();

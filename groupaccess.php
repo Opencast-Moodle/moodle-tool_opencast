@@ -37,7 +37,7 @@ class groupaccess extends persistent {
 
 
     /** Table name for the persistent. */
-    const TABLE = 'block_opencast_groupaccess';
+    const TABLE = 'tool_opencast_groupaccess';
 
     /**
      * Return the definition of the properties of this model.

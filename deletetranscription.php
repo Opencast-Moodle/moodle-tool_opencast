@@ -49,11 +49,11 @@ $PAGE->set_url($baseurl);
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $indexurl);
-$PAGE->navbar->add(get_string('managetranscriptions', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('deletetranscription', 'block_opencast'), $baseurl);
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $indexurl);
+$PAGE->navbar->add(get_string('managetranscriptions', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('deletetranscription', 'tool_opencast'), $baseurl);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
@@ -65,7 +65,7 @@ if ($video->error || $video->video->processing_state != 'SUCCEEDED' ||
     empty(get_config('tool_opencast', 'transcriptionworkflow_' . $ocinstanceid)) ||
     empty(get_config('tool_opencast', 'deletetranscriptionworkflow_' . $ocinstanceid))) {
     redirect($redirecturl,
-        get_string('unabletodeletetranscription', 'block_opencast'), null, notification::NOTIFY_ERROR);
+        get_string('unabletodeletetranscription', 'tool_opencast'), null, notification::NOTIFY_ERROR);
 }
 
 if (($action == 'delete') && confirm_sesskey()) {
@@ -99,16 +99,16 @@ if (($action == 'delete') && confirm_sesskey()) {
             $publicationtype);
     }
 
-    $message = get_string('transcriptiondeletionsucceeded', 'block_opencast');
+    $message = get_string('transcriptiondeletionsucceeded', 'tool_opencast');
     $status = notification::NOTIFY_SUCCESS;
     if (!$deleted) {
-        $message = get_string('transcriptiondeletionfailed', 'block_opencast');
+        $message = get_string('transcriptiondeletionfailed', 'tool_opencast');
         $status = notification::NOTIFY_ERROR;
     }
     redirect($redirecturl, $message, null, $status);
 }
 
-$label = get_string('deletetranscription_desc', 'block_opencast');
+$label = get_string('deletetranscription_desc', 'tool_opencast');
 $params = [
     'transcription_identifier' => $identifier,
     'courseid' => $courseid,
@@ -119,10 +119,10 @@ $params = [
 $urldelete = new moodle_url('/admin/tool/opencast/deletetranscription.php', $params);
 $html = $OUTPUT->confirm($label, $urldelete, $redirecturl);
 
-/** @var block_opencast_renderer $renderer */
-$renderer = $PAGE->get_renderer('block_opencast');
+/** @var tool_opencast_renderer $renderer */
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('deletetranscription', 'block_opencast'));
+echo $OUTPUT->heading(get_string('deletetranscription', 'tool_opencast'));
 echo $html;
 echo $OUTPUT->footer();

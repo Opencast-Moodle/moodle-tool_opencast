@@ -46,7 +46,7 @@ require_capability('block/opencast:viewunpublishedvideos', $coursecontext);
 // Check if support email is set.
 if (empty(get_config('tool_opencast', 'support_email_' . $ocinstanceid))) {
     redirect($redirecturl,
-        get_string('support_setting_notset', 'block_opencast'),
+        get_string('support_setting_notset', 'tool_opencast'),
         null, notification::NOTIFY_ERROR);
 }
 
@@ -64,7 +64,7 @@ if (!$result->error) {
     $seriesid = $apibridge->get_default_course_series($courseid);
     if ($seriesid->identifier != $result->video->is_part_of) {
         redirect($redirecturl,
-            get_string('video_notallowed', 'block_opencast'),
+            get_string('video_notallowed', 'tool_opencast'),
             null,
             notification::NOTIFY_ERROR);
     }
@@ -80,13 +80,13 @@ if (!$result->error) {
     $mailinfo->event = $result->video->title;
     $mailinfo->eventid = $result->video->identifier;
     $mailinfo->message = $message;
-    $message = get_string('reportproblem_email', 'block_opencast', $mailinfo);
+    $message = get_string('reportproblem_email', 'tool_opencast', $mailinfo);
 
     // Send email to support.
     $success = email_to_user(
         $user,
         get_admin(),
-        get_string('reportproblem_subject', 'block_opencast'),
+        get_string('reportproblem_subject', 'tool_opencast'),
         $message,
         '',
         '',
@@ -99,24 +99,24 @@ if (!$result->error) {
     if ($success) {
         // Send copy to user.
         notifications::notify_problem_reported(
-            get_string('reportproblem_notification', 'block_opencast') . $message);
+            get_string('reportproblem_notification', 'tool_opencast') . $message);
 
         // Redirect with success message.
         redirect($redirecturl,
-            get_string('reportproblem_success', 'block_opencast'),
+            get_string('reportproblem_success', 'tool_opencast'),
             null,
             notification::NOTIFY_SUCCESS);
     }
 
     // Redirect with failure message.
     redirect($redirecturl,
-        get_string('reportproblem_failure', 'block_opencast'),
+        get_string('reportproblem_failure', 'tool_opencast'),
         null,
         notification::NOTIFY_ERROR);
 } else {
     // Redirect with failure message.
     redirect($redirecturl,
-        get_string('video_retrieval_failed', 'block_opencast'),
+        get_string('video_retrieval_failed', 'tool_opencast'),
         null,
         notification::NOTIFY_ERROR);
 }

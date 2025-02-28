@@ -48,8 +48,8 @@ require_login($courseid, false);
 $context = context_course::instance($courseid);
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('engageredirect', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
+$PAGE->set_title(get_string('engageredirect', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
 
 $endpoint = get_config('tool_opencast', 'engageurl_' . $ocinstanceid);
 
@@ -74,11 +74,11 @@ $ltiendpoint = rtrim($endpoint, '/') . '/lti';
 // Create parameters.
 $params = lti_helper::create_lti_parameters($consumerkey, $consumersecret, $ltiendpoint, $url);
 
-$renderer = $PAGE->get_renderer('block_opencast');
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('engageredirect', 'block_opencast'));
+echo $OUTPUT->heading(get_string('engageredirect', 'tool_opencast'));
 echo $renderer->render_lti_form($ltiendpoint, $params);
 
-$PAGE->requires->js_call_amd('block_opencast/block_lti_form_handler', 'init');
+$PAGE->requires->js_call_amd('tool_opencast/block_lti_form_handler', 'init');
 echo $OUTPUT->footer();

@@ -59,7 +59,7 @@ class eventstatus_notification_helper {
         $job->notified = 0;
         $job->timecreated = time();
         // Insert the notification job into db.
-        $DB->insert_record('block_opencast_notifications', $job);
+        $DB->insert_record('tool_opencast_notifications', $job);
     }
 
     /**
@@ -106,7 +106,7 @@ class eventstatus_notification_helper {
         // If the job status is FAILED or SUCCEEDED and it has already been notified or the config is not enabled,
         // we remove the job because it is completed.
         if (($job->status == 'FAILED' || $job->status == 'SUCCEEDED') && ($job->notified == 1 || !$notificationenabled)) {
-            $DB->delete_records("block_opencast_notifications", ['id' => $job->id]);
+            $DB->delete_records("tool_opencast_notifications", ['id' => $job->id]);
             mtrace('job ' . $job->id . ' completed and deleted.');
             return;
         }
@@ -120,7 +120,7 @@ class eventstatus_notification_helper {
             $job->status = 'FAILED';
             $job->notified = 1;
             // Update job for further actions and decisions.
-            $DB->update_record('block_opencast_notifications', $job);
+            $DB->update_record('tool_opencast_notifications', $job);
             mtrace('job ' . $job->id . ' deleted due to unavailable video.');
             return;
         }
@@ -148,7 +148,7 @@ class eventstatus_notification_helper {
         }
 
         // Update job for further actions and decisions.
-        $DB->update_record('block_opencast_notifications', $job);
+        $DB->update_record('tool_opencast_notifications', $job);
     }
 
     /**
@@ -241,7 +241,7 @@ class eventstatus_notification_helper {
             'statustransferred' => upload_helper::STATUS_TRANSFERRED,
             'statusarchived' => upload_helper::STATUS_ARCHIVED_FAILED_UPLOAD,
         ];
-        $allqueuednum = $DB->count_records_select('block_opencast_uploadjob', $where, $params);
+        $allqueuednum = $DB->count_records_select('tool_opencast_uploadjob', $where, $params);
         $waitingnum = 0;
         if ($allqueuednum > 1) {
             $waitingnum = $allqueuednum - 1;
@@ -311,21 +311,21 @@ class eventstatus_notification_helper {
     private function get_status_message($status) {
         switch ($status) {
             case 'FAILED' :
-                return get_string('ocstatefailed', 'block_opencast');
+                return get_string('ocstatefailed', 'tool_opencast');
             case 'PLANNED' :
-                return get_string('planned', 'block_opencast');
+                return get_string('planned', 'tool_opencast');
             case 'CAPTURING' :
-                return get_string('ocstatecapturing', 'block_opencast');
+                return get_string('ocstatecapturing', 'tool_opencast');
             case 'NEEDSCUTTING' :
-                return get_string('ocstateneedscutting', 'block_opencast');
+                return get_string('ocstateneedscutting', 'tool_opencast');
             case 'DELETING' :
-                return get_string('deleting', 'block_opencast');
+                return get_string('deleting', 'tool_opencast');
             case 'RUNNING' :
             case 'PAUSED' :
-                return get_string('ocstateprocessing', 'block_opencast');
+                return get_string('ocstateprocessing', 'tool_opencast');
             case 'SUCCEEDED' :
             default :
-                return get_string('ocstatesucceeded', 'block_opencast');
+                return get_string('ocstatesucceeded', 'tool_opencast');
         }
     }
 }

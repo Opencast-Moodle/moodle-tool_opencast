@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Import videos course search component for block_opencast.
+ * Import videos course search component for tool_opencast.
  *
  * @package    tool_opencast
  * @copyright  2020 Alexander Bias, Ulm University <alexander.bias@uni-ulm.de>
@@ -33,7 +33,7 @@ require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
 require_once($CFG->dirroot . '/backup/util/ui/import_extensions.php');
 
 /**
- * Import videos course search component for block_opencast.
+ * Import videos course search component for tool_opencast.
  *
  * @package    tool_opencast
  * @copyright  2020 Alexander Bias, Ulm University <alexander.bias@uni-ulm.de>

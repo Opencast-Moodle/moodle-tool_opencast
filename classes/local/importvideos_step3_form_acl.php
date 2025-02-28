@@ -50,7 +50,7 @@ class importvideos_step3_form_acl extends moodleform {
         $mform = $this->_form;
 
         // Get renderer.
-        $renderer = $PAGE->get_renderer('block_opencast', 'importvideos');
+        $renderer = $PAGE->get_renderer('tool_opencast', 'importvideos');
 
         // Add hidden fields for transferring the wizard results and for wizard step processing.
         $mform->addElement('hidden', 'courseid', $this->_customdata['courseid']);
@@ -75,7 +75,7 @@ class importvideos_step3_form_acl extends moodleform {
         if (!$seriesobject) {
             // We are in a dead end situation, no chance to add anything.
             $notification = $renderer->wizard_error_notification(
-                get_string('importvideos_wizardstep1seriesnotfound', 'block_opencast'));
+                get_string('importvideos_wizardstep1seriesnotfound', 'tool_opencast'));
             $mform->addElement('html', $notification);
             $mform->addElement('cancel');
 
@@ -87,14 +87,14 @@ class importvideos_step3_form_acl extends moodleform {
 
         // Add intro.
         $notification = $renderer->wizard_intro_notification(
-            get_string('importvideos_wizardstep4intro', 'block_opencast'));
+            get_string('importvideos_wizardstep4intro', 'tool_opencast'));
         $mform->addElement('html', $notification);
 
         // Summary item: Source course.
         $sourcecourse = get_course($this->_customdata['sourcecourseid']);
         $courseentry = $renderer->course_menu_entry($sourcecourse);
         $mform->addElement('static', 'summarysourcecourse',
-            get_string('importvideos_wizardstep1sourcecourse', 'block_opencast'),
+            get_string('importvideos_wizardstep1sourcecourse', 'tool_opencast'),
             $courseentry);
 
         // Horizontal line.
@@ -103,7 +103,7 @@ class importvideos_step3_form_acl extends moodleform {
         // Summary item: Series.
         $seriesentry = $renderer->series_menu_entry($seriesobject);
         $mform->addElement('static', 'summaryseries',
-            get_string('importvideos_wizard_seriesimported', 'block_opencast'),
+            get_string('importvideos_wizard_seriesimported', 'tool_opencast'),
             $seriesentry);
 
         // Horizontal line.
@@ -113,10 +113,10 @@ class importvideos_step3_form_acl extends moodleform {
         $coursevideossummary = importvideosmanager::get_import_acl_source_series_videos_summary($this->_customdata['ocinstanceid'],
             $seriesobject->identifier);
         $mform->addElement('static', 'summarycoursevideos',
-            get_string('importvideos_wizardstep1coursevideos', 'block_opencast'),
+            get_string('importvideos_wizardstep1coursevideos', 'tool_opencast'),
             $coursevideossummary);
 
         // Add action buttons.
-        $this->add_action_buttons(true, get_string('importvideos_wizardstepbuttontitlerunimport', 'block_opencast'));
+        $this->add_action_buttons(true, get_string('importvideos_wizardstepbuttontitlerunimport', 'tool_opencast'));
     }
 }

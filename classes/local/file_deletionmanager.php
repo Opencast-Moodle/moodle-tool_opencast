@@ -17,7 +17,7 @@
 /**
  * Manager to enable ad hoc file deletion
  *
- * @package   block_opencast
+ * @package   tool_opencast
  * @copyright 2018 Andreas Wagner, Synergy Learning
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,7 +29,7 @@ use stored_file;
 /**
  * Manager to enable ad hoc file deletion
  *
- * @package   block_opencast
+ * @package   tool_opencast
  * @copyright 2018 Andreas Wagner, Synergy Learning
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -61,7 +61,7 @@ class file_deletionmanager extends \file_system_filedir {
         // Get draft entries belonging to stored file.
         $sql = "SELECT f.* " .
             "FROM {files} f " .
-            "JOIN {block_opencast_draftitemid} d ON f.itemid = d.itemid AND d.contextid = :contextid " .
+            "JOIN {tool_opencast_draftitemid} d ON f.itemid = d.itemid AND d.contextid = :contextid " .
             "WHERE f.contenthash = :contenthash AND f.component = :component " .
             "AND f.filearea = :filearea AND f.filename <> :filename";
 
@@ -94,7 +94,7 @@ class file_deletionmanager extends \file_system_filedir {
         global $DB;
 
         $params = [
-            'component' => 'block_opencast',
+            'component' => 'tool_opencast',
             'filearea' => 'videotoupload',
             'contenthash' => 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
             'filename' => '.',
@@ -105,7 +105,7 @@ class file_deletionmanager extends \file_system_filedir {
         // Get dot entries belonging to stored file.
         $sql = "SELECT f.* " .
             "FROM {files} f " .
-            "JOIN {block_opencast_draftitemid} d ON f.itemid = d.itemid AND d.contextid = :contextid " .
+            "JOIN {tool_opencast_draftitemid} d ON f.itemid = d.itemid AND d.contextid = :contextid " .
             "WHERE f.contenthash = :contenthash AND f.component = :component " .
             "AND f.filearea = :filearea AND f.filename = :filename AND f.itemid = :itemid ";
 
@@ -143,7 +143,7 @@ class file_deletionmanager extends \file_system_filedir {
         // is currently unused and we keep only one entry for the current filemanager.
         $exists = $DB->get_records('block_opencast_draftitemid', $params);
         foreach ($exists as $exist) {
-            $DB->delete_records('block_opencast_draftitemid', ['id' => $exist->id]);
+            $DB->delete_records('tool_opencast_draftitemid', ['id' => $exist->id]);
         }
 
         // Insert the data.
@@ -152,7 +152,7 @@ class file_deletionmanager extends \file_system_filedir {
             'itemid' => $itemid,
             'timecreated' => time(),
         ];
-        $DB->insert_record('block_opencast_draftitemid', $record);
+        $DB->insert_record('tool_opencast_draftitemid', $record);
     }
 
     /**
@@ -165,7 +165,7 @@ class file_deletionmanager extends \file_system_filedir {
         global $DB;
 
         $old = time() - 5 * DAYSECS;
-        $DB->delete_records_select('block_opencast_draftitemid', 'timecreated < ?', [$old]);
+        $DB->delete_records_select('tool_opencast_draftitemid', 'timecreated < ?', [$old]);
     }
 
     /**

@@ -57,7 +57,7 @@ class addvideo_form extends moodleform {
     public function definition() {
         global $CFG, $DB, $PAGE;
         // Get the renderer to use its methods.
-        $renderer = $PAGE->get_renderer('block_opencast');
+        $renderer = $PAGE->get_renderer('tool_opencast');
         $ocinstanceid = $this->_customdata['ocinstanceid'];
         $apibridge = apibridge::get_instance($ocinstanceid);
         $eventdefaults = $this->_customdata['eventdefaults'];
@@ -76,7 +76,7 @@ class addvideo_form extends moodleform {
 
         $mform = $this->_form;
 
-        $mform->addElement('header', 'metadata', get_string('metadata', 'block_opencast'));
+        $mform->addElement('header', 'metadata', get_string('metadata', 'tool_opencast'));
         $mform->setExpanded('metadata', true);
 
         $managedefaultsurl = new moodle_url('/admin/tool/opencast/managedefaults.php',
@@ -85,10 +85,10 @@ class addvideo_form extends moodleform {
                 'ocinstanceid' => $ocinstanceid,
                 'redirectto' => 'addvideo',
             ]);
-        $managedefaultslink = html_writer::link($managedefaultsurl, get_string('managedefaultsforuser', 'block_opencast'));
+        $managedefaultslink = html_writer::link($managedefaultsurl, get_string('managedefaultsforuser', 'tool_opencast'));
         $managedefaultsexplation = html_writer::tag('p',
-            get_string('managedefaultredirectlinkwithexp', 'block_opencast') . $managedefaultslink);
-        $explanation = html_writer::tag('p', get_string('metadataexplanation', 'block_opencast'));
+            get_string('managedefaultredirectlinkwithexp', 'tool_opencast') . $managedefaultslink);
+        $explanation = html_writer::tag('p', get_string('metadataexplanation', 'tool_opencast'));
         $mform->addElement('html', $explanation . $managedefaultsexplation);
 
         $seriesrecords = $DB->get_records('tool_opencast_series',
@@ -109,7 +109,7 @@ class addvideo_form extends moodleform {
                 }
             }
 
-            $mform->addElement('select', 'series', get_string('series', 'block_opencast'), $seriesoption);
+            $mform->addElement('select', 'series', get_string('series', 'tool_opencast'), $seriesoption);
             $mform->addRule('series', get_string('required'), 'required');
             $mform->setDefault('series', $defaultseries);
         } else if (array_key_exists('series', $this->_customdata) && $this->_customdata['series']) {
@@ -124,7 +124,7 @@ class addvideo_form extends moodleform {
                 $seriesoption[$this->_customdata['series']] = $this->_customdata['series'];
             }
 
-            $mform->addElement('select', 'series', get_string('series', 'block_opencast'), $seriesoption);
+            $mform->addElement('select', 'series', get_string('series', 'tool_opencast'), $seriesoption);
             $mform->addRule('series', get_string('required'), 'required');
             $mform->setDefault('series', $this->_customdata['series']);
         }
@@ -146,11 +146,11 @@ class addvideo_form extends moodleform {
             if ($field->datatype == 'autocomplete') {
                 $attributes = [
                     'multiple' => true,
-                    'placeholder' => get_string('metadata_autocomplete_placeholder', 'block_opencast',
-                        $this->try_get_string($field->name, 'block_opencast')),
+                    'placeholder' => get_string('metadata_autocomplete_placeholder', 'tool_opencast',
+                        $this->try_get_string($field->name, 'tool_opencast')),
                     'showsuggestions' => true, // If true, admin is able to add suggestion via admin page. Otherwise no suggestions!
-                    'noselectionstring' => get_string('metadata_autocomplete_noselectionstring', 'block_opencast',
-                        $this->try_get_string($field->name, 'block_opencast')),
+                    'noselectionstring' => get_string('metadata_autocomplete_noselectionstring', 'tool_opencast',
+                        $this->try_get_string($field->name, 'tool_opencast')),
                     'tags' => true,
                 ];
 
@@ -178,14 +178,14 @@ class addvideo_form extends moodleform {
             }
 
             // Get the created element back from addElement function, in order to further use its attrs.
-            $element = $mform->addElement($field->datatype, $field->name, $this->try_get_string($field->name, 'block_opencast'),
+            $element = $mform->addElement($field->datatype, $field->name, $this->try_get_string($field->name, 'tool_opencast'),
                 $param, $attributes);
 
             // Check if the description is set for the field, to display it as help icon.
             if (isset($field->description) && !empty($field->description)) {
                 // Use the renderer to generate a help icon with custom text.
                 $element->_helpbutton = $renderer->render_help_icon_with_custom_text(
-                    $this->try_get_string($field->name, 'block_opencast'), $field->description);
+                    $this->try_get_string($field->name, 'tool_opencast'), $field->description);
             }
 
             if ($field->datatype == 'text') {
@@ -226,11 +226,11 @@ class addvideo_form extends moodleform {
             }
         }
         if ($settitle) {
-            $mform->addElement('text', 'title', get_string('title', 'block_opencast'));
+            $mform->addElement('text', 'title', get_string('title', 'tool_opencast'));
             $mform->addRule('title', get_string('required'), 'required');
             $mform->setType('title', PARAM_TEXT);
         }
-        $mform->addElement('date_time_selector', 'startDate', get_string('date', 'block_opencast'));
+        $mform->addElement('date_time_selector', 'startDate', get_string('date', 'tool_opencast'));
         $mform->setAdvanced('startDate');
 
         // Event Visibility configuration.
@@ -260,24 +260,24 @@ class addvideo_form extends moodleform {
 
             $mform->closeHeaderBefore('visibility_header');
 
-            $mform->addElement('header', 'visibility_header', get_string('visibilityheader', 'block_opencast'));
+            $mform->addElement('header', 'visibility_header', get_string('visibilityheader', 'tool_opencast'));
             $mform->setExpanded('visibility_header', true);
 
-            $explanation = html_writer::tag('p', get_string('visibilityheaderexplanation', 'block_opencast'));
+            $explanation = html_writer::tag('p', get_string('visibilityheaderexplanation', 'tool_opencast'));
             $mform->addElement('html', $explanation);
 
             // Initial visibility.
             $intialvisibilityradioarray = [];
             $intialvisibilityradioarray[] = $mform->addElement('radio', 'initialvisibilitystatus',
-                get_string('initialvisibilitystatus', 'block_opencast'), get_string('visibility_hide', 'block_opencast'), 0);
+                get_string('initialvisibilitystatus', 'tool_opencast'), get_string('visibility_hide', 'tool_opencast'), 0);
             $intialvisibilityradioarray[] = $mform->addElement('radio', 'initialvisibilitystatus',
-                '', get_string('visibility_show', 'block_opencast'), 1);
+                '', get_string('visibility_show', 'tool_opencast'), 1);
             // We need to remove the group visibility radio button, when there is no group in the course.
             if ($groupvisibilityallowed && !empty($groups)) {
                 $intialvisibilityradioarray[] = $mform->addElement('radio', 'initialvisibilitystatus',
-                    '', get_string('visibility_group', 'block_opencast'), 2);
+                    '', get_string('visibility_group', 'tool_opencast'), 2);
             }
-            $mform->setDefault('initialvisibilitystatus', block_opencast_renderer::VISIBLE);
+            $mform->setDefault('initialvisibilitystatus', tool_opencast_renderer::VISIBLE);
             $mform->setType('initialvisibilitystatus', PARAM_INT);
 
             // Load existing groups.
@@ -294,32 +294,32 @@ class addvideo_form extends moodleform {
             if ($allowchangevisibility) {
                 // Provide a checkbox to enable changing the visibility for later.
                 $mform->addElement('checkbox', 'enableschedulingchangevisibility',
-                    get_string('enableschedulingchangevisibility', 'block_opencast'),
-                    get_string('enableschedulingchangevisibilitydesc', 'block_opencast'));
+                    get_string('enableschedulingchangevisibility', 'tool_opencast'),
+                    get_string('enableschedulingchangevisibilitydesc', 'tool_opencast'));
                 $mform->hideIf('scheduledvisibilitytime', 'enableschedulingchangevisibility', 'notchecked');
                 $mform->hideIf('scheduledvisibilitystatus', 'enableschedulingchangevisibility', 'notchecked');
 
                 // Scheduled visibility.
                 list($waitingtime, $configuredtimespan) = visibility_helper::get_waiting_time($ocinstanceid);
                 $scheduledvisibilitytimeelm = $mform->addElement('date_time_selector', 'scheduledvisibilitytime',
-                    get_string('scheduledvisibilitytime', 'block_opencast'));
+                    get_string('scheduledvisibilitytime', 'tool_opencast'));
                 $scheduledvisibilitytimeelm->_helpbutton = $renderer->render_help_icon_with_custom_text(
-                    get_string('scheduledvisibilitytimehi', 'block_opencast'),
-                    get_string('scheduledvisibilitytimehi_help', 'block_opencast', $configuredtimespan));
+                    get_string('scheduledvisibilitytimehi', 'tool_opencast'),
+                    get_string('scheduledvisibilitytimehi_help', 'tool_opencast', $configuredtimespan));
                 $mform->setDefault('scheduledvisibilitytime', $waitingtime);
 
                 $radioarray = [];
                 $radioarray[] = $mform->addElement('radio', 'scheduledvisibilitystatus',
-                    get_string('scheduledvisibilitystatus', 'block_opencast'), get_string('visibility_hide', 'block_opencast'), 0);
+                    get_string('scheduledvisibilitystatus', 'tool_opencast'), get_string('visibility_hide', 'tool_opencast'), 0);
                 $radioarray[] = $mform->addElement('radio', 'scheduledvisibilitystatus', '',
-                    get_string('visibility_show', 'block_opencast'), 1);
+                    get_string('visibility_show', 'tool_opencast'), 1);
                 // We need to remove the group visibility radio button, we there is no group in the course.
                 if ($groupvisibilityallowed && !empty($groups)) {
                     $radioarray[] = $mform->addElement('radio', 'scheduledvisibilitystatus',
-                        '', get_string('visibility_group', 'block_opencast'), 2);
+                        '', get_string('visibility_group', 'tool_opencast'), 2);
                 }
 
-                $mform->setDefault('scheduledvisibilitystatus', block_opencast_renderer::HIDDEN);
+                $mform->setDefault('scheduledvisibilitystatus', tool_opencast_renderer::HIDDEN);
                 $mform->setType('scheduledvisibilitystatus', PARAM_INT);
 
                 // Load existing groups.
@@ -339,10 +339,10 @@ class addvideo_form extends moodleform {
         // Offering workflow configuration panel settings.
         if ($wfconfighelper->can_provide_configuration_panel()) {
             $mform->closeHeaderBefore('configurationpanel_header');
-            $mform->addElement('header', 'configurationpanel_header', get_string('configurationpanel_header', 'block_opencast'));
+            $mform->addElement('header', 'configurationpanel_header', get_string('configurationpanel_header', 'tool_opencast'));
             $mform->setExpanded('configurationpanel_header', true);
 
-            $configpanelexplanation = html_writer::tag('p', get_string('configurationpanelheader_explanation', 'block_opencast'));
+            $configpanelexplanation = html_writer::tag('p', get_string('configurationpanelheader_explanation', 'tool_opencast'));
             $mform->addElement('html', $configpanelexplanation);
 
             $renderer->render_configuration_panel_form_elements(
@@ -354,10 +354,10 @@ class addvideo_form extends moodleform {
 
         $mform->closeHeaderBefore('upload_filepicker');
 
-        $mform->addElement('header', 'upload_filepicker', get_string('upload', 'block_opencast'));
+        $mform->addElement('header', 'upload_filepicker', get_string('upload', 'tool_opencast'));
         $mform->setExpanded('upload_filepicker', true);
 
-        $explanation = html_writer::tag('p', get_string('uploadexplanation', 'block_opencast'));
+        $explanation = html_writer::tag('p', get_string('uploadexplanation', 'tool_opencast'));
         $mform->addElement('html', $explanation);
 
         $videotypescfg = get_config('tool_opencast', 'uploadfileextensions_' . $ocinstanceid);
@@ -380,39 +380,39 @@ class addvideo_form extends moodleform {
             $maxuploadsize = (int) get_config('tool_opencast', 'uploadfilelimit_' . $ocinstanceid);
         }
 
-        $presenterdesc = html_writer::tag('p', get_string('presenterdesc', 'block_opencast'));
+        $presenterdesc = html_writer::tag('p', get_string('presenterdesc', 'tool_opencast'));
         $mform->addElement('html', $presenterdesc);
 
         if (!$usechunkupload || $offerchunkuploadalternative) {
             $mform->addElement('filepicker', 'video_presenter',
-                get_string('presenter', 'block_opencast'),
+                get_string('presenter', 'tool_opencast'),
                 null, ['accepted_types' => $videotypes]);
         }
         if ($usechunkupload) {
-            $mform->addElement('chunkupload', 'video_presenter_chunk', get_string('presenter', 'block_opencast'), null,
+            $mform->addElement('chunkupload', 'video_presenter_chunk', get_string('presenter', 'tool_opencast'), null,
                 ['maxbytes' => $maxuploadsize, 'accepted_types' => $videotypes]);
             if ($offerchunkuploadalternative) {
                 $mform->addElement('checkbox', 'presenter_already_uploaded',
-                    get_string('usedefaultfilepicker', 'block_opencast'));
+                    get_string('usedefaultfilepicker', 'tool_opencast'));
                 $mform->hideIf('video_presenter', 'presenter_already_uploaded', 'notchecked');
                 $mform->hideIf('video_presenter_chunk', 'presenter_already_uploaded', 'checked');
             }
         }
 
-        $presentationdesc = html_writer::tag('p', get_string('presentationdesc', 'block_opencast'));
+        $presentationdesc = html_writer::tag('p', get_string('presentationdesc', 'tool_opencast'));
         $mform->addElement('html', $presentationdesc);
 
         if (!$usechunkupload || $offerchunkuploadalternative) {
             $mform->addElement('filepicker', 'video_presentation',
-                get_string('presentation', 'block_opencast'),
+                get_string('presentation', 'tool_opencast'),
                 null, ['accepted_types' => $videotypes]);
         }
         if ($usechunkupload) {
-            $mform->addElement('chunkupload', 'video_presentation_chunk', get_string('presentation', 'block_opencast'), null,
+            $mform->addElement('chunkupload', 'video_presentation_chunk', get_string('presentation', 'tool_opencast'), null,
                 ['maxbytes' => $maxuploadsize, 'accepted_types' => $videotypes]);
             if ($offerchunkuploadalternative) {
                 $mform->addElement('checkbox', 'presentation_already_uploaded',
-                    get_string('usedefaultfilepicker', 'block_opencast'));
+                    get_string('usedefaultfilepicker', 'tool_opencast'));
                 $mform->hideIf('video_presentation', 'presentation_already_uploaded', 'notchecked');
                 $mform->hideIf('video_presentation_chunk', 'presentation_already_uploaded', 'checked');
             }
@@ -420,10 +420,10 @@ class addvideo_form extends moodleform {
 
         if (!empty(get_config('tool_opencast', 'termsofuse_' . $ocinstanceid))) {
             $togglespan = '<span class="btn-link" id="termsofuse_toggle">' .
-                get_string('termsofuse_accept_toggle', 'block_opencast') . '</span>';
+                get_string('termsofuse_accept_toggle', 'tool_opencast') . '</span>';
 
-            $mform->addElement('checkbox', 'termsofuse', get_string('termsofuse', 'block_opencast'),
-                get_string('termsofuse_accept', 'block_opencast', $togglespan));
+            $mform->addElement('checkbox', 'termsofuse', get_string('termsofuse', 'tool_opencast'),
+                get_string('termsofuse_accept', 'tool_opencast', $togglespan));
             $mform->addRule('termsofuse', get_string('required'), 'required');
             $options['filter'] = false;
             $mform->addElement('html', '<div class="row justify-content-end" id="termsofuse"><div class="col-md-9">' .
@@ -440,10 +440,10 @@ class addvideo_form extends moodleform {
         if (!empty(get_config('tool_opencast', 'transcriptionworkflow_' . $ocinstanceid))) {
             $mform->closeHeaderBefore('uploadtranscription_header');
 
-            $mform->addElement('header', 'uploadtranscription_header', get_string('transcriptionheader', 'block_opencast'));
+            $mform->addElement('header', 'uploadtranscription_header', get_string('transcriptionheader', 'tool_opencast'));
             $mform->setExpanded('uploadtranscription_header', false);
 
-            $explanation = html_writer::tag('p', get_string('transcriptionheaderexplanation', 'block_opencast'));
+            $explanation = html_writer::tag('p', get_string('transcriptionheaderexplanation', 'tool_opencast'));
             $mform->addElement('html', $explanation);
 
             $transcriptiontypescfg = get_config('tool_opencast', 'transcriptionfileextensions_' . $ocinstanceid);
@@ -463,7 +463,7 @@ class addvideo_form extends moodleform {
             // Preparing flavors as for service types.
             $flavorsconfig = get_config('tool_opencast', 'transcriptionflavors_' . $ocinstanceid);
             $flavors = [
-                '' => get_string('emptyflavoroption', 'block_opencast'),
+                '' => get_string('emptyflavoroption', 'tool_opencast'),
             ];
             if (!empty($flavorsconfig)) {
                 $flavorsarray = json_decode($flavorsconfig);
@@ -485,9 +485,9 @@ class addvideo_form extends moodleform {
                     $mform->addElement('html', $line);
                 }
                 $mform->addElement('select', 'transcription_flavor_' . $transcriptionindex,
-                    get_string('transcriptionflavorfield', 'block_opencast'), $flavors);
+                    get_string('transcriptionflavorfield', 'tool_opencast'), $flavors);
                 $mform->addElement('filepicker', 'transcription_file_' . $transcriptionindex,
-                    get_string('transcriptionfilefield', 'block_opencast'),
+                    get_string('transcriptionfilefield', 'tool_opencast'),
                     null, ['accepted_types' => $transcriptiontypes]);
                 $mform->disabledIf('transcription_file_' . $transcriptionindex,
                     'transcription_flavor_' . $transcriptionindex, 'eq', '');
@@ -496,7 +496,7 @@ class addvideo_form extends moodleform {
 
         $mform->closeHeaderBefore('buttonar');
 
-        $this->add_action_buttons(true, get_string('addvideo', 'block_opencast'));
+        $this->add_action_buttons(true, get_string('addvideo', 'tool_opencast'));
     }
 
     /**
@@ -525,14 +525,14 @@ class addvideo_form extends moodleform {
         }
 
         if (!$presenterfile && !$presentationfile) {
-            $errors['presenter_already_uploaded'] = get_string('emptyvideouploaderror', 'block_opencast');
-            $errors['presentation_already_uploaded'] = get_string('emptyvideouploaderror', 'block_opencast');
+            $errors['presenter_already_uploaded'] = get_string('emptyvideouploaderror', 'tool_opencast');
+            $errors['presentation_already_uploaded'] = get_string('emptyvideouploaderror', 'tool_opencast');
         }
 
         if (isset($data['initialvisibilitystatus']) &&
-            $data['initialvisibilitystatus'] == block_opencast_renderer::GROUP &&
+            $data['initialvisibilitystatus'] == tool_opencast_renderer::GROUP &&
             empty($data['initialvisibilitygroups'])) {
-            $errors['initialvisibilitystatus'] = get_string('emptyvisibilitygroups', 'block_opencast');
+            $errors['initialvisibilitystatus'] = get_string('emptyvisibilitygroups', 'tool_opencast');
         }
 
         if (isset($data['enableschedulingchangevisibility']) && $data['enableschedulingchangevisibility']) {
@@ -547,18 +547,18 @@ class addvideo_form extends moodleform {
             $allowedscheduledvisibilitytime = $waitingtimearray[0];
             if (intval($data['scheduledvisibilitytime']) < intval($allowedscheduledvisibilitytime)) {
                 $errors['scheduledvisibilitytime'] = get_string('scheduledvisibilitytimeerror',
-                    'block_opencast', $waitingtimearray[1]);
+                    'tool_opencast', $waitingtimearray[1]);
             }
 
             if (isset($data['scheduledvisibilitystatus']) &&
-                $data['scheduledvisibilitystatus'] == block_opencast_renderer::GROUP &&
+                $data['scheduledvisibilitystatus'] == tool_opencast_renderer::GROUP &&
                 empty($data['scheduledvisibilitygroups'])) {
-                $errors['scheduledvisibilitystatus'] = get_string('emptyvisibilitygroups', 'block_opencast');
+                $errors['scheduledvisibilitystatus'] = get_string('emptyvisibilitygroups', 'tool_opencast');
             }
             // Check whether the scheduled visibility is equal to initial visibility.
             if (intval($data['scheduledvisibilitystatus']) == intval($data['initialvisibilitystatus'])) {
                 $haserror = true;
-                if ($data['scheduledvisibilitystatus'] == block_opencast_renderer::GROUP) {
+                if ($data['scheduledvisibilitystatus'] == tool_opencast_renderer::GROUP) {
                     sort($data['scheduledvisibilitygroups']);
                     sort($data['initialvisibilitygroups']);
                     if ($data['scheduledvisibilitygroups'] != $data['initialvisibilitygroups']) {
@@ -566,7 +566,7 @@ class addvideo_form extends moodleform {
                     }
                 }
                 if ($haserror) {
-                    $errors['enableschedulingchangevisibility'] = get_string('scheduledvisibilitystatuserror', 'block_opencast');
+                    $errors['enableschedulingchangevisibility'] = get_string('scheduledvisibilitystatuserror', 'tool_opencast');
                 }
             }
         }

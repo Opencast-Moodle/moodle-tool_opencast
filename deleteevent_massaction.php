@@ -45,8 +45,8 @@ $PAGE->set_url($baseurl);
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
 
 if ($redirectpage == 'overviewvideos') {
     $redirecturl = new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid,
@@ -57,8 +57,8 @@ if ($redirectpage == 'overviewvideos') {
     $redirecturl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
 }
 
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('deleteevent_massaction', 'block_opencast'), $baseurl);
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('deleteevent_massaction', 'tool_opencast'), $baseurl);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
@@ -81,15 +81,15 @@ foreach ($videoids as $videoid) {
         }
         continue;
     }
-    $stringobj->reason = get_string('videonotfound', 'block_opencast');
-    $failed[] = get_string('videostablemassaction_notification_reasoning', 'block_opencast', $stringobj);
+    $stringobj->reason = get_string('videonotfound', 'tool_opencast');
+    $failed[] = get_string('videostablemassaction_notification_reasoning', 'tool_opencast', $stringobj);
 }
 
 $failedtext = '';
 if (!empty($failed)) {
     $failedtext = get_string(
         'deleteevent_massaction_notification_failed',
-        'block_opencast',
+        'tool_opencast',
         implode('</li><li>', $failed)
     );
 }
@@ -97,14 +97,14 @@ $succeededtext = '';
 if (!empty($succeeded)) {
     $succeededtext = get_string(
         'deleteevent_massaction_notification_success',
-        'block_opencast',
+        'tool_opencast',
         implode('</li><li>', $succeeded)
     );
 }
 
 // If there is no changes, we redirect with warning.
 if (empty($succeededtext) && empty($failedtext)) {
-    $nochangetext = get_string('deleteevent_massaction_notification_nochange', 'block_opencast');
+    $nochangetext = get_string('deleteevent_massaction_notification_nochange', 'tool_opencast');
     redirect($redirecturl, $nochangetext, null, notification::NOTIFY_ERROR);
 }
 

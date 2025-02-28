@@ -136,7 +136,7 @@ class ingest_uploader {
                     self::update_status_with_mediapackage($job, self::STATUS_INGEST_ADDING_SECOND_TRACK,
                         true, false, false, $job->mediapackage);
                 } else if (!$validstoredfile) {
-                    $DB->delete_records('block_opencast_uploadjob', ['id' => $job->id]);
+                    $DB->delete_records('tool_opencast_uploadjob', ['id' => $job->id]);
                     throw new moodle_exception('invalidfiletoupload', 'tool_opencast');
                 } else {
                     try {
@@ -180,7 +180,7 @@ class ingest_uploader {
                     self::update_status_with_mediapackage($job, self::STATUS_INGEST_ADDING_ACL_ATTACHMENT,
                         true, false, false, $job->mediapackage);
                 } else if (!$validstoredfile) {
-                    $DB->delete_records('block_opencast_uploadjob', ['id' => $job->id]);
+                    $DB->delete_records('tool_opencast_uploadjob', ['id' => $job->id]);
                     throw new moodle_exception('invalidfiletoupload', 'tool_opencast');
                 } else {
                     try {
@@ -417,7 +417,7 @@ class ingest_uploader {
 
         $job->status = $status;
 
-        $DB->update_record('block_opencast_uploadjob', $job);
+        $DB->update_record('tool_opencast_uploadjob', $job);
     }
 
     /**
@@ -428,17 +428,17 @@ class ingest_uploader {
     public static function get_status_string($statuscode) {
         switch ($statuscode) {
             case self::STATUS_INGEST_CREATING_MEDIA_PACKAGE :
-                return get_string('ingeststatecreatingmedispackage', 'block_opencast');
+                return get_string('ingeststatecreatingmedispackage', 'tool_opencast');
             case self::STATUS_INGEST_ADDING_EPISODE_CATALOG :
-                return get_string('ingeststateaddingcatalog', 'block_opencast');
+                return get_string('ingeststateaddingcatalog', 'tool_opencast');
             case self::STATUS_INGEST_ADDING_FIRST_TRACK :
-                return get_string('ingeststateaddingfirsttrack', 'block_opencast');
+                return get_string('ingeststateaddingfirsttrack', 'tool_opencast');
             case self::STATUS_INGEST_ADDING_SECOND_TRACK :
-                return get_string('ingeststateaddingsecondtrack', 'block_opencast');
+                return get_string('ingeststateaddingsecondtrack', 'tool_opencast');
             case self::STATUS_INGEST_ADDING_ACL_ATTACHMENT :
-                return get_string('ingeststateaddingacls', 'block_opencast');
+                return get_string('ingeststateaddingacls', 'tool_opencast');
             case self::STATUS_INGEST_INGESTING :
-                return get_string('ingeststateingesting', 'block_opencast');
+                return get_string('ingeststateingesting', 'tool_opencast');
             default :
                 '';
         }

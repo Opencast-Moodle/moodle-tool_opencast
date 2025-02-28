@@ -49,7 +49,7 @@ array_walk($series, function ($item) {
 $series = array_values($series);
 $numseriesallowed = get_config('tool_opencast', 'maxseries_' . $ocinstanceid);
 
-$PAGE->requires->js_call_amd('block_opencast/block_manage_series', 'init',
+$PAGE->requires->js_call_amd('tool_opencast/block_manage_series', 'init',
     [$coursecontext->id, $ocinstanceid, $createseries, $series, $numseriesallowed]);
 $PAGE->requires->css('/blocks/opencast/css/tabulator.min.css');
 $PAGE->requires->css('/blocks/opencast/css/tabulator_bootstrap4.min.css');
@@ -59,14 +59,14 @@ $redirecturl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'block_opencast'));
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
 if (settings_api::num_ocinstances() > 1) {
-    $PAGE->set_heading(get_string('pluginname', 'block_opencast') . ': ' . settings_api::get_ocinstance($ocinstanceid)->name);
+    $PAGE->set_heading(get_string('pluginname', 'tool_opencast') . ': ' . settings_api::get_ocinstance($ocinstanceid)->name);
 } else {
-    $PAGE->set_heading(get_string('pluginname', 'block_opencast'));
+    $PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
 }
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('manageseriesforcourse', 'block_opencast'), $baseurl);
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('manageseriesforcourse', 'tool_opencast'), $baseurl);
 
 // Capability check.
 require_capability('block/opencast:manageseriesforcourse', $coursecontext);
@@ -74,11 +74,11 @@ require_capability('block/opencast:manageseriesforcourse', $coursecontext);
 $apibridge = apibridge::get_instance($ocinstanceid);
 
 
-/** @var block_opencast_renderer $renderer */
-$renderer = $PAGE->get_renderer('block_opencast');
+/** @var tool_opencast_renderer $renderer */
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('manageseriesforcourse', 'block_opencast'));
+echo $OUTPUT->heading(get_string('manageseriesforcourse', 'tool_opencast'));
 
 echo $renderer->render_manage_series_table($ocinstanceid, $courseid);
 echo $OUTPUT->footer();

@@ -53,14 +53,14 @@ require_login($courseid, false);
 
 // Set page and navbar properties.
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturloverview);
-$PAGE->navbar->add(get_string('addltiepisode_addicontitle', 'block_opencast'), $baseurl);
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturloverview);
+$PAGE->navbar->add(get_string('addltiepisode_addicontitle', 'tool_opencast'), $baseurl);
 
 // Check if the LTI module feature is enabled and working.
 if (ltimodulemanager::is_enabled_and_working_for_episodes($ocinstanceid) == false) {
-    throw new moodle_exception('addltiepisode_errornotenabledorworking', 'block_opencast', $redirecturloverview);
+    throw new moodle_exception('addltiepisode_errornotenabledorworking', 'tool_opencast', $redirecturloverview);
 }
 
 // Capability check.
@@ -72,7 +72,7 @@ $moduleid = ltimodulemanager::get_module_for_episode($ocinstanceid, $courseid, $
 if ($moduleid) {
     // Redirect to Opencast videos overview page.
     redirect($redirecturloverview,
-        get_string('addltiepisode_moduleexists', 'block_opencast'), null, notification::NOTIFY_WARNING);
+        get_string('addltiepisode_moduleexists', 'tool_opencast'), null, notification::NOTIFY_WARNING);
 }
 
 // Use Add LTI form.
@@ -88,7 +88,7 @@ if ($addltiform->is_cancelled()) {
 if ($data = $addltiform->get_data()) {
     // Verify again that we have a title. If not, use the default title.
     if (!$data->title) {
-        $data->title = get_string('addltiepisode_defaulttitle', 'block_opencast');
+        $data->title = get_string('addltiepisode_defaulttitle', 'tool_opencast');
     }
 
     // If the intro feature is disabled or if we do not have an intro, use an empty string as intro.
@@ -132,7 +132,7 @@ if ($data = $addltiform->get_data()) {
         if ($submitbutton2) {
             // Redirect to course overview.
             redirect($redirecturlcourse,
-                get_string('addltiepisode_modulecreated', 'block_opencast', $data->title),
+                get_string('addltiepisode_modulecreated', 'tool_opencast', $data->title),
                 null,
                 notification::NOTIFY_SUCCESS);
 
@@ -140,7 +140,7 @@ if ($data = $addltiform->get_data()) {
         } else {
             // Redirect to Opencast videos overview page.
             redirect($redirecturloverview,
-                get_string('addltiepisode_modulecreated', 'block_opencast', $data->title),
+                get_string('addltiepisode_modulecreated', 'tool_opencast', $data->title),
                 null,
                 notification::NOTIFY_SUCCESS);
         }
@@ -149,7 +149,7 @@ if ($data = $addltiform->get_data()) {
     } else {
         // Redirect to Opencast videos overview page.
         redirect($redirecturloverview,
-            get_string('addltiepisode_modulenotcreated', 'block_opencast', $data->title),
+            get_string('addltiepisode_modulenotcreated', 'tool_opencast', $data->title),
             null,
             notification::NOTIFY_ERROR);
     }
@@ -159,7 +159,7 @@ if ($data = $addltiform->get_data()) {
 echo $OUTPUT->header();
 
 // Output heading.
-echo $OUTPUT->heading(get_string('addltiepisode_addicontitle', 'block_opencast'));
+echo $OUTPUT->heading(get_string('addltiepisode_addicontitle', 'tool_opencast'));
 
 // Output the form.
 $addltiform->display();

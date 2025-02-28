@@ -29,11 +29,11 @@ require_once($CFG->dirroot . '/user/selector/lib.php');
 /**
  * User selector for change user dialog.
  *
- * @package block_opencast
+ * @package tool_opencast
  * @copyright 2022 Tamara Gunkel, WWU
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class block_opencast_enrolled_user_selector extends user_selector_base {
+class tool_opencast_enrolled_user_selector extends user_selector_base {
 
     /** @var bool|context|context_system|mixed|null Moodle context, usually course */
     protected $context;

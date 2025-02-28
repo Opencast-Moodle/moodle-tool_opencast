@@ -83,7 +83,7 @@ class attachment_helper {
         $attachments->files = json_encode($attachemntfiles);
         $attachments->status = self::STATUS_PENDING;
         // Save into db.
-        $DB->insert_record('block_opencast_attachments', $attachments);
+        $DB->insert_record('tool_opencast_attachments', $attachments);
     }
 
     /**
@@ -93,7 +93,7 @@ class attachment_helper {
         global $DB;
 
         // Get the attachment upload jobs.
-        $sql = "SELECT * FROM {block_opencast_attachments}" .
+        $sql = "SELECT * FROM {tool_opencast_attachments}" .
             " WHERE status = :status";
         $params = [];
         $params['status'] = self::STATUS_PENDING;
@@ -114,7 +114,7 @@ class attachment_helper {
 
         // Cleanup the completed/failed jobs.
         list($insql, $inparams) = $DB->get_in_or_equal([self::STATUS_FAILED, self::STATUS_DONE], SQL_PARAMS_NAMED);
-        $sql = "SELECT * FROM {block_opencast_attachments}" .
+        $sql = "SELECT * FROM {tool_opencast_attachments}" .
             " WHERE status {$insql}";
         $finishedjobs = $DB->get_records_sql($sql, $inparams);
 
@@ -234,7 +234,7 @@ class attachment_helper {
         // Set the pending status.
         $job->status = $status;
         // Save into db.
-        $DB->update_record('block_opencast_attachments', $job);
+        $DB->update_record('tool_opencast_attachments', $job);
     }
 
     /**
@@ -263,7 +263,7 @@ class attachment_helper {
             $files->close();
         }
         if (!$filedeletionhaserror) {
-            $DB->delete_records('block_opencast_attachments', ['id' => $job->id]);
+            $DB->delete_records('tool_opencast_attachments', ['id' => $job->id]);
             mtrace('job ' . $job->id . ':(DELETED) Attachemtns job and its files are deleted.');
         } else {
             mtrace('job ' . $job->id . ':(UNABLE TO DELETED) File deletion failed, cleanup postponed...');

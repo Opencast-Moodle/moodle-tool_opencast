@@ -57,10 +57,10 @@ class setting_helper {
         // Hack to get the opencast instance id.
         $category = optional_param('category', null, PARAM_RAW);
         if ($category) {
-            $ocinstanceid = intval(str_replace('block_opencast_instance_', '', $category));
+            $ocinstanceid = intval(str_replace('tool_opencast_instance_', '', $category));
         } else {
             $section = optional_param('section', null, PARAM_RAW);
-            $ocinstanceid = intval(str_replace('block_opencast_importvideossettings_', '', $section));
+            $ocinstanceid = intval(str_replace('tool_opencast_importvideossettings_', '', $section));
         }
 
         // Get an APIbridge instance.
@@ -68,7 +68,7 @@ class setting_helper {
 
         // Verify if the given value is a valid Opencast workflow.
         if (!$apibridge->check_if_workflow_exists($data)) {
-            return get_string('workflow_not_existing', 'block_opencast');
+            return get_string('workflow_not_existing', 'tool_opencast');
         }
         return false;
     }
@@ -112,10 +112,10 @@ class setting_helper {
         // Hack to get the opencast instance id.
         $category = optional_param('category', null, PARAM_RAW);
         if ($category) {
-            $ocinstanceid = intval(ltrim($category, 'block_opencast_instance_'));
+            $ocinstanceid = intval(ltrim($category, 'tool_opencast_instance_'));
         } else {
             $section = optional_param('section', null, PARAM_RAW);
-            $ocinstanceid = intval(ltrim($section ?? '', 'block_opencast_importvideossettings_'));
+            $ocinstanceid = intval(ltrim($section ?? '', 'tool_opencast_importvideossettings_'));
         }
 
         $ocinstanceid = $ocinstanceid == 0 ? 1 : $ocinstanceid;
@@ -125,12 +125,12 @@ class setting_helper {
             $role = array_search($data, array_column($roles, 'rolename'));
             if ($role === false) {
                 // Role isn't defined as ACL role.
-                return get_string('role_not_defined', 'block_opencast');
+                return get_string('role_not_defined', 'tool_opencast');
             }
 
             if (!$roles[$role]->permanent) {
                 // Role isn't defined as permanent.
-                return get_string('role_not_permanent', 'block_opencast');
+                return get_string('role_not_permanent', 'tool_opencast');
             }
 
             $userrelated = false;
@@ -144,7 +144,7 @@ class setting_helper {
 
             if (!$userrelated) {
                 // Role is not user-related.
-                return get_string('role_not_user_related', 'block_opencast');
+                return get_string('role_not_user_related', 'tool_opencast');
             }
 
             return true;

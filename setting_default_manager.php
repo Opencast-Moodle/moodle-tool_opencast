@@ -43,7 +43,7 @@ class setting_default_manager {
      * @param int $ocinstanceid ocinstance id
      */
     public static function init_regirstered_defaults($ocinstanceid = 1) {
-        $classmethods = get_class_methods('\block_opencast\setting_default_manager');
+        $classmethods = get_class_methods('\tool_opencast\setting_default_manager');
         foreach ($classmethods as $methodname) {
             if (strpos($methodname, 'set_default') !== false) {
                 self::$methodname($ocinstanceid);
@@ -92,7 +92,7 @@ class setting_default_manager {
         $configname = 'metadata_' . $ocinstanceid;
         $currentmetadata = get_config('tool_opencast', $configname);
         if (empty($currentmetadata)) {
-            set_config($configname, self::get_default_metadata(), 'block_opencast');
+            set_config($configname, self::get_default_metadata(), 'tool_opencast');
         }
     }
 
@@ -132,7 +132,7 @@ class setting_default_manager {
         $configname = 'metadataseries_' . $ocinstanceid;
         $currentmetadata = get_config('tool_opencast', $configname);
         if (empty($currentmetadata)) {
-            set_config($configname, self::get_default_metadataseries(), 'block_opencast');
+            set_config($configname, self::get_default_metadataseries(), 'tool_opencast');
         }
     }
 
@@ -156,7 +156,7 @@ class setting_default_manager {
         $configname = 'transcriptionflavors_' . $ocinstanceid;
         $currentmetadata = get_config('tool_opencast', $configname);
         if (empty($currentmetadata)) {
-            set_config($configname, self::get_default_transcriptionflavors(), 'block_opencast');
+            set_config($configname, self::get_default_transcriptionflavors(), 'tool_opencast');
         }
     }
 
@@ -181,7 +181,7 @@ class setting_default_manager {
         $configname = 'roles_' . $ocinstanceid;
         $currentmetadata = get_config('tool_opencast', $configname);
         if (empty($currentmetadata)) {
-            set_config($configname, self::get_default_roles(), 'block_opencast');
+            set_config($configname, self::get_default_roles(), 'tool_opencast');
         }
     }
 
@@ -203,7 +203,7 @@ class setting_default_manager {
         $configname = 'maxseries_' . $ocinstanceid;
         $currentmetadata = get_config('tool_opencast', $configname);
         if (empty($currentmetadata)) {
-            set_config($configname, self::get_default_maxseries(), 'block_opencast');
+            set_config($configname, self::get_default_maxseries(), 'tool_opencast');
         }
     }
 
@@ -225,7 +225,7 @@ class setting_default_manager {
         $configname = 'limitvideos_' . $ocinstanceid;
         $currentmetadata = get_config('tool_opencast', $configname);
         if (empty($currentmetadata)) {
-            set_config($configname, self::get_default_limitvideos(), 'block_opencast');
+            set_config($configname, self::get_default_limitvideos(), 'tool_opencast');
         }
     }
 }

@@ -55,10 +55,10 @@ if ($redirectpage == 'overviewvideos') {
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('updatemetadata', 'block_opencast'), $baseurl);
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('updatemetadata', 'tool_opencast'), $baseurl);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
@@ -101,15 +101,15 @@ if ($data = $updatemetadataform->get_data()) {
     $msg = '';
     $res = $opencast->update_event_metadata($identifier, $newmetadata);
     if ($res) {
-        redirect($redirecturl, get_string('updatemetadatasaved', 'block_opencast'));
+        redirect($redirecturl, get_string('updatemetadatasaved', 'tool_opencast'));
     } else {
-        redirect($redirecturl, get_string('updatemetadatafailed', 'block_opencast'), null, notification::NOTIFY_ERROR);
+        redirect($redirecturl, get_string('updatemetadatafailed', 'tool_opencast'), null, notification::NOTIFY_ERROR);
     }
 }
-$PAGE->requires->js_call_amd('block_opencast/block_form_handler', 'init');
-$renderer = $PAGE->get_renderer('block_opencast');
+$PAGE->requires->js_call_amd('tool_opencast/block_form_handler', 'init');
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('updatemetadata', 'block_opencast'));
+echo $OUTPUT->heading(get_string('updatemetadata', 'tool_opencast'));
 $updatemetadataform->display();
 echo $OUTPUT->footer();

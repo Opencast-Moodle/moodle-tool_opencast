@@ -55,7 +55,7 @@ class batchupload_form extends moodleform {
     public function definition() {
         global $DB, $PAGE;
         // Get the renderer to use its methods.
-        $renderer = $PAGE->get_renderer('block_opencast');
+        $renderer = $PAGE->get_renderer('tool_opencast');
         $ocinstanceid = $this->_customdata['ocinstanceid'];
         $apibridge = apibridge::get_instance($ocinstanceid);
         $eventdefaults = $this->_customdata['eventdefaults'];
@@ -64,7 +64,7 @@ class batchupload_form extends moodleform {
         $mform = $this->_form;
 
         // Batch metadata.
-        $mform->addElement('header', 'batch_metadata', get_string('batchupload_metadata_header', 'block_opencast'));
+        $mform->addElement('header', 'batch_metadata', get_string('batchupload_metadata_header', 'tool_opencast'));
         $mform->setExpanded('batch_metadata', true);
 
         $managedefaultsurl = new moodle_url('/admin/tool/opencast/managedefaults.php',
@@ -73,10 +73,10 @@ class batchupload_form extends moodleform {
                 'ocinstanceid' => $ocinstanceid,
                 'redirectto' => 'addvideo',
             ]);
-        $managedefaultslink = html_writer::link($managedefaultsurl, get_string('managedefaultsforuser', 'block_opencast'));
+        $managedefaultslink = html_writer::link($managedefaultsurl, get_string('managedefaultsforuser', 'tool_opencast'));
         $managedefaultsexplation = html_writer::tag('p',
-            get_string('managedefaultredirectlinkwithexp', 'block_opencast') . $managedefaultslink);
-        $explanation = html_writer::tag('p', get_string('batchupload_metadata_desc', 'block_opencast'));
+            get_string('managedefaultredirectlinkwithexp', 'tool_opencast') . $managedefaultslink);
+        $explanation = html_writer::tag('p', get_string('batchupload_metadata_desc', 'tool_opencast'));
         $mform->addElement('html', $explanation . $managedefaultsexplation);
 
         $seriesrecords = $DB->get_records('tool_opencast_series',
@@ -97,7 +97,7 @@ class batchupload_form extends moodleform {
                 }
             }
 
-            $mform->addElement('select', 'series', get_string('series', 'block_opencast'), $seriesoption);
+            $mform->addElement('select', 'series', get_string('series', 'tool_opencast'), $seriesoption);
             $mform->addRule('series', get_string('required'), 'required');
             $mform->setDefault('series', $defaultseries);
         } else if (array_key_exists('series', $this->_customdata) && $this->_customdata['series']) {
@@ -112,7 +112,7 @@ class batchupload_form extends moodleform {
                 $seriesoption[$this->_customdata['series']] = $this->_customdata['series'];
             }
 
-            $mform->addElement('select', 'series', get_string('series', 'block_opencast'), $seriesoption);
+            $mform->addElement('select', 'series', get_string('series', 'tool_opencast'), $seriesoption);
             $mform->addRule('series', get_string('required'), 'required');
             $mform->setDefault('series', $this->_customdata['series']);
         }
@@ -126,11 +126,11 @@ class batchupload_form extends moodleform {
             if ($field->datatype == 'autocomplete') {
                 $attributes = [
                     'multiple' => true,
-                    'placeholder' => get_string('metadata_autocomplete_placeholder', 'block_opencast',
-                        $this->try_get_string($field->name, 'block_opencast')),
+                    'placeholder' => get_string('metadata_autocomplete_placeholder', 'tool_opencast',
+                        $this->try_get_string($field->name, 'tool_opencast')),
                     'showsuggestions' => true, // If true, admin is able to add suggestion via admin page. Otherwise no suggestions!
-                    'noselectionstring' => get_string('metadata_autocomplete_noselectionstring', 'block_opencast',
-                        $this->try_get_string($field->name, 'block_opencast')),
+                    'noselectionstring' => get_string('metadata_autocomplete_noselectionstring', 'tool_opencast',
+                        $this->try_get_string($field->name, 'tool_opencast')),
                     'tags' => true,
                 ];
 
@@ -158,14 +158,14 @@ class batchupload_form extends moodleform {
             }
 
             // Get the created element back from addElement function, in order to further use its attrs.
-            $element = $mform->addElement($field->datatype, $field->name, $this->try_get_string($field->name, 'block_opencast'),
+            $element = $mform->addElement($field->datatype, $field->name, $this->try_get_string($field->name, 'tool_opencast'),
                 $param, $attributes);
 
             // Check if the description is set for the field, to display it as help icon.
             if (isset($field->description) && !empty($field->description)) {
                 // Use the renderer to generate a help icon with custom text.
                 $element->_helpbutton = $renderer->render_help_icon_with_custom_text(
-                    $this->try_get_string($field->name, 'block_opencast'), $field->description);
+                    $this->try_get_string($field->name, 'tool_opencast'), $field->description);
             }
 
             if ($field->datatype == 'text') {
@@ -206,7 +206,7 @@ class batchupload_form extends moodleform {
             }
         }
 
-        $mform->addElement('date_time_selector', 'startDate', get_string('date', 'block_opencast'));
+        $mform->addElement('date_time_selector', 'startDate', get_string('date', 'tool_opencast'));
         $mform->setAdvanced('startDate');
 
         // Batch Visibility configuration.
@@ -237,24 +237,24 @@ class batchupload_form extends moodleform {
             $mform->closeHeaderBefore('batchupload_visibility_header');
 
             $mform->addElement('header', 'batchupload_visibility_header',
-                get_string('batchupload_visibility_header', 'block_opencast'));
+                get_string('batchupload_visibility_header', 'tool_opencast'));
             $mform->setExpanded('batchupload_visibility_header', true);
 
-            $explanation = html_writer::tag('p', get_string('batchupload_visibility_desc', 'block_opencast'));
+            $explanation = html_writer::tag('p', get_string('batchupload_visibility_desc', 'tool_opencast'));
             $mform->addElement('html', $explanation);
 
             // Initial visibility.
             $intialvisibilityradioarray = [];
             $intialvisibilityradioarray[] = $mform->addElement('radio', 'initialvisibilitystatus',
-                get_string('initialvisibilitystatus', 'block_opencast'), get_string('visibility_hide', 'block_opencast'), 0);
+                get_string('initialvisibilitystatus', 'tool_opencast'), get_string('visibility_hide', 'tool_opencast'), 0);
             $intialvisibilityradioarray[] = $mform->addElement('radio', 'initialvisibilitystatus',
-                '', get_string('visibility_show', 'block_opencast'), 1);
+                '', get_string('visibility_show', 'tool_opencast'), 1);
             // We need to remove the group visibility radio button, when there is no group in the course.
             if ($groupvisibilityallowed && !empty($groups)) {
                 $intialvisibilityradioarray[] = $mform->addElement('radio', 'initialvisibilitystatus',
-                    '', get_string('visibility_group', 'block_opencast'), 2);
+                    '', get_string('visibility_group', 'tool_opencast'), 2);
             }
-            $mform->setDefault('initialvisibilitystatus', block_opencast_renderer::VISIBLE);
+            $mform->setDefault('initialvisibilitystatus', tool_opencast_renderer::VISIBLE);
             $mform->setType('initialvisibilitystatus', PARAM_INT);
 
             // Load existing groups.
@@ -271,32 +271,32 @@ class batchupload_form extends moodleform {
             if ($allowchangevisibility) {
                 // Provide a checkbox to enable changing the visibility for later.
                 $mform->addElement('checkbox', 'enableschedulingchangevisibility',
-                    get_string('enableschedulingchangevisibility', 'block_opencast'),
-                    get_string('enableschedulingchangevisibilitydesc', 'block_opencast'));
+                    get_string('enableschedulingchangevisibility', 'tool_opencast'),
+                    get_string('enableschedulingchangevisibilitydesc', 'tool_opencast'));
                 $mform->hideIf('scheduledvisibilitytime', 'enableschedulingchangevisibility', 'notchecked');
                 $mform->hideIf('scheduledvisibilitystatus', 'enableschedulingchangevisibility', 'notchecked');
 
                 // Scheduled visibility.
                 list($waitingtime, $configuredtimespan) = visibility_helper::get_waiting_time($ocinstanceid);
                 $scheduledvisibilitytimeelm = $mform->addElement('date_time_selector', 'scheduledvisibilitytime',
-                    get_string('scheduledvisibilitytime', 'block_opencast'));
+                    get_string('scheduledvisibilitytime', 'tool_opencast'));
                 $scheduledvisibilitytimeelm->_helpbutton = $renderer->render_help_icon_with_custom_text(
-                    get_string('scheduledvisibilitytimehi', 'block_opencast'),
-                    get_string('scheduledvisibilitytimehi_help', 'block_opencast', $configuredtimespan));
+                    get_string('scheduledvisibilitytimehi', 'tool_opencast'),
+                    get_string('scheduledvisibilitytimehi_help', 'tool_opencast', $configuredtimespan));
                 $mform->setDefault('scheduledvisibilitytime', $waitingtime);
 
                 $radioarray = [];
                 $radioarray[] = $mform->addElement('radio', 'scheduledvisibilitystatus',
-                    get_string('scheduledvisibilitystatus', 'block_opencast'), get_string('visibility_hide', 'block_opencast'), 0);
+                    get_string('scheduledvisibilitystatus', 'tool_opencast'), get_string('visibility_hide', 'tool_opencast'), 0);
                 $radioarray[] = $mform->addElement('radio', 'scheduledvisibilitystatus', '',
-                    get_string('visibility_show', 'block_opencast'), 1);
+                    get_string('visibility_show', 'tool_opencast'), 1);
                 // We need to remove the group visibility radio button, we there is no group in the course.
                 if ($groupvisibilityallowed && !empty($groups)) {
                     $radioarray[] = $mform->addElement('radio', 'scheduledvisibilitystatus',
-                        '', get_string('visibility_group', 'block_opencast'), 2);
+                        '', get_string('visibility_group', 'tool_opencast'), 2);
                 }
 
-                $mform->setDefault('scheduledvisibilitystatus', block_opencast_renderer::HIDDEN);
+                $mform->setDefault('scheduledvisibilitystatus', tool_opencast_renderer::HIDDEN);
                 $mform->setType('scheduledvisibilitystatus', PARAM_INT);
 
                 // Load existing groups.
@@ -316,10 +316,10 @@ class batchupload_form extends moodleform {
         // Offering workflow configuration panel settings.
         if ($wfconfighelper->can_provide_configuration_panel()) {
             $mform->closeHeaderBefore('configurationpanel_header');
-            $mform->addElement('header', 'configurationpanel_header', get_string('configurationpanel_header', 'block_opencast'));
+            $mform->addElement('header', 'configurationpanel_header', get_string('configurationpanel_header', 'tool_opencast'));
             $mform->setExpanded('configurationpanel_header', true);
 
-            $configpanelexplanation = html_writer::tag('p', get_string('configurationpanelheader_explanation', 'block_opencast'));
+            $configpanelexplanation = html_writer::tag('p', get_string('configurationpanelheader_explanation', 'tool_opencast'));
             $mform->addElement('html', $configpanelexplanation);
 
             $renderer->render_configuration_panel_form_elements(
@@ -332,16 +332,16 @@ class batchupload_form extends moodleform {
         // Batch Upload section.
         $mform->closeHeaderBefore('batchupload_form_header');
 
-        $mform->addElement('header', 'batchupload_form_header', get_string('batchupload_form_header', 'block_opencast'));
+        $mform->addElement('header', 'batchupload_form_header', get_string('batchupload_form_header', 'tool_opencast'));
         $mform->setExpanded('batchupload_form_header', true);
 
-        $explanation = html_writer::tag('p', get_string('batchuploadexplanation', 'block_opencast'));
+        $explanation = html_writer::tag('p', get_string('batchuploadexplanation', 'tool_opencast'));
         $mform->addElement('html', $explanation);
 
         $mform->addElement(
             'filemanager',
             'batchuploadedvideos',
-            get_string('batchupload_filemanager_presenter_title', 'block_opencast'),
+            get_string('batchupload_filemanager_presenter_title', 'tool_opencast'),
             null,
             $this->_customdata['filemanageroptions']
         );
@@ -351,10 +351,10 @@ class batchupload_form extends moodleform {
         // Term of use.
         if (!empty(get_config('tool_opencast', 'termsofuse_' . $ocinstanceid))) {
             $togglespan = '<span class="btn-link" id="termsofuse_toggle">' .
-                get_string('termsofuse_accept_toggle', 'block_opencast') . '</span>';
+                get_string('termsofuse_accept_toggle', 'tool_opencast') . '</span>';
 
-            $mform->addElement('checkbox', 'termsofuse', get_string('termsofuse', 'block_opencast'),
-                get_string('termsofuse_accept', 'block_opencast', $togglespan));
+            $mform->addElement('checkbox', 'termsofuse', get_string('termsofuse', 'tool_opencast'),
+                get_string('termsofuse_accept', 'tool_opencast', $togglespan));
             $mform->addRule('termsofuse', get_string('required'), 'required');
             $options['filter'] = false;
             $mform->addElement('html', '<div class="row justify-content-end" id="termsofuse"><div class="col-md-9">' .
@@ -369,7 +369,7 @@ class batchupload_form extends moodleform {
 
         $mform->closeHeaderBefore('buttonar');
 
-        $this->add_action_buttons(true, get_string('batchupload', 'block_opencast'));
+        $this->add_action_buttons(true, get_string('batchupload', 'tool_opencast'));
     }
 
     /**
@@ -383,13 +383,13 @@ class batchupload_form extends moodleform {
         $errors = parent::validation($data, $files);
         $files = file_get_drafarea_files($data['batchuploadedvideos'], '/');
         if (empty($files) || empty($files->list)) {
-            $errors['batchuploadedvideos'] = get_string('batchupload_emptyvideosuploaderror', 'block_opencast');
+            $errors['batchuploadedvideos'] = get_string('batchupload_emptyvideosuploaderror', 'tool_opencast');
         }
 
         if (isset($data['initialvisibilitystatus']) &&
-            $data['initialvisibilitystatus'] == block_opencast_renderer::GROUP &&
+            $data['initialvisibilitystatus'] == tool_opencast_renderer::GROUP &&
             empty($data['initialvisibilitygroups'])) {
-            $errors['initialvisibilitystatus'] = get_string('emptyvisibilitygroups', 'block_opencast');
+            $errors['initialvisibilitystatus'] = get_string('emptyvisibilitygroups', 'tool_opencast');
         }
 
         if (isset($data['enableschedulingchangevisibility']) && $data['enableschedulingchangevisibility']) {
@@ -404,18 +404,18 @@ class batchupload_form extends moodleform {
             $allowedscheduledvisibilitytime = $waitingtimearray[0];
             if (intval($data['scheduledvisibilitytime']) < intval($allowedscheduledvisibilitytime)) {
                 $errors['scheduledvisibilitytime'] = get_string('scheduledvisibilitytimeerror',
-                    'block_opencast', $waitingtimearray[1]);
+                    'tool_opencast', $waitingtimearray[1]);
             }
 
             if (isset($data['scheduledvisibilitystatus']) &&
-                $data['scheduledvisibilitystatus'] == block_opencast_renderer::GROUP &&
+                $data['scheduledvisibilitystatus'] == tool_opencast_renderer::GROUP &&
                 empty($data['scheduledvisibilitygroups'])) {
-                $errors['scheduledvisibilitystatus'] = get_string('emptyvisibilitygroups', 'block_opencast');
+                $errors['scheduledvisibilitystatus'] = get_string('emptyvisibilitygroups', 'tool_opencast');
             }
             // Check whether the scheduled visibility is equal to initial visibility.
             if (intval($data['scheduledvisibilitystatus']) == intval($data['initialvisibilitystatus'])) {
                 $haserror = true;
-                if ($data['scheduledvisibilitystatus'] == block_opencast_renderer::GROUP) {
+                if ($data['scheduledvisibilitystatus'] == tool_opencast_renderer::GROUP) {
                     sort($data['scheduledvisibilitygroups']);
                     sort($data['initialvisibilitygroups']);
                     if ($data['scheduledvisibilitygroups'] != $data['initialvisibilitygroups']) {
@@ -423,7 +423,7 @@ class batchupload_form extends moodleform {
                     }
                 }
                 if ($haserror) {
-                    $errors['enableschedulingchangevisibility'] = get_string('scheduledvisibilitystatuserror', 'block_opencast');
+                    $errors['enableschedulingchangevisibility'] = get_string('scheduledvisibilitystatuserror', 'tool_opencast');
                 }
             }
         }

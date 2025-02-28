@@ -51,7 +51,7 @@ class updatemetadata_form_massaction extends moodleform {
         global $PAGE;
 
         $mform = $this->_form;
-        $renderer = $PAGE->get_renderer('block_opencast');
+        $renderer = $PAGE->get_renderer('tool_opencast');
 
         $ocinstanceid = $this->_customdata['ocinstanceid'];
 
@@ -72,7 +72,7 @@ class updatemetadata_form_massaction extends moodleform {
         if (!empty($videoslisthtmlitem)) {
             $line = html_writer::tag('hr', '');
             $explanation = html_writer::tag('p',
-                get_string('massaction_selectedvideos_list', 'block_opencast',
+                get_string('massaction_selectedvideos_list', 'tool_opencast',
                     implode('</li><li>', $videoslisthtmlitem))
             );
             $mform->addElement('html', $line . $explanation . $line);
@@ -87,11 +87,11 @@ class updatemetadata_form_massaction extends moodleform {
             if ($field->datatype == 'autocomplete') {
                 $attributes = [
                     'multiple' => true,
-                    'placeholder' => get_string('metadata_autocomplete_placeholder', 'block_opencast',
-                        $this->try_get_string($field->name, 'block_opencast')),
+                    'placeholder' => get_string('metadata_autocomplete_placeholder', 'tool_opencast',
+                        $this->try_get_string($field->name, 'tool_opencast')),
                     'showsuggestions' => true, // If true, admin is able to add suggestion via admin page. Otherwise no suggestions!
-                    'noselectionstring' => get_string('metadata_autocomplete_noselectionstring', 'block_opencast',
-                        $this->try_get_string($field->name, 'block_opencast')),
+                    'noselectionstring' => get_string('metadata_autocomplete_noselectionstring', 'tool_opencast',
+                        $this->try_get_string($field->name, 'tool_opencast')),
                     'tags' => true,
                 ];
                 // Check if the metadata_catalog field is creator or contributor, to pass some suggestions.
@@ -109,7 +109,7 @@ class updatemetadata_form_massaction extends moodleform {
                 });
             }
 
-            $element = $mform->addElement($field->datatype, $field->name, $this->try_get_string($field->name, 'block_opencast'),
+            $element = $mform->addElement($field->datatype, $field->name, $this->try_get_string($field->name, 'tool_opencast'),
                 $param, $attributes);
 
             // Because there is no normal way to disable and enable the autocomplete field,
@@ -117,7 +117,7 @@ class updatemetadata_form_massaction extends moodleform {
             // in order to give the user the impersseion that this field is not yet enabled.
             if ($field->datatype == 'autocomplete') {
                 $selectreplacement = $mform->addElement('select', $field->name . '_replacement',
-                    $this->try_get_string($field->name, 'block_opencast'),
+                    $this->try_get_string($field->name, 'tool_opencast'),
                     [
                         '' => $attributes['noselectionstring'],
                     ]
@@ -139,7 +139,7 @@ class updatemetadata_form_massaction extends moodleform {
             if (isset($field->description) && !empty($field->description)) {
                 // Use the renderer to generate a help icon with custom text.
                 $element->_helpbutton = $renderer->render_help_icon_with_custom_text(
-                    $this->try_get_string($field->name, 'block_opencast'), $field->description);
+                    $this->try_get_string($field->name, 'tool_opencast'), $field->description);
             }
 
             if ($field->datatype == 'text') {
@@ -152,7 +152,7 @@ class updatemetadata_form_massaction extends moodleform {
         }
 
         // Adding Start Date field as well manually.
-        $mform->addElement('date_time_selector', 'startDate', get_string('date', 'block_opencast'));
+        $mform->addElement('date_time_selector', 'startDate', get_string('date', 'tool_opencast'));
         $mform->addElement('checkbox', 'startDate_enabled', '', get_string('enable'));
         $mform->setType('startDate_enabled', PARAM_INT);
         $mform->disabledIf('startDate', 'startDate_enabled', 'notchecked');
@@ -217,7 +217,7 @@ class updatemetadata_form_massaction extends moodleform {
         });
         if (empty($enabledfields)) {
             $errors = array_merge($errors,
-                array_fill_keys($enablefieldnames, get_string('updatemetadata_massaction_emptyformsubmission', 'block_opencast')));
+                array_fill_keys($enablefieldnames, get_string('updatemetadata_massaction_emptyformsubmission', 'tool_opencast')));
         }
         return $errors;
     }

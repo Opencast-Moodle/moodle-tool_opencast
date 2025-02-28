@@ -55,7 +55,7 @@ class updatemetadata_form extends moodleform {
         global $PAGE;
 
         $mform = $this->_form;
-        $renderer = $PAGE->get_renderer('block_opencast');
+        $renderer = $PAGE->get_renderer('tool_opencast');
 
         $ocinstanceid = $this->_customdata['ocinstanceid'];
 
@@ -73,11 +73,11 @@ class updatemetadata_form extends moodleform {
             if ($field->datatype == 'autocomplete') {
                 $attributes = [
                     'multiple' => true,
-                    'placeholder' => get_string('metadata_autocomplete_placeholder', 'block_opencast',
-                        $this->try_get_string($field->name, 'block_opencast')),
+                    'placeholder' => get_string('metadata_autocomplete_placeholder', 'tool_opencast',
+                        $this->try_get_string($field->name, 'tool_opencast')),
                     'showsuggestions' => true, // If true, admin is able to add suggestion via admin page. Otherwise no suggestions!
-                    'noselectionstring' => get_string('metadata_autocomplete_noselectionstring', 'block_opencast',
-                        $this->try_get_string($field->name, 'block_opencast')),
+                    'noselectionstring' => get_string('metadata_autocomplete_noselectionstring', 'tool_opencast',
+                        $this->try_get_string($field->name, 'tool_opencast')),
                     'tags' => true,
                 ];
                 // Check if the metadata_catalog field is creator or contributor, to pass some suggestions.
@@ -100,14 +100,14 @@ class updatemetadata_form extends moodleform {
                 });
             }
 
-            $element = $mform->addElement($field->datatype, $field->name, $this->try_get_string($field->name, 'block_opencast'),
+            $element = $mform->addElement($field->datatype, $field->name, $this->try_get_string($field->name, 'tool_opencast'),
                 $param, $attributes);
 
             // Check if the description is set for the field, to display it as help icon.
             if (isset($field->description) && !empty($field->description)) {
                 // Use the renderer to generate a help icon with custom text.
                 $element->_helpbutton = $renderer->render_help_icon_with_custom_text(
-                    $this->try_get_string($field->name, 'block_opencast'), $field->description);
+                    $this->try_get_string($field->name, 'tool_opencast'), $field->description);
             }
 
             if ($field->datatype == 'text') {
@@ -131,7 +131,7 @@ class updatemetadata_form extends moodleform {
         $starttime = $this->extract_value('startTime');
         $sd = new DateTime("$startdate $starttime", new DateTimeZone("UTC"));
         $sd->setTimezone(core_date::get_user_timezone_object());
-        $mform->addElement('date_time_selector', 'startDate', get_string('date', 'block_opencast'));
+        $mform->addElement('date_time_selector', 'startDate', get_string('date', 'tool_opencast'));
         $mform->setDefault('startDate', date('U', $sd->getTimestamp()));
 
         $mform->addElement('hidden', 'courseid', $this->_customdata['courseid']);

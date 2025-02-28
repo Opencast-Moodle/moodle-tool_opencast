@@ -47,26 +47,26 @@ $PAGE->set_url($baseurl);
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
 
 $redirecturl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('changevisibility_massaction', 'block_opencast'), $baseurl);
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('changevisibility_massaction', 'tool_opencast'), $baseurl);
 
 // Check if the ACL control feature is enabled.
 if (get_config('tool_opencast', 'aclcontrolafter_' . $ocinstanceid) != true) {
-    throw new moodle_exception('ACL control feature not enabled', 'block_opencast', $redirecturl);
+    throw new moodle_exception('ACL control feature not enabled', 'tool_opencast', $redirecturl);
 }
 
 // Workflow is not set.
 if (get_config('tool_opencast', 'workflow_roles_' . $ocinstanceid) == "") {
-    $message = get_string('workflownotdefined', 'block_opencast');
+    $message = get_string('workflownotdefined', 'tool_opencast');
     redirect($redirecturl, $message, null, \core\notification::ERROR);
 }
 
 if (empty($videoids)) {
-    $message = get_string('changevisibility_massaction_novideos', 'block_opencast');
+    $message = get_string('changevisibility_massaction_novideos', 'tool_opencast');
     redirect($redirecturl, $message, null, \core\notification::ERROR);
 }
 
@@ -92,8 +92,8 @@ foreach ($videoids as $videoid) {
 
     $video = $apibridge->get_opencast_video($videoid);
     if (!empty($video->error)) {
-        $videodata->error = get_string('videonotfound', 'block_opencast');
-        $videodata->detail = get_string('changevisibility_massaction_videoerror', 'block_opencast', $videodata);
+        $videodata->error = get_string('videonotfound', 'tool_opencast');
+        $videodata->detail = get_string('changevisibility_massaction_videoerror', 'tool_opencast', $videodata);
         $videosdatalist[] = $videodata;
         continue;
     }
@@ -101,8 +101,8 @@ foreach ($videoids as $videoid) {
     $videodata->title = $video->video->title;
 
     if (!in_array($video->video->processing_state, ["SUCCEEDED", "FAILED", "STOPPED"])) {
-        $videodata->error = get_string('massaction_videostatusmismatched', 'block_opencast');
-        $videodata->detail = get_string('changevisibility_massaction_videoerror', 'block_opencast', $videodata);
+        $videodata->error = get_string('massaction_videostatusmismatched', 'tool_opencast');
+        $videodata->detail = get_string('changevisibility_massaction_videoerror', 'tool_opencast', $videodata);
         $videosdatalist[] = $videodata;
         continue;
     }
@@ -111,9 +111,9 @@ foreach ($videoids as $videoid) {
     if ($visibility === block_opencast_renderer::MIXED_VISIBILITY) {
         $groups = groupaccess::get_record(['opencasteventid' => $videoid, 'ocinstanceid' => $ocinstanceid]);
         if ($groups) {
-            $visibility = block_opencast_renderer::GROUP;
+            $visibility = tool_opencast_renderer::GROUP;
         } else {
-            $visibility = block_opencast_renderer::HIDDEN;
+            $visibility = tool_opencast_renderer::HIDDEN;
         }
     }
 
@@ -146,7 +146,7 @@ foreach ($videoids as $videoid) {
         $strobj->svdatetime = $scheduledvisibilitydatetime;
     }
 
-    $videodata->detail = get_string($langstringkey, 'block_opencast', $strobj);
+    $videodata->detail = get_string($langstringkey, 'tool_opencast', $strobj);
 
     $videosdatalist[] = $videodata;
 }
@@ -180,12 +180,12 @@ if ($data = $massactionchangevisibilityform->get_data()) {
         }
 
         $initialvisibilitygroups = null;
-        if ($data->visibility == block_opencast_renderer::GROUP
+        if ($data->visibility == tool_opencast_renderer::GROUP
             && !empty($groups)) {
             $initialvisibilitygroups = json_encode($groups);
         }
         $scheduledvisibilitygroups = null;
-        if ($data->scheduledvisibilitystatus == block_opencast_renderer::GROUP
+        if ($data->scheduledvisibilitystatus == tool_opencast_renderer::GROUP
             && !empty($data->scheduledvisibilitygroups)) {
             $scheduledvisibilitygroups = json_encode($data->scheduledvisibilitygroups);
         }
@@ -198,7 +198,7 @@ if ($data = $massactionchangevisibilityform->get_data()) {
             // Just skip if the video has any error!
             if (!empty($videodata->error)) {
                 $failed[$videodata->identifier] =
-                    get_string('changevisibility_massaction_report_failed', 'block_opencast', $videodata);
+                    get_string('changevisibility_massaction_report_failed', 'tool_opencast', $videodata);
                 continue;
             }
 
@@ -212,8 +212,8 @@ if ($data = $massactionchangevisibilityform->get_data()) {
                     if ($requestscheduling) {
                         $langstrkey = 'changevisibility_massaction_aclchangeerror_noscheduling';
                     }
-                    $videodata->error = get_string($langstrkey, 'block_opencast');
-                    $failed[] = get_string('changevisibility_massaction_report_failed', 'block_opencast', $videodata);
+                    $videodata->error = get_string($langstrkey, 'tool_opencast');
+                    $failed[] = get_string('changevisibility_massaction_report_failed', 'tool_opencast', $videodata);
                     continue;
                 }
                 $succeeded[] = $videodata->title;
@@ -231,7 +231,7 @@ if ($data = $massactionchangevisibilityform->get_data()) {
                     $scheduledvisibility->scheduledvisibilitygroups = $scheduledvisibilitygroups;
                     $schedulingresult = visibility_helper::update_visibility_job($scheduledvisibility);
                     if (!$schedulingresult) {
-                        $videodata->error = get_string('scheduledvisibilityupdatefailed', 'block_opencast');
+                        $videodata->error = get_string('scheduledvisibilityupdatefailed', 'tool_opencast');
                     }
                 } else {
                     // Otherwise, we create a new record.
@@ -246,12 +246,12 @@ if ($data = $massactionchangevisibilityform->get_data()) {
                     $scheduledvisibility->opencasteventid = $videodata->identifier;
                     $schedulingresult = visibility_helper::save_visibility_job($scheduledvisibility);
                     if (!$schedulingresult) {
-                        $videodata->error = get_string('scheduledvisibilitycreatefailed', 'block_opencast');
+                        $videodata->error = get_string('scheduledvisibilitycreatefailed', 'tool_opencast');
                     }
                 }
 
                 if (!$schedulingresult) {
-                    $schedulingfailed[] = get_string('changevisibility_massaction_report_failed', 'block_opencast', $videodata);
+                    $schedulingfailed[] = get_string('changevisibility_massaction_report_failed', 'tool_opencast', $videodata);
                 } else {
                     $schedulingsucceeded[] = $videodata->title;
                 }
@@ -268,7 +268,7 @@ if ($data = $massactionchangevisibilityform->get_data()) {
         if (!empty($nochanges)) {
             $nochangestext = get_string(
                 'changevisibility_massaction_notification_nochanges',
-                'block_opencast',
+                'tool_opencast',
                 implode('</li><li>', $nochanges)
             );
             \core\notification::add($nochangestext, \core\notification::INFO);
@@ -278,7 +278,7 @@ if ($data = $massactionchangevisibilityform->get_data()) {
         if (!empty($schedulingfailed)) {
             $schedulingfailedtext = get_string(
                 'changevisibility_massaction_notification_schedulingfailed',
-                'block_opencast',
+                'tool_opencast',
                 implode('</li><li>', $schedulingfailed)
             );
             \core\notification::add($schedulingfailedtext, \core\notification::ERROR);
@@ -288,7 +288,7 @@ if ($data = $massactionchangevisibilityform->get_data()) {
         if (!empty($schedulingsucceeded)) {
             $schedulingsucceededtext = get_string(
                 'changevisibility_massaction_notification_schedulingsucceeded',
-                'block_opencast',
+                'tool_opencast',
                 implode('</li><li>', $schedulingsucceeded)
             );
             \core\notification::add($schedulingsucceededtext, \core\notification::SUCCESS);
@@ -298,7 +298,7 @@ if ($data = $massactionchangevisibilityform->get_data()) {
         if (!empty($failed)) {
             $failedtext = get_string(
                 'changevisibility_massaction_notification_failed',
-                'block_opencast',
+                'tool_opencast',
                 implode('</li><li>', $failed)
             );
         }
@@ -306,7 +306,7 @@ if ($data = $massactionchangevisibilityform->get_data()) {
         if (!empty($succeeded)) {
             $succeededtext = get_string(
                 'changevisibility_massaction_notification_succeeded',
-                'block_opencast',
+                'tool_opencast',
                 implode('</li><li>', $succeeded)
             );
         }
@@ -326,9 +326,9 @@ if ($data = $massactionchangevisibilityform->get_data()) {
     }
 }
 
-$renderer = $PAGE->get_renderer('block_opencast');
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('changevisibility_header_massaction', 'block_opencast', $video));
+echo $OUTPUT->heading(get_string('changevisibility_header_massaction', 'tool_opencast', $video));
 $massactionchangevisibilityform->display();
 echo $OUTPUT->footer();

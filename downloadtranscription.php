@@ -51,11 +51,11 @@ $redirecturl = new moodle_url('/admin/tool/opencast/managetranscriptions.php',
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('downloadtranscription', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $indexurl);
-$PAGE->navbar->add(get_string('managetranscriptions', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('downloadtranscription', 'block_opencast'), $baseurl);
+$PAGE->set_title(get_string('downloadtranscription', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $indexurl);
+$PAGE->navbar->add(get_string('managetranscriptions', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('downloadtranscription', 'tool_opencast'), $baseurl);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
@@ -66,7 +66,7 @@ $transcriptionenabled = get_config('tool_opencast', 'transcriptionworkflow_' . $
 $downloadenabled = get_config('tool_opencast', 'allowdownloadtranscription_' . $ocinstanceid);
 if (empty($downloadenabled) || empty($transcriptionenabled)) {
     redirect($redirecturl,
-        get_string('unabletodownloadtranscription', 'block_opencast'),
+        get_string('unabletodownloadtranscription', 'tool_opencast'),
         null,
         notification::NOTIFY_ERROR);
 }
@@ -76,7 +76,7 @@ $result = $apibridge->get_opencast_video($identifier, true, false, true);
 // Make sure video is in good condition.
 if ($result->error || $result->video->processing_state != 'SUCCEEDED') {
     redirect($redirecturl,
-        get_string('unabletodownloadtranscription', 'block_opencast'),
+        get_string('unabletodownloadtranscription', 'tool_opencast'),
         null,
         notification::NOTIFY_ERROR);
 }
@@ -126,7 +126,7 @@ if ($domain === 'media' && !empty($result->video->media) && !empty($publicationm
 
 if (empty($downloadurl)) {
     redirect($redirecturl,
-        get_string('unabletodownloadtranscription', 'block_opencast'),
+        get_string('unabletodownloadtranscription', 'tool_opencast'),
         null,
         notification::NOTIFY_ERROR);
 }
@@ -156,13 +156,13 @@ if ($performlti) {
     $params = lti_helper::create_lti_parameters($consumerkey, $consumersecret,
         $ltiendpoint, $downloadurl);
 
-    $renderer = $PAGE->get_renderer('block_opencast');
+    $renderer = $PAGE->get_renderer('tool_opencast');
     echo $OUTPUT->header();
-    echo $OUTPUT->heading(get_string('downloadtranscription', 'block_opencast'));
+    echo $OUTPUT->heading(get_string('downloadtranscription', 'tool_opencast'));
     echo $renderer->render_lti_form($ltiendpoint, $params);
-    $PAGE->requires->js_call_amd('block_opencast/block_lti_form_handler', 'init');
-    $htmlreturnlink = html_writer::link($redirecturl, get_string('transcriptionreturntomanagement', 'block_opencast'));
-    echo html_writer::tag('p', get_string('transcriptionltidownloadcompleted', 'block_opencast', $htmlreturnlink));
+    $PAGE->requires->js_call_amd('tool_opencast/block_lti_form_handler', 'init');
+    $htmlreturnlink = html_writer::link($redirecturl, get_string('transcriptionreturntomanagement', 'tool_opencast'));
+    echo html_writer::tag('p', get_string('transcriptionltidownloadcompleted', 'tool_opencast', $htmlreturnlink));
     echo $OUTPUT->footer();
 } else {
     ob_clean();

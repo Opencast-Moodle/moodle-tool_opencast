@@ -44,10 +44,10 @@ $redirecturl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('addvideo', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('addvideo', 'block_opencast'), $baseurl);
+$PAGE->set_title(get_string('addvideo', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('addvideo', 'tool_opencast'), $baseurl);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
@@ -97,13 +97,13 @@ if (!$result->error) {
         readfile($downloadurl);
     } else {
         redirect($redirecturl,
-            get_string('video_not_downloadable', 'block_opencast'),
+            get_string('video_not_downloadable', 'tool_opencast'),
             null,
             notification::NOTIFY_ERROR);
     }
 } else {
     redirect($redirecturl,
-        get_string('video_retrieval_failed', 'block_opencast'),
+        get_string('video_retrieval_failed', 'tool_opencast'),
         null,
         notification::NOTIFY_ERROR);
 }

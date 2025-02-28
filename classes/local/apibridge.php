@@ -103,7 +103,7 @@ class apibridge {
 
         // Use replacement of api bridge for test cases.
         if (defined('PHPUNIT_TEST') && PHPUNIT_TEST && self::$testing) {
-            $apibridge = new block_opencast_apibridge_testable();
+            $apibridge = new tool_opencast_apibridge_testable();
             $apibridge->ocinstanceid = 1;
             $apibridges[1] = $apibridge;
             return $apibridge;
@@ -262,7 +262,7 @@ class apibridge {
         $ingestapi = $this->get_ingest_api();
 
         if (empty($uploadworkflow)) {
-            $uploadworkflow = get_config("block_opencast", "uploadworkflow_" . $this->ocinstanceid);
+            $uploadworkflow = get_config("tool_opencast", "uploadworkflow_" . $this->ocinstanceid);
         }
 
         $uploadtimeout = get_config('tool_opencast', 'uploadtimeout');
@@ -329,7 +329,7 @@ class apibridge {
             return $result;
         }
 
-        $limitvideosconfig = intval(get_config('block_opencast', 'limitvideos_' . $this->ocinstanceid));
+        $limitvideosconfig = intval(get_config('tool_opencast', 'limitvideos_' . $this->ocinstanceid));
         $allvideos = [];
 
         foreach ($series as $s) {
@@ -647,7 +647,7 @@ class apibridge {
         }
 
         if (!isset($group->identifier)) {
-            throw new opencast_state_exception('missinggroup', 'block_opencast');
+            throw new opencast_state_exception('missinggroup', 'tool_opencast');
         }
 
         return $group;
@@ -827,7 +827,7 @@ class apibridge {
         }
         // We throw an exception, if there are more than one default series.
         if ($defaultseriesnum > 1) {
-            throw new moodle_exception('morethanonedefaultserieserror', 'block_opencast');
+            throw new moodle_exception('morethanonedefaultserieserror', 'tool_opencast');
         }
         return !empty($tempholder) ? array_values($tempholder) : [];
     }
@@ -1019,7 +1019,7 @@ class apibridge {
         }
 
         if (!isset($series)) {
-            throw new opencast_state_exception('missingseries', 'block_opencast');
+            throw new opencast_state_exception('missingseries', 'tool_opencast');
         }
 
         return $series;
@@ -1054,7 +1054,7 @@ class apibridge {
         $defaultaclstr = json_encode(array_values($acl));
 
         if (!is_array($acl)) {
-            throw new moodle_exception('invalidacldata', 'block_opencast');
+            throw new moodle_exception('invalidacldata', 'tool_opencast');
         }
 
         $roles = $this->getroles();
@@ -1199,7 +1199,7 @@ class apibridge {
         }
 
         if (!$validstoredfile) {
-            $DB->delete_records('block_opencast_uploadjob', ['id' => $job->id]);
+            $DB->delete_records('tool_opencast_uploadjob', ['id' => $job->id]);
             throw new moodle_exception('invalidfiletoupload', 'tool_opencast');
         }
 
@@ -1254,7 +1254,7 @@ class apibridge {
             $errorpattern = "/Cannot find a metadata field with id '([\w]+)' from Catalog with Flavor 'dublincore\/episode'./";
             if (preg_match($errorpattern, $result)) {
                 // If the process fails due to invalid metadata field, more specific error message will be thrown.
-                throw new moodle_exception('invalidmetadatafield', 'block_opencast', null, $result);
+                throw new moodle_exception('invalidmetadatafield', 'tool_opencast', null, $result);
             }
             throw new moodle_exception('serverconnectionerror', 'tool_opencast');
         }
@@ -1273,7 +1273,7 @@ class apibridge {
     public function get_upload_filestream($file, $type = 'video') {
         $tempdirname = "oc{$type}toupload";
         $tempdir = make_temp_directory($tempdirname);
-        $tempfilepath = tempnam($tempdir, 'block_opencast_' . $type . '_upload') . '_' . $file->get_filename();
+        $tempfilepath = tempnam($tempdir, 'tool_opencast_' . $type . '_upload') . '_' . $file->get_filename();
         $filestream = null;
         if ($file instanceof stored_file) {
             if ($file->copy_content_to($tempfilepath)) {
@@ -1339,7 +1339,7 @@ class apibridge {
 
         // Check success.
         if (!$event) {
-            throw new opencast_state_exception('uploadingeventfailed', 'block_opencast');
+            throw new opencast_state_exception('uploadingeventfailed', 'tool_opencast');
         }
 
         // Flag as newly created.
@@ -1460,8 +1460,8 @@ class apibridge {
         $oldgroups = groupaccess::get_record(['opencasteventid' => $eventidentifier, 'ocinstanceid' => $this->ocinstanceid]);
         $oldgroupsarray = $oldgroups ? explode(',', $oldgroups->get('moodlegroups')) : [];
 
-        $allowedvisibilitystates = [block_opencast_renderer::VISIBLE,
-            block_opencast_renderer::HIDDEN, block_opencast_renderer::GROUP, ];
+        $allowedvisibilitystates = [tool_opencast_renderer::VISIBLE,
+            tool_opencast_renderer::HIDDEN, tool_opencast_renderer::GROUP, ];
         if (!in_array($visibility, $allowedvisibilitystates)) {
             throw new coding_exception('Invalid visibility state.');
         }
@@ -1469,13 +1469,13 @@ class apibridge {
         $oldvisibility = $this->is_event_visible($eventidentifier, $courseid);
 
         // Only use transmitted groups if the status is group.
-        if ($visibility !== block_opencast_renderer::GROUP) {
+        if ($visibility !== tool_opencast_renderer::GROUP) {
             $groups = [];
         }
 
         // If there is no change in the status or in the group arrays, we can stop here.
         if ($oldvisibility === $visibility) {
-            if ($visibility !== block_opencast_renderer::GROUP || $groups === $oldgroupsarray) {
+            if ($visibility !== tool_opencast_renderer::GROUP || $groups === $oldgroupsarray) {
                 return 'aclnothingtobesaved';
             }
         }
@@ -1492,12 +1492,12 @@ class apibridge {
         $event->set_json_acl($jsonacl);
 
         // Remove acls.
-        if ($oldvisibility === block_opencast_renderer::MIXED_VISIBILITY) {
+        if ($oldvisibility === tool_opencast_renderer::MIXED_VISIBILITY) {
             $oldacls = [];
             array_merge($oldacls, $this->get_non_permanent_acl_rules_for_status($courseid,
-                block_opencast_renderer::GROUP, $oldgroupsarray));
+                tool_opencast_renderer::GROUP, $oldgroupsarray));
             array_merge($oldacls, $this->get_non_permanent_acl_rules_for_status($courseid,
-                block_opencast_renderer::VISIBLE, $oldgroupsarray));
+                tool_opencast_renderer::VISIBLE, $oldgroupsarray));
         } else {
             $oldacls = $this->get_non_permanent_acl_rules_for_status($courseid, $oldvisibility, $oldgroupsarray);
         }
@@ -1526,11 +1526,11 @@ class apibridge {
         // Trigger workflow.
         if ($this->update_metadata($eventidentifier)) {
             switch ($visibility) {
-                case block_opencast_renderer::VISIBLE:
+                case tool_opencast_renderer::VISIBLE:
                     return 'aclrolesadded';
-                case block_opencast_renderer::HIDDEN:
+                case tool_opencast_renderer::HIDDEN:
                     return 'aclrolesdeleted';
-                case block_opencast_renderer::GROUP:
+                case tool_opencast_renderer::GROUP:
                     return 'aclrolesaddedgroup';
             }
         }
@@ -1598,7 +1598,7 @@ class apibridge {
         $result = [];
 
         switch ($visibility) {
-            case block_opencast_renderer::VISIBLE:
+            case tool_opencast_renderer::VISIBLE:
                 foreach ($roles as $role) {
                     foreach ($role->actions as $action) {
                         $rolenameformatted = self::replace_placeholders($role->rolename, $courseid)[0];
@@ -1613,7 +1613,7 @@ class apibridge {
                     }
                 }
                 break;
-            case block_opencast_renderer::HIDDEN:
+            case tool_opencast_renderer::HIDDEN:
                 if ($permanent && $forceonhidden) {
                     foreach ($roles as $role) {
                         foreach ($role->actions as $action) {
@@ -1630,7 +1630,7 @@ class apibridge {
                     }
                 }
                 break;
-            case block_opencast_renderer::GROUP:
+            case tool_opencast_renderer::GROUP:
                 foreach ($roles as $role) {
                     foreach ($role->actions as $action) {
                         foreach (self::replace_placeholders($role->rolename, $courseid, $groups) as $rule) {
@@ -1667,8 +1667,8 @@ class apibridge {
         $groups = groupaccess::get_record(['opencasteventid' => $eventidentifier, 'ocinstanceid' => $this->ocinstanceid]);
         $groupsarray = $groups ? explode(',', $groups->get('moodlegroups')) : [];
 
-        $visibleacl = $this->get_non_permanent_acl_rules_for_status($courseid, block_opencast_renderer::VISIBLE);
-        $groupacl = $this->get_non_permanent_acl_rules_for_status($courseid, block_opencast_renderer::GROUP, $groupsarray);
+        $visibleacl = $this->get_non_permanent_acl_rules_for_status($courseid, tool_opencast_renderer::VISIBLE);
+        $groupacl = $this->get_non_permanent_acl_rules_for_status($courseid, tool_opencast_renderer::GROUP, $groupsarray);
 
         $hasallvisibleacls = true;
         $hasnovisibleacls = true;
@@ -1705,18 +1705,18 @@ class apibridge {
         }
         // If all non permanent acls for visibility are set the event is visible.
         if ($hasallvisibleacls) {
-            return block_opencast_renderer::VISIBLE;
+            return tool_opencast_renderer::VISIBLE;
         } else if (!empty($groupsarray) && $hasallgroupacls && !$hasaclnotingroup) {
             // If we have groups and the acl rules for each group is present and we do not have non-permanent acls,
             // which do not belong to group visibility, then visibility is group.
-            return block_opencast_renderer::GROUP;
+            return tool_opencast_renderer::GROUP;
         } else if (empty($groupsarray) && $hasnogroupacls & $hasnovisibleacls) {
             // The visibility is hidden if we have no groupaccess and
             // if there is no acl for group or full visibility in the set.
-            return block_opencast_renderer::HIDDEN;
+            return tool_opencast_renderer::HIDDEN;
         } else {
             // In all other cases we have mixed visibility.
-            return block_opencast_renderer::MIXED_VISIBILITY;
+            return tool_opencast_renderer::MIXED_VISIBILITY;
         }
     }
 
@@ -1917,7 +1917,7 @@ class apibridge {
 
         // If requested, add the 'no workflow' item to the list of workflows.
         if ($withnoworkflow == true) {
-            $noworkflow = [null => get_string('adminchoice_noworkflow', 'block_opencast')];
+            $noworkflow = [null => get_string('adminchoice_noworkflow', 'tool_opencast')];
             $workflows = array_merge($noworkflow, $workflows);
         }
 
@@ -1952,7 +1952,7 @@ class apibridge {
      */
     public function trigger_delete_event($eventidentifier) {
         global $DB;
-        $workflow = get_config("block_opencast", "deleteworkflow_" . $this->ocinstanceid);
+        $workflow = get_config("tool_opencast", "deleteworkflow_" . $this->ocinstanceid);
 
         if ($workflow) {
             if ($this->start_workflow($eventidentifier, $workflow)) {
@@ -1963,7 +1963,7 @@ class apibridge {
                     "timecreated" => time(),
                     "timemodified" => time(),
                 ];
-                $DB->insert_record("block_opencast_deletejob", $record);
+                $DB->insert_record("tool_opencast_deletejob", $record);
                 return true;
             }
             return false;
@@ -2609,7 +2609,7 @@ class apibridge {
         // Use try to catch unwanted errors.
         try {
             // Make it visible to the course does the ACL change accordingly.
-            $visibilychanged = $this->change_visibility($identifier, $courseid, block_opencast_renderer::VISIBLE);
+            $visibilychanged = $this->change_visibility($identifier, $courseid, tool_opencast_renderer::VISIBLE);
             // In order to resolve the return result of the change_visibility method, we assume non (false) values as true.
             return ($visibilychanged !== false) ? true : false;
         } catch (moodle_exception $e) {
@@ -2904,11 +2904,11 @@ class apibridge {
         }
 
         // Now we decide the visibiltiy.
-        $targetvisibiltiy = block_opencast_renderer::VISIBLE;
+        $targetvisibiltiy = tool_opencast_renderer::VISIBLE;
         $sourcevisibility = $this->is_event_visible($sourceeventid, $sourcecourseid);
         // Anything other than VISIBLE, we consider as HIDDEN.
-        if ($sourcevisibility !== block_opencast_renderer::VISIBLE) {
-            $targetvisibiltiy = block_opencast_renderer::HIDDEN;
+        if ($sourcevisibility !== tool_opencast_renderer::VISIBLE) {
+            $targetvisibiltiy = tool_opencast_renderer::HIDDEN;
         }
         // Grouping does not applying here, therefore we leave it empty.
         $groups = [];

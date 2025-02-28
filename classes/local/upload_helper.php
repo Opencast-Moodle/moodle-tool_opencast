@@ -84,19 +84,19 @@ class upload_helper {
 
         switch ($statuscode) {
             case self::STATUS_READY_TO_UPLOAD :
-                return get_string('mstatereadytoupload', 'block_opencast');
+                return get_string('mstatereadytoupload', 'tool_opencast');
             case self::STATUS_CREATING_GROUP :
-                return get_string('mstatecreatinggroup', 'block_opencast');
+                return get_string('mstatecreatinggroup', 'tool_opencast');
             case self::STATUS_CREATING_SERIES :
-                return get_string('mstatecreatingseries', 'block_opencast');
+                return get_string('mstatecreatingseries', 'tool_opencast');
             case self::STATUS_CREATING_EVENT :
-                return get_string('mstatecreatingevent', 'block_opencast');
+                return get_string('mstatecreatingevent', 'tool_opencast');
             case self::STATUS_UPLOADED :
-                return get_string('mstateuploaded', 'block_opencast');
+                return get_string('mstateuploaded', 'tool_opencast');
             case self::STATUS_TRANSFERRED :
-                return get_string('mstatetransferred', 'block_opencast');
+                return get_string('mstatetransferred', 'tool_opencast');
             case self::STATUS_ARCHIVED_FAILED_UPLOAD :
-                return get_string('mstatearchived', 'block_opencast');
+                return get_string('mstatearchived', 'tool_opencast');
             default :
                 return '';
         }
@@ -120,9 +120,9 @@ class upload_helper {
         $select = "SELECT uj.*, $allnamefields, md.metadata, " .
             "f1.filename as presenter_filename, f1.filesize as presenter_filesize, " .
             "f2.filename as presentation_filename, f2.filesize as presentation_filesize";
-        $from = " FROM {block_opencast_uploadjob} uj " .
+        $from = " FROM {tool_opencast_uploadjob} uj " .
             "JOIN {user} u ON uj.userid = u.id " .
-            "JOIN {block_opencast_metadata} md ON uj.id = md.uploadjobid " .
+            "JOIN {tool_opencast_metadata} md ON uj.id = md.uploadjobid " .
             "LEFT JOIN {files} f1 ON f1.id = uj.presenter_fileid " .
             "LEFT JOIN {files} f2 ON f2.id = uj.presentation_fileid";
 
@@ -151,7 +151,7 @@ class upload_helper {
     /**
      * Check uploadjobs, which means:
      *
-     * 1. Add a new job for an completely uploaded to moodlle-video, when no entry in block_opencast_uploadjob exists
+     * 1. Add a new job for an completely uploaded to moodlle-video, when no entry in tool_opencast_uploadjob exists
      * 2. Remove upload job, when status is readytoupload.
      *
      * @param int $ocinstanceid Opencast instance id.
@@ -166,7 +166,7 @@ class upload_helper {
 
         // Find the current files for the jobs.
         $params = [];
-        $params['component'] = 'block_opencast';
+        $params['component'] = 'tool_opencast';
         $params['filearea'] = self::OC_FILEAREA;
         $items = [];
 
@@ -237,10 +237,10 @@ class upload_helper {
             $job->workflowconfiguration = $workflowconfiguration;
         }
 
-        $uploadjobid = $DB->insert_record('block_opencast_uploadjob', $job);
+        $uploadjobid = $DB->insert_record('tool_opencast_uploadjob', $job);
 
         $options->uploadjobid = $uploadjobid;
-        $DB->insert_record('block_opencast_metadata', $options);
+        $DB->insert_record('tool_opencast_metadata', $options);
 
         // Check if visibility object is set, then we insert the visibility records.
         if (!empty($visibility)) {
@@ -268,7 +268,7 @@ class upload_helper {
 
         // Delete all jobs with status ready to transfer, where file is missing.
         $sql = "SELECT uj.id " .
-            "FROM {block_opencast_uploadjob} uj " .
+            "FROM {tool_opencast_uploadjob} uj " .
             "LEFT JOIN {files} f " .
             "ON (uj.presentation_fileid = f.id OR uj.presenter_fileid = f.id) AND " .
             "f.component = :component AND " .
@@ -288,14 +288,14 @@ class upload_helper {
         $sql .= $where;
 
         $params = [];
-        $params['component'] = 'block_opencast';
+        $params['component'] = 'tool_opencast';
         $params['filearea'] = self::OC_FILEAREA;
         $params['status'] = self::STATUS_READY_TO_UPLOAD;
 
         $jobidstodelete = $DB->get_records_sql($sql, $params);
 
         if (!empty($jobidstodelete)) {
-            $DB->delete_records_list('block_opencast_uploadjob', 'id', array_keys($jobidstodelete));
+            $DB->delete_records_list('tool_opencast_uploadjob', 'id', array_keys($jobidstodelete));
         }
     }
 
@@ -316,9 +316,9 @@ class upload_helper {
             'statustransferred' => self::STATUS_READY_TO_UPLOAD,
             'statusarchived' => self::STATUS_ARCHIVED_FAILED_UPLOAD,
         ];
-        if ($DB->record_exists_select('block_opencast_uploadjob', $selectwhere, $params)) {
-            $DB->delete_records('block_opencast_uploadjob', ['id' => $jobtodelete->id]);
-            $DB->delete_records('block_opencast_metadata', ['uploadjobid' => $jobtodelete->id]);
+        if ($DB->record_exists_select('tool_opencast_uploadjob', $selectwhere, $params)) {
+            $DB->delete_records('tool_opencast_uploadjob', ['id' => $jobtodelete->id]);
+            $DB->delete_records('tool_opencast_metadata', ['uploadjobid' => $jobtodelete->id]);
             // Delete from files table.
             $fs = get_file_storage();
             $files = [];
@@ -354,7 +354,7 @@ class upload_helper {
         $job->timemodified = $job->timesucceeded;
         $job->status = self::STATUS_TRANSFERRED;
 
-        $DB->update_record('block_opencast_uploadjob', $job);
+        $DB->update_record('tool_opencast_uploadjob', $job);
 
         // Delete from chunkupload.
         if (class_exists('\local_chunkupload\chunkupload_form_element')) {
@@ -447,7 +447,7 @@ class upload_helper {
 
         $job->status = $status;
 
-        $DB->update_record('block_opencast_uploadjob', $job);
+        $DB->update_record('tool_opencast_uploadjob', $job);
 
         // Get file information.
         $fs = get_file_storage();
@@ -518,7 +518,7 @@ class upload_helper {
         }
         $job->status = $status;
 
-        $DB->update_record('block_opencast_uploadjob', $job);
+        $DB->update_record('tool_opencast_uploadjob', $job);
     }
 
     /**
@@ -606,7 +606,7 @@ class upload_helper {
 
                     // Search for files already uploaded to opencast.
                     $sql = "SELECT opencasteventid " .
-                        "FROM {block_opencast_uploadjob} " .
+                        "FROM {tool_opencast_uploadjob} " .
                         "WHERE ocinstanceid = :ocinstanceid AND (contenthash_presenter = :contenthash_presenter " .
                         "OR contenthash_presentation = :contenthash_presentation) " .
                         "GROUP BY opencasteventid ";
@@ -624,7 +624,7 @@ class upload_helper {
 
                 // Check result.
                 if (!isset($event->identifier)) {
-                    throw new moodle_exception('missingevent', 'block_opencast');
+                    throw new moodle_exception('missingevent', 'tool_opencast');
                 } else {
                     mtrace('... video uploaded');
                     $this->update_status($job, self::STATUS_UPLOADED);
@@ -632,7 +632,7 @@ class upload_helper {
 
                     // Update eventid.
                     $job->opencasteventid = $event->identifier;
-                    $DB->update_record('block_opencast_uploadjob', $job);
+                    $DB->update_record('tool_opencast_uploadjob', $job);
                 }
                 break;
 
@@ -647,7 +647,7 @@ class upload_helper {
                     $stepsuccessful = true;
                     $job->opencasteventid = $event->identifier;
                     $job->workflowid = (int) $event->workflowid;
-                    $DB->update_record('block_opencast_uploadjob', $job);
+                    $DB->update_record('tool_opencast_uploadjob', $job);
                 }
                 break;
 
@@ -657,7 +657,7 @@ class upload_helper {
 
                 // Verify the upload.
                 if (!$job->opencasteventid) {
-                    throw new moodle_exception('missingeventidentifier', 'block_opencast');
+                    throw new moodle_exception('missingeventidentifier', 'tool_opencast');
                 }
 
                 if (!($event = $apibridge->get_already_existing_event([$job->opencasteventid]))) {
@@ -728,7 +728,7 @@ class upload_helper {
         $ocinstances = settings_api::get_ocinstances();
         foreach ($ocinstances as $ocinstance) {
             // Get all waiting jobs.
-            $sql = "SELECT * FROM {block_opencast_uploadjob}" .
+            $sql = "SELECT * FROM {tool_opencast_uploadjob}" .
                 " WHERE status < ? AND status <> ? AND ocinstanceid = ? ORDER BY timemodified ASC ";
 
             $limituploadjobs = get_config('tool_opencast', 'limituploadjobs_' . $ocinstance->id);

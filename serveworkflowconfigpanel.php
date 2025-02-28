@@ -17,7 +17,7 @@
 /**
  * Settings for the opencast block
  *
- * @package   block_opencast
+ * @package   tool_opencast
  * @copyright 2021 Tamara Gunkel, University of Münster
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -40,8 +40,8 @@ require_capability('block/opencast:startworkflow', $coursecontext);
 
 $apibridge = apibridge::get_instance($ocinstanceid);
 $workflow = $apibridge->get_workflow_definition($workflowid);
-/** @var block_opencast_renderer $renderer */
-$renderer = $PAGE->get_renderer('block_opencast');
+/** @var tool_opencast_renderer $renderer */
+$renderer = $PAGE->get_renderer('tool_opencast');
 if ($workflow) {
     // Display form.
     $context = new stdClass();
@@ -51,5 +51,5 @@ if ($workflow) {
     $context->parent_url = (new moodle_url('/admin/tool/opencast/workflowsettings.php'))->out();
     $context->parent_origin = $CFG->wwwroot;
 
-    echo $OUTPUT->render_from_template('block_opencast/workflow_settings_opencast', $context);
+    echo $OUTPUT->render_from_template('tool_opencast/workflow_settings_opencast', $context);
 }

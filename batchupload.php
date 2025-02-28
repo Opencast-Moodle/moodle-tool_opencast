@@ -66,7 +66,7 @@ require_login($courseid, false);
 
 // Check if the setting is on.
 if (empty(get_config('tool_opencast', 'batchuploadenabled_' . $ocinstanceid))) {
-    throw new moodle_exception('batchupload_errornotenabled', 'block_opencast', $redirecturl);
+    throw new moodle_exception('batchupload_errornotenabled', 'tool_opencast', $redirecturl);
 }
 
 // Use block context for this page to ignore course file upload limit.
@@ -74,17 +74,17 @@ $pagecontext = upload_helper::get_opencast_upload_context($courseid);
 $PAGE->set_context($pagecontext);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('batchupload', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('batchupload', 'block_opencast'), $baseurl);
+$PAGE->set_title(get_string('batchupload', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('batchupload', 'tool_opencast'), $baseurl);
 
 // Capability check.
 if ($courseid == $SITE->id) {
     // If upload initiated from overview page, check that capability is given in specific course or ownership.
     if (!$series) {
         redirect(new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid, 'series' => null]),
-            get_string('addvideonotallowed', 'block_opencast'), null,
+            get_string('addvideonotallowed', 'tool_opencast'), null,
             notification::NOTIFY_ERROR);
     }
 
@@ -105,14 +105,14 @@ if ($courseid == $SITE->id) {
         if (!$ocseries) {
             redirect(new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid,
                 'series' => $series, ]),
-                get_string('connection_failure', 'block_opencast'), null,
+                get_string('connection_failure', 'tool_opencast'), null,
                 notification::NOTIFY_ERROR);
         }
 
         if (!$apibridge->is_owner($ocseries->acl, $USER->id, $SITE->id)) {
             redirect(new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid,
                 'series' => $series, ]),
-                get_string('addvideonotallowed', 'block_opencast'), null,
+                get_string('addvideonotallowed', 'tool_opencast'), null,
                 notification::NOTIFY_ERROR);
         }
     }
@@ -181,13 +181,13 @@ if ($data = $batchuploadform->get_data()) {
     file_save_draft_area_files(
         $data->batchuploadedvideos,
         $coursecontext->id,
-        'block_opencast',
+        'tool_opencast',
         upload_helper::OC_FILEAREA,
         $itemid,
         $filemanageroptions
     );
     $fs = get_file_storage();
-    $batchuploadedfiles = $fs->get_area_files($coursecontext->id, 'block_opencast', upload_helper::OC_FILEAREA, $itemid);
+    $batchuploadedfiles = $fs->get_area_files($coursecontext->id, 'tool_opencast', upload_helper::OC_FILEAREA, $itemid);
 
     // Cleanup the drafts.
     $usercontext = \context_user::instance($USER->id);
@@ -239,7 +239,7 @@ if ($data = $batchuploadform->get_data()) {
     // Prepare the visibility object.
     $visibility = new stdClass();
     $visibility->initialvisibilitystatus = !isset($data->initialvisibilitystatus) ?
-        block_opencast_renderer::VISIBLE : $data->initialvisibilitystatus;
+        tool_opencast_renderer::VISIBLE : $data->initialvisibilitystatus;
     $visibility->initialvisibilitygroups = !empty($data->initialvisibilitygroups) ?
         json_encode($data->initialvisibilitygroups) : null;
     // Check if the scheduled visibility is set.
@@ -307,21 +307,21 @@ if ($data = $batchuploadform->get_data()) {
             $obj = new stdClass();
             $obj->error = $errorcount;
             $obj->total = $totalfiles;
-            $error = get_string('batchupload_errorsaveuploadjobs', 'block_opencast', $obj);
+            $error = get_string('batchupload_errorsaveuploadjobs', 'tool_opencast', $obj);
         }
     } else {
-        $error = get_string('batchupload_emptyvideosuploaderror', 'block_opencast');
+        $error = get_string('batchupload_emptyvideosuploaderror', 'tool_opencast');
     }
 
     $notinicationstatus = !empty($error) ? notification::NOTIFY_ERROR : notification::NOTIFY_SUCCESS;
-    $message = $error ?? get_string('batchupload_jobssaved', 'block_opencast', $totalfiles);
+    $message = $error ?? get_string('batchupload_jobssaved', 'tool_opencast', $totalfiles);
     redirect($redirecturl, $message, null, $notinicationstatus);
 }
 
-$PAGE->requires->js_call_amd('block_opencast/block_form_handler', 'init');
-$renderer = $PAGE->get_renderer('block_opencast');
+$PAGE->requires->js_call_amd('tool_opencast/block_form_handler', 'init');
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('batchupload', 'block_opencast'));
+echo $OUTPUT->heading(get_string('batchupload', 'tool_opencast'));
 $batchuploadform->display();
 echo $OUTPUT->footer();

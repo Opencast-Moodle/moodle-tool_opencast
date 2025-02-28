@@ -50,7 +50,7 @@ class importvideos_select_series_form extends moodleform {
         $mform = $this->_form;
 
         // Get renderer.
-        $renderer = $PAGE->get_renderer('block_opencast', 'importvideos');
+        $renderer = $PAGE->get_renderer('tool_opencast', 'importvideos');
 
         // Add hidden fields for transferring the wizard results and for wizard step processing.
         $mform->addElement('hidden', 'courseid', $this->_customdata['courseid']);
@@ -67,7 +67,7 @@ class importvideos_select_series_form extends moodleform {
 
         // Add intro.
         $notification = $renderer->wizard_intro_notification(
-            get_string('importvideos_wizardstep2aclintro', 'block_opencast'));
+            get_string('importvideos_wizardstep2aclintro', 'tool_opencast'));
         $mform->addElement('html', $notification);
 
         // Add one single empty static element.
@@ -79,10 +79,10 @@ class importvideos_select_series_form extends moodleform {
             $radioarray[] = $mform->createElement('radio', 'series', '', $title, $id, []);
         }
         $mform->addGroup($radioarray, 'series',
-            get_string('importvideos_wizard_availableseries', 'block_opencast',
+            get_string('importvideos_wizard_availableseries', 'tool_opencast',
                 get_course($this->_customdata['sourcecourseid'])->fullname), ['<br>'], false);
 
         // Add action buttons.
-        $this->add_action_buttons(true, get_string('importvideos_wizardstepbuttontitlecontinue', 'block_opencast'));
+        $this->add_action_buttons(true, get_string('importvideos_wizardstepbuttontitlecontinue', 'tool_opencast'));
     }
 }

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Notifications for block_opencast.
+ * Notifications for tool_opencast.
  *
  * @package    tool_opencast
  * @copyright  2018 Andreas Wagner, SYNERGY LEARNING
@@ -29,7 +29,7 @@ use core_user;
 use Exception;
 
 /**
- * Notifications for block_opencast.
+ * Notifications for tool_opencast.
  *
  * @package    tool_opencast
  * @copyright  2018 Andreas Wagner, SYNERGY LEARNING
@@ -51,7 +51,7 @@ class notifications {
 
         $message = new message();
         $message->courseid = SITEID;
-        $message->component = 'block_opencast';
+        $message->component = 'tool_opencast';
         $message->name = $messagetype;
         $message->userfrom = core_user::get_user(core_user::NOREPLY_USER);
         $message->userto = $touser;
@@ -76,18 +76,18 @@ class notifications {
 
         $a = (object)[
             'courseid' => $courseid,
-            'coursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
+            'coursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
         ];
 
         if ($course = $DB->get_record('course', ['id' => $courseid])) {
             $a->coursefullname = $course->fullname;
         }
 
-        $subject = get_string('errorrestoremissingseries_subj', 'block_opencast');
-        $body = get_string('errorrestoremissingseries_body', 'block_opencast', $a);
+        $subject = get_string('errorrestoremissingseries_subj', 'tool_opencast');
+        $body = get_string('errorrestoremissingseries_body', 'tool_opencast', $a);
 
         // Add all backup eventids.
-        $renderer = $PAGE->get_renderer('block_opencast');
+        $renderer = $PAGE->get_renderer('tool_opencast');
         $body .= $renderer->render_list($backupeventids);
 
         $admin = get_admin();
@@ -106,18 +106,18 @@ class notifications {
 
         $a = (object)[
             'courseid' => $courseid,
-            'coursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
+            'coursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
         ];
 
         if ($course = $DB->get_record('course', ['id' => $courseid])) {
             $a->coursefullname = $course->fullname;
         }
 
-        $subject = get_string('errorrestoremissingevents_subj', 'block_opencast');
-        $body = get_string('errorrestoremissingevents_body', 'block_opencast', $a);
+        $subject = get_string('errorrestoremissingevents_subj', 'tool_opencast');
+        $body = get_string('errorrestoremissingevents_body', 'tool_opencast', $a);
 
         // Add all backup eventids.
-        $renderer = $PAGE->get_renderer('block_opencast');
+        $renderer = $PAGE->get_renderer('tool_opencast');
         $body .= $renderer->render_list($missingevents);
 
         $admin = get_admin();
@@ -132,16 +132,16 @@ class notifications {
      */
     public static function notify_error($identifier, ?Exception $e = null) {
 
-        $subject = get_string('erroremailsubj', 'block_opencast');
+        $subject = get_string('erroremailsubj', 'tool_opencast');
 
         $message = empty($e) ? '' : $e->getMessage();
-        $errorstr = get_string($identifier, 'block_opencast', $identifier);
+        $errorstr = get_string($identifier, 'tool_opencast', $identifier);
         $a = (object)[
             'message' => $message,
             'errorstr' => $errorstr,
         ];
 
-        $body = get_string('erroremailbody', 'block_opencast', $a);
+        $body = get_string('erroremailbody', 'tool_opencast', $a);
 
         $admin = get_admin();
         self::send_message('error', $admin, $subject, $body);
@@ -156,7 +156,7 @@ class notifications {
         global $USER;
 
         self::send_message('reportproblem_confirmation', $USER,
-            get_string('reportproblem_subject', 'block_opencast'), nl2br($message), FORMAT_MOODLE);
+            get_string('reportproblem_subject', 'tool_opencast'), nl2br($message), FORMAT_MOODLE);
     }
 
 
@@ -170,15 +170,15 @@ class notifications {
 
         $a = (object)[
             'courseid' => $courseid,
-            'coursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
+            'coursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
         ];
 
         if ($course = $DB->get_record('course', ['id' => $courseid])) {
             $a->coursefullname = $course->fullname;
         }
 
-        $subject = get_string('errorrestoremissingimportmode_subj', 'block_opencast');
-        $body = get_string('errorrestoremissingimportmode_body', 'block_opencast', $a);
+        $subject = get_string('errorrestoremissingimportmode_subj', 'tool_opencast');
+        $body = get_string('errorrestoremissingimportmode_body', 'tool_opencast', $a);
 
         $admin = get_admin();
         self::send_message('error', $admin, $subject, $body);
@@ -194,15 +194,15 @@ class notifications {
 
         $a = (object)[
             'courseid' => $courseid,
-            'coursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
+            'coursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
         ];
 
         if ($course = $DB->get_record('course', ['id' => $courseid])) {
             $a->coursefullname = $course->fullname;
         }
 
-        $subject = get_string('errorrestoremissingsourcecourseid_subj', 'block_opencast');
-        $body = get_string('errorrestoremissingsourcecourseid_body', 'block_opencast', $a);
+        $subject = get_string('errorrestoremissingsourcecourseid_subj', 'tool_opencast');
+        $body = get_string('errorrestoremissingsourcecourseid_body', 'tool_opencast', $a);
 
         $admin = get_admin();
         self::send_message('error', $admin, $subject, $body);
@@ -218,15 +218,15 @@ class notifications {
 
         $a = (object)[
             'courseid' => $courseid,
-            'coursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
+            'coursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
         ];
 
         if ($course = $DB->get_record('course', ['id' => $courseid])) {
             $a->coursefullname = $course->fullname;
         }
 
-        $subject = get_string('errorrestoremissingseriesid_subj', 'block_opencast');
-        $body = get_string('errorrestoremissingseriesid_body', 'block_opencast', $a);
+        $subject = get_string('errorrestoremissingseriesid_subj', 'tool_opencast');
+        $body = get_string('errorrestoremissingseriesid_body', 'tool_opencast', $a);
 
         $admin = get_admin();
         self::send_message('error', $admin, $subject, $body);
@@ -245,8 +245,8 @@ class notifications {
         $a = (object)[
             'courseid' => $courseid,
             'sourcecourseid' => $sourcecourseid,
-            'coursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
-            'sourcecoursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
+            'coursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
+            'sourcecoursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
             'seriesid' => $seriesid,
         ];
 
@@ -258,8 +258,8 @@ class notifications {
             $a->sourcecoursefullname = $sourcecourse->fullname;
         }
 
-        $subject = get_string('errorrestorefailedseriesaclchange_subj', 'block_opencast');
-        $body = get_string('errorrestorefailedseriesaclchange_body', 'block_opencast', $a);
+        $subject = get_string('errorrestorefailedseriesaclchange_subj', 'tool_opencast');
+        $body = get_string('errorrestorefailedseriesaclchange_body', 'tool_opencast', $a);
 
         $admin = get_admin();
         self::send_message('error', $admin, $subject, $body);
@@ -278,8 +278,8 @@ class notifications {
         $a = (object)[
             'courseid' => $courseid,
             'sourcecourseid' => $sourcecourseid,
-            'coursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
-            'sourcecoursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
+            'coursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
+            'sourcecoursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
         ];
 
         if ($course = $DB->get_record('course', ['id' => $courseid])) {
@@ -290,11 +290,11 @@ class notifications {
             $a->sourcecoursefullname = $sourcecourse->fullname;
         }
 
-        $subject = get_string('errorrestorefailedeventsaclchange_subj', 'block_opencast');
-        $body = get_string('errorrestorefailedeventsaclchange_body', 'block_opencast', $a);
+        $subject = get_string('errorrestorefailedeventsaclchange_subj', 'tool_opencast');
+        $body = get_string('errorrestorefailedeventsaclchange_body', 'tool_opencast', $a);
 
         // Add all backup eventids.
-        $renderer = $PAGE->get_renderer('block_opencast');
+        $renderer = $PAGE->get_renderer('tool_opencast');
         $body .= $renderer->render_list($failed);
 
         $admin = get_admin();
@@ -314,8 +314,8 @@ class notifications {
         $a = (object)[
             'courseid' => $courseid,
             'sourcecourseid' => $sourcecourseid,
-            'coursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
-            'sourcecoursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
+            'coursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
+            'sourcecoursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
             'seriesid' => $seriesid,
         ];
 
@@ -327,8 +327,8 @@ class notifications {
             $a->sourcecoursefullname = $sourcecourse->fullname;
         }
 
-        $subject = get_string('errorrestorefailedseriesmapping_subj', 'block_opencast');
-        $body = get_string('errorrestorefailedseriesmapping_body', 'block_opencast', $a);
+        $subject = get_string('errorrestorefailedseriesmapping_subj', 'tool_opencast');
+        $body = get_string('errorrestorefailedseriesmapping_body', 'tool_opencast', $a);
 
         $admin = get_admin();
         self::send_message('error', $admin, $subject, $body);
@@ -346,7 +346,7 @@ class notifications {
 
         $a = (object)[
             'courseid' => $courseid,
-            'coursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
+            'coursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
             'videotitle' => $video->title,
             'videoidentifier' => $video->identifier,
             'statusmessage' => $message,
@@ -356,8 +356,8 @@ class notifications {
             $a->coursefullname = $course->fullname;
         }
 
-        $subject = get_string('notificationeventstatus_subj', 'block_opencast');
-        $body = get_string('notificationeventstatus_body', 'block_opencast', $a);
+        $subject = get_string('notificationeventstatus_subj', 'tool_opencast');
+        $body = get_string('notificationeventstatus_body', 'tool_opencast', $a);
 
         self::send_message('opencasteventstatus_notification', $touser, $subject, $body);
     }
@@ -374,7 +374,7 @@ class notifications {
 
         $a = (object)[
             'courseid' => $courseid,
-            'coursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
+            'coursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
             'videotitle' => $videotitle,
             'waitingnum' => $waitingnum,
         ];
@@ -383,8 +383,8 @@ class notifications {
             $a->coursefullname = $course->fullname;
         }
 
-        $subject = get_string('notificationuploaduqeuestatus_subj', 'block_opencast');
-        $body = get_string('notificationuploaduqeuestatus_body', 'block_opencast', $a);
+        $subject = get_string('notificationuploaduqeuestatus_subj', 'tool_opencast');
+        $body = get_string('notificationuploaduqeuestatus_body', 'tool_opencast', $a);
 
         self::send_message('opencasteventstatus_notification', $touser, $subject, $body);
     }
@@ -402,7 +402,7 @@ class notifications {
 
         $a = (object)[
             'courseid' => $courseid,
-            'coursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
+            'coursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
             'workflowid' => $workflowid,
             'exceptionmessage' => $exceptionmessage,
         ];
@@ -411,18 +411,18 @@ class notifications {
             $a->coursefullname = $course->fullname;
         }
 
-        $subject = get_string('notificationcleanupimportedmodules_subj', 'block_opencast');
-        $body = get_string('notificationcleanupimportedmodulesgeneralexception_body', 'block_opencast', $a);
+        $subject = get_string('notificationcleanupimportedmodules_subj', 'tool_opencast');
+        $body = get_string('notificationcleanupimportedmodulesgeneralexception_body', 'tool_opencast', $a);
 
         switch ($notificationtype) {
             case 'expired':
-                $body = get_string('notificationcleanupimportedmodulesexpired_body', 'block_opencast', $a);
+                $body = get_string('notificationcleanupimportedmodulesexpired_body', 'tool_opencast', $a);
                 break;
             case 'cleanupfailed':
-                $body = get_string('notificationcleanupimportedmodulescleanupfailed_body', 'block_opencast', $a);
+                $body = get_string('notificationcleanupimportedmodulescleanupfailed_body', 'tool_opencast', $a);
                 break;
             case 'noepisodeid':
-                $body = get_string('notificationcleanupimportedmodulesnoeposideid_body', 'block_opencast', $a);
+                $body = get_string('notificationcleanupimportedmodulesnoeposideid_body', 'tool_opencast', $a);
                 break;
         }
 
@@ -442,21 +442,21 @@ class notifications {
 
         $a = (object)[
             'courseid' => $courseid,
-            'coursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
+            'coursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
         ];
 
         if ($course = $DB->get_record('course', ['id' => $courseid])) {
             $a->coursefullname = $course->fullname;
         }
 
-        $subject = get_string('errorrestoremissingimportmapping_subj', 'block_opencast');
-        $body = get_string('errorrestoremissingimportmappingseries_body', 'block_opencast', $a);
+        $subject = get_string('errorrestoremissingimportmapping_subj', 'tool_opencast');
+        $body = get_string('errorrestoremissingimportmappingseries_body', 'tool_opencast', $a);
         if ($type == 'events') {
-            $body = get_string('errorrestoremissingimportmappingevents_body', 'block_opencast', $a);
+            $body = get_string('errorrestoremissingimportmappingevents_body', 'tool_opencast', $a);
         }
 
         // Add all backup eventids.
-        $renderer = $PAGE->get_renderer('block_opencast');
+        $renderer = $PAGE->get_renderer('tool_opencast');
         $body .= $renderer->render_list($missingimportmappingids);
 
         $admin = get_admin();
@@ -474,18 +474,18 @@ class notifications {
 
         $a = (object)[
             'courseid' => $courseid,
-            'coursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
+            'coursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
         ];
 
         if ($course = $DB->get_record('course', ['id' => $courseid])) {
             $a->coursefullname = $course->fullname;
         }
 
-        $subject = get_string('errorrestoremissingimportmapping_subj', 'block_opencast');
-        $body = get_string('errorrestoreincompletedimportmapping_body', 'block_opencast', $a);
+        $subject = get_string('errorrestoremissingimportmapping_subj', 'tool_opencast');
+        $body = get_string('errorrestoreincompletedimportmapping_body', 'tool_opencast', $a);
 
         // Add all backup eventids.
-        $renderer = $PAGE->get_renderer('block_opencast');
+        $renderer = $PAGE->get_renderer('tool_opencast');
         $body .= $renderer->render_list($incompletedeventids);
 
         $admin = get_admin();
@@ -503,7 +503,7 @@ class notifications {
 
         $a = (object)[
             'courseid' => $courseid,
-            'coursefullname' => get_string('coursefullnameunknown', 'block_opencast'),
+            'coursefullname' => get_string('coursefullnameunknown', 'tool_opencast'),
             'title' => $title,
         ];
 
@@ -511,8 +511,8 @@ class notifications {
             $a->coursefullname = $course->fullname;
         }
 
-        $subject = get_string('notificationuploadarchived_subj', 'block_opencast');
-        $body = get_string('notificationuploadarchived_body', 'block_opencast', $a);
+        $subject = get_string('notificationuploadarchived_subj', 'tool_opencast');
+        $body = get_string('notificationuploadarchived_body', 'tool_opencast', $a);
 
         self::send_message('opencasteventstatus_notification', $touser, $subject, $body);
     }

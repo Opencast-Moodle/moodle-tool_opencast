@@ -17,7 +17,7 @@
 /**
  * Subclass of the file_system_filedir class to delete one single file from trashdir.
  *
- * @package   block_opencast
+ * @package   tool_opencast
  * @copyright 2018 Andreas Wagner, Synergy Learning
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/lib/filestorage/file_system_filedir.php');
 /**
  * Subclass of the file_system_filedir class to delete one single file from trashdir.
  *
- * @package   block_opencast
+ * @package   tool_opencast
  * @copyright 2018 Andreas Wagner, Synergy Learning
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

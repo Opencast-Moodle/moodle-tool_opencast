@@ -54,7 +54,7 @@ class importvideos_step3_form extends moodleform {
         $ocinstanceid = $this->_customdata['ocinstanceid'];
 
         // Get renderer.
-        $renderer = $PAGE->get_renderer('block_opencast', 'importvideos');
+        $renderer = $PAGE->get_renderer('tool_opencast', 'importvideos');
 
         // Add hidden fields for transferring the wizard results and for wizard step processing.
         $mform->addElement('hidden', 'courseid', $this->_customdata['courseid']);
@@ -126,23 +126,23 @@ class importvideos_step3_form extends moodleform {
             ($handleepisodemodules == true && count($referencedepisodemodules) > 0)) {
             // Add intro.
             $notification = $renderer->wizard_intro_notification(
-                get_string('importvideos_wizardstep3intro', 'block_opencast'));
+                get_string('importvideos_wizardstep3intro', 'tool_opencast'));
             $mform->addElement('html', $notification);
 
             // If there is any series module which needs to be handled.
             if ($handleseriesmodules == true && count($referencedseriesmodules) > 0) {
                 // Show heading for series module.
                 $handleseriesheadingstring = html_writer::tag('h3',
-                    get_string('importvideos_wizardstep3seriesmodulesubheading', 'block_opencast'));
+                    get_string('importvideos_wizardstep3seriesmodulesubheading', 'tool_opencast'));
                 $mform->addElement('html', $handleseriesheadingstring);
 
                 // Show explanation for series module.
                 $handleseriesmodulestring = html_writer::tag('p',
-                    get_string('importvideos_wizardstep3seriesmoduleexplanation', 'block_opencast'));
+                    get_string('importvideos_wizardstep3seriesmoduleexplanation', 'tool_opencast'));
                 $mform->addElement('html', $handleseriesmodulestring);
 
                 // Add checkbox to fix series module.
-                $handleseriesmodulelabel = get_string('importvideos_wizardstep3seriesmodulelabel', 'block_opencast');
+                $handleseriesmodulelabel = get_string('importvideos_wizardstep3seriesmodulelabel', 'tool_opencast');
                 $mform->addElement('checkbox', 'fixseriesmodules', $handleseriesmodulelabel);
                 $mform->setDefault('fixseriesmodules', 1);
             }
@@ -151,16 +151,16 @@ class importvideos_step3_form extends moodleform {
             if ($handleepisodemodules == true && count($referencedepisodemodules) > 0) {
                 // Show heading for episode module.
                 $handleepisodeheadingstring = html_writer::tag('h3',
-                    get_string('importvideos_wizardstep3episodemodulesubheading', 'block_opencast'));
+                    get_string('importvideos_wizardstep3episodemodulesubheading', 'tool_opencast'));
                 $mform->addElement('html', $handleepisodeheadingstring);
 
                 // Show explanation for episode module.
                 $handleepisodemodulestring = html_writer::tag('p',
-                    get_string('importvideos_wizardstep3episodemoduleexplanation', 'block_opencast'));
+                    get_string('importvideos_wizardstep3episodemoduleexplanation', 'tool_opencast'));
                 $mform->addElement('html', $handleepisodemodulestring);
 
                 // Add checkbox to fix series module.
-                $handleepisodemodulelabel = get_string('importvideos_wizardstep3episodemodulelabel', 'block_opencast');
+                $handleepisodemodulelabel = get_string('importvideos_wizardstep3episodemodulelabel', 'tool_opencast');
                 $mform->addElement('checkbox', 'fixepisodemodules', $handleepisodemodulelabel);
                 $mform->setDefault('fixepisodemodules', 1);
             }
@@ -169,11 +169,11 @@ class importvideos_step3_form extends moodleform {
         } else {
             // Add intro.
             $notification = $renderer->wizard_intro_notification(
-                get_string('importvideos_wizardstep3skipintro', 'block_opencast'));
+                get_string('importvideos_wizardstep3skipintro', 'tool_opencast'));
             $mform->addElement('html', $notification);
         }
 
         // Add action buttons.
-        $this->add_action_buttons(true, get_string('importvideos_wizardstepbuttontitlecontinue', 'block_opencast'));
+        $this->add_action_buttons(true, get_string('importvideos_wizardstepbuttontitlecontinue', 'tool_opencast'));
     }
 }

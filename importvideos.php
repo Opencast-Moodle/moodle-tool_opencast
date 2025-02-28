@@ -72,14 +72,14 @@ require_login($courseid, false);
 
 // Set page and navbar properties.
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturloverview);
-$PAGE->navbar->add(get_string('importvideos_importbuttontitle', 'block_opencast'), $baseurl);
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturloverview);
+$PAGE->navbar->add(get_string('importvideos_importbuttontitle', 'tool_opencast'), $baseurl);
 
 // Check if the manual import videos feature is enabled and working.
 if (importvideosmanager::is_enabled_and_working_for_manualimport($ocinstanceid) == false) {
-    throw new moodle_exception('importvideos_errornotenabledorworking', 'block_opencast', $redirecturloverview);
+    throw new moodle_exception('importvideos_errornotenabledorworking', 'tool_opencast', $redirecturloverview);
 }
 
 // Capability check.
@@ -111,12 +111,12 @@ if ($importmode == 'acl') {
     // Check if the maximum number of series is already reached.
     $courseseries = $DB->get_records('tool_opencast_series', ['ocinstanceid' => $ocinstanceid, 'courseid' => $courseid]);
     if (count($courseseries) >= get_config('tool_opencast', 'maxseries_' . $ocinstanceid)) {
-        throw new moodle_exception('maxseriesreached', 'block_opencast');
+        throw new moodle_exception('maxseriesreached', 'tool_opencast');
     }
 }
 
 // Get renderer.
-$renderer = $PAGE->get_renderer('block_opencast', 'importvideos');
+$renderer = $PAGE->get_renderer('tool_opencast', 'importvideos');
 $importvideosform = null;
 
 // Deal with wizard step forms individually.
@@ -143,7 +143,7 @@ switch ($step) {
                 redirect($redirecturlcancel);
             }
 
-            $heading = get_string('importvideos_wizardstep' . $step . 'heading', 'block_opencast');
+            $heading = get_string('importvideos_wizardstep' . $step . 'heading', 'tool_opencast');
 
         } else {
             // If a course was not selected yet with the course search component.
@@ -155,7 +155,7 @@ switch ($step) {
                 // Prepare course search component.
                 $search = new importvideos_coursesearch(['url' => $url], $courseid);
 
-                $heading = get_string('importvideos_wizardstep' . $step . 'heading', 'block_opencast');
+                $heading = get_string('importvideos_wizardstep' . $step . 'heading', 'tool_opencast');
                 // Output course search component.
                 $body = $renderer->importvideos_coursesearch($url, $search);
             }
@@ -233,7 +233,7 @@ switch ($step) {
             }
 
             // Output heading.
-            $heading = get_string('importvideos_wizardstep' . $step . $aclheadingstringname . 'heading', 'block_opencast');
+            $heading = get_string('importvideos_wizardstep' . $step . $aclheadingstringname . 'heading', 'tool_opencast');
         }
 
         if (!$nextstep) {
@@ -283,7 +283,7 @@ switch ($step) {
             }
 
             // Output heading.
-            $heading = get_string('importvideos_wizardstep' . $step . 'heading', 'block_opencast');
+            $heading = get_string('importvideos_wizardstep' . $step . 'heading', 'tool_opencast');
 
             if (!$nextstep) {
                 break;
@@ -315,7 +315,7 @@ switch ($step) {
             if ($resultduplicate->error) {
                 // Redirect to Opencast videos overview page without cleaning up any modules.
                 redirect($redirecturloverview,
-                    get_string('importvideos_importjobcreationfailed', 'block_opencast'),
+                    get_string('importvideos_importjobcreationfailed', 'tool_opencast'),
                     null,
                     notification::NOTIFY_ERROR);
             }
@@ -339,7 +339,7 @@ switch ($step) {
                 if ($resulthandleseries != true) {
                     // Redirect to Opencast videos overview page with an error notification.
                     redirect($redirecturloverview,
-                        get_string('importvideos_importseriescleanupfailed', 'block_opencast'),
+                        get_string('importvideos_importseriescleanupfailed', 'tool_opencast'),
                         null,
                         notification::NOTIFY_ERROR);
                 }
@@ -347,12 +347,12 @@ switch ($step) {
 
             // Everything seems to be fine, redirect to Opencast videos overview page.
             redirect($redirecturloverview,
-                get_string('importvideos_importjobcreated', 'block_opencast'),
+                get_string('importvideos_importjobcreated', 'tool_opencast'),
                 null,
                 notification::NOTIFY_SUCCESS);
         }
 
-        $heading = get_string('importvideos_wizardstep' . $step . 'heading', 'block_opencast');
+        $heading = get_string('importvideos_wizardstep' . $step . 'heading', 'tool_opencast');
         break;
 }
 

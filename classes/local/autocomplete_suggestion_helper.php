@@ -107,8 +107,8 @@ class autocomplete_suggestion_helper {
         $suggestionlist = [];
 
         // Prepare the select sql with join.
-        $sql = "SELECT uj.id, uj.userid, md.metadata FROM {block_opencast_uploadjob} uj "
-            . "JOIN {block_opencast_metadata} md ON uj.id = md.uploadjobid "
+        $sql = "SELECT uj.id, uj.userid, md.metadata FROM {tool_opencast_uploadjob} uj "
+            . "JOIN {tool_opencast_metadata} md ON uj.id = md.uploadjobid "
             . "WHERE uj.courseid = :courseid";
 
         $params = [];

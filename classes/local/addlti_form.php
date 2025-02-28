@@ -52,15 +52,15 @@ class addlti_form extends moodleform {
         $ocinstanceid = $this->_customdata['ocinstanceid'];
         $seriesid = $this->_customdata['seriesid'];
 
-        $mform->addElement('text', 'title', get_string('addlti_formltititle', 'block_opencast'), ['size' => '40']);
+        $mform->addElement('text', 'title', get_string('addlti_formltititle', 'tool_opencast'), ['size' => '40']);
         $mform->setType('title', PARAM_TEXT);
         $mform->setDefault('title', ltimodulemanager::get_default_title_for_series($ocinstanceid));
         $mform->addRule('title',
-            get_string('addlti_noemptytitle', 'block_opencast', get_string('addlti_defaulttitle', 'block_opencast')),
+            get_string('addlti_noemptytitle', 'tool_opencast', get_string('addlti_defaulttitle', 'tool_opencast')),
             'required');
 
         if (get_config('tool_opencast', 'addltiintro_' . $ocinstanceid) == true) {
-            $mform->addElement('editor', 'intro', get_string('addlti_formltiintro', 'block_opencast'),
+            $mform->addElement('editor', 'intro', get_string('addlti_formltiintro', 'tool_opencast'),
                 ['rows' => 5],
                 ['maxfiles' => 0, 'noclean' => true]);
             $mform->setType('intro', PARAM_RAW); // No XSS prevention here, users must be trusted.
@@ -72,7 +72,7 @@ class addlti_form extends moodleform {
 
             // Add the widget only if we have more than one section.
             if (count($sectionmenu) > 1) {
-                $mform->addElement('select', 'section', get_string('addlti_formltisection', 'block_opencast'),
+                $mform->addElement('select', 'section', get_string('addlti_formltisection', 'tool_opencast'),
                     ltimodulemanager::get_course_sections($courseid));
                 $mform->setType('section', PARAM_INT);
                 $mform->setDefault('section', 0);
@@ -81,7 +81,7 @@ class addlti_form extends moodleform {
 
         if (get_config('tool_opencast', 'addltiavailability_' . $ocinstanceid) == true && !empty($CFG->enableavailability)) {
             $mform->addElement('textarea', 'availabilityconditionsjson',
-                get_string('addlti_formltiavailability', 'block_opencast'));
+                get_string('addlti_formltiavailability', 'tool_opencast'));
             frontend::include_all_javascript(get_course($courseid));
         }
 
@@ -112,9 +112,9 @@ class addlti_form extends moodleform {
         $buttonarray = [];
 
         // Submit buttons.
-        $submitlabel = get_string('addlti_addbuttontitlereturnoverview', 'block_opencast');
+        $submitlabel = get_string('addlti_addbuttontitlereturnoverview', 'tool_opencast');
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', $submitlabel);
-        $submit2label = get_string('addlti_addbuttontitlereturncourse', 'block_opencast');
+        $submit2label = get_string('addlti_addbuttontitlereturncourse', 'tool_opencast');
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton2', $submit2label);
 
         // Cancel button.

@@ -57,7 +57,7 @@ if (!empty($seriesid)) {
 
 if (empty($series)) {
     redirect($redirecturl,
-        get_string('noseriesfound', 'block_opencast'),
+        get_string('noseriesfound', 'tool_opencast'),
         null,
         notification::NOTIFY_ERROR);
 }
@@ -73,7 +73,7 @@ if (!empty($workflowtagsconfig)) {
 }
 if (!$apiworkflow || empty(array_intersect($apiworkflow->tags, $workflowtags))) {
     redirect($redirecturl,
-        get_string('workflow_opencast_invalid', 'block_opencast'),
+        get_string('workflow_opencast_invalid', 'tool_opencast'),
         null,
         notification::NOTIFY_ERROR);
 }
@@ -86,8 +86,8 @@ foreach ($videoids as $videoid) {
     $stringobj = new stdClass();
     $stringobj->name = $video->video->title;
     if ($series->identifier != $video->video->is_part_of) {
-        $stringobj->reason = get_string('video_notallowed', 'block_opencast');
-        $failed[] = get_string('videostablemassaction_notification_reasoning', 'block_opencast', $stringobj);
+        $stringobj->reason = get_string('video_notallowed', 'tool_opencast');
+        $failed[] = get_string('videostablemassaction_notification_reasoning', 'tool_opencast', $stringobj);
         continue;
     }
 
@@ -96,8 +96,8 @@ foreach ($videoids as $videoid) {
     if ($result) {
         $succeeded[] = $video->video->title;
     } else {
-        $stringobj->reason = get_string('workflow_started_failure', 'block_opencast');
-        $failed[] = get_string('videostablemassaction_notification_reasoning', 'block_opencast', $stringobj);
+        $stringobj->reason = get_string('workflow_started_failure', 'tool_opencast');
+        $failed[] = get_string('videostablemassaction_notification_reasoning', 'tool_opencast', $stringobj);
     }
 }
 
@@ -105,7 +105,7 @@ $failedtext = '';
 if (!empty($failed)) {
     $failedtext = get_string(
         'workflow_started_massaction_notification_failed',
-        'block_opencast',
+        'tool_opencast',
         implode('</li><li>', $failed)
     );
 }
@@ -113,14 +113,14 @@ $succeededtext = '';
 if (!empty($succeeded)) {
     $succeededtext = get_string(
         'workflow_started_massaction_notification_success',
-        'block_opencast',
+        'tool_opencast',
         implode('</li><li>', $succeeded)
     );
 }
 
 // If there is no changes, we redirect with warning.
 if (empty($succeededtext) && empty($failedtext)) {
-    $nochangetext = get_string('workflow_started_massaction_nochange', 'block_opencast');
+    $nochangetext = get_string('workflow_started_massaction_nochange', 'tool_opencast');
     redirect($redirecturl, $nochangetext, null, notification::NOTIFY_ERROR);
 }
 

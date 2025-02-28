@@ -48,8 +48,8 @@ require_capability('block/opencast:addvideo', $context);
 $PAGE->set_context($context);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('recordvideo', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
+$PAGE->set_title(get_string('recordvideo', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
 
 $endpoint = settings_api::get_apiurl($ocinstanceid);
 
@@ -76,11 +76,11 @@ $consumerkey = $apibridge->get_lti_consumerkey();
 $consumersecret = $apibridge->get_lti_consumersecret();
 $params = lti_helper::create_lti_parameters($consumerkey, $consumersecret, $ltiendpoint, $customtool);
 
-$renderer = $PAGE->get_renderer('block_opencast');
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('recordvideo', 'block_opencast'));
+echo $OUTPUT->heading(get_string('recordvideo', 'tool_opencast'));
 echo $renderer->render_lti_form($ltiendpoint, $params);
 
-$PAGE->requires->js_call_amd('block_opencast/block_lti_form_handler', 'init');
+$PAGE->requires->js_call_amd('tool_opencast/block_lti_form_handler', 'init');
 echo $OUTPUT->footer();

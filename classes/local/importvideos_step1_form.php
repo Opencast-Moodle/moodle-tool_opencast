@@ -50,7 +50,7 @@ class importvideos_step1_form extends moodleform {
         $mform = $this->_form;
 
         // Get renderer.
-        $renderer = $PAGE->get_renderer('block_opencast', 'importvideos');
+        $renderer = $PAGE->get_renderer('tool_opencast', 'importvideos');
 
         // Add hidden fields for transferring the wizard results and for wizard step processing.
         $mform->addElement('hidden', 'courseid', $this->_customdata['courseid']);
@@ -60,7 +60,7 @@ class importvideos_step1_form extends moodleform {
 
         // We are in a dead end situation, no chance to add anything.
         $notification = $renderer->wizard_error_notification(
-            get_string('importvideos_wizardstep1sourcecoursenone', 'block_opencast'));
+            get_string('importvideos_wizardstep1sourcecoursenone', 'tool_opencast'));
         $mform->addElement('html', $notification);
         $mform->addElement('cancel');
     }

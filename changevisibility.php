@@ -45,16 +45,16 @@ $PAGE->set_url($baseurl);
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
 
 $redirecturl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('changevisibility', 'block_opencast'), $baseurl);
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('changevisibility', 'tool_opencast'), $baseurl);
 
 // Check if the ACL control feature is enabled.
 if (get_config('tool_opencast', 'aclcontrolafter_' . $ocinstanceid) != true) {
-    throw new moodle_exception('ACL control feature not enabled', 'block_opencast', $redirecturl);
+    throw new moodle_exception('ACL control feature not enabled', 'tool_opencast', $redirecturl);
 }
 
 // Capability check.
@@ -66,9 +66,9 @@ $visibility = $apibridge->is_event_visible($identifier, $courseid);
 if ($visibility === block_opencast_renderer::MIXED_VISIBILITY) {
     $groups = groupaccess::get_record(['opencasteventid' => $identifier, 'ocinstanceid' => $ocinstanceid]);
     if ($groups) {
-        $visibility = block_opencast_renderer::GROUP;
+        $visibility = tool_opencast_renderer::GROUP;
     } else {
-        $visibility = block_opencast_renderer::HIDDEN;
+        $visibility = tool_opencast_renderer::HIDDEN;
     }
 }
 $scheduledvisibility = visibility_helper::get_event_scheduled_visibility($ocinstanceid, $courseid, $identifier);
@@ -94,18 +94,18 @@ foreach ($courseseries as $series) {
 }
 
 if (!$video) {
-    $message = get_string('videonotfound', 'block_opencast');
+    $message = get_string('videonotfound', 'tool_opencast');
     redirect($redirecturl, $message);
 }
 
 if ($video->processing_state == 'RUNNING' || $video->processing_state == 'PAUSED') {
-    $message = get_string('worklowisrunning', 'block_opencast');
+    $message = get_string('worklowisrunning', 'tool_opencast');
     redirect($redirecturl, $message, null, notification::NOTIFY_WARNING);
 }
 
 // Workflow is not set.
 if (get_config('tool_opencast', 'workflow_roles_' . $ocinstanceid) == "") {
-    $message = get_string('workflownotdefined', 'block_opencast');
+    $message = get_string('workflownotdefined', 'tool_opencast');
     redirect($redirecturl, $message, null, \core\notification::ERROR);
 }
 
@@ -130,9 +130,9 @@ if ($data = $changevisibilityform->get_data()) {
             $visibilitycode = $apibridge->change_visibility($identifier, $courseid, $data->visibility, $groups);
             // If there is any error, redirect with error message and skip the scheduling process.
             if ($visibilitycode === false) {
-                $text = get_string('aclroleschangeerror', 'block_opencast', $video);
+                $text = get_string('aclroleschangeerror', 'tool_opencast', $video);
                 if ($requestscheduling) {
-                    $text .= get_string('scheduledvisibilitychangeskipped', 'block_opencast');
+                    $text .= get_string('scheduledvisibilitychangeskipped', 'tool_opencast');
                 }
                 redirect($redirecturl, $text, null, notification::NOTIFY_ERROR);
             }
@@ -143,12 +143,12 @@ if ($data = $changevisibilityform->get_data()) {
         // Check if the scheduled visibility is set, we update the record.
         if ($requestscheduling) {
             $initialvisibilitygroups = null;
-            if ($data->visibility == block_opencast_renderer::GROUP
+            if ($data->visibility == tool_opencast_renderer::GROUP
                 && !empty($data->groups)) {
                 $initialvisibilitygroups = json_encode($data->groups);
             }
             $scheduledvisibilitygroups = null;
-            if ($data->scheduledvisibilitystatus == block_opencast_renderer::GROUP
+            if ($data->scheduledvisibilitystatus == tool_opencast_renderer::GROUP
                 && !empty($data->scheduledvisibilitygroups)) {
                 $scheduledvisibilitygroups = json_encode($data->scheduledvisibilitygroups);
             }
@@ -183,20 +183,20 @@ if ($data = $changevisibilityform->get_data()) {
         $text = '';
         $status = notification::NOTIFY_SUCCESS;
         if (!empty($visibilitycode)) {
-            $text = get_string($visibilitycode, 'block_opencast', $video);
+            $text = get_string($visibilitycode, 'tool_opencast', $video);
         }
         if (!empty($schedulingcode)) {
             if (!$schedulingresult) {
                 $status = empty($visibilitycode) ? notification::NOTIFY_ERROR :
                     notification::NOTIFY_WARNING;
             }
-            $schedulingtext = get_string($schedulingcode, 'block_opencast');
+            $schedulingtext = get_string($schedulingcode, 'tool_opencast');
             $text = $text . (!empty($visibilitycode) ? '<br>' : '') . $schedulingtext;
         }
 
         // That happens when no changes are made to the visibility.
         if (empty($text)) {
-            $text = get_string('novisibilitychange', 'block_opencast');
+            $text = get_string('novisibilitychange', 'tool_opencast');
             $redirecturl = $baseurl;
             $status = notification::NOTIFY_WARNING;
         }
@@ -204,12 +204,12 @@ if ($data = $changevisibilityform->get_data()) {
     }
 }
 
-$renderer = $PAGE->get_renderer('block_opencast');
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 echo $OUTPUT->header();
 if (!empty($scheduledvisibility) && intval($scheduledvisibility->status) == visibility_helper::STATUS_FAILED) {
-    echo $OUTPUT->notification(get_string('scheduledvisibilitychangefailed', 'block_opencast'), 'error');
+    echo $OUTPUT->notification(get_string('scheduledvisibilitychangefailed', 'tool_opencast'), 'error');
 }
-echo $OUTPUT->heading(get_string('changevisibility_header', 'block_opencast', $video));
+echo $OUTPUT->heading(get_string('changevisibility_header', 'tool_opencast', $video));
 $changevisibilityform->display();
 echo $OUTPUT->footer();

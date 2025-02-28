@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * LTI module management for block_opencast.
+ * LTI module management for tool_opencast.
  *
  * @package    tool_opencast
  * @copyright  2021 Justus Dieckmann WWU, 2020 Alexander Bias, Ulm University <alexander.bias@uni-ulm.de>
@@ -31,7 +31,7 @@ use mod_opencast\local\opencasttype;
 use stdClass;
 
 /**
- * LTI module management for block_opencast.
+ * LTI module management for tool_opencast.
  *
  * @package    tool_opencast
  * @copyright  2021 Justus Dieckmann WWU, 2020 Alexander Bias, Ulm University <alexander.bias@uni-ulm.de>
@@ -329,7 +329,7 @@ class activitymodulemanager {
 
         // Check if the configured default title is empty. This must not happen as a module needs a title.
         if (empty($defaulttitle) || $defaulttitle == '') {
-            $defaulttitle = get_string('addactivity_defaulttitle', 'block_opencast');
+            $defaulttitle = get_string('addactivity_defaulttitle', 'tool_opencast');
         }
 
         // Return the default title.
@@ -356,7 +356,7 @@ class activitymodulemanager {
         // However, it's not our job to solve this here. We just have to provide a default title.
         // Thus, let's return the default title from the language pack.
         if ($info->error != 0) {
-            return get_string('addactivityepisode_defaulttitle', 'block_opencast');
+            return get_string('addactivityepisode_defaulttitle', 'tool_opencast');
         }
 
         // Pick the video title from the information object.
@@ -365,7 +365,7 @@ class activitymodulemanager {
         // Check if the episode title is empty. This must not happen as a module needs a title.
         // Thus, let's return the default title from the language pack.
         if (empty($episodetitle) || $episodetitle == '') {
-            return get_string('addactivityepisode_defaulttitle', 'block_opencast');
+            return get_string('addactivityepisode_defaulttitle', 'tool_opencast');
         }
 
         // Finally, return the episode title.

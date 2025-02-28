@@ -49,11 +49,11 @@ $PAGE->set_url($baseurl);
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $indexurl);
-$PAGE->navbar->add(get_string('managetranscriptions', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('addnewtranscription', 'block_opencast'), $baseurl);
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $indexurl);
+$PAGE->navbar->add(get_string('managetranscriptions', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('addnewtranscription', 'tool_opencast'), $baseurl);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
@@ -64,7 +64,7 @@ $video = $apibridge->get_opencast_video($identifier);
 if ($video->error || $video->video->processing_state != 'SUCCEEDED' ||
     empty(get_config('tool_opencast', 'transcriptionworkflow_' . $ocinstanceid))) {
     redirect($redirecturl,
-        get_string('unabletoaddnewtranscription', 'block_opencast'), null, notification::NOTIFY_ERROR);
+        get_string('unabletoaddnewtranscription', 'tool_opencast'), null, notification::NOTIFY_ERROR);
 }
 
 $addtranscriptionform = new addtranscription_form(null,
@@ -76,28 +76,28 @@ if ($addtranscriptionform->is_cancelled()) {
 
 if ($data = $addtranscriptionform->get_data()) {
     $storedfile = $addtranscriptionform->save_stored_file('transcription_file', $coursecontext->id,
-        'block_opencast', attachment_helper::OC_FILEAREA_ATTACHMENT, $data->transcription_file);
+        'tool_opencast', attachment_helper::OC_FILEAREA_ATTACHMENT, $data->transcription_file);
     $flavor = $data->transcription_flavor;
     if (isset($storedfile) && $storedfile && !empty($flavor)) {
         $success = attachment_helper::upload_single_transcription($storedfile, $flavor, $ocinstanceid, $identifier);
-        $message = get_string('transcriptionuploadsuccessed', 'block_opencast');
+        $message = get_string('transcriptionuploadsuccessed', 'tool_opencast');
         $status = notification::NOTIFY_SUCCESS;
         if (!$success) {
-            $message = get_string('transcriptionuploadfailed', 'block_opencast');
+            $message = get_string('transcriptionuploadfailed', 'tool_opencast');
             $status = notification::NOTIFY_ERROR;
         }
         attachment_helper::remove_single_transcription_file($storedfile->get_itemid());
         redirect($redirecturl, $message, null, $status);
     } else {
         redirect($redirecturl,
-            get_string('missingtranscriptionuploadparams', 'block_opencast'), null, notification::NOTIFY_ERROR);
+            get_string('missingtranscriptionuploadparams', 'tool_opencast'), null, notification::NOTIFY_ERROR);
     }
 }
 
-/** @var block_opencast_renderer $renderer */
-$renderer = $PAGE->get_renderer('block_opencast');
+/** @var tool_opencast_renderer $renderer */
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('addnewtranscription', 'block_opencast'));
+echo $OUTPUT->heading(get_string('addnewtranscription', 'tool_opencast'));
 $addtranscriptionform->display();
 echo $OUTPUT->footer();

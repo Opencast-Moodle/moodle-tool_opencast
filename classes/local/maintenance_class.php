@@ -361,7 +361,7 @@ class maintenance_class {
             $whitelist[] = $wwwrootparsed['path'] . '/course';
 
             $blacklist = [];
-            $blacklist['block_opencast'] = $wwwrootparsed['path'] . '/blocks/opencast'; // Match for block_opencast plugin.
+            $blacklist['tool_opencast'] = $wwwrootparsed['path'] . '/blocks/opencast'; // Match for tool_opencast plugin.
             $blacklist['mod_opencast'] = $wwwrootparsed['path'] . '/mod/opencast'; // Match for mod_opencast plugin.
             $blacklist['modedit'] = $wwwrootparsed['path'] . '/course/modedit'; // Match for mod_opencast plugin.
             $blacklist['repository_opencast'] = $wwwrootparsed['path'] . '/repository'; // Match for repository_opencast plugin.

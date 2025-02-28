@@ -60,7 +60,7 @@ if ($courseid == $SITE->id) {
 }
 
 if (empty(get_config('tool_opencast', 'aclownerrole_' . $ocinstanceid))) {
-    redirect($redirecturl, get_string('functionalitydisabled', 'block_opencast'), null,
+    redirect($redirecturl, get_string('functionalitydisabled', 'tool_opencast'), null,
         notification::NOTIFY_ERROR);
 }
 
@@ -69,7 +69,7 @@ $apibridge = apibridge::get_instance($ocinstanceid);
 if ($isseries) {
     $series = $apibridge->get_series_by_identifier($identifier, true);
     if (!$series) {
-        redirect($redirecturl, get_string('series_does_not_exist_admin', 'block_opencast', $identifier), null,
+        redirect($redirecturl, get_string('series_does_not_exist_admin', 'tool_opencast', $identifier), null,
             notification::NOTIFY_ERROR);
     }
     $title = $series->title;
@@ -80,7 +80,7 @@ if ($isseries) {
     $video = $apibridge->get_opencast_video($identifier, false, true);
 
     if ($video->error) {
-        redirect($redirecturl, get_string('failedtogetvideo', 'block_opencast'), null,
+        redirect($redirecturl, get_string('failedtogetvideo', 'tool_opencast'), null,
             notification::NOTIFY_ERROR);
     } else {
         $title = $video->video->title;
@@ -104,17 +104,17 @@ if (!$isowner &&
     throw new moodle_exception(get_string('userisntowner', 'block_opencast'));
 } else {
     $PAGE->set_pagelayout('incourse');
-    $PAGE->set_title(get_string('pluginname', 'block_opencast'));
-    $PAGE->set_heading(get_string('pluginname', 'block_opencast'));
-    $PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-    $PAGE->navbar->add(get_string('changeowner', 'block_opencast'), $baseurl);
+    $PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+    $PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+    $PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+    $PAGE->navbar->add(get_string('changeowner', 'tool_opencast'), $baseurl);
 
     $excludeusers = [];
     if ($isowner) {
         $excludeusers = [$USER->id];
     }
 
-    $userselector = new block_opencast_enrolled_user_selector('ownerselect',
+    $userselector = new tool_opencast_enrolled_user_selector('ownerselect',
         ['context' => $coursecontext, 'multiselect' => false, 'exclude' => $excludeusers]);
     $userselector->viewfullnames = $viewfullnames;
 
@@ -129,19 +129,19 @@ if (!$isowner &&
     if ($data = $changeownerform->get_data()) {
         $newowner = $userselector->get_selected_user();
         if (!$newowner) {
-            redirect($baseurl, get_string('nouserselected', 'block_opencast'));
+            redirect($baseurl, get_string('nouserselected', 'tool_opencast'));
         }
 
         $success = $apibridge->set_owner($courseid, $identifier, $newowner->id, $isseries);
         if ($success) {
-            redirect($redirecturl, get_string('changingownersuccess', 'block_opencast'));
+            redirect($redirecturl, get_string('changingownersuccess', 'tool_opencast'));
         } else {
-            redirect($baseurl, get_string('changingownerfailed', 'block_opencast'), null, notification::NOTIFY_ERROR);
+            redirect($baseurl, get_string('changingownerfailed', 'tool_opencast'), null, notification::NOTIFY_ERROR);
         }
     }
 
     echo $OUTPUT->header();
-    echo $OUTPUT->heading(get_string('changeowner', 'block_opencast'));
+    echo $OUTPUT->heading(get_string('changeowner', 'tool_opencast'));
 
     $changeownerform->display();
     echo $OUTPUT->footer();

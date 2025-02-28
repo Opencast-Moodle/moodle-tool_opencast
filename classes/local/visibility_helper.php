@@ -58,7 +58,7 @@ class visibility_helper {
         global $DB;
 
         // Get the scheduled change visibility jobs with the pending status.
-        $sql = "SELECT * FROM {block_opencast_visibility}" .
+        $sql = "SELECT * FROM {tool_opencast_visibility}" .
             " WHERE :now >= scheduledvisibilitytime AND status = :status";
         $params = [];
         $params['now'] = time();
@@ -79,7 +79,7 @@ class visibility_helper {
         }
 
         // Cleanup the visibility jobs.
-        $sql = "SELECT * FROM {block_opencast_visibility}" .
+        $sql = "SELECT * FROM {tool_opencast_visibility}" .
             " WHERE status = :status";
         $params = [];
         $params['status'] = self::STATUS_DONE;
@@ -122,8 +122,8 @@ class visibility_helper {
         $groups = json_decode($job->scheduledvisibilitygroups);
         $apibridge = apibridge::get_instance($ocinstanceid);
 
-        $allowedvisibilitystates = [block_opencast_renderer::VISIBLE,
-            block_opencast_renderer::HIDDEN, block_opencast_renderer::GROUP, ];
+        $allowedvisibilitystates = [tool_opencast_renderer::VISIBLE,
+            tool_opencast_renderer::HIDDEN, tool_opencast_renderer::GROUP, ];
 
         if (!in_array($visibility, $allowedvisibilitystates)) {
             mtrace('job ' . $job->id . ':(ERROR) Has invalid visibility state.');
@@ -141,7 +141,7 @@ class visibility_helper {
 
         // Check if the teacher should be allowed to restrict the episode to course groups.
         $controlgroupsenabled = get_config('tool_opencast', 'aclcontrolgroup_' . $ocinstanceid);
-        if (!$controlgroupsenabled && $visibility == block_opencast_renderer::GROUP) {
+        if (!$controlgroupsenabled && $visibility == tool_opencast_renderer::GROUP) {
             mtrace('job ' . $job->id . ':(ERROR) unable to control groups.');
             self::change_job_status($job, $status);
             return;
@@ -199,7 +199,7 @@ class visibility_helper {
             return false;
         }
         // Save into db.
-        return $DB->insert_record('block_opencast_visibility', $visibility);
+        return $DB->insert_record('tool_opencast_visibility', $visibility);
     }
 
     /**
@@ -217,7 +217,7 @@ class visibility_helper {
             return false;
         }
         // Update the record in db.
-        return $DB->update_record('block_opencast_visibility', $visibility);
+        return $DB->update_record('tool_opencast_visibility', $visibility);
     }
 
     /**
@@ -230,7 +230,7 @@ class visibility_helper {
     public static function delete_visibility_job($visibility) {
         global $DB;
         // Delete the visibility record.
-        return $DB->delete_records('block_opencast_visibility', ['id' => $visibility->id]);
+        return $DB->delete_records('tool_opencast_visibility', ['id' => $visibility->id]);
     }
 
     /**
@@ -282,7 +282,7 @@ class visibility_helper {
         // Set the pending status.
         $job->status = $status;
         // Save into db.
-        $DB->update_record('block_opencast_visibility', $job);
+        $DB->update_record('tool_opencast_visibility', $job);
     }
 
     /**
@@ -297,7 +297,7 @@ class visibility_helper {
         // Get the visibility record.
         $visibilityrecord = $DB->get_record('block_opencast_visibility', ['uploadjobid' => $uploadjob->id]);
         // Initialize the visibility as Visible.
-        $visibility = block_opencast_renderer::VISIBLE;
+        $visibility = tool_opencast_renderer::VISIBLE;
 
         // Prepare the variables to be used throughout the process.
         $groups = null;
@@ -313,8 +313,8 @@ class visibility_helper {
             }
 
             // Checking the visibility value against the allowed visibility states.
-            $allowedvisibilitystates = [block_opencast_renderer::VISIBLE,
-                block_opencast_renderer::HIDDEN, block_opencast_renderer::GROUP, ];
+            $allowedvisibilitystates = [tool_opencast_renderer::VISIBLE,
+                tool_opencast_renderer::HIDDEN, tool_opencast_renderer::GROUP, ];
 
             if (!in_array($visibility, $allowedvisibilitystates)) {
                 throw new coding_exception('Invalid visibility state.');
@@ -348,15 +348,15 @@ class visibility_helper {
         // Get all configured roles.
         $roles = $apibridge->getroles();
         // In case of hidden visibility, only permanenet roles will be set.
-        if ($visibility == block_opencast_renderer::HIDDEN) {
+        if ($visibility == tool_opencast_renderer::HIDDEN) {
             // Get permanenet roles only.
             $roles = $apibridge->getroles(1);
         }
         // Initialize acl empty array.
         $acls = [];
         switch ($visibility) {
-            case block_opencast_renderer::VISIBLE:
-            case block_opencast_renderer::HIDDEN:
+            case tool_opencast_renderer::VISIBLE:
+            case tool_opencast_renderer::HIDDEN:
                 foreach ($roles as $role) {
                     foreach ($role->actions as $action) {
                         $rolenameformatted = $apibridge::replace_placeholders($role->rolename,
@@ -371,7 +371,7 @@ class visibility_helper {
                     }
                 }
                 break;
-            case block_opencast_renderer::GROUP:
+            case tool_opencast_renderer::GROUP:
                 foreach ($roles as $role) {
                     foreach ($role->actions as $action) {
                         foreach ($apibridge::replace_placeholders($role->rolename,
@@ -411,7 +411,7 @@ class visibility_helper {
         }
 
         // Delete the visibility record otherwise.
-        $DB->delete_records('block_opencast_visibility', ['id' => $job->id]);
+        $DB->delete_records('tool_opencast_visibility', ['id' => $job->id]);
         mtrace('job ' . $job->id . ' removed');
     }
 
@@ -495,7 +495,7 @@ class visibility_helper {
         global $DB;
         // Now that we have two different options in visibility table, we need to prepare a comprehensive sql.
         // Assuming that the visibility was requested by changevisibility form, not the addvideo (not uploadjob).
-        $select = "SELECT * FROM {block_opencast_visibility}";
+        $select = "SELECT * FROM {tool_opencast_visibility}";
         $params = [
             'ocinstanceid' => $ocinstanceid,
             'courseid' => $courseid,
@@ -537,7 +537,7 @@ class visibility_helper {
      */
     public static function get_uploadjob_scheduled_visibility($uploadjobid, $onlyscheduled = true) {
         global $DB;
-        $sql = "SELECT * FROM {block_opencast_visibility}" .
+        $sql = "SELECT * FROM {tool_opencast_visibility}" .
             " WHERE uploadjobid = :uploadjobid";
         $params = [
             'uploadjobid' => intval($uploadjobid),
@@ -558,17 +558,17 @@ class visibility_helper {
      */
     public static function get_visibility_status_legend(int $statuscode): array {
         $vkey = 'visible';
-        if ($statuscode == block_opencast_renderer::HIDDEN) {
+        if ($statuscode == tool_opencast_renderer::HIDDEN) {
             $vkey = 'hidden';
-        } else if ($statuscode == block_opencast_renderer::GROUP) {
+        } else if ($statuscode == tool_opencast_renderer::GROUP) {
             $vkey = 'group';
-        } else if ($statuscode == block_opencast_renderer::MIXED_VISIBILITY) {
+        } else if ($statuscode == tool_opencast_renderer::MIXED_VISIBILITY) {
             $vkey = 'mixed';
         }
 
         return [
-            get_string('legendvisibility_' . $vkey, 'block_opencast'),
-            get_string('legendvisibility_' . $vkey . 'desc', 'block_opencast'),
+            get_string('legendvisibility_' . $vkey, 'tool_opencast'),
+            get_string('legendvisibility_' . $vkey . 'desc', 'tool_opencast'),
         ];
     }
 }

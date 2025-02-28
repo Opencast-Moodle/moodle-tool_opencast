@@ -48,10 +48,10 @@ $redirecturl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('directaccesstovideo', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('directaccesstovideo', 'block_opencast'), $baseurl);
+$PAGE->set_title(get_string('directaccesstovideo', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('directaccesstovideo', 'tool_opencast'), $baseurl);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
@@ -61,7 +61,7 @@ try {
     // We gently redirect to the course main view page in case of capability exception, to handle the behat more sufficiently.
     $redirecttocourse = new moodle_url('/course/view.php', ['id' => $courseid]);
     redirect($redirecttocourse,
-        get_string('nopermissions', 'error', get_string('opencast:directaccessvideolink', 'block_opencast')),
+        get_string('nopermissions', 'error', get_string('opencast:directaccessvideolink', 'tool_opencast')),
         null,
         notification::NOTIFY_ERROR);
 }
@@ -85,7 +85,7 @@ if (!$result->error) {
 
         if (empty($directaccessurl)) {
             redirect($redirecturl,
-                get_string('video_not_accessible', 'block_opencast'),
+                get_string('video_not_accessible', 'tool_opencast'),
                 null,
                 notification::NOTIFY_ERROR);
         }
@@ -112,10 +112,10 @@ if (!$result->error) {
         $params = lti_helper::create_lti_parameters($consumerkey, $consumersecret,
             $ltiendpoint, $directaccessurl);
 
-        $renderer = $PAGE->get_renderer('block_opencast');
+        $renderer = $PAGE->get_renderer('tool_opencast');
 
         echo $OUTPUT->header();
-        echo $OUTPUT->heading(get_string('directaccesstovideo', 'block_opencast'));
+        echo $OUTPUT->heading(get_string('directaccesstovideo', 'tool_opencast'));
         echo $renderer->render_lti_form($ltiendpoint, $params);
 
         $waitingtime = 0;
@@ -123,18 +123,18 @@ if (!$result->error) {
             $waitingtime = 2;
         }
 
-        $PAGE->requires->js_call_amd('block_opencast/block_lti_form_handler', 'init', [$waitingtime]);
+        $PAGE->requires->js_call_amd('tool_opencast/block_lti_form_handler', 'init', [$waitingtime]);
         echo $OUTPUT->footer();
 
     } else {
         redirect($redirecturl,
-            get_string('video_not_accessible', 'block_opencast'),
+            get_string('video_not_accessible', 'tool_opencast'),
             null,
             notification::NOTIFY_ERROR);
     }
 } else {
     redirect($redirecturl,
-        get_string('video_retrieval_failed', 'block_opencast'),
+        get_string('video_retrieval_failed', 'tool_opencast'),
         null,
         notification::NOTIFY_ERROR);
 }

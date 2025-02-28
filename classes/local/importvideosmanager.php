@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Import videos management for block_opencast.
+ * Import videos management for tool_opencast.
  *
  * @package    tool_opencast
  * @copyright  2020 Alexander Bias, Ulm University <alexander.bias@uni-ulm.de>
@@ -31,7 +31,7 @@ use dml_exception;
 use stdClass;
 
 /**
- * Import videos management for block_opencast.
+ * Import videos management for tool_opencast.
  *
  * @package    tool_opencast
  * @copyright  2020 Alexander Bias, Ulm University <alexander.bias@uni-ulm.de>
@@ -279,7 +279,7 @@ class importvideosmanager {
         global $PAGE;
 
         // Get renderer.
-        $renderer = $PAGE->get_renderer('block_opencast', 'importvideos');
+        $renderer = $PAGE->get_renderer('tool_opencast', 'importvideos');
 
         // Initialize course videos as empty array.
         $courseseries = [];
@@ -332,7 +332,7 @@ class importvideosmanager {
         global $PAGE;
 
         // Get renderer.
-        $renderer = $PAGE->get_renderer('block_opencast', 'importvideos');
+        $renderer = $PAGE->get_renderer('tool_opencast', 'importvideos');
 
         // Initialize course videos summary as empty array.
         $coursevideossummary = [];
@@ -519,7 +519,7 @@ class importvideosmanager {
         global $PAGE;
 
         // Get renderers.
-        $renderer = $PAGE->get_renderer('block_opencast', 'importvideos');
+        $renderer = $PAGE->get_renderer('tool_opencast', 'importvideos');
 
         // Get an APIbridge instance.
         $apibridge = apibridge::get_instance($ocinstanceid);
@@ -538,7 +538,7 @@ class importvideosmanager {
         // If there aren't any videos, return only a warning message.
         if (count($videos) < 1) {
             return $renderer->wizard_warning_notification(
-                get_string('importvideos_wizardstep2coursevideosnone', 'block_opencast'));
+                get_string('importvideos_wizardstep2coursevideosnone', 'tool_opencast'));
         }
 
         // Initialize course videos entry strings as empty array.
@@ -573,7 +573,7 @@ class importvideosmanager {
         $aclchangeresult = new stdClass();
 
         // Assuming that everything goes fine, we define the return result variable.
-        $aclchangeresult->message = get_string('importvideos_importjobaclchangedone', 'block_opencast');
+        $aclchangeresult->message = get_string('importvideos_importjobaclchangedone', 'tool_opencast');
         $aclchangeresult->type = notification::NOTIFY_SUCCESS;
 
         // Get an APIbridge instance.
@@ -587,25 +587,25 @@ class importvideosmanager {
             // There are 3 different outcomes, we prioritize the importance of errors here.
             if (!$result->seriesaclchange) {
                 // 1. When there is error with changing Series ACL.
-                $aclchangeresult->message = get_string('importvideos_importjobaclchangeseriesfailed', 'block_opencast');
+                $aclchangeresult->message = get_string('importvideos_importjobaclchangeseriesfailed', 'tool_opencast');
                 $aclchangeresult->type = notification::NOTIFY_ERROR;
             } else if (!$result->seriesmapped) {
                 // 2. When there is error with mapping series to the course correctly.
                 // It is very unlikely to happen but it is important if it does.
-                $aclchangeresult->message = get_string('importvideos_importjobaclchangeseriesmappingfailed', 'block_opencast');
+                $aclchangeresult->message = get_string('importvideos_importjobaclchangeseriesmappingfailed', 'tool_opencast');
                 $aclchangeresult->type = notification::NOTIFY_ERROR;
             } else if (count($result->eventsaclchange->failed) > 1) {
                 // 3. Error might happen during events ACL changes, but it should not be as important as other errors,
                 // only a notification would be enough.
                 // If all videos have failed, we notify user as a warning.
                 if (count($result->eventsaclchange->failed) == $result->eventsaclchange->total) {
-                    $aclchangeresult->message = get_string('importvideos_importjobaclchangealleventsfailed', 'block_opencast');
+                    $aclchangeresult->message = get_string('importvideos_importjobaclchangealleventsfailed', 'tool_opencast');
                     $aclchangeresult->type = notification::NOTIFY_WARNING;
                 } else {
                     // But if some of them have failed, we notify user as warning with the id of the events.
                     // Get renderer.
-                    $renderer = $PAGE->get_renderer('block_opencast');
-                    $aclchangeresult->message = get_string('importvideos_importjobaclchangeeventsfailed', 'block_opencast');
+                    $renderer = $PAGE->get_renderer('tool_opencast');
+                    $aclchangeresult->message = get_string('importvideos_importjobaclchangeeventsfailed', 'tool_opencast');
                     $aclchangeresult->message .= $renderer->render_list($result->eventsaclchange->failed);
                     $aclchangeresult->type = notification::NOTIFY_WARNING;
                 }
@@ -742,7 +742,7 @@ class importvideosmanager {
             return false;
         }
         // Save into db.
-        return (bool) $DB->insert_record('block_opencast_importmapping', $mapping);
+        return (bool) $DB->insert_record('tool_opencast_importmapping', $mapping);
     }
 
     /**
@@ -759,7 +759,7 @@ class importvideosmanager {
             return false;
         }
         // Update the record in db.
-        return $DB->update_record('block_opencast_importmapping', $mapping);
+        return $DB->update_record('tool_opencast_importmapping', $mapping);
     }
 
     /**
@@ -795,7 +795,7 @@ class importvideosmanager {
      */
     public static function delete_import_mapping_record($where) {
         global $DB;
-        return $DB->delete_records('block_opencast_importmapping', $where);
+        return $DB->delete_records('tool_opencast_importmapping', $where);
     }
 
     /**
@@ -816,7 +816,7 @@ class importvideosmanager {
         foreach ($records as $record) {
             $record->restorecompleted = $status;
             $record->timemodified = time();
-            $success = $DB->update_record('block_opencast_importmapping', $record, true);
+            $success = $DB->update_record('tool_opencast_importmapping', $record, true);
             // We track the success of changes to report back,
             // however series are not neccessary and we escape them,
             // because they are waiting for the restore session to be completed.

@@ -59,10 +59,10 @@ require_login($courseid, false);
 $PAGE->set_context(context_system::instance());
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('managedefaultsforuser', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('managedefaultsforuser', 'block_opencast'), $baseurl);
+$PAGE->set_title(get_string('managedefaultsforuser', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('managedefaultsforuser', 'tool_opencast'), $baseurl);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
@@ -126,19 +126,19 @@ if ($data = $managedefaultsform->get_data()) {
 
     if ($userdefaultsrecord) {
         $userdefaultsrecord->defaults = json_encode($defaults);
-        $DB->update_record('block_opencast_user_default', $userdefaultsrecord);
+        $DB->update_record('tool_opencast_user_default', $userdefaultsrecord);
     } else {
         $userdefaultsrecord = new stdClass();
         $userdefaultsrecord->userid = $USER->id;
         $userdefaultsrecord->defaults = json_encode($defaults);
-        $DB->insert_record('block_opencast_user_default', $userdefaultsrecord);
+        $DB->insert_record('tool_opencast_user_default', $userdefaultsrecord);
     }
 
-    redirect($redirecturl, get_string('defaultssaved', 'block_opencast'), null, notification::NOTIFY_SUCCESS);
+    redirect($redirecturl, get_string('defaultssaved', 'tool_opencast'), null, notification::NOTIFY_SUCCESS);
 }
-$renderer = $PAGE->get_renderer('block_opencast');
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('managedefaultsforuser', 'block_opencast'));
+echo $OUTPUT->heading(get_string('managedefaultsforuser', 'tool_opencast'));
 $managedefaultsform->display();
 echo $OUTPUT->footer();

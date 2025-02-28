@@ -54,7 +54,7 @@ class visibility_form_massaction extends moodleform {
         $mform = $this->_form;
 
         // Get the renderer to use its methods.
-        $renderer = $PAGE->get_renderer('block_opencast');
+        $renderer = $PAGE->get_renderer('tool_opencast');
         $courseid = $this->_customdata['courseid'];
         $videosdatalist = $this->_customdata['videosdatalist'];
         $ocinstanceid = $this->_customdata['ocinstanceid'];
@@ -81,7 +81,7 @@ class visibility_form_massaction extends moodleform {
         if (!empty($videoslisthtmlitem)) {
             $line = html_writer::tag('hr', '');
             $explanation = html_writer::tag('p',
-                get_string('massaction_selectedvideos_list', 'block_opencast',
+                get_string('massaction_selectedvideos_list', 'tool_opencast',
                     implode('</li><li>', $videoslisthtmlitem))
             );
             $mform->addElement('html', $line . $explanation . $line);
@@ -106,15 +106,15 @@ class visibility_form_massaction extends moodleform {
 
         $radioarray = [];
         $radioarray[] = $mform->addElement('radio', 'visibility',
-            get_string('visibility_massaction', 'block_opencast'), get_string('visibility_hide_massaction', 'block_opencast'), 0);
+            get_string('visibility_massaction', 'tool_opencast'), get_string('visibility_hide_massaction', 'tool_opencast'), 0);
         $radioarray[] = $mform->addElement('radio', 'visibility', '',
-            get_string('visibility_show_massaction', 'block_opencast'), 1);
+            get_string('visibility_show_massaction', 'tool_opencast'), 1);
         // We need to remove the group visibility radio button, when there is no group in the course.
         if ($groupvisibilityallowed && !empty($groups)) {
             $radioarray[] = $mform->addElement('radio', 'visibility', '',
-                get_string('visibility_group_massaction', 'block_opencast'), 2);
+                get_string('visibility_group_massaction', 'tool_opencast'), 2);
         }
-        $mform->setDefault('visibility', block_opencast_renderer::VISIBLE);
+        $mform->setDefault('visibility', tool_opencast_renderer::VISIBLE);
         $mform->setType('visibility', PARAM_INT);
 
         // Load existing groups.
@@ -134,8 +134,8 @@ class visibility_form_massaction extends moodleform {
 
         // Provide a checkbox to enable changing the visibility for later.
         $mform->addElement('checkbox', 'enableschedulingchangevisibility',
-            get_string('enableschedulingchangevisibility_massaction', 'block_opencast'),
-            get_string('enableschedulingchangevisibilitydesc_massaction', 'block_opencast'));
+            get_string('enableschedulingchangevisibility_massaction', 'tool_opencast'),
+            get_string('enableschedulingchangevisibilitydesc_massaction', 'tool_opencast'));
         $mform->hideIf('scheduledvisibilitytime', 'enableschedulingchangevisibility', 'notchecked');
         $mform->hideIf('scheduledvisibilitystatus', 'enableschedulingchangevisibility', 'notchecked');
 
@@ -144,28 +144,28 @@ class visibility_form_massaction extends moodleform {
         // Scheduled visibility.
         list($waitingtime, $configuredtimespan) = visibility_helper::get_waiting_time($ocinstanceid);
         $element = $mform->addElement('date_time_selector', 'scheduledvisibilitytime',
-            get_string('scheduledvisibilitytime', 'block_opencast'));
+            get_string('scheduledvisibilitytime', 'tool_opencast'));
         $element->_helpbutton = $renderer->render_help_icon_with_custom_text(
-            get_string('scheduledvisibilitytimehi', 'block_opencast'),
-            get_string('scheduledvisibilitytimehi_help', 'block_opencast', $configuredtimespan));
+            get_string('scheduledvisibilitytimehi', 'tool_opencast'),
+            get_string('scheduledvisibilitytimehi_help', 'tool_opencast', $configuredtimespan));
 
         $mform->setDefault('scheduledvisibilitytime', $waitingtime);
 
         $scheduleradioarray = [];
         $scheduleradioarray[] = $mform->addElement('radio', 'scheduledvisibilitystatus',
-            get_string('scheduledvisibilitystatus', 'block_opencast'),
-            get_string('visibility_hide_massaction', 'block_opencast'),
+            get_string('scheduledvisibilitystatus', 'tool_opencast'),
+            get_string('visibility_hide_massaction', 'tool_opencast'),
             0
         );
         $scheduleradioarray[] = $mform->addElement('radio', 'scheduledvisibilitystatus', '',
-            get_string('visibility_show_massaction', 'block_opencast'), 1);
+            get_string('visibility_show_massaction', 'tool_opencast'), 1);
         // We need to remove the group visibility radio button, we there is no group in the course.
         if ($groupvisibilityallowed && !empty($groups)) {
             $scheduleradioarray[] = $mform->addElement('radio', 'scheduledvisibilitystatus',
-                '', get_string('visibility_group_massaction', 'block_opencast'), 2);
+                '', get_string('visibility_group_massaction', 'tool_opencast'), 2);
         }
 
-        $mform->setDefault('scheduledvisibilitystatus', block_opencast_renderer::HIDDEN);
+        $mform->setDefault('scheduledvisibilitystatus', tool_opencast_renderer::HIDDEN);
         $mform->setType('scheduledvisibilitystatus', PARAM_INT);
 
         // Load existing groups.
@@ -192,8 +192,8 @@ class visibility_form_massaction extends moodleform {
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
-        if ($data['visibility'] == block_opencast_renderer::GROUP && empty($data['groups'])) {
-            $errors['visibility'] = get_string('emptyvisibilitygroups', 'block_opencast');
+        if ($data['visibility'] == tool_opencast_renderer::GROUP && empty($data['groups'])) {
+            $errors['visibility'] = get_string('emptyvisibilitygroups', 'tool_opencast');
         }
         if (isset($data['enableschedulingchangevisibility']) && $data['enableschedulingchangevisibility']) {
             // Deducting 2 minutes from the time, to let teachers finish the form.
@@ -207,16 +207,16 @@ class visibility_form_massaction extends moodleform {
             $allowedscheduledvisibilitytime = $waitingtimearray[0];
             if (intval($data['scheduledvisibilitytime']) < intval($allowedscheduledvisibilitytime)) {
                 $errors['scheduledvisibilitytime'] = get_string('scheduledvisibilitytimeerror',
-                    'block_opencast', $waitingtimearray[1]);
+                    'tool_opencast', $waitingtimearray[1]);
             }
-            if ($data['scheduledvisibilitystatus'] == block_opencast_renderer::GROUP &&
+            if ($data['scheduledvisibilitystatus'] == tool_opencast_renderer::GROUP &&
                 empty($data['scheduledvisibilitygroups'])) {
-                $errors['enableschedulingchangevisibility'] = get_string('emptyvisibilitygroups', 'block_opencast');
+                $errors['enableschedulingchangevisibility'] = get_string('emptyvisibilitygroups', 'tool_opencast');
             }
             // Check whether the scheduled visibility is equal to initial visibility.
             if (intval($data['scheduledvisibilitystatus']) == intval($data['visibility'])) {
                 $haserror = true;
-                if ($data['scheduledvisibilitystatus'] == block_opencast_renderer::GROUP) {
+                if ($data['scheduledvisibilitystatus'] == tool_opencast_renderer::GROUP) {
                     sort($data['scheduledvisibilitygroups']);
                     sort($data['groups']);
                     if ($data['scheduledvisibilitygroups'] != $data['groups']) {
@@ -224,7 +224,7 @@ class visibility_form_massaction extends moodleform {
                     }
                 }
                 if ($haserror) {
-                    $errors['enableschedulingchangevisibility'] = get_string('scheduledvisibilitystatuserror', 'block_opencast');
+                    $errors['enableschedulingchangevisibility'] = get_string('scheduledvisibilitystatuserror', 'tool_opencast');
                 }
             }
         }

@@ -53,11 +53,11 @@ class addactivity_form extends moodleform {
         $ocinstanceid = $this->_customdata['ocinstanceid'];
         $seriesid = $this->_customdata['seriesid'];
 
-        $mform->addElement('text', 'title', get_string('addactivity_formactivitytitle', 'block_opencast'), ['size' => '40']);
+        $mform->addElement('text', 'title', get_string('addactivity_formactivitytitle', 'tool_opencast'), ['size' => '40']);
         $mform->setType('title', PARAM_TEXT);
         $mform->setDefault('title', activitymodulemanager::get_default_title_for_series($ocinstanceid));
         $mform->addRule('title',
-            get_string('addactivity_noemptytitle', 'block_opencast', get_string('addactivity_defaulttitle', 'block_opencast')),
+            get_string('addactivity_noemptytitle', 'tool_opencast', get_string('addactivity_defaulttitle', 'tool_opencast')),
             'required');
 
         if (get_config('mod_opencast', 'global_download_' . $ocinstanceid)) {
@@ -71,7 +71,7 @@ class addactivity_form extends moodleform {
         }
 
         if (get_config('tool_opencast', 'addactivityintro_' . $ocinstanceid) == true) {
-            $mform->addElement('editor', 'intro', get_string('addactivity_formactivityintro', 'block_opencast'),
+            $mform->addElement('editor', 'intro', get_string('addactivity_formactivityintro', 'tool_opencast'),
                 ['rows' => 5],
                 ['maxfiles' => 0, 'noclean' => true]);
             $mform->setType('intro', PARAM_RAW); // No XSS prevention here, users must be trusted.
@@ -83,7 +83,7 @@ class addactivity_form extends moodleform {
 
             // Add the widget only if we have more than one section.
             if (count($sectionmenu) > 1) {
-                $mform->addElement('select', 'section', get_string('addactivity_formactivitysection', 'block_opencast'),
+                $mform->addElement('select', 'section', get_string('addactivity_formactivitysection', 'tool_opencast'),
                     activitymodulemanager::get_course_sections($courseid));
                 $mform->setType('section', PARAM_INT);
                 $mform->setDefault('section', 0);
@@ -92,7 +92,7 @@ class addactivity_form extends moodleform {
 
         if (get_config('tool_opencast', 'addactivityavailability_' . $ocinstanceid) == true && !empty($CFG->enableavailability)) {
             $mform->addElement('textarea', 'availabilityconditionsjson',
-                get_string('addactivity_formactivityavailability', 'block_opencast'));
+                get_string('addactivity_formactivityavailability', 'tool_opencast'));
             frontend::include_all_javascript(get_course($courseid));
         }
 
@@ -123,9 +123,9 @@ class addactivity_form extends moodleform {
         $buttonarray = [];
 
         // Submit buttons.
-        $submitlabel = get_string('addactivity_addbuttontitlereturnoverview', 'block_opencast');
+        $submitlabel = get_string('addactivity_addbuttontitlereturnoverview', 'tool_opencast');
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', $submitlabel);
-        $submit2label = get_string('addactivity_addbuttontitlereturncourse', 'block_opencast');
+        $submit2label = get_string('addactivity_addbuttontitlereturncourse', 'tool_opencast');
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton2', $submit2label);
 
         // Cancel button.

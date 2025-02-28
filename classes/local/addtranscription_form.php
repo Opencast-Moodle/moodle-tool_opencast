@@ -50,11 +50,11 @@ class addtranscription_form extends moodleform {
     public function definition() {
         global $PAGE;
         // Get the renderer to use its methods.
-        $this->renderer = $PAGE->get_renderer('block_opencast');
+        $this->renderer = $PAGE->get_renderer('tool_opencast');
         $ocinstanceid = $this->_customdata['ocinstanceid'];
         $mform = $this->_form;
 
-        $explanation = html_writer::tag('p', get_string('addnewtranscription_desc', 'block_opencast'));
+        $explanation = html_writer::tag('p', get_string('addnewtranscription_desc', 'tool_opencast'));
         $mform->addElement('html', $explanation);
 
         $transcriptiontypescfg = get_config('tool_opencast', 'transcriptionfileextensions_' . $ocinstanceid);
@@ -74,7 +74,7 @@ class addtranscription_form extends moodleform {
         // Preparing flavors as for service types.
         $flavorsconfig = get_config('tool_opencast', 'transcriptionflavors_' . $ocinstanceid);
         $flavors = [
-            '' => get_string('emptyflavoroption', 'block_opencast'),
+            '' => get_string('emptyflavoroption', 'tool_opencast'),
         ];
         if (!empty($flavorsconfig)) {
             $flavorsarray = json_decode($flavorsconfig);
@@ -85,9 +85,9 @@ class addtranscription_form extends moodleform {
             }
         }
 
-        $mform->addElement('select', 'transcription_flavor', get_string('transcriptionflavorfield', 'block_opencast'), $flavors);
+        $mform->addElement('select', 'transcription_flavor', get_string('transcriptionflavorfield', 'tool_opencast'), $flavors);
         $mform->addRule('transcription_flavor', get_string('required'), 'required');
-        $mform->addElement('filepicker', 'transcription_file', get_string('transcriptionfilefield', 'block_opencast'),
+        $mform->addElement('filepicker', 'transcription_file', get_string('transcriptionfilefield', 'tool_opencast'),
             null, ['accepted_types' => $transcriptiontypes]);
         $mform->disabledIf('transcription_file', 'transcription_flavor', 'eq', '');
         $mform->addRule('transcription_file', get_string('required'), 'required');
@@ -103,6 +103,6 @@ class addtranscription_form extends moodleform {
 
         $mform->closeHeaderBefore('buttonar');
 
-        $this->add_action_buttons(true, get_string('uploadtranscritpion', 'block_opencast'));
+        $this->add_action_buttons(true, get_string('uploadtranscritpion', 'tool_opencast'));
     }
 }

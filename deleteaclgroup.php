@@ -41,12 +41,12 @@ $PAGE->set_url($baseurl);
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
 
 $redirecturl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('deleteaclgroup', 'block_opencast'), $baseurl);
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('deleteaclgroup', 'tool_opencast'), $baseurl);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
@@ -59,17 +59,17 @@ if (($action == 'delete') && confirm_sesskey()) {
     // Do action.
     if ($video->video) {
         $opencast->delete_acl_group_assigned($video->video->identifier, $courseid);
-        $message = get_string('aclgroupdeleted', 'block_opencast', $video->video);
+        $message = get_string('aclgroupdeleted', 'tool_opencast', $video->video);
         redirect($redirecturl, $message);
     }
 
-    $message = get_string('videonotfound', 'block_opencast');
+    $message = get_string('videonotfound', 'tool_opencast');
     redirect($redirecturl, $message);
 }
 
-$renderer = $PAGE->get_renderer('block_opencast');
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('deleteaclgroup', 'block_opencast'));
+echo $OUTPUT->heading(get_string('deleteaclgroup', 'tool_opencast'));
 echo $renderer->render_video_info($ocinstanceid, $courseid, $video->video);
 echo $OUTPUT->footer();

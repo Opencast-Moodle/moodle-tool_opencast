@@ -67,7 +67,7 @@ class liveupdate_helper {
 
     /**
      * Evaluates and returns the processing state info.
-     * It uses the block_opencast renderer to render processing state icon
+     * It uses the tool_opencast renderer to render processing state icon
      *
      * @param string $ocinstanceid opencast instance id
      * @param string $identifier event identifier
@@ -75,8 +75,8 @@ class liveupdate_helper {
      */
     public static function get_processing_state_info($ocinstanceid, $identifier) {
         global $PAGE;
-        /** @var block_opencast_renderer $renderer */
-        $renderer = $PAGE->get_renderer('block_opencast');
+        /** @var tool_opencast_renderer $renderer */
+        $renderer = $PAGE->get_renderer('tool_opencast');
         $apibridge = apibridge::get_instance($ocinstanceid);
         // Get video object.
         $eventobject = $apibridge->get_opencast_video($identifier, true);
@@ -102,7 +102,7 @@ class liveupdate_helper {
 
     /**
      * Get the live update info for uploading status.
-     * It uses the block_opencast renderer to render the uploading status.
+     * It uses the tool_opencast renderer to render the uploading status.
      *
      * @param int $uploadjobid the id of upload job
      * @return array|string $info the live update info or empty string if error happens.
@@ -111,7 +111,7 @@ class liveupdate_helper {
         global $DB, $PAGE;
 
         // Get single upload job record to extract its current info.
-        $sql = "SELECT status, countfailed FROM {block_opencast_uploadjob} " .
+        $sql = "SELECT status, countfailed FROM {tool_opencast_uploadjob} " .
             "WHERE id = :uploadjobid";
         $params = [
             'uploadjobid' => $uploadjobid,
@@ -121,8 +121,8 @@ class liveupdate_helper {
         if (empty($uploadjob) || !property_exists($uploadjob, 'status')) {
             return '';
         }
-        /** @var block_opencast_renderer $renderer */
-        $renderer = $PAGE->get_renderer('block_opencast');
+        /** @var tool_opencast_renderer $renderer */
+        $renderer = $PAGE->get_renderer('tool_opencast');
         // Get the status of uploading process from the renderer.
         $status = $renderer->render_status($uploadjob->status, $uploadjob->countfailed);
         $info['replace'] = $status;

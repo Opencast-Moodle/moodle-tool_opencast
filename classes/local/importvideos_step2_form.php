@@ -50,7 +50,7 @@ class importvideos_step2_form extends moodleform {
         $mform = $this->_form;
 
         // Get renderer.
-        $renderer = $PAGE->get_renderer('block_opencast', 'importvideos');
+        $renderer = $PAGE->get_renderer('tool_opencast', 'importvideos');
 
         // Add hidden fields for transferring the wizard results and for wizard step processing.
         $mform->addElement('hidden', 'courseid', $this->_customdata['courseid']);
@@ -70,7 +70,7 @@ class importvideos_step2_form extends moodleform {
         if (count($courseseries) < 1) {
             // We are in a dead end situation, no chance to add anything.
             $notification = $renderer->wizard_error_notification(
-                get_string('importvideos_wizardstep2coursevideosnone', 'block_opencast'));
+                get_string('importvideos_wizardstep2coursevideosnone', 'tool_opencast'));
             $mform->addElement('html', $notification);
             $mform->addElement('cancel');
 
@@ -79,7 +79,7 @@ class importvideos_step2_form extends moodleform {
 
         // Add intro.
         $notification = $renderer->wizard_intro_notification(
-            get_string('importvideos_wizardstep2intro', 'block_opencast'));
+            get_string('importvideos_wizardstep2intro', 'tool_opencast'));
         $mform->addElement('html', $notification);
 
         // Add one single empty static element.
@@ -97,7 +97,7 @@ class importvideos_step2_form extends moodleform {
         $this->add_checkbox_controller('coursevideocheckboxes', null, null, 1);
 
         // Add action buttons.
-        $this->add_action_buttons(true, get_string('importvideos_wizardstepbuttontitlecontinue', 'block_opencast'));
+        $this->add_action_buttons(true, get_string('importvideos_wizardstepbuttontitlecontinue', 'tool_opencast'));
     }
 
     /**
@@ -121,7 +121,7 @@ class importvideos_step2_form extends moodleform {
 
         // If no video was selected, return an error.
         if ($anyvideoselected == false) {
-            $errors['coursevideosvalidation'] = get_string('importvideos_wizardstep2coursevideosnoneselected', 'block_opencast');
+            $errors['coursevideosvalidation'] = get_string('importvideos_wizardstep2coursevideosnoneselected', 'tool_opencast');
         }
 
         // Return errors.

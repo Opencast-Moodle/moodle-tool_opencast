@@ -58,10 +58,10 @@ if ($redirectpage == 'overviewvideos') {
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'block_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'block_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'block_opencast'), $redirecturl);
-$PAGE->navbar->add(get_string('updatemetadata_massaction', 'block_opencast'), $baseurl);
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('updatemetadata_massaction', 'tool_opencast'), $baseurl);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
@@ -84,8 +84,8 @@ foreach ($videoids as $videoid) {
     $video = $opencast->get_opencast_video($videoid);
 
     if (!empty($video->error)) {
-        $videodata->error = get_string('videonotfound', 'block_opencast');
-        $videodata->detail = get_string('updatemetadata_massaction_videoerror', 'block_opencast', $videodata);
+        $videodata->error = get_string('videonotfound', 'tool_opencast');
+        $videodata->detail = get_string('updatemetadata_massaction_videoerror', 'tool_opencast', $videodata);
         $videosdatalist[] = $videodata;
         continue;
     }
@@ -93,8 +93,8 @@ foreach ($videoids as $videoid) {
     $videodata->title = $video->video->title;
 
     if (!$opencast->can_update_event_metadata($video->video, $courseid, false)) {
-        $videodata->error = get_string('massaction_videostatusmismatched', 'block_opencast');
-        $videodata->detail = get_string('updatemetadata_massaction_videoerror', 'block_opencast', $videodata);
+        $videodata->error = get_string('massaction_videostatusmismatched', 'tool_opencast');
+        $videodata->detail = get_string('updatemetadata_massaction_videoerror', 'tool_opencast', $videodata);
         $videosdatalist[] = $videodata;
         continue;
     }
@@ -179,7 +179,7 @@ if ($data = $massactionupdatemetadataform->get_data()) {
         if (!empty($failed)) {
             $failedtext = get_string(
                 'updatemetadata_massaction_notification_failed',
-                'block_opencast',
+                'tool_opencast',
                 implode('</li><li>', $failed)
             );
         }
@@ -187,14 +187,14 @@ if ($data = $massactionupdatemetadataform->get_data()) {
         if (!empty($succeeded)) {
             $succeededtext = get_string(
                 'updatemetadata_massaction_notification_succeeded',
-                'block_opencast',
+                'tool_opencast',
                 implode('</li><li>', $succeeded)
             );
         }
 
         // If there is no changes, we redirect with warning.
         if (empty($succeededtext) && empty($failedtext)) {
-            $nochangetext = get_string('updatemetadata_massaction_notification_nochange', 'block_opencast');
+            $nochangetext = get_string('updatemetadata_massaction_notification_nochange', 'tool_opencast');
             redirect($redirecturl, $nochangetext, null, notification::NOTIFY_WARNING);
         }
 
@@ -212,10 +212,10 @@ if ($data = $massactionupdatemetadataform->get_data()) {
         redirect($redirecturl, $succeededtext, null, notification::NOTIFY_SUCCESS);
     }
 }
-$PAGE->requires->js_call_amd('block_opencast/block_form_handler', 'init');
-$renderer = $PAGE->get_renderer('block_opencast');
+$PAGE->requires->js_call_amd('tool_opencast/block_form_handler', 'init');
+$renderer = $PAGE->get_renderer('tool_opencast');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('updatemetadata_massaction', 'block_opencast'));
+echo $OUTPUT->heading(get_string('updatemetadata_massaction', 'tool_opencast'));
 $massactionupdatemetadataform->display();
 echo $OUTPUT->footer();

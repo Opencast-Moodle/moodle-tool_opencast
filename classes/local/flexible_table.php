@@ -17,7 +17,7 @@
 /**
  * Subclass of the flexible_table class to override methods.
  *
- * @package   block_opencast
+ * @package   tool_opencast
  * @copyright 2018 Andreas Wagner, Synergy Learning
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -33,7 +33,7 @@ require_once($CFG->dirroot . '/lib/tablelib.php');
 /**
  * Subclass of the flexible_table class to override methods.
  *
- * @package   block_opencast
+ * @package   tool_opencast
  * @copyright 2018 Andreas Wagner, Synergy Learning
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -51,6 +51,6 @@ class flexible_table extends \flexible_table {
         $this->print_initials_bar();
 
         // SYNERGY LEARNING: change format and content of display.
-        echo html_writer::tag('p', (get_string('nothingtodisplay', 'block_opencast')));
+        echo html_writer::tag('p', (get_string('nothingtodisplay', 'tool_opencast')));
     }
 }
