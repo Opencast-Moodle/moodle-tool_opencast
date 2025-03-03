@@ -241,7 +241,7 @@ class eventstatus_notification_helper {
             'statustransferred' => upload_helper::STATUS_TRANSFERRED,
             'statusarchived' => upload_helper::STATUS_ARCHIVED_FAILED_UPLOAD,
         ];
-        $allqueuednum = $DB->count_records_select('tool_opencast_uploadjob', $where, $params);
+        $allqueuednum = $DB->count_records_select('block_opencast_uploadjob', $where, $params);
         $waitingnum = 0;
         if ($allqueuednum > 1) {
             $waitingnum = $allqueuednum - 1;

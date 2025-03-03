@@ -21,7 +21,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import Tabulator from 'block_opencast/tabulator';
+import Tabulator from 'tool_opencast/tabulator';
 import $ from 'jquery';
 import ModalFactory from 'core/modal_factory';
 import ModalEvents from 'core/modal_events';
@@ -32,27 +32,27 @@ export const init = (rolesinputid, metadatainputid, metadataseriesinputid, trans
 
     // Load strings
     var strings = [
-        {key: 'heading_role', component: 'block_opencast'},
-        {key: 'heading_actions', component: 'block_opencast'},
-        {key: 'heading_permanent', component: 'block_opencast'},
-        {key: 'delete_role', component: 'block_opencast'},
-        {key: 'delete_confirm_role', component: 'block_opencast'},
-        {key: 'delete_metadata', component: 'block_opencast'},
-        {key: 'delete_confirm_metadata', component: 'block_opencast'},
-        {key: 'heading_name', component: 'block_opencast'},
-        {key: 'heading_datatype', component: 'block_opencast'},
-        {key: 'heading_description', component: 'block_opencast'},
-        {key: 'heading_required', component: 'block_opencast'},
-        {key: 'heading_readonly', component: 'block_opencast'},
-        {key: 'heading_params', component: 'block_opencast'},
-        {key: 'heading_defaultable', component: 'block_opencast'},
+        {key: 'heading_role', component: 'tool_opencast'},
+        {key: 'heading_actions', component: 'tool_opencast'},
+        {key: 'heading_permanent', component: 'tool_opencast'},
+        {key: 'delete_role', component: 'tool_opencast'},
+        {key: 'delete_confirm_role', component: 'tool_opencast'},
+        {key: 'delete_metadata', component: 'tool_opencast'},
+        {key: 'delete_confirm_metadata', component: 'tool_opencast'},
+        {key: 'heading_name', component: 'tool_opencast'},
+        {key: 'heading_datatype', component: 'tool_opencast'},
+        {key: 'heading_description', component: 'tool_opencast'},
+        {key: 'heading_required', component: 'tool_opencast'},
+        {key: 'heading_readonly', component: 'tool_opencast'},
+        {key: 'heading_params', component: 'tool_opencast'},
+        {key: 'heading_defaultable', component: 'tool_opencast'},
         {key: 'delete', component: 'moodle'},
-        {key: 'transcription_flavor_key', component: 'block_opencast'},
-        {key: 'transcription_flavor_value', component: 'block_opencast'},
-        {key: 'transcription_flavor_delete', component: 'block_opencast'},
-        {key: 'transcription_flavor_confirm_delete', component: 'block_opencast'},
-        {key: 'readonly_disabled_tooltip_text', component: 'block_opencast'},
-        {key: 'heading_batchable', component: 'block_opencast'},
+        {key: 'transcription_flavor_key', component: 'tool_opencast'},
+        {key: 'transcription_flavor_value', component: 'tool_opencast'},
+        {key: 'transcription_flavor_delete', component: 'tool_opencast'},
+        {key: 'transcription_flavor_confirm_delete', component: 'tool_opencast'},
+        {key: 'readonly_disabled_tooltip_text', component: 'tool_opencast'},
+        {key: 'heading_batchable', component: 'tool_opencast'},
     ];
     str.get_strings(strings).then(function(jsstrings) {
         // We need to check and apply the transcription section first,

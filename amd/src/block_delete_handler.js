@@ -16,7 +16,7 @@
 /**
  * Javascript to add a custom block_delete handler
  *
- * @module     block_opencast/block_delete_handler
+ * @module     tool_opencast/block_delete_handler
  * @copyright  2024 Justus Dieckmann, University of Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,27 +29,27 @@ import {get_string} from 'core/str';
 import Notification from "core/notification";
 
 export const init = (contextid, deleteurl) => {
-    Prefetch.prefetchTemplate('block_opencast/delete_block_modal');
-    Prefetch.prefetchString('block_opencast', 'deletecheck_title_modal');
-    const deleteButton = document.querySelector('.block_opencast a.dropdown-item.block_opencast_delete');
+    Prefetch.prefetchTemplate('tool_opencast/delete_block_modal');
+    Prefetch.prefetchString('tool_opencast', 'deletecheck_title_modal');
+    const deleteButton = document.querySelector('.tool_opencast a.dropdown-item.tool_opencast_delete');
     deleteButton.onclick = async(e) => {
         e.preventDefault();
 
-        const html = await Templates.render('block_opencast/delete_block_modal', {
+        const html = await Templates.render('tool_opencast/delete_block_modal', {
             deleteblockurl: deleteurl
         });
 
         const modal = await ModalFactory.create({
             type: ModalFactory.types.CANCEL,
             body: html,
-            title: await get_string('deletecheck_title_modal', 'block_opencast'),
+            title: await get_string('deletecheck_title_modal', 'tool_opencast'),
             large: true
         });
         await modal.show();
-        modal.body[0].querySelector('.block_opencast-delete-mapping').onclick = async() => {
+        modal.body[0].querySelector('.tool_opencast-delete-mapping').onclick = async() => {
             try {
                 await Ajax.call([{
-                    methodname: 'block_opencast_unlink_series',
+                    methodname: 'tool_opencast_unlink_series',
                     args: {contextid: contextid, ocinstanceid: -1, seriesid: 'all'}
                 }])[0];
                 window.location = deleteurl;

@@ -16,7 +16,7 @@
 /**
  * Javascript to initialise the opencast block.
  *
- * @module     block_opencast
+ * @module     tool_opencast
  * @copyright  2019 Farbod Zamani (zamani@elan-ev.de)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -192,4 +192,3 @@ define(['jquery'], function($) {
         init: init
     };
 });
-

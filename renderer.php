@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Renderer for opencast block.
+ * Renderer for opencast tool.
  *
  * @package    tool_opencast
  * @copyright  2017 Andreas Wagner, SYNERGY LEARNING
@@ -37,7 +37,7 @@ use tool_opencast\local\settings_api;
 use tool_opencast\seriesmapping;
 use tool_opencast\local\workflowconfiguration_helper;
 /**
- * Renderer class for block opencast.
+ * Renderer class for tool opencast.
  *
  * @package   tool_opencast
  * @copyright 2017 Andreas Wagner, Synergy Learning
@@ -510,14 +510,14 @@ class tool_opencast_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Render the whole block content.
+     * Render the whole tool content.
      *
      * @param int $courseid
      * @param object $videodata data as a result from api query against opencast.
      * @param int $ocinstance Opencast instance id.
      * @param bool $rendername
      */
-    public function render_block_content($courseid, $videodata, $ocinstance, $rendername) {
+    public function render_tool_content($courseid, $videodata, $ocinstance, $rendername) {
         global $USER, $SITE;
         $html = '';
 

@@ -21,7 +21,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import Tabulator from 'block_opencast/tabulator';
+import Tabulator from 'tool_opencast/tabulator';
 import $ from 'jquery';
 import * as str from 'core/str';
 import ModalFactory from 'core/modal_factory';
@@ -46,7 +46,7 @@ function getBody(contextid, ocinstanceid, seriesid, formdata) {
     }
 
     var params = {ocinstanceid: ocinstanceid, seriesid: seriesid, jsonformdata: formdata};
-    return Fragment.loadFragment('block_opencast', 'series_form', contextid, params);
+    return Fragment.loadFragment('tool_opencast', 'series_form', contextid, params);
 }
 
 /**
@@ -85,7 +85,7 @@ function submitFormAjax(e) {
 
     // Submit form.
     Ajax.call([{
-        methodname: 'block_opencast_submit_series_form',
+        methodname: 'tool_opencast_submit_series_form',
         args: {contextid: contextid, ocinstanceid: e.data.ocinstanceid, seriesid: e.data.seriesid, jsonformdata: formData},
         done: function(newseries) {
             modal.destroy();
@@ -105,7 +105,7 @@ function submitFormAjax(e) {
 
             }
             // We now notify the user about the successful series creation or edit.
-            str.get_string(stringkey, 'block_opencast')
+            str.get_string(stringkey, 'tool_opencast')
                 .done(function(result) {
                     Notification.addNotification({
                         message: result,
@@ -157,7 +157,7 @@ function displayError(message) {
  */
 function loadSeriesTitles(contextid, ocinstanceid, series, seriestable, row) {
     Ajax.call([{
-        methodname: 'block_opencast_get_series_titles',
+        methodname: 'tool_opencast_get_series_titles',
         args: {contextid: contextid, ocinstanceid: ocinstanceid, series: JSON.stringify(series)},
         done: function(data) {
             var titles = JSON.parse(data);
@@ -187,26 +187,26 @@ export const init = (contextid, ocinstanceid, createseries, series, numseriesall
 
     // Load strings
     var strings = [
-        {key: 'seriesname', component: 'block_opencast'},
-        {key: 'form_seriesid', component: 'block_opencast'},
-        {key: 'default', component: 'block_opencast'},
-        {key: 'noconnectedseries', component: 'block_opencast'},
-        {key: 'createseriesforcourse', component: 'block_opencast'},
-        {key: 'delete_series', component: 'block_opencast'},
-        {key: 'delete_confirm_series', component: 'block_opencast'},
-        {key: 'editseries', component: 'block_opencast'},
+        {key: 'seriesname', component: 'tool_opencast'},
+        {key: 'form_seriesid', component: 'tool_opencast'},
+        {key: 'default', component: 'tool_opencast'},
+        {key: 'noconnectedseries', component: 'tool_opencast'},
+        {key: 'createseriesforcourse', component: 'tool_opencast'},
+        {key: 'delete_series', component: 'tool_opencast'},
+        {key: 'delete_confirm_series', component: 'tool_opencast'},
+        {key: 'editseries', component: 'tool_opencast'},
         {key: 'delete', component: 'moodle'},
-        {key: 'loading', component: 'block_opencast'},
-        {key: 'importseries', component: 'block_opencast'},
-        {key: 'importfailed', component: 'block_opencast'},
-        {key: 'form_seriesid', component: 'block_opencast'},
-        {key: 'setdefaultseries_heading', component: 'block_opencast'},
-        {key: 'setdefaultseries', component: 'block_opencast'},
-        {key: 'setdefaultseriessucceeded', component: 'block_opencast'},
-        {key: 'cantdeletedefaultseries_modaltitle', component: 'block_opencast'},
-        {key: 'cantdeletedefaultseries', component: 'block_opencast'},
-        {key: 'delete_series_succeeded', component: 'block_opencast'},
-        {key: 'importseries_succeeded', component: 'block_opencast'},
+        {key: 'loading', component: 'tool_opencast'},
+        {key: 'importseries', component: 'tool_opencast'},
+        {key: 'importfailed', component: 'tool_opencast'},
+        {key: 'form_seriesid', component: 'tool_opencast'},
+        {key: 'setdefaultseries_heading', component: 'tool_opencast'},
+        {key: 'setdefaultseries', component: 'tool_opencast'},
+        {key: 'setdefaultseriessucceeded', component: 'tool_opencast'},
+        {key: 'cantdeletedefaultseries_modaltitle', component: 'tool_opencast'},
+        {key: 'cantdeletedefaultseries', component: 'tool_opencast'},
+        {key: 'delete_series_succeeded', component: 'tool_opencast'},
+        {key: 'importseries_succeeded', component: 'tool_opencast'},
     ];
     str.get_strings(strings).then(function(jsstrings) {
         // Style hidden input.
@@ -245,7 +245,7 @@ export const init = (contextid, ocinstanceid, createseries, series, numseriesall
 
                                     modal.getRoot().on(ModalEvents.save, function() {
                                         Ajax.call([{
-                                            methodname: 'block_opencast_set_default_series',
+                                            methodname: 'tool_opencast_set_default_series',
                                             args: {contextid: contextid, ocinstanceid: ocinstanceid,
                                                 seriesid: cell.getRow().getData().series},
                                             done: function() {
@@ -339,7 +339,7 @@ export const init = (contextid, ocinstanceid, createseries, series, numseriesall
                                 modal.setSaveButtonText(jsstrings[8]);
                                 modal.getRoot().on(ModalEvents.save, function() {
                                     Ajax.call([{
-                                        methodname: 'block_opencast_unlink_series',
+                                        methodname: 'tool_opencast_unlink_series',
                                         args: {contextid: contextid, ocinstanceid: ocinstanceid,
                                             seriesid: cell.getRow().getData().series},
                                         done: function(result) {
@@ -381,6 +381,10 @@ export const init = (contextid, ocinstanceid, createseries, series, numseriesall
         // Create new series in modal
         // Button for connection a new series
         $('#createseries')?.click(function() {
+
+
+            /* eslint-disable no-console */
+            console.log('Ick log');
             ModalFactory.create({
                 type: ModalFactory.types.SAVE_CANCEL,
                 title: jsstrings[4],
@@ -453,7 +457,7 @@ export const init = (contextid, ocinstanceid, createseries, series, numseriesall
 
                         // Submit form.
                         Ajax.call([{
-                            methodname: 'block_opencast_import_series',
+                            methodname: 'tool_opencast_import_series',
                             args: {contextid: contextid, ocinstanceid: ocinstanceid, seriesid: seriesid},
                             done: function(newseries) {
                                 modal.destroy();
@@ -496,4 +500,3 @@ export const init = (contextid, ocinstanceid, createseries, series, numseriesall
         return;
     }).catch(Notification.exception);
 };
-

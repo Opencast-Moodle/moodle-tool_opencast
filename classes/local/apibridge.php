@@ -1199,7 +1199,7 @@ class apibridge {
         }
 
         if (!$validstoredfile) {
-            $DB->delete_records('tool_opencast_uploadjob', ['id' => $job->id]);
+            $DB->delete_records('block_opencast_uploadjob', ['id' => $job->id]);
             throw new moodle_exception('invalidfiletoupload', 'tool_opencast');
         }
 

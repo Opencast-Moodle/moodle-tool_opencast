@@ -136,7 +136,7 @@ class ingest_uploader {
                     self::update_status_with_mediapackage($job, self::STATUS_INGEST_ADDING_SECOND_TRACK,
                         true, false, false, $job->mediapackage);
                 } else if (!$validstoredfile) {
-                    $DB->delete_records('tool_opencast_uploadjob', ['id' => $job->id]);
+                    $DB->delete_records('block_opencast_uploadjob', ['id' => $job->id]);
                     throw new moodle_exception('invalidfiletoupload', 'tool_opencast');
                 } else {
                     try {
@@ -180,7 +180,7 @@ class ingest_uploader {
                     self::update_status_with_mediapackage($job, self::STATUS_INGEST_ADDING_ACL_ATTACHMENT,
                         true, false, false, $job->mediapackage);
                 } else if (!$validstoredfile) {
-                    $DB->delete_records('tool_opencast_uploadjob', ['id' => $job->id]);
+                    $DB->delete_records('block_opencast_uploadjob', ['id' => $job->id]);
                     throw new moodle_exception('invalidfiletoupload', 'tool_opencast');
                 } else {
                     try {
@@ -417,7 +417,7 @@ class ingest_uploader {
 
         $job->status = $status;
 
-        $DB->update_record('tool_opencast_uploadjob', $job);
+        $DB->update_record('block_opencast_uploadjob', $job);
     }
 
     /**

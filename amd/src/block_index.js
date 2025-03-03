@@ -16,7 +16,7 @@
 /**
  * Javascript to initialise the opencast block.
  *
- * @module     block_opencast
+ * @module     tool_opencast
  * @copyright  2021 Tamara Gunkel, University of Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -312,7 +312,7 @@ define(['jquery', 'core/modal_factory', 'core/modal_events',
                         clearInterval(window.liveUpdateInterval);
                         if (window.liveUpdateItemsWithError.length > 0) {
                             var titles = window.liveUpdateItemsWithError.join('</li><li>');
-                            str.get_string('liveupdate_fail_notification_message', 'block_opencast', titles)
+                            str.get_string('liveupdate_fail_notification_message', 'tool_opencast', titles)
                                 .done(function(result) {
                                     Notification.addNotification({
                                         message: result,
@@ -370,7 +370,7 @@ define(['jquery', 'core/modal_factory', 'core/modal_events',
                 return;
             }
             Ajax.call([{
-                methodname: 'block_opencast_get_liveupdate_info',
+                methodname: 'tool_opencast_get_liveupdate_info',
                 args: {contextid: contextid, ocinstanceid: ocinstanceid, type: type, identifier: identifier},
                 done: function(status) {
                     if (status == '') {
@@ -388,7 +388,7 @@ define(['jquery', 'core/modal_factory', 'core/modal_events',
                             timeout: reloadtimeout,
                             title: title
                         };
-                        str.get_string('liveupdate_toast_notification', 'block_opencast', stringparams)
+                        str.get_string('liveupdate_toast_notification', 'tool_opencast', stringparams)
                             .done(function(result) {
                                 Toast.add(result);
                             })
@@ -461,7 +461,7 @@ define(['jquery', 'core/modal_factory', 'core/modal_events',
                 var element = e.currentTarget;
                 var link = element.getAttribute('href');
                 if (!link) {
-                    str.get_string('directaccess_copy_no_link', 'block_opencast')
+                    str.get_string('directaccess_copy_no_link', 'tool_opencast')
                         .done(function(result) {
                             Toast.add(result, {type: 'warning'});
                         })
@@ -472,7 +472,7 @@ define(['jquery', 'core/modal_factory', 'core/modal_events',
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(link)
                     .then(() => {
-                        str.get_string('directaccess_copy_success', 'block_opencast')
+                        str.get_string('directaccess_copy_success', 'tool_opencast')
                             .done(function(result) {
                                 Toast.add(result);
                             })
@@ -481,7 +481,7 @@ define(['jquery', 'core/modal_factory', 'core/modal_events',
                     }).catch();
                     return;
                 } else {
-                    str.get_string('directaccess_copytoclipboard_unavialable', 'block_opencast')
+                    str.get_string('directaccess_copytoclipboard_unavialable', 'tool_opencast')
                         .done(function(result) {
                             Toast.add(result, {type: 'danger', autohide: false, closeButton: true});
                         })
@@ -509,7 +509,7 @@ define(['jquery', 'core/modal_factory', 'core/modal_events',
                     var root = modal.getRoot();
                     root.on(ModalEvents.save, function (e) {
                         Ajax.call([{
-                            methodname: 'block_opencast_unarchive_uploadjob',
+                            methodname: 'tool_opencast_unarchive_uploadjob',
                             args: {contextid: contextid, ocinstanceid: ocinstanceid, uploadjobid: uploadjobid},
                             done: function() {
                                 window.location.reload();
@@ -555,59 +555,59 @@ define(['jquery', 'core/modal_factory', 'core/modal_events',
             var strings = [
                 {
                     key: 'reportproblem_modal_title',
-                    component: 'block_opencast'
+                    component: 'tool_opencast'
                 },
                 {
                     key: 'reportproblem_modal_body',
-                    component: 'block_opencast'
+                    component: 'tool_opencast'
                 },
                 {
                     key: 'reportproblem_modal_placeholder',
-                    component: 'block_opencast'
+                    component: 'tool_opencast'
                 },
                 {
                     key: 'reportproblem_modal_required',
-                    component: 'block_opencast'
+                    component: 'tool_opencast'
                 },
                 {
                     key: 'reportproblem_modal_submit',
-                    component: 'block_opencast'
+                    component: 'tool_opencast'
                 },
                 {
                     key: 'startworkflow',
-                    component: 'block_opencast'
+                    component: 'tool_opencast'
                 },
                 {
                     key: 'startworkflow_modal_body',
-                    component: 'block_opencast'
+                    component: 'tool_opencast'
                 },
                 {
                     key: 'startworkflow_modal_description_title',
-                    component: 'block_opencast'
+                    component: 'tool_opencast'
                 },
                 {
                     key: 'startworkflow_modal_configpanel_title',
-                    component: 'block_opencast'
+                    component: 'tool_opencast'
                 },
                 {
                     key: 'unarchiveuploadjob',
-                    component: 'block_opencast'
+                    component: 'tool_opencast'
                 },
                 {
                     key: 'unarchiveuploadjobconfirmtext',
-                    component: 'block_opencast'
+                    component: 'tool_opencast'
                 },
                 {
                     key: 'unarchiveuploadjobconfirmbtn_save',
-                    component: 'block_opencast'
+                    component: 'tool_opencast'
                 },
                 {
                     key: 'videostable_massaction_startworkflow_modal_body',
-                    component: 'block_opencast'
+                    component: 'tool_opencast'
                 },
                 {
                     key: 'videostable_massaction_startworkflow_modal_title',
-                    component: 'block_opencast'
+                    component: 'tool_opencast'
                 }
             ];
             str.get_strings(strings).then(function(results) {
@@ -638,4 +638,3 @@ define(['jquery', 'core/modal_factory', 'core/modal_events',
             init: init
         };
     });
-

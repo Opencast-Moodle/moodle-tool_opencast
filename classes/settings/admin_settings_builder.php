@@ -18,18 +18,16 @@ namespace tool_opencast\settings;
 
 use tool_opencast\local\settings_api;
 use tool_opencast\local\maintenance_class;
-use tool_opencast\setting_helper; // TODO: migrieren
-use tool_opencast\opencast_connection_exception; // TODO: migrieren
-use tool_opencast\admin_setting_configtextvalidate; // TODO: migrieren
-use tool_opencast\admin_setting_hiddenhelpbtn; // TODO: migrieren
-use tool_opencast\setting_default_manager; // TODO: migrieren
+use tool_opencast\exception\opencast_api_response_exception;
 use tool_opencast\local\visibility_helper; // TODO: migrieren
 use tool_opencast\local\ltimodulemanager; // TODO: migrieren
-
-
-
-
 use tool_opencast\empty_configuration_exception;
+
+require_once(__DIR__ . '/../../setting_default_manager.php');
+require_once(__DIR__ . '/../../admin_setting_hiddenhelpbtn.php');
+require_once(__DIR__ . '/../../setting_helper.php');
+require_once(__DIR__ . '/../../admin_setting_configtextvalidate.php');
+
 
 
 /**
@@ -776,15 +774,19 @@ class admin_settings_builder {
 
 
         $opencasterror = false;
+        error_log('Test');
+
+        // error_log(print_r(get_declared_classes(), true));
 
         // Initialize the default settings for each instance.
         setting_default_manager::init_regirstered_defaults($instanceid);
-
+        error_log('Test2');
         // Setup js.
         $rolesdefault = setting_default_manager::get_default_roles();
         error_log('roles: ' . print_r($rolesdefault, true));
         $metadatadefault = setting_default_manager::get_default_metadata();
         $metadataseriesdefault = setting_default_manager::get_default_metadataseries();
+        error_log('Test3');
 
         $generalsettings->add(new admin_setting_hiddenhelpbtn('tool_opencast/hiddenhelpname_' . $instanceid,
             'helpbtnname_' . $instanceid, 'descriptionmdfn', 'tool_opencast'));
@@ -836,7 +838,7 @@ class admin_settings_builder {
                 get_string('limituploadjobsdesc', 'tool_opencast', $link), 1, PARAM_INT));
 
         $workflowchoices = setting_helper::load_workflow_choices($instanceid, 'upload');
-        if ($workflowchoices instanceof opencast_connection_exception ||
+        if ($workflowchoices instanceof opencast_api_response_exception ||
             $workflowchoices instanceof empty_configuration_exception) {
             $opencasterror = $workflowchoices->getMessage();
             $workflowchoices = [null => get_string('adminchoice_noconnection', 'tool_opencast')];
@@ -892,7 +894,7 @@ class admin_settings_builder {
         ));
 
         $workflowchoices = setting_helper::load_workflow_choices($instanceid, 'delete');
-        if ($workflowchoices instanceof opencast_connection_exception ||
+        if ($workflowchoices instanceof opencast_api_response_exception ||
             $workflowchoices instanceof empty_configuration_exception) {
             $opencasterror = $workflowchoices->getMessage();
             $workflowchoices = [null => get_string('adminchoice_noconnection', 'tool_opencast')];
@@ -969,7 +971,7 @@ class admin_settings_builder {
 
 
         $workflowchoices = setting_helper::load_workflow_choices($instanceid, 'archive');
-        if ($workflowchoices instanceof opencast_connection_exception ||
+        if ($workflowchoices instanceof opencast_api_response_exception ||
             $workflowchoices instanceof empty_configuration_exception) {
             $opencasterror = $workflowchoices->getMessage();
             $workflowchoices = [null => get_string('adminchoice_noconnection', 'tool_opencast')];
@@ -1234,7 +1236,7 @@ class admin_settings_builder {
         // The default duplicate-event workflow has archive tag, therefore it needs to be adjusted here as well.
         // As this setting has used api tag for the duplicate event, it is now possible to have multiple tags in here.
         $workflowchoices = setting_helper::load_workflow_choices($instance->id, 'api,archive');
-        if ($workflowchoices instanceof opencast_connection_exception ||
+        if ($workflowchoices instanceof opencast_api_response_exception ||
             $workflowchoices instanceof empty_configuration_exception) {
             $opencasterror = $workflowchoices->getMessage();
             $workflowchoices = [null => get_string('adminchoice_noconnection', 'tool_opencast')];

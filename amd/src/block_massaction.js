@@ -16,7 +16,7 @@
 /**
  * Javascript module to instantiate the Mass-Action functionality.
  *
- * @module     block_opencast
+ * @module     tool_opencast
  * @copyright  2024 Farbod Zamani Boroujeni (elan e.V.) (zamani@elan-ev.de)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -114,16 +114,16 @@ export const init = (courseid, ocinstanceid, selectors) => {
             const stringskeys = [
                 {
                     key: 'videostable_massaction_' + action + '_modal_title',
-                    component: 'block_opencast'
+                    component: 'tool_opencast'
                 },
                 {
                     key: 'videostable_massaction_' + action + '_modal_body',
-                    component: 'block_opencast',
+                    component: 'tool_opencast',
                     param: selectedtitles.join('</li><li>')
                 },
                 {
                     key: 'videostable_massaction_' + action,
-                    component: 'block_opencast'
+                    component: 'tool_opencast'
                 },
             ];
             const strPromise = str.get_strings(stringskeys);
