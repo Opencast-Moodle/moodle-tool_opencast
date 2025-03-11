@@ -62,7 +62,7 @@ $PAGE->navbar->add(get_string('deletedraft', 'tool_opencast'), $baseurl);
 // Capability check.
 // the one who is allowed to add the video is also allowed to delete the video before it is uploaded.
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:addvideo', $coursecontext);
+require_capability('tool/opencast:addvideo', $coursecontext);
 
 $uploadjobs = upload_helper::get_upload_jobs($ocinstanceid, $courseid);
 $jobtodelete = null;

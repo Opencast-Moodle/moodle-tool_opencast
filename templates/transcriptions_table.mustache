@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template block_opencast/transcriptions_table
+    @template tool_opencast/transcriptions_table
 
     This template renders the transcriptions table.
 
@@ -31,11 +31,11 @@
             <thead>
             <tr>
                 <th>
-                    {{# str}}transcriptionflavor_thead, block_opencast {{/ str}}
+                    {{# str}}transcriptionflavor_thead, tool_opencast {{/ str}}
                 </th>
                 {{#hasactions}}
                     <th>
-                        {{# str}}transcriptionaction_thead, block_opencast {{/ str}}
+                        {{# str}}transcriptionaction_thead, tool_opencast {{/ str}}
                     </th>
                 {{/hasactions}}
             </tr>
@@ -50,13 +50,13 @@
                         <td width="10%">
                             {{#allowdownload}}
                                 <a class="iconsmall" target="_blank"
-                                   title="{{#str}} downloadtranscription, block_opencast {{/str}}"
+                                   title="{{#str}} downloadtranscription, tool_opencast {{/str}}"
                                    href="{{downloadurl}}">
                                     {{#pix}} i/down, core{{/pix}}
                                 </a>
                             {{/allowdownload}}
                             {{#candelete}}
-                                <a class="iconsmall" title="{{#str}} deletetranscription, block_opencast {{/str}}"
+                                <a class="iconsmall" title="{{#str}} deletetranscription, tool_opencast {{/str}}"
                                    href="{{deleteurl}}">
                                     {{#pix}} i/delete, core{{/pix}}
                                 </a>
@@ -69,11 +69,11 @@
         </table>
     {{/listhascontent}}
     {{^listhascontent}}
-        {{# str}}notranscription, block_opencast {{/ str}}
+        {{# str}}notranscription, tool_opencast {{/ str}}
     {{/listhascontent}}
 </div>
 {{#addnewurl}}
     <a type="button" class="btn btn-primary mt-3" id="createnewtranscription" href="{{addnewurl}}">
-        {{# str}}addnewtranscription, block_opencast {{/ str}}
+        {{# str}}addnewtranscription, tool_opencast {{/ str}}
     </a>
 {{/addnewurl}}

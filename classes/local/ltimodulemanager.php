@@ -576,7 +576,7 @@ class ltimodulemanager {
 
         // If the user is not allowed to add series modules to the target course at all, return.
         $coursecontext = context_course::instance($modulecourseid);
-        if (has_capability('block/opencast:addlti', $coursecontext) != true) {
+        if (has_capability('tool/opencast:addlti', $coursecontext) != true) {
             return false;
         }
 
@@ -670,7 +670,7 @@ class ltimodulemanager {
         global $DB;
 
         // Get the LTI episode module ids.
-        $modules = $DB->get_records_menu('block_opencast_ltiepisode', ['ocinstanceid' => $ocinstanceid,
+        $modules = $DB->get_records_menu('tool_opencast_ltiepisode', ['ocinstanceid' => $ocinstanceid,
             'courseid' => $courseid, ], '', 'episodeuuid, cmid');
 
         // Return the LTI module ids.
@@ -839,7 +839,7 @@ class ltimodulemanager {
     /**
      * Helperfunction to cleanup the Opencast LTI episode modules for a given episode module from the job list in the database.
      * This especially cleans up modules which have been imported from one course to another course.
-     * This function is primarily called by the \block_opencast\task\cleanup_imported_episodes_cron scheduled task.
+     * This function is primarily called by the \tool_opencast\task\cleanup_imported_episodes_cron scheduled task.
      * That's why it does not do any capability check anymore, this must have been done before the task was scheduled.
      *
      * @param int $ocinstanceid Opencast instance id.
@@ -1068,7 +1068,7 @@ class ltimodulemanager {
     /**
      * Updates the existing LTI modules records.
      * This method is to update records in opencast lti modules tables against the actual course modules.
-     * This function is intended to be called by the \block_opencast\task\cleanup_lti_module_cron scheduled task.
+     * This function is intended to be called by the \tool_opencast\task\cleanup_lti_module_cron scheduled task.
      *
      * @return int The number of updated lti modules.
      */
@@ -1108,7 +1108,7 @@ class ltimodulemanager {
         }
 
         // Opencast lti episode records.
-        $existingepisodemodules = $DB->get_records('block_opencast_ltiepisode');
+        $existingepisodemodules = $DB->get_records('tool_opencast_ltiepisode');
         foreach ($existingepisodemodules as $episodemodule) {
             // Get the actual cm.
             $cm = get_coursemodule_from_id('lti', $episodemodule->cmid, $episodemodule->courseid);
@@ -1143,7 +1143,7 @@ class ltimodulemanager {
         }
 
         // Opencast lti series records.
-        $existingseriesmodules = $DB->get_records('block_opencast_ltimodule');
+        $existingseriesmodules = $DB->get_records('tool_opencast_ltimodule');
         foreach ($existingseriesmodules as $seriesmodule) {
             // Get the actual cm.
             $cm = get_coursemodule_from_id('lti', $seriesmodule->cmid, $seriesmodule->courseid);
@@ -1187,8 +1187,8 @@ class ltimodulemanager {
      * It will loop through all the moodle lti modules and check if they are using the preconfigured opencast lti tools.
      * The concept is to get all preconfigured opencast lti tools based on all opencast instances and then make a sql to check which
      * course module is there that uses any of the preconfigured opencast lti tools and its record does not exists in the entries
-     * of both block_opencast_ltiepisode and block_opencast_ltimodule tables.
-     * This function is intended to be called by the \block_opencast\task\cleanup_lti_module_cron scheduled task.
+     * of both tool_opencast_ltiepisode and tool_opencast_ltimodule tables.
+     * This function is intended to be called by the \tool_opencast\task\cleanup_lti_module_cron scheduled task.
      *
      * @return int The number of unrecorded lti modules.
      */
@@ -1330,8 +1330,8 @@ class ltimodulemanager {
      * Helper function to clean up the LTI module entries, which are not valid anymore.
      * The concept is, to loop through the lti module entries and cleans up abandoned or invalid records.
      * The validation is applied to course, module, opencast instance and opencast series or episode.
-     * Targeted tables are: {block_opencast_ltiepisode} and {block_opencast_ltimodule}
-     * This function is intended to be called by the \block_opencast\task\cleanup_lti_module_cron scheduled task.
+     * Targeted tables are: {tool_opencast_ltiepisode} and {tool_opencast_ltimodule}
+     * This function is intended to be called by the \tool_opencast\task\cleanup_lti_module_cron scheduled task.
      *
      * @return int number of deleted modules.
      */
@@ -1340,7 +1340,7 @@ class ltimodulemanager {
 
         $deletedrecordsnum = 0;
         // Episode modules.
-        $targettable = 'block_opencast_ltiepisode';
+        $targettable = 'tool_opencast_ltiepisode';
         $allepisodemodules = $DB->get_records($targettable);
         foreach ($allepisodemodules as $episodemodule) {
             $isvalid = true;
@@ -1382,7 +1382,7 @@ class ltimodulemanager {
         }
 
         // Series modules.
-        $targettable = 'block_opencast_ltimodule';
+        $targettable = 'tool_opencast_ltimodule';
         $allseriesmodules = $DB->get_records($targettable);
         foreach ($allseriesmodules as $seriesmodule) {
             $isvalid = true;
@@ -1583,7 +1583,7 @@ class ltimodulemanager {
 
     /**
      * Looks up for episode LTI modules in a new (imported) course that has faulty (old) event id.
-     * Repairs the faulty LTI module by replacing the new event id and inserts the episode module in "block_opencast_ltiepisode".
+     * Repairs the faulty LTI module by replacing the new event id and inserts the episode module in "tool_opencast_ltiepisode".
      * @see importvideosmanager::fix_imported_episode_modules_in_new_course() in task "process_duplicated_event_module_fix"
      *
      * @param int $ocinstanceid Opencast instance id.

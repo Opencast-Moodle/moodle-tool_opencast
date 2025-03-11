@@ -59,7 +59,7 @@ $PAGE->navbar->add(get_string('downloadtranscription', 'tool_opencast'), $baseur
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:addvideo', $coursecontext);
+require_capability('tool/opencast:addvideo', $coursecontext);
 
 // Make sure transcription as well as the downlaod is enabled.
 $transcriptionenabled = get_config('tool_opencast', 'transcriptionworkflow_' . $ocinstanceid);

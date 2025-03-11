@@ -155,10 +155,7 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, $newversion, 'tool', 'opencast');
     }
 
-    $newversion = 2025020600;
-    if ($oldversion < $newversion) {
-        $DB->execute("UPDATE {config_plugins} SET plugin='tool_opencast' WHERE plugin = 'tool_opencast' AND name != 'version' AND name NOT LIKE '%limitvideos%'");
-    }
+    $newversion = 2025020602;
 
     return true;
 }

@@ -65,7 +65,7 @@ if (ltimodulemanager::is_enabled_and_working_for_episodes($ocinstanceid) == fals
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:addltiepisode', $coursecontext);
+require_capability('tool/opencast:addltiepisode', $coursecontext);
 
 // Existing LTI module check.
 $moduleid = ltimodulemanager::get_module_for_episode($ocinstanceid, $courseid, $episodeuuid);

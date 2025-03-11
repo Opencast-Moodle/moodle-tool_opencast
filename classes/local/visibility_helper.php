@@ -295,7 +295,7 @@ class visibility_helper {
     public static function get_initial_visibility($uploadjob) {
         global $DB;
         // Get the visibility record.
-        $visibilityrecord = $DB->get_record('block_opencast_visibility', ['uploadjobid' => $uploadjob->id]);
+        $visibilityrecord = $DB->get_record('tool_opencast_visibility', ['uploadjobid' => $uploadjob->id]);
         // Initialize the visibility as Visible.
         $visibility = tool_opencast_renderer::VISIBLE;
 
@@ -430,7 +430,7 @@ class visibility_helper {
         $opencasteventid = null;
         // First, we look for the uploadjobid, if it is set it means the visibility job is from uploading process.
         if (!empty($job->uploadjobid)) {
-            $uploadjob = $DB->get_record('block_opencast_uploadjob', ['id' => $job->uploadjobid]);
+            $uploadjob = $DB->get_record('tool_opencast_uploadjob', ['id' => $job->uploadjobid]);
             $ocinstanceid = $uploadjob->ocinstanceid;
             $courseid = $uploadjob->courseid;
             $opencasteventid = $uploadjob->opencasteventid;
@@ -513,7 +513,7 @@ class visibility_helper {
             return $visibility;
         }
         // However, here we look to see if the uploadjob for that event exists.
-        $uploadjob = $DB->get_record('block_opencast_uploadjob', $params);
+        $uploadjob = $DB->get_record('tool_opencast_uploadjob', $params);
         if (!empty($uploadjob)) {
             $params = [
                 'uploadjobid' => intval($uploadjob->id),

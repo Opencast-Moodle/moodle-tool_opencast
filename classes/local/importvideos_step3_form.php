@@ -81,7 +81,7 @@ class importvideos_step3_form extends moodleform {
 
             // Check if LTI handling is enabled and the user is allowed to use the feature.
             if (ltimodulemanager::is_working_for_series($ocinstanceid) &&
-                has_capability('block/opencast:addlti', $coursecontext)) {
+                has_capability('tool/opencast:addlti', $coursecontext)) {
                 $handleseriesmodules = true;
                 // Get Opencast LTI series modules in this course which point to the source course's series.
                 $referencedseriesmodules = ltimodulemanager::get_modules_for_series_linking_to_other_course($ocinstanceid,
@@ -103,7 +103,7 @@ class importvideos_step3_form extends moodleform {
 
             // Check if LTI handling is enabled and the user is allowed to use the feature.
             if (ltimodulemanager::is_working_for_episodes($ocinstanceid) &&
-                has_capability('block/opencast:addltiepisode', $coursecontext)) {
+                has_capability('tool/opencast:addltiepisode', $coursecontext)) {
                 $handleepisodemodules = true;
 
                 // Get Opencast LTI episode modules in this course which point to a video in the source course's series.

@@ -141,7 +141,7 @@ class file_deletionmanager extends \file_system_filedir {
 
         // Moodle generates a new itemid for filemanager, so we know that $itemid
         // is currently unused and we keep only one entry for the current filemanager.
-        $exists = $DB->get_records('block_opencast_draftitemid', $params);
+        $exists = $DB->get_records('tool_opencast_draftitemid', $params);
         foreach ($exists as $exist) {
             $DB->delete_records('tool_opencast_draftitemid', ['id' => $exist->id]);
         }

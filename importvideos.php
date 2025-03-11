@@ -84,14 +84,14 @@ if (importvideosmanager::is_enabled_and_working_for_manualimport($ocinstanceid) 
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:manualimporttarget', $coursecontext);
+require_capability('tool/opencast:manualimporttarget', $coursecontext);
 
 // Check if either the handle series feature or the handle episodes feature is enabled _and_ the user is allowed to use the feature,
 // we have to include step 3.
 if ((importvideosmanager::handle_series_modules_is_enabled_and_working($ocinstanceid) == true &&
-        has_capability('block/opencast:addlti', $coursecontext)) ||
+        has_capability('tool/opencast:addlti', $coursecontext)) ||
     (importvideosmanager::handle_episode_modules_is_enabled_and_working($ocinstanceid) == true &&
-        has_capability('block/opencast:addltiepisode', $coursecontext))) {
+        has_capability('tool/opencast:addltiepisode', $coursecontext))) {
     $hasstep3 = true;
 } else {
     $hasstep3 = false;
@@ -131,7 +131,7 @@ switch ($step) {
 
         // If there isn't any other course which can be used as import source.
         $possiblesourcecourses = get_user_capability_course(
-            'block/opencast:manualimportsource');
+            'tool/opencast:manualimportsource');
         $possiblesourcecoursescount = count($possiblesourcecourses);
         if ($possiblesourcecoursescount < 1 || ($possiblesourcecoursescount == 1 && $possiblesourcecourses[0]->id == $courseid)) {
             // Use step 1 form.
@@ -324,7 +324,7 @@ switch ($step) {
             if ($fixseriesmodules == true) {
                 $resulthandleseries = true;
                 if (ltimodulemanager::is_working_for_series($ocinstanceid) &&
-                    has_capability('block/opencast:addlti', $coursecontext)) {
+                    has_capability('tool/opencast:addlti', $coursecontext)) {
                     // Clean up the series modules.
                     $resulthandleseries = ltimodulemanager::cleanup_series_modules($ocinstanceid,
                         $courseid, $sourcecourseid, $resultduplicate->duplicatedseries);

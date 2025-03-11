@@ -36,7 +36,7 @@ $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinsta
 require_login($courseid, false);
 
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:startworkflow', $coursecontext);
+require_capability('tool/opencast:startworkflow', $coursecontext);
 
 $apibridge = apibridge::get_instance($ocinstanceid);
 $workflow = $apibridge->get_workflow_definition($workflowid);

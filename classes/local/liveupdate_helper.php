@@ -111,7 +111,7 @@ class liveupdate_helper {
         global $DB, $PAGE;
 
         // Get single upload job record to extract its current info.
-        $sql = "SELECT status, countfailed FROM {block_opencast_uploadjob} " .
+        $sql = "SELECT status, countfailed FROM {tool_opencast_uploadjob} " .
             "WHERE id = :uploadjobid";
         $params = [
             'uploadjobid' => $uploadjobid,

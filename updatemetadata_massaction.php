@@ -65,7 +65,7 @@ $PAGE->navbar->add(get_string('updatemetadata_massaction', 'tool_opencast'), $ba
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:addvideo', $coursecontext);
+require_capability('tool/opencast:addvideo', $coursecontext);
 
 $opencast = apibridge::get_instance($ocinstanceid);
 $massactionmetadatacatalog = upload_helper::get_opencast_metadata_catalog_massaction($ocinstanceid);

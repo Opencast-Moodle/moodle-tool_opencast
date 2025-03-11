@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template block_opencast/defaults_settings_actions
+    @template tool_opencast/defaults_settings_actions
 
     This template renders a link that redirects to a page which manages the course's default values.
 
@@ -29,10 +29,10 @@
     <div class="d-flex flex-wrap flex-row-reverse m-b-1 text-right">
         {{#managedefaultsurl}}
             <div class="pl-1">
-                <a class="iconsmall" title="{{#str}} manageseriesforcourse, block_opencast {{/str}}"
+                <a class="iconsmall" title="{{#str}} manageseriesforcourse, tool_opencast {{/str}}"
                    href="{{{managedefaultsurl}}}">
                     {{#pix}} i/grades, core{{/pix}}
-                    {{#str}} managedefaultsforuser, block_opencast {{/str}}
+                    {{#str}} managedefaultsforuser, tool_opencast {{/str}}
                 </a>
             </div>
         {{/managedefaultsurl}}

@@ -120,9 +120,9 @@ class upload_helper {
         $select = "SELECT uj.*, $allnamefields, md.metadata, " .
             "f1.filename as presenter_filename, f1.filesize as presenter_filesize, " .
             "f2.filename as presentation_filename, f2.filesize as presentation_filesize";
-        $from = " FROM {block_opencast_uploadjob} uj " .
+        $from = " FROM {tool_opencast_uploadjob} uj " .
             "JOIN {user} u ON uj.userid = u.id " .
-            "JOIN {block_opencast_metadata} md ON uj.id = md.uploadjobid " .
+            "JOIN {tool_opencast_metadata} md ON uj.id = md.uploadjobid " .
             "LEFT JOIN {files} f1 ON f1.id = uj.presenter_fileid " .
             "LEFT JOIN {files} f2 ON f2.id = uj.presentation_fileid";
 
@@ -151,7 +151,7 @@ class upload_helper {
     /**
      * Check uploadjobs, which means:
      *
-     * 1. Add a new job for an completely uploaded to moodlle-video, when no entry in block_opencast_uploadjob exists
+     * 1. Add a new job for an completely uploaded to moodlle-video, when no entry in tool_opencast_uploadjob exists
      * 2. Remove upload job, when status is readytoupload.
      *
      * @param int $ocinstanceid Opencast instance id.
@@ -237,10 +237,10 @@ class upload_helper {
             $job->workflowconfiguration = $workflowconfiguration;
         }
 
-        $uploadjobid = $DB->insert_record('block_opencast_uploadjob', $job);
+        $uploadjobid = $DB->insert_record('tool_opencast_uploadjob', $job);
 
         $options->uploadjobid = $uploadjobid;
-        $DB->insert_record('block_opencast_metadata', $options);
+        $DB->insert_record('tool_opencast_metadata', $options);
 
         // Check if visibility object is set, then we insert the visibility records.
         if (!empty($visibility)) {
@@ -268,7 +268,7 @@ class upload_helper {
 
         // Delete all jobs with status ready to transfer, where file is missing.
         $sql = "SELECT uj.id " .
-            "FROM {block_opencast_uploadjob} uj " .
+            "FROM {tool_opencast_uploadjob} uj " .
             "LEFT JOIN {files} f " .
             "ON (uj.presentation_fileid = f.id OR uj.presenter_fileid = f.id) AND " .
             "f.component = :component AND " .
@@ -295,7 +295,7 @@ class upload_helper {
         $jobidstodelete = $DB->get_records_sql($sql, $params);
 
         if (!empty($jobidstodelete)) {
-            $DB->delete_records_list('block_opencast_uploadjob', 'id', array_keys($jobidstodelete));
+            $DB->delete_records_list('tool_opencast_uploadjob', 'id', array_keys($jobidstodelete));
         }
     }
 
@@ -316,9 +316,9 @@ class upload_helper {
             'statustransferred' => self::STATUS_READY_TO_UPLOAD,
             'statusarchived' => self::STATUS_ARCHIVED_FAILED_UPLOAD,
         ];
-        if ($DB->record_exists_select('block_opencast_uploadjob', $selectwhere, $params)) {
-            $DB->delete_records('block_opencast_uploadjob', ['id' => $jobtodelete->id]);
-            $DB->delete_records('block_opencast_metadata', ['uploadjobid' => $jobtodelete->id]);
+        if ($DB->record_exists_select('tool_opencast_uploadjob', $selectwhere, $params)) {
+            $DB->delete_records('tool_opencast_uploadjob', ['id' => $jobtodelete->id]);
+            $DB->delete_records('tool_opencast_metadata', ['uploadjobid' => $jobtodelete->id]);
             // Delete from files table.
             $fs = get_file_storage();
             $files = [];
@@ -354,7 +354,7 @@ class upload_helper {
         $job->timemodified = $job->timesucceeded;
         $job->status = self::STATUS_TRANSFERRED;
 
-        $DB->update_record('block_opencast_uploadjob', $job);
+        $DB->update_record('tool_opencast_uploadjob', $job);
 
         // Delete from chunkupload.
         if (class_exists('\local_chunkupload\chunkupload_form_element')) {
@@ -410,7 +410,7 @@ class upload_helper {
         }
 
         // Change visibility record status to done and perform the post upload visibility stuff.
-        $visibilityjob = $DB->get_record('block_opencast_visibility', ['uploadjobid' => $job->id]);
+        $visibilityjob = $DB->get_record('tool_opencast_visibility', ['uploadjobid' => $job->id]);
         if (!empty($visibilityjob)) {
             if (empty($visibilityjob->scheduledvisibilitytime)) {
                 // Change the status to complete, since the job finishes here and has no scheduling any more.
@@ -447,7 +447,7 @@ class upload_helper {
 
         $job->status = $status;
 
-        $DB->update_record('block_opencast_uploadjob', $job);
+        $DB->update_record('tool_opencast_uploadjob', $job);
 
         // Get file information.
         $fs = get_file_storage();
@@ -518,7 +518,7 @@ class upload_helper {
         }
         $job->status = $status;
 
-        $DB->update_record('block_opencast_uploadjob', $job);
+        $DB->update_record('tool_opencast_uploadjob', $job);
     }
 
     /**
@@ -606,7 +606,7 @@ class upload_helper {
 
                     // Search for files already uploaded to opencast.
                     $sql = "SELECT opencasteventid " .
-                        "FROM {block_opencast_uploadjob} " .
+                        "FROM {tool_opencast_uploadjob} " .
                         "WHERE ocinstanceid = :ocinstanceid AND (contenthash_presenter = :contenthash_presenter " .
                         "OR contenthash_presentation = :contenthash_presentation) " .
                         "GROUP BY opencasteventid ";
@@ -632,7 +632,7 @@ class upload_helper {
 
                     // Update eventid.
                     $job->opencasteventid = $event->identifier;
-                    $DB->update_record('block_opencast_uploadjob', $job);
+                    $DB->update_record('tool_opencast_uploadjob', $job);
                 }
                 break;
 
@@ -647,7 +647,7 @@ class upload_helper {
                     $stepsuccessful = true;
                     $job->opencasteventid = $event->identifier;
                     $job->workflowid = (int) $event->workflowid;
-                    $DB->update_record('block_opencast_uploadjob', $job);
+                    $DB->update_record('tool_opencast_uploadjob', $job);
                 }
                 break;
 
@@ -728,7 +728,7 @@ class upload_helper {
         $ocinstances = settings_api::get_ocinstances();
         foreach ($ocinstances as $ocinstance) {
             // Get all waiting jobs.
-            $sql = "SELECT * FROM {block_opencast_uploadjob}" .
+            $sql = "SELECT * FROM {tool_opencast_uploadjob}" .
                 " WHERE status < ? AND status <> ? AND ocinstanceid = ? ORDER BY timemodified ASC ";
 
             $limituploadjobs = get_config('tool_opencast', 'limituploadjobs_' . $ocinstance->id);
@@ -752,7 +752,7 @@ class upload_helper {
             foreach ($jobs as $job) {
                 mtrace('proceed: ' . $job->id);
                 try {
-                    $joboptions = $DB->get_record('block_opencast_metadata', ['uploadjobid' => $job->id],
+                    $joboptions = $DB->get_record('tool_opencast_metadata', ['uploadjobid' => $job->id],
                         $fields = 'metadata', $strictness = IGNORE_MISSING);
                     if ($joboptions) {
                         $job = (object)array_merge((array)$job, (array)$joboptions);

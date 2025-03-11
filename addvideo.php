@@ -86,7 +86,7 @@ if ($courseid == $SITE->id) {
     $haspermission = false;
     foreach ($records as $record) {
         $cc = context_course::instance($record->courseid, IGNORE_MISSING);
-        if ($cc && has_capability('block/opencast:addvideo', $cc)) {
+        if ($cc && has_capability('tool/opencast:addvideo', $cc)) {
             $haspermission = true;
             break;
         }
@@ -112,12 +112,12 @@ if ($courseid == $SITE->id) {
     }
 } else {
     $coursecontext = context_course::instance($courseid);
-    require_capability('block/opencast:addvideo', $coursecontext);
+    require_capability('tool/opencast:addvideo', $coursecontext);
 }
 
 $metadatacatalog = upload_helper::get_opencast_metadata_catalog($ocinstanceid);
 
-$userdefaultsrecord = $DB->get_record('block_opencast_user_default', ['userid' => $USER->id]);
+$userdefaultsrecord = $DB->get_record('tool_opencast_user_default', ['userid' => $USER->id]);
 $userdefaults = $userdefaultsrecord ? json_decode($userdefaultsrecord->defaults, true) : [];
 $usereventdefaults = (!empty($userdefaults['event'])) ? $userdefaults['event'] : [];
 

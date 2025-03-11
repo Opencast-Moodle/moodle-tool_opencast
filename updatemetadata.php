@@ -62,7 +62,7 @@ $PAGE->navbar->add(get_string('updatemetadata', 'tool_opencast'), $baseurl);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:addvideo', $coursecontext);
+require_capability('tool/opencast:addvideo', $coursecontext);
 
 $opencast = apibridge::get_instance($ocinstanceid);
 $metadata = $opencast->get_event_metadata($identifier, 'dublincore/episode');

@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template block_opencast/series_table
+    @template tool_opencast/series_table
 
     This template renders the series table.
 
@@ -30,11 +30,11 @@
 </div>
 {{#cancreateseries}}
     <button type="button" class="btn btn-primary mt-3 {{#maxseriesreached}}d-none{{/maxseriesreached}}" id="createseries">
-        {{# str}}createseriesforcourse, block_opencast {{/ str}}
+        {{# str}}createseriesforcourse, tool_opencast {{/ str}}
     </button>
 {{/cancreateseries}}
 {{#canimportseries}}
     <button type="button" class="btn btn-primary mt-3 {{#maxseriesreached}}d-none{{/maxseriesreached}}" id="importseries">
-        {{# str}}importseries, block_opencast {{/ str}}
+        {{# str}}importseries, tool_opencast {{/ str}}
     </button>
 {{/canimportseries}}

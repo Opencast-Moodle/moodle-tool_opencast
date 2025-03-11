@@ -66,7 +66,7 @@ $PAGE->navbar->add(get_string('managedefaultsforuser', 'tool_opencast'), $baseur
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:addvideo', $coursecontext);
+require_capability('tool/opencast:addvideo', $coursecontext);
 
 $eventmetadata = json_decode(get_config('tool_opencast', 'metadata_' . $ocinstanceid));
 $seriesmetadata = json_decode(get_config('tool_opencast', 'metadataseries_' . $ocinstanceid));
@@ -87,7 +87,7 @@ if (!empty($seriesmetadatadefaultables)) {
     $defaultables->seriesmetadata = $seriesmetadatadefaultables;
 }
 
-$userdefaultsrecord = $DB->get_record('block_opencast_user_default', ['userid' => $USER->id]);
+$userdefaultsrecord = $DB->get_record('tool_opencast_user_default', ['userid' => $USER->id]);
 $userdefaults = [];
 if ($userdefaultsrecord) {
     $userdefaults = json_decode($userdefaultsrecord->defaults, true);

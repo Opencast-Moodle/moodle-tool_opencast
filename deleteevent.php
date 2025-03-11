@@ -61,7 +61,7 @@ $PAGE->navbar->add(get_string('deleteevent', 'tool_opencast'), $baseurl);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:deleteevent', $coursecontext);
+require_capability('tool/opencast:deleteevent', $coursecontext);
 
 $opencast = apibridge::get_instance($ocinstanceid);
 $video = $opencast->get_opencast_video($identifier);

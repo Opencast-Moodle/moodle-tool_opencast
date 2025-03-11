@@ -72,19 +72,19 @@ if (!$ocseries || !$apibridge->is_owner($ocseries->acl, $USER->id, $SITE->id)) {
     foreach ($records as $record) {
         $coursecontext = context_course::instance($record->courseid, IGNORE_MISSING);
         if ($coursecontext) {
-            if (has_capability('block/opencast:viewunpublishedvideos', $coursecontext)) {
+            if (has_capability('tool/opencast:viewunpublishedvideos', $coursecontext)) {
                 $hasviewpermission = true;
             }
-            if (has_capability('block/opencast:addvideo', $coursecontext)) {
+            if (has_capability('tool/opencast:addvideo', $coursecontext)) {
                 $hasaddvideopermission = true;
             }
-            if (has_capability('block/opencast:downloadvideo', $coursecontext)) {
+            if (has_capability('tool/opencast:downloadvideo', $coursecontext)) {
                 $hasdownloadpermission = true;
             }
-            if (has_capability('block/opencast:deleteevent', $coursecontext)) {
+            if (has_capability('tool/opencast:deleteevent', $coursecontext)) {
                 $hasdeletepermission = true;
             }
-            if (has_capability('block/opencast:sharedirectaccessvideolink', $coursecontext)) {
+            if (has_capability('tool/opencast:sharedirectaccessvideolink', $coursecontext)) {
                 $hasaccesspermission = true;
             }
         }
@@ -204,7 +204,7 @@ $table = $renderer->create_overview_videos_table($tableid, $headers, $columns, $
 
 $videos = $apibridge->get_series_videos($series)->videos;
 $activityinstalled = core_plugin_manager::instance()->get_plugin_info('mod_opencast') != null;
-$showchangeownerlink = has_capability('block/opencast:viewusers', context_system::instance()) &&
+$showchangeownerlink = has_capability('tool/opencast:viewusers', context_system::instance()) &&
     !empty(get_config('tool_opencast', 'aclownerrole_' . $ocinstanceid));
 
 // To store rows, and use them later, which gives better control over the table.

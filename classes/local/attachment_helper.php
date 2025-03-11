@@ -142,7 +142,7 @@ class attachment_helper {
         global $DB;
 
         // Prepare all the required variables to perform attachment upload.
-        $uploadjob = $DB->get_record('block_opencast_uploadjob', ['id' => $job->uploadjobid]);
+        $uploadjob = $DB->get_record('tool_opencast_uploadjob', ['id' => $job->uploadjobid]);
         $ocinstanceid = $uploadjob->ocinstanceid;
         $courseid = $uploadjob->courseid;
         $eventidentifier = $uploadjob->opencasteventid;
@@ -250,7 +250,7 @@ class attachment_helper {
         foreach ($attachemntfiles as $attachment) {
             // Delete the file and everything related to it.
             $files = $DB->get_recordset('files', [
-                'component' => 'block_opencast',
+                'component' => 'tool_opencast',
                 'filearea' => self::OC_FILEAREA_ATTACHMENT,
                 'itemid' => $attachment->file_itemid,
             ]);
@@ -479,7 +479,7 @@ class attachment_helper {
         global $DB;
         // Delete the file and everything related to it.
         $files = $DB->get_recordset('files', [
-            'component' => 'block_opencast',
+            'component' => 'tool_opencast',
             'filearea' => self::OC_FILEAREA_ATTACHMENT,
             'itemid' => $fileitemid,
         ]);

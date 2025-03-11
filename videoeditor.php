@@ -47,7 +47,7 @@ require_login($courseid, false);
 
 // Capability check.
 $context = context_course::instance($courseid);
-require_capability('block/opencast:addvideo', $context);
+require_capability('tool/opencast:addvideo', $context);
 
 $PAGE->set_context($context);
 

@@ -62,7 +62,7 @@ $PAGE->navbar->add(get_string('deleteevent_massaction', 'tool_opencast'), $baseu
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:deleteevent', $coursecontext);
+require_capability('tool/opencast:deleteevent', $coursecontext);
 
 $opencast = apibridge::get_instance($ocinstanceid);
 

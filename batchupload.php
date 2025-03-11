@@ -92,7 +92,7 @@ if ($courseid == $SITE->id) {
     $haspermission = false;
     foreach ($records as $record) {
         $coursecontext = context_course::instance($record->courseid, IGNORE_MISSING);
-        if ($coursecontext && has_capability('block/opencast:addvideo', $coursecontext)) {
+        if ($coursecontext && has_capability('tool/opencast:addvideo', $coursecontext)) {
             $haspermission = true;
             break;
         }
@@ -118,7 +118,7 @@ if ($courseid == $SITE->id) {
     }
 } else {
     $coursecontext = context_course::instance($courseid);
-    require_capability('block/opencast:addvideo', $coursecontext);
+    require_capability('tool/opencast:addvideo', $coursecontext);
 
     // Make sure apibridge is available to use.
     if (!isset($apibridge)) {
@@ -128,7 +128,7 @@ if ($courseid == $SITE->id) {
 
 $batchmetadatacatalog = upload_helper::get_opencast_metadata_catalog_batch($ocinstanceid);
 
-$userdefaultsrecord = $DB->get_record('block_opencast_user_default', ['userid' => $USER->id]);
+$userdefaultsrecord = $DB->get_record('tool_opencast_user_default', ['userid' => $USER->id]);
 $userdefaults = $userdefaultsrecord ? json_decode($userdefaultsrecord->defaults, true) : [];
 $usereventdefaults = (!empty($userdefaults['event'])) ? $userdefaults['event'] : [];
 

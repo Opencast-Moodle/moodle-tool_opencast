@@ -51,7 +51,7 @@ $PAGE->navbar->add(get_string('addvideo', 'tool_opencast'), $baseurl);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:downloadvideo', $coursecontext);
+require_capability('tool/opencast:downloadvideo', $coursecontext);
 
 $apibridge = apibridge::get_instance($ocinstanceid);
 $result = $apibridge->get_opencast_video($videoid, true);

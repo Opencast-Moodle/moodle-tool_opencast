@@ -61,7 +61,7 @@ if (activitymodulemanager::is_enabled_and_working_for_series($ocinstanceid) == f
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:addactivity', $coursecontext);
+require_capability('tool/opencast:addactivity', $coursecontext);
 
 // Existing Opencast Activity module check.
 $moduleid = activitymodulemanager::get_module_for_series($ocinstanceid, $courseid, $seriesid);

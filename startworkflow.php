@@ -41,7 +41,7 @@ require_login($courseid, false);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:startworkflow', $coursecontext);
+require_capability('tool/opencast:startworkflow', $coursecontext);
 
 $apibridge = apibridge::get_instance($ocinstanceid);
 

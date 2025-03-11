@@ -133,7 +133,7 @@ class tool_opencast_renderer extends plugin_renderer_base {
                 $url = new moodle_url('/mod/opencast/view.php', ['id' => $moduleid]);
                 $text = get_string('addactivity_viewbuttontitle', 'tool_opencast');
                 $icon = $this->output->pix_icon('play', $text, 'tool_opencast');
-            } else if (has_capability('block/opencast:addactivity', $coursecontext)) {
+            } else if (has_capability('tool/opencast:addactivity', $coursecontext)) {
                 $url = new moodle_url('/admin/tool/opencast/addactivity.php',
                     ['ocinstanceid' => $ocinstanceid, 'courseid' => $courseid, 'seriesid' => $seriesid]);
                 $text = get_string('addactivity_addbuttontitle', 'tool_opencast');
@@ -154,7 +154,7 @@ class tool_opencast_renderer extends plugin_renderer_base {
                 $url = new moodle_url('/mod/lti/view.php', ['id' => $moduleid]);
                 $text = get_string('addlti_viewbuttontitle', 'tool_opencast');
                 $icon = $this->output->pix_icon('play', $text, 'tool_opencast');
-            } else if (has_capability('block/opencast:addlti', $coursecontext)) {
+            } else if (has_capability('tool/opencast:addlti', $coursecontext)) {
                 $url = new moodle_url('/admin/tool/opencast/addlti.php',
                     ['ocinstanceid' => $ocinstanceid, 'courseid' => $courseid, 'seriesid' => $seriesid]);
                 $text = get_string('addlti_addbuttontitle', 'tool_opencast');
@@ -213,7 +213,7 @@ class tool_opencast_renderer extends plugin_renderer_base {
             if ($moduleid) {
                 $url = new moodle_url('/mod/opencast/view.php', ['id' => $moduleid]);
                 $text = get_string('addactivity_viewbuttontitle', 'tool_opencast');
-            } else if (has_capability('block/opencast:addactivity', $coursecontext)) {
+            } else if (has_capability('tool/opencast:addactivity', $coursecontext)) {
                 $url = new moodle_url('/admin/tool/opencast/addactivity.php',
                     ['ocinstanceid' => $ocinstanceid, 'courseid' => $courseid, 'seriesid' => $seriesid]);
                 $text = get_string('addactivity_addbuttontitle', 'tool_opencast');
@@ -228,7 +228,7 @@ class tool_opencast_renderer extends plugin_renderer_base {
             if ($moduleid) {
                 $url = new moodle_url('/mod/lti/view.php', ['id' => $moduleid]);
                 $text = get_string('addlti_viewbuttontitle', 'tool_opencast');
-            } else if (has_capability('block/opencast:addlti', $coursecontext)) {
+            } else if (has_capability('tool/opencast:addlti', $coursecontext)) {
                 $url = new moodle_url('/admin/tool/opencast/addlti.php',
                     ['ocinstanceid' => $ocinstanceid, 'courseid' => $courseid, 'seriesid' => $seriesid]);
                 $text = get_string('addlti_addbuttontitle', 'tool_opencast');
@@ -527,7 +527,7 @@ class tool_opencast_renderer extends plugin_renderer_base {
             $html .= $this->output->heading($ocinstance->name);
         }
 
-        if (has_capability('block/opencast:addvideo', $coursecontext) && $SITE->id != $courseid) {
+        if (has_capability('tool/opencast:addvideo', $coursecontext) && $SITE->id != $courseid) {
             $addvideourl = new moodle_url('/admin/tool/opencast/addvideo.php',
                 ['courseid' => $courseid, 'ocinstanceid' => $ocinstance->id]);
             $addvideobutton = $this->output->single_button($addvideourl, get_string('addvideo', 'tool_opencast'), 'get');
@@ -786,7 +786,7 @@ class tool_opencast_renderer extends plugin_renderer_base {
             if ($showactionbuttons) {
                 $actionbuttonshtml = '';
                 $coursecontext = context_course::instance($uploadjob->courseid);
-                if (has_capability('block/opencast:addvideo', $coursecontext)) {
+                if (has_capability('tool/opencast:addvideo', $coursecontext)) {
                     // Rendering a button to put the upload job back into the queue aka unarchive.
                     if ($uploadjob->status == upload_helper::STATUS_ARCHIVED_FAILED_UPLOAD) {
                         $actionbuttonshtml .= $this->render_unarchive_uploadjob_icon(
@@ -826,7 +826,7 @@ class tool_opencast_renderer extends plugin_renderer_base {
     private function render_scheduled_visibility_icon($uploadjob) {
         $scheduledvisibility = visibility_helper::get_uploadjob_scheduled_visibility($uploadjob->id);
         $coursecontext = context_course::instance($uploadjob->courseid);
-        if (!empty($scheduledvisibility) && has_capability('block/opencast:addvideo', $coursecontext)) {
+        if (!empty($scheduledvisibility) && has_capability('tool/opencast:addvideo', $coursecontext)) {
             $url = new moodle_url('/admin/tool/opencast/changescheduledvisibility.php',
                 ['uploadjobid' => $uploadjob->id, 'courseid' => $uploadjob->courseid,
                     'ocinstanceid' => $uploadjob->ocinstanceid, ]);
@@ -1145,7 +1145,7 @@ class tool_opencast_renderer extends plugin_renderer_base {
             ));
         }
 
-        if ($startworkflows && has_capability('block/opencast:startworkflow', $coursecontext)) {
+        if ($startworkflows && has_capability('tool/opencast:startworkflow', $coursecontext)) {
             $actionmenu->add(new action_menu_link_secondary(
                 new moodle_url('#'),
                 new pix_icon('t/collapsed', get_string('startworkflow', 'tool_opencast')),
@@ -1429,8 +1429,8 @@ class tool_opencast_renderer extends plugin_renderer_base {
 
         $context = new stdClass();
         $context->maxseriesreached = $countseries >= get_config('tool_opencast', 'maxseries_' . $ocinstanceid);
-        $context->cancreateseries = has_capability('block/opencast:createseriesforcourse', $coursecontext);
-        $context->canimportseries = has_capability('block/opencast:importseriesintocourse', $coursecontext);
+        $context->cancreateseries = has_capability('tool/opencast:createseriesforcourse', $coursecontext);
+        $context->canimportseries = has_capability('tool/opencast:importseriesintocourse', $coursecontext);
 
         return $this->render_from_template('tool_opencast/series_table', $context);
     }

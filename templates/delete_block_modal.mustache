@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template block_opencast/delete_block_modal
+    @template tool_opencast/delete_block_modal
 
     This template renders the delete modal
 
@@ -24,12 +24,12 @@
         "deleteblockurl": "https://moodle.local/blocks/opencast/managedefaults.php?courseid=3&ocinstanceid=1"
     }
 }}
-{{#str}} delete_mapping_explanation, block_opencast {{/str}}
+{{#str}} delete_mapping_explanation, tool_opencast {{/str}}
 <div class="d-flex justify-content-end mt-3">
-    <div class="btn btn-primary mx-1 block_opencast-delete-mapping">
-        {{#str}} delete_block_and_mapping, block_opencast {{/str}}
+    <div class="btn btn-primary mx-1 tool_opencast-delete-mapping">
+        {{#str}} delete_block_and_mapping, tool_opencast {{/str}}
     </div>
-    <a class='btn btn-primary mx-1 block_opencast-keep-mapping' href="{{{deleteblockurl}}}">
-        {{#str}} only_delete_block, block_opencast {{/str}}
+    <a class='btn btn-primary mx-1 tool_opencast-keep-mapping' href="{{{deleteblockurl}}}">
+        {{#str}} only_delete_block, tool_opencast {{/str}}
     </a>
 </div>

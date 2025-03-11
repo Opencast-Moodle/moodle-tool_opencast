@@ -41,7 +41,7 @@ require_login($courseid, false);
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:viewunpublishedvideos', $coursecontext);
+require_capability('tool/opencast:viewunpublishedvideos', $coursecontext);
 
 // Check if support email is set.
 if (empty(get_config('tool_opencast', 'support_email_' . $ocinstanceid))) {

@@ -46,6 +46,6 @@ class importvideos_coursesearch extends import_course_search {
      * Sets up the access restrictions for the courses to be displayed in the search.
      */
     protected function setup_restrictions() {
-        $this->require_capability('block/opencast:manualimportsource');
+        $this->require_capability('tool/opencast:manualimportsource');
     }
 }

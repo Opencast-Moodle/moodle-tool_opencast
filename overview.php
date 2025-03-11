@@ -45,7 +45,7 @@ require_login(get_course($SITE->id), false);
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('pluginname', 'tool_opencast'));
 
-$courses = get_user_capability_course('block/opencast:viewunpublishedvideos');
+$courses = get_user_capability_course('tool/opencast:viewunpublishedvideos');
 
 $apibridge = apibridge::get_instance($ocinstanceid);
 $opencasterror = null;
@@ -91,7 +91,7 @@ $table = $renderer->create_series_courses_tables('ignore', $headers, $columns, $
 $sortcolumns = $table->get_sort_columns();
 
 $activityinstalled = core_plugin_manager::instance()->get_plugin_info('mod_opencast') != null;
-$showchangeownerlink = has_capability('block/opencast:viewusers', context_system::instance()) &&
+$showchangeownerlink = has_capability('tool/opencast:viewusers', context_system::instance()) &&
     !empty(get_config('tool_opencast', 'aclownerrole_' . $ocinstanceid));
 
 for ($i = $page * $perpage; $i < min(($page + 1) * $perpage, count($myseries)); $i++) {

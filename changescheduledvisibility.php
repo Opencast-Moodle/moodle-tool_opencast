@@ -58,7 +58,7 @@ if (get_config('tool_opencast', 'aclcontrolafter_' . $ocinstanceid) != true) {
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:addvideo', $coursecontext);
+require_capability('tool/opencast:addvideo', $coursecontext);
 
 $scheduledvisibility = visibility_helper::get_uploadjob_scheduled_visibility($uploadjobid);
 if (empty($scheduledvisibility)) {
@@ -101,7 +101,7 @@ if ($data = $scheduledvisibilityform->get_data()) {
     }
 }
 // Try to extract the title from the upload job, which is stored in metadata table.
-$metadatarecord = $DB->get_record('block_opencast_metadata', ['uploadjobid' => $uploadjobid]);
+$metadatarecord = $DB->get_record('tool_opencast_metadata', ['uploadjobid' => $uploadjobid]);
 $metadata = !empty($metadatarecord->metadata) ? json_decode($metadatarecord->metadata) : [];
 $title = '';
 foreach ($metadata as $ms) {

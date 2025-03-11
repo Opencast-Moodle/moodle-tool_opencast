@@ -59,11 +59,11 @@ if (get_config('tool_opencast', 'aclcontrolafter_' . $ocinstanceid) != true) {
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:addvideo', $coursecontext);
+require_capability('tool/opencast:addvideo', $coursecontext);
 
 $apibridge = apibridge::get_instance($ocinstanceid);
 $visibility = $apibridge->is_event_visible($identifier, $courseid);
-if ($visibility === block_opencast_renderer::MIXED_VISIBILITY) {
+if ($visibility === tool_opencast_renderer::MIXED_VISIBILITY) {
     $groups = groupaccess::get_record(['opencasteventid' => $identifier, 'ocinstanceid' => $ocinstanceid]);
     if ($groups) {
         $visibility = tool_opencast_renderer::GROUP;

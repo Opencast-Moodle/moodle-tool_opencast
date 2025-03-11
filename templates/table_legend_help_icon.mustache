@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template block_opencast/table_legend_help_icon
+    @template tool_opencast/table_legend_help_icon
 
     This template renders the table legend help icon to show in overview page as a help icon for each header.
 
@@ -26,7 +26,7 @@
     }
 }}
 <a class="btn btn-link p-0" role="button" id="{{uniqid}}-legend-icon">
-    {{#pix}}help, core, {{#str}}legendalt, block_opencast{{/str}}{{/pix}}
+    {{#pix}}help, core, {{#str}}legendalt, tool_opencast{{/str}}{{/pix}}
 </a>
 {{#js}}
     require([
@@ -39,9 +39,9 @@
     $("#{{uniqid}}-legend-icon").click(function(e) {
     e.preventDefault();
 
-    var titlePromise = Str.get_string('legendtitle', 'block_opencast');
+    var titlePromise = Str.get_string('legendtitle', 'tool_opencast');
     var modalPromise = ModalFactory.create({type: ModalFactory.types.CANCEL});
-    var bodyPromise = Templates.render('block_opencast/table_legend_details', {
+    var bodyPromise = Templates.render('tool_opencast/table_legend_details', {
     {{#statushelpicon}}
         "showstatusdetails": "true"
     {{/statushelpicon}}

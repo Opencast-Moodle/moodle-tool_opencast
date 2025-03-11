@@ -57,7 +57,7 @@ $PAGE->navbar->add(get_string('addnewtranscription', 'tool_opencast'), $baseurl)
 
 // Capability check.
 $coursecontext = context_course::instance($courseid);
-require_capability('block/opencast:addvideo', $coursecontext);
+require_capability('tool/opencast:addvideo', $coursecontext);
 
 $apibridge = apibridge::get_instance($ocinstanceid);
 $video = $apibridge->get_opencast_video($identifier);

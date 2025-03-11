@@ -56,7 +56,7 @@ $PAGE->navbar->add(get_string('directaccesstovideo', 'tool_opencast'), $baseurl)
 // Capability check.
 $coursecontext = context_course::instance($courseid);
 try {
-    require_capability('block/opencast:directaccessvideolink', $coursecontext);
+    require_capability('tool/opencast:directaccessvideolink', $coursecontext);
 } catch (required_capability_exception $e) {
     // We gently redirect to the course main view page in case of capability exception, to handle the behat more sufficiently.
     $redirecttocourse = new moodle_url('/course/view.php', ['id' => $courseid]);

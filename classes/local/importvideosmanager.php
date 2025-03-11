@@ -286,7 +286,7 @@ class importvideosmanager {
 
         // If the user is not allowed to import from the given course at all, return.
         $coursecontext = context_course::instance($sourcecourseid);
-        if (has_capability('block/opencast:manualimportsource', $coursecontext) != true) {
+        if (has_capability('tool/opencast:manualimportsource', $coursecontext) != true) {
             return $courseseries;
         }
 
@@ -339,7 +339,7 @@ class importvideosmanager {
 
         // If the user is not allowed to import from the given course at all, return.
         $coursecontext = context_course::instance($sourcecourseid);
-        if (has_capability('block/opencast:manualimportsource', $coursecontext) != true) {
+        if (has_capability('tool/opencast:manualimportsource', $coursecontext) != true) {
             return $coursevideossummary;
         }
 
@@ -416,14 +416,14 @@ class importvideosmanager {
 
         // If the user is not allowed to import from the source course at all, return.
         $sourcecoursecontext = context_course::instance($sourcecourseid);
-        if (has_capability('block/opencast:manualimportsource', $sourcecoursecontext) != true) {
+        if (has_capability('tool/opencast:manualimportsource', $sourcecoursecontext) != true) {
             $result->error = true;
             return $result;
         }
 
         // If the user is not allowed to import to the target course at all, return.
         $targetcoursecontext = context_course::instance($targetcourseid);
-        if (has_capability('block/opencast:manualimporttarget', $targetcoursecontext) != true) {
+        if (has_capability('tool/opencast:manualimporttarget', $targetcoursecontext) != true) {
             $result->error = true;
             return $result;
         }
@@ -469,7 +469,7 @@ class importvideosmanager {
 
                 // For LTI check if capability is fulfilled.
                 if (ltimodulemanager::is_working_for_episodes($ocinstanceid) &&
-                    has_capability('block/opencast:addltiepisode', context_course::instance($targetcourseid))) {
+                    has_capability('tool/opencast:addltiepisode', context_course::instance($targetcourseid))) {
                     $episodemodules = ltimodulemanager::get_modules_for_episode_linking_to_other_course(
                         $ocinstanceid, $targetcourseid, $identifier);
                 }
@@ -771,7 +771,7 @@ class importvideosmanager {
      */
     public static function get_import_mapping_record($where) {
         global $DB;
-        return $DB->get_record('block_opencast_importmapping', $where) ?: null;
+        return $DB->get_record('tool_opencast_importmapping', $where) ?: null;
     }
 
     /**
@@ -783,7 +783,7 @@ class importvideosmanager {
      */
     public static function get_import_mapping_records($where) {
         global $DB;
-        return $DB->get_records('block_opencast_importmapping', $where);
+        return $DB->get_records('tool_opencast_importmapping', $where);
     }
 
     /**
@@ -811,7 +811,7 @@ class importvideosmanager {
      */
     public static function set_import_mapping_completion_status($restoreuid, $status = self::RESTORE_STATUS_COMPLETED) {
         global $DB;
-        $records = $DB->get_records('block_opencast_importmapping', ['restoreuid' => $restoreuid]);
+        $records = $DB->get_records('tool_opencast_importmapping', ['restoreuid' => $restoreuid]);
         $unchanged = [];
         foreach ($records as $record) {
             $record->restorecompleted = $status;

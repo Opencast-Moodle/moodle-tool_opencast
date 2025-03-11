@@ -52,7 +52,7 @@ $coursecontext = context_course::instance($courseid);
 $systemcontext = context_system::instance();
 
 if ($courseid == $SITE->id) {
-    require_capability('block/opencast:viewusers', $systemcontext);
+    require_capability('tool/opencast:viewusers', $systemcontext);
     $viewfullnames = has_capability('moodle/site:viewfullnames', $systemcontext);
 } else {
     course_require_view_participants($coursecontext);
@@ -100,8 +100,8 @@ if ($isseries) {
 $isowner = $apibridge->is_owner($acls, $USER->id, $courseid);
 if (!$isowner &&
     !$noowner &&
-    !has_capability('block/opencast:canchangeownerforallvideos', $systemcontext)) {
-    throw new moodle_exception(get_string('userisntowner', 'block_opencast'));
+    !has_capability('tool/opencast:canchangeownerforallvideos', $systemcontext)) {
+    throw new moodle_exception(get_string('userisntowner', 'tool_opencast'));
 } else {
     $PAGE->set_pagelayout('incourse');
     $PAGE->set_title(get_string('pluginname', 'tool_opencast'));
