@@ -19,19 +19,6 @@ class OcWorkflowsApiTest extends TestCase
 
     /**
      * @test
-     * @dataProvider \Tests\DataProvider\WorkflowsApiDataProvider::getAllCases()
-     */
-    public function get_all_workflows($params): void
-    {
-        $this->markTestSkipped('Depricated Endpoint (removed from Opencast v12.x)');
-        $response = $this->ocWorkflowsApi->getAll($params);
-
-        $this->assertSame(200, $response['code'], 'Failure to get workflows list');
-    }
-
-
-    /**
-     * @test
      */
     public function get_definition_run_update_delete_workflow(): void
     {
@@ -97,6 +84,54 @@ class OcWorkflowsApiTest extends TestCase
         $response6 = $this->ocWorkflowsApi->delete($workflowId->identifier);
         $this->assertSame(204, $response6['code'], 'Failure to delete a workflow');
         sleep(1);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Tests\DataProvider\WorkflowsApiDataProvider::getAllDefinitionsCases()
+     */
+    public function get_all_definitions($params): void
+    {
+        $response = $this->ocWorkflowsApi->getAllDefinitions($params);
+        $this->assertSame(200, $response['code'], 'Failure to get workflows list');
+    }
+
+    /**
+     * @test
+     * This test is meant to check the integrity of the response body, to make sure it contains the correct properties.
+     */
+    public function get_single_definition_with_parameters(): void
+    {
+        $response = $this->ocWorkflowsApi->getDefinition(
+            'fast',
+            true,
+            true,
+            true
+        );
+        $this->assertSame(200, $response['code'], 'Failure to get "fast" workflow');
+        $bodyArray = json_decode(json_encode($response['body']), true);
+        $this->assertNotEmpty($bodyArray, 'Response body array is empty');
+
+        // Check for operations
+        $this->assertArrayHasKey('operations', $bodyArray, 'No configuration_panel is defined');
+
+        // Check for config panel
+        $this->assertArrayHasKey('configuration_panel', $bodyArray, 'No configuration_panel is defined');
+
+        // Check for config panel json
+        $this->assertArrayHasKey('configuration_panel_json', $bodyArray, 'No configuration_panel_json is defined');
+
+        // Check for title
+        $this->assertArrayHasKey('title', $bodyArray, 'No configuration_panel_json is defined');
+
+        // Check for tags
+        $this->assertArrayHasKey('tags', $bodyArray, 'No configuration_panel_json is defined');
+
+        // Check for description
+        $this->assertArrayHasKey('description', $bodyArray, 'No configuration_panel_json is defined');
+
+        // Check for identifier
+        $this->assertArrayHasKey('identifier', $bodyArray, 'No configuration_panel_json is defined');
     }
 }
 ?>

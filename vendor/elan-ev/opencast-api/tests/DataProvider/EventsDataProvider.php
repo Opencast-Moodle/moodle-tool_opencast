@@ -13,6 +13,7 @@ class EventsDataProvider {
             [['withmetadata' => true]],
             [['withpublications' => true]],
             [['withscheduling' => true]],
+            [['includeInternalPublication' => true]],
             [['sort' => ['title' => 'DESC']]],
             [['limit' => 2]],
             [['offset' => 1, 'limit' => 2]],
@@ -64,9 +65,12 @@ class EventsDataProvider {
         return Psr7\Utils::tryFopen(__DIR__   . '/test_files/audio_test.mp3', 'r');
     }
 
-    public static function getVttFile()
+    public static function getVttFile($lang = 'de', $overwrite = false)
     {
-        return Psr7\Utils::tryFopen(__DIR__   . '/test_files/video_test_de.vtt', 'r');
+        $lang = strtolower($lang);
+        $overwitestr = $overwrite ? '_overwrite' : '';
+        $filename = "/test_files/video_test{$overwitestr}_{$lang}.vtt";
+        return Psr7\Utils::tryFopen(__DIR__   . $filename, 'r');
     }
 }
 ?>

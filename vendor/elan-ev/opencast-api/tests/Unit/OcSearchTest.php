@@ -5,6 +5,7 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use OpencastApi\Opencast;
+use OpencastApi\Util\OcUtils;
 
 class OcSearchTest extends TestCase
 {
@@ -24,6 +25,17 @@ class OcSearchTest extends TestCase
     {
         $response = $this->ocSearch->getEpisodes($params, $format);
         $this->assertSame(200, $response['code'], 'Failure to search episode');
+    }
+
+    /**
+     * @test
+     */
+    public function find_mediapackage_using_ocutils() {
+        $params = ['id' => 'ID-spring'];
+        $response = $this->ocSearch->getEpisodes($params);
+        $this->assertSame(200, $response['code'], 'Failure to search episode for OcUtils');
+        $mediapackage = OcUtils::findValueByKey($response['body'], 'mediapackage');
+        $this->assertNotEmpty($mediapackage, 'Cannot extract mediapackage from response using "OcUtils::findValueByKey"');
     }
 
     /**

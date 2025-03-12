@@ -17,7 +17,7 @@
             }
         ]
     },
-    "/api/workflow-definitions/noop?withoperations=true&withconfigurationpanel=true": {
+    "/api/workflow-definitions/noop?withoperations=true&withconfigurationpanel=true&withconfigurationpaneljson=false": {
         "GET": [
             {
                 "body": "{\"identifier\":\"noop\",\"description\":\"\",\"title\":\"Do nothing (mostly for debugging and maintenance purposes)\",\"tags\":[]}",

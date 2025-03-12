@@ -1,18 +1,19 @@
-<?php 
+<?php
 namespace Tests\DataProvider;
 
 class WorkflowsApiDataProvider {
-    
-    public static function getAllCases(): array
+
+    public static function getAllDefinitionsCases(): array
     {
         return [
             [[]],
             [['withoperations' => true]],
-            [['withconfiguration' => true]],
-            [['sort' => ['workflow_definition_identifier' => 'DESC']]],
+            [['withconfigurationpanel' => true]],
+            [['withconfigurationpaneljson' => true]],
+            [['sort' => ['identifier' => 'DESC']]],
             [['limit' => 2]],
             [['offset' => 1]],
-            [['filter' => ['workflow_definition_identifier' => 'fast']]],
+            [['filter' => ['tag' => 'schedule']]],
         ];
     }
 }

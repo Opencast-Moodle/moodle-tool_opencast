@@ -25,8 +25,9 @@ $config = [
       'timeout' => 0,                                 // The API timeout. In seconds (default 0 to wait indefinitely). (optional)
       'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
       'version' => null,                              // The API Version. (Default null). (optional)
-      'handler' => null                               // The callable Handler or HandlerStack. (Default null). (optional)
-      'features' => null                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
+      'handler' => null,                               // The callable Handler or HandlerStack. (Default null). (optional)
+      'features' => null,                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
+      'guzzle' => null,                                // Additional Guzzle Request Options. These options can overwrite some default options (Default null). (optional)
 ];
 
 $engageConfig = [
@@ -36,8 +37,9 @@ $engageConfig = [
       'timeout' => 0,                                 // The API timeout. In seconds (default 0 to wait indefinitely). (optional)
       'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
       'version' => null,                              // The API version. (Default null). (optional)
-      'handler' => null                               // The callable Handler or HandlerStack. (Default null). (optional)
-      'features' => null                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
+      'handler' => null,                               // The callable Handler or HandlerStack. (Default null). (optional)
+      'features' => null,                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
+      'guzzle' => null,                                // Additional Guzzle Request Options. These options can overwrite some default options (Default null). (optional)
 ];
 
 use OpencastApi\Opencast;
@@ -74,8 +76,9 @@ $config = [
       'timeout' => 0,                                 // The API timeout. In seconds (default 0 to wait indefinitely). (optional)
       'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
       'version' => null,                              // The API version. (Default null). (optional)
-      'handler' => null                               // The callable Handler or HandlerStack. (Default null). (optional)
-      'features' => null                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
+      'handler' => null,                               // The callable Handler or HandlerStack. (Default null). (optional)
+      'features' => null,                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
+      'guzzle' => null,                                // Additional Guzzle Request Options. These options can overwrite some default options (Default null). (optional)
 ];
 
 
@@ -114,10 +117,12 @@ $config = [
       'timeout' => 0,                                 // The API timeout. In seconds (default 0 to wait indefinitely). (optional)
       'connect_timeout' => 0,                         // The API connection timeout. In seconds (default 0 to wait indefinitely) (optional)
       'version' => null,                              // The API version. (Default null). (optional)
-      'handler' => null                               // The callable Handler or HandlerStack. (Default null). (optional)
-      'features' => null                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
+      'handler' => null,                               // The callable Handler or HandlerStack. (Default null). (optional)
+      'features' => null,                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
+      'guzzle' => null,                                // Additional Guzzle Request Options. These options can overwrite some default options (Default null). (optional)
 ];
 ```
+**UPDATE (v1.9.0):** a new config parameter called "guzzle" is introduced, which is intended to pass additional guzzle request options to the call. These options will take precedence over the default configs like uri, auth and timeouts, but some other options like query, fome_params and json will be overwritten by the function if present.
 **UPDATE (v1.7.0):** the new items called `features` is added to the configuration array. As of now, it is meant to hanlde the toggle behavior to enable/disable Lucene search endpoint simply by adding `'features' => ['lucene' => true]`. Just keep in mind that this endpoint id off by default and won't work in Opencast 16 onwards. Therefore, developer must be very careful to use this feature and to toggle it!
 
 NOTE: the configuration for presentation (`engage` node) responsible for search has to follow the same definition as normal config. But in case any parameter is missing, the value will be taken from the main config param.
@@ -170,7 +175,7 @@ $sorts = [
       'startDate' => 'ASC'
 ];
 ```
-<b>NOTE:</b> Sometimes a filter can occur multiple times for example in [Series API `/get`](https://docs.opencast.org/develop/developer/#api/series-api/#get-apiseries), filters like `subject` and `identifier` can occur multiple times. Therefore, an `Array` should be passed as filter value like following:
+<b>NOTE:</b> Sometimes a filter can occur multiple times for example in [Series API `/get`](https://docs.opencast.org/develop/developer/#architecture/api/series-api/#get-apiseries), filters like `subject` and `identifier` can occur multiple times. Therefore, an `Array` should be passed as filter value like following:
 ```php
 // for example:
 
@@ -296,6 +301,26 @@ $baseResponse = $ocBaseApi->setRequestConnectionTimeout(10)->get();
 
 - `/sysinfo/bundles/version`: (v1.1.1) only bundle version endpoint is available. [Sysinfo Endpoint definitions WiKi](https://github.com/elan-ev/opencast-php-library/wiki/OcSysinfo)
 
+# Utility Class
+Starting from version **v1.9.0**, a new utility class has been introduced to provide additional functionality, making it easier to integrate and consume this library's output within applications.
+## How to use
+To use the utility class, initialize it directly via its namespace and start calling its functions:
+```php
+use OpencastApi\Opencast;
+use OpencastApi\Util\OcUtils;
+...
+$config = [...];
+$opencastApi = new Opencast($config);
+
+$params = [...];
+$response = $opencastApi->ocSearch->getEpisodes($params);
+
+// Use `findValueByKey` from the Utility class to extract the mediapackage from the response,
+// regardless of the response's structure.
+$mediapackage = OcUtils::findValueByKey($response['body'], 'mediapackage');
+...
+```
+
 # Mocking Responses
 In order to conduct proper testing, a mocking mechanism is provided.
 ## How to use
@@ -402,4 +427,4 @@ $ocEventsApi = $opencast->eventsApi;
 ```
 # References
 - <a href="https://develop.opencast.org/rest_docs.html" target="_blank">Main Opencast REST Service Documentation</a>
-- <a href="https://docs.opencast.org/develop/developer/#api/#_top" target="_blank">Detailed Opencast REST API Endpoints Documentation</a>
+- <a href="https://docs.opencast.org/develop/developer/#architecture/api" target="_blank">Detailed Opencast REST API Endpoints Documentation</a>

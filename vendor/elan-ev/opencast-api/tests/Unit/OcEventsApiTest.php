@@ -54,7 +54,7 @@ class OcEventsApiTest extends TestCase
      */
     public function get_single_event(string $identifier): string
     {
-        $responseAll = $this->ocEventsApi->getAll(['withacl' => true]);
+        $responseAll = $this->ocEventsApi->getAll(['withacl' => true, 'includeInternalPublication' => true]);
         $this->assertSame(200, $responseAll['code'], 'Failure to get event list');
         $events = $responseAll['body'];
         if (!empty($events)) {
@@ -144,22 +144,57 @@ class OcEventsApiTest extends TestCase
      */
     public function add_tracks(string $identifier)
     {
-        // Add Track no override.
+        $flavor = 'captions/source';
+        $tags = [
+            'archive',
+            'subtitle',
+            'type:subtitle',
+            'generator-type:manual',
+        ];
+        $langde = ['lang:de'];
+        $langen = ['lang:en'];
+
+        $tags_de = array_merge($tags, $langde);
+        $tags_en = array_merge($tags, $langen);
+        // Adding first Track in DE language!
         $response1 = $this->ocEventsApi->addTrack(
             $identifier,
-            'captions/vtt+de',
-            \Tests\DataProvider\EventsDataProvider::getVttFile()
+            $flavor,
+            \Tests\DataProvider\EventsDataProvider::getVttFile('de'),
+            false,
+            $tags_de
         );
-        $this->assertSame(200, $response1['code'], 'Failure to add Track with no override');
+        $this->assertSame(200, $response1['code'], 'Failure to add Track DE');
 
-        // Add Track with override.
+        // Adding second Track in EN language!
         $response2 = $this->ocEventsApi->addTrack(
             $identifier,
-            'captions/vtt+de',
-            \Tests\DataProvider\EventsDataProvider::getVttFile(),
-            true
+            $flavor,
+            \Tests\DataProvider\EventsDataProvider::getVttFile('en'),
+            false,
+            $tags_en
         );
-        $this->assertSame(200, $response2['code'], 'Failure to add Track with override');
+        $this->assertSame(200, $response2['code'], 'Failure to add Track EN');
+
+        // Overwrite the existing track DE!
+        $response3 = $this->ocEventsApi->addTrack(
+            $identifier,
+            $flavor,
+            \Tests\DataProvider\EventsDataProvider::getVttFile('de', true),
+            true,
+            $tags_de
+        );
+        $this->assertSame(200, $response3['code'], 'Failure to override the DE language subtitle');
+
+        // Remove EN subtitle track!
+        $response4 = $this->ocEventsApi->addTrack(
+            $identifier,
+            $flavor,
+            null,
+            true,
+            $tags_en
+        );
+        $this->assertSame(200, $response4['code'], 'Failure to remove subtitle track EN');
 
         return $identifier;
     }
@@ -254,7 +289,7 @@ class OcEventsApiTest extends TestCase
      */
     public function get_publications(string $identifier): string
     {
-        $response1 = $this->ocEventsApi->getPublications($identifier, true);
+        $response1 = $this->ocEventsApi->getPublications($identifier, true, true);
         $this->assertSame(200, $response1['code'], 'Failure to get publications of an event');
 
         $publications = $response1['body'];

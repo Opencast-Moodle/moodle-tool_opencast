@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit
-    bootstrap="vendor/autoload.php"
-    stopOnError="false"
-    stopOnFailure="false"
-    stopOnIncomplete="false"
-    stopOnSkipped="false"
-    colors="true"
-    verbose="false">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="vendor/autoload.php" stopOnError="false" stopOnFailure="false" stopOnIncomplete="false" stopOnSkipped="false" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" cacheDirectory=".phpunit.cache">
     <testsuites>
         <testsuite name="Unit Tests">
             <directory>tests/Unit</directory>
