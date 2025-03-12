@@ -7,7 +7,7 @@ class SearchDataProvider {
     {
         return [
             [[], 'json'],
-            [['id' => 'fe0b45b0-7ed5-4944-8b0a-a0a283331791'], ''],
+            [['id' => 'ID-spring'], ''],
             [['sid' => '8010876e-1dce-4d38-ab8d-24b956e3d8b7'], ''],
             [['sname' => 'HUB_LOCAL_TEST'], ''],
             [['sort' => 'modified asc'], ''],

@@ -25,7 +25,7 @@ class OcSeries extends OcRest
     /**
      * Returns the access control list for the series with the given identifier as JSON (Object) by default or XLM (text).
      *
-     * @param string $seriesId The series identifier 
+     * @param string $seriesId The series identifier
      * @param string $format (optional) The output format (json or xml) of the response body. (Default value = 'json')
      *
      * @return array the response result ['code' => 200, 'body' => '{The access control list as JSON (Object) or XML (text)}']
@@ -37,17 +37,6 @@ class OcSeries extends OcRest
             $uri = str_replace('.json', '.xml', $uri);
         }
 
-        return $this->restClient->performGet($uri);
-    }
-
-    /**
-     * Returns a list of identifier and title of all series
-     * @return array the response result ['code' => 200, 'body' => '{JSON (object) list of identifier and title of all series}']
-     * @deprecated since version v1.3, removed from Opencast Version 12
-     */
-    public function getTitles()
-    {
-        $uri = self::URI . "/allSeriesIdTitle.json";
         return $this->restClient->performGet($uri);
     }
 
@@ -68,7 +57,7 @@ class OcSeries extends OcRest
 
         return $this->restClient->performGet($uri);
     }
-    
+
     /**
      * Returns the series element
      *
@@ -113,7 +102,7 @@ class OcSeries extends OcRest
      * Returns a series property value
      *
      * @param string $seriesId The series identifier
-     * @param string $propertyName Name of series property 
+     * @param string $propertyName Name of series property
      *
      * @return array the response result ['code' => 200, 'body' => '{JSON (object) series property value}']
      */
@@ -121,83 +110,6 @@ class OcSeries extends OcRest
     {
         $uri = self::URI . "/{$seriesId}/property/{$propertyName}.json";
         return $this->restClient->performGet($uri);
-    }
-
-    /**
-     * Returns the series matching the query parameters as JSON (array) by default or XLM (text).
-     *
-     * @param array $params (optional) The list of query params to pass which can contain the followings:
-     * [
-     *      'q' => '{Free text search}',
-     *      'edit' => '(boolean){Whether this query should return only series that are editable}',
-     *      'fuzzyMatch' => '(boolean){Whether the seriesId can be used for a partial match. The default is an exact match}',
-     *      'seriesId' => '{The series identifier}',
-     *      'seriesTitle' => '{The series title}',
-     *      'creator' => '{The series creator}',
-     *      'contributor' => '{The series contributor}',
-     *      'publisher' => '{The series publisher}',
-     *      'rightsholder' => '{The series rights holder}',
-     *      'createdfrom' => '{Filter results by created from (yyyy-MM-dd'T'HH:mm:ss'Z') }',
-     *      'createdto' => '{Filter results by created to (yyyy-MM-dd'T'HH:mm:ss'Z')) }',
-     *      'language' => '{The series language}',
-     *      'license' => '{The series license}',
-     *      'subject' => '{The series subject}',
-     *      'abstract' => '{The series abstract}',
-     *      'description' => '{The series description}',
-     *      'sort' => '{The sort order. May include any of the following: TITLE, SUBJECT, CREATOR, PUBLISHER, CONTRIBUTOR, ABSTRACT, DESCRIPTION, CREATED, AVAILABLE_FROM, AVAILABLE_TO, LANGUAGE, RIGHTS_HOLDER, SPATIAL, TEMPORAL, IS_PART_OF, REPLACES, TYPE, ACCESS, LICENCE. Add '_DESC' to reverse the sort order (e.g. TITLE_DESC)}',
-     *      'startPage' => '{The page offset}',
-     *      'count' => '{Results per page (max 100)}',
-     * ]
-     * @param string $format (optional) The output format (json or xml) of the response body. (Default value = 'json')
-     *
-     * @return array the response result ['code' => 200, 'body' => '{the series search results as JSON (array) or XML (text)}']
-     * @deprecated Deprecated since version 1.3 - since it is removed from Opencast Verrsion 12.
-     */
-    public function getAll($params = [], $format = '')
-    {
-        $uri = self::URI . "/series.json";
-        if (!empty($format) && strtolower($format) == 'xml') {
-            $uri = str_replace('.json', '.xml', $uri);
-        }
-
-        $query = [];
-        $acceptableParams = [
-            'q', 'edit', 'fuzzyMatch', 'seriesId', 'seriesTitle',
-            'creator', 'contributor', 'publisher', 'rightsholder', 'createdfrom',
-            'createdto', 'language', 'license', 'subject', 'abstract',
-            'description', 'startPage', 'count'
-        ];
-        foreach ($params as $param_name => $param_value) {
-            if (in_array($param_name, $acceptableParams)) {
-                if ((($param_name == 'edit' || $param_name == 'fuzzyMatch') && is_bool($param_value)) || !empty($param_value)) {
-                    if ($param_name == 'count') {
-                        $param_value = intval($param_value);
-                        $param_value = ($param_value <= 100) ?: 100;
-                    }
-                    $query[$param_name] = $param_value;
-                }
-            }
-        }
-        $sortsASC = [
-            'TITLE', 'SUBJECT', 'CREATOR', 'PUBLISHER',
-            'CONTRIBUTOR', 'ABSTRACT', 'DESCRIPTION', 'CREATED',
-            'AVAILABLE_FROM', 'AVAILABLE_TO','LANGUAGE', 'RIGHTS_HOLDER',
-            'SPATIAL', 'TEMPORAL', 'IS_PART_OF', 'REPLACES', 'TYPE',
-            'ACCESS', 'LICENCE'
-        ];
-        $sortsDESC = array_map(function ($sort) {
-            return "{$sort}_DESC";
-        }, $sortsASC);
-
-        $sorts = array_merge($sortsASC, $sortsDESC);
-        
-        if (array_key_exists('sort', $params) && !empty($params['sort']) &&
-            in_array($params['sort'], $sorts)) {
-            $query['sort'] = $params['sort'];
-        }
-
-        $options = $this->restClient->getQueryParams($query);
-        return $this->restClient->performGet($uri, $options);
     }
 
     /**
@@ -215,9 +127,9 @@ class OcSeries extends OcRest
 
     /**
      * Deletes a series element
-     * 
+     *
      * @param string $seriesId The series identifier
-     * @param string $elementType The element type 
+     * @param string $elementType The element type
      *
      * @return array the response result ['code' => 204, 'reason' => 'No Content'] (Series element deleted)
      */
@@ -229,7 +141,7 @@ class OcSeries extends OcRest
 
     /**
      * Deletes a series property
-     * 
+     *
      * @param string $seriesId The series identifier
      * @param string $propertyName Name of series property
      *
@@ -307,8 +219,8 @@ class OcSeries extends OcRest
      *
      * @return array the response result:
      * ['code' => 201, 'reason' => 'Created'] (series created)
-     * ['code' => 204, 'reason' => 'No Content'] (series updated) 
-     * 
+     * ['code' => 204, 'reason' => 'No Content'] (series updated)
+     *
      */
     public function update($params, $override = false)
     {

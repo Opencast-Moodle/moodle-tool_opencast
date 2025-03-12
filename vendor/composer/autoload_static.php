@@ -21,6 +21,7 @@ class ComposerStaticInit8ba2ca4e105ea351f7cb241590a7de7e
         ),
         'O' => 
         array (
+            'OpencastApi\\Util\\' => 17,
             'OpencastApi\\Rest\\' => 17,
             'OpencastApi\\Mock\\' => 17,
             'OpencastApi\\' => 12,
@@ -42,6 +43,10 @@ class ComposerStaticInit8ba2ca4e105ea351f7cb241590a7de7e
         'Psr\\Http\\Client\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-client/src',
+        ),
+        'OpencastApi\\Util\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/elan-ev/opencast-api/src/OpencastApi/Util',
         ),
         'OpencastApi\\Rest\\' => 
         array (
