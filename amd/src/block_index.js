@@ -71,7 +71,7 @@ define(['jquery', 'core/modal_factory', 'core/modal_events',
                     const detail = e?.detail || {};
 
                     var clickedVideo = $(e.currentTarget);
-                    var actionurl = url.relativeUrl('blocks/opencast/startworkflow.php', {
+                    var actionurl = url.relativeUrl('admin/tool/opencast/startworkflow.php', {
                         'ocinstanceid': ocinstanceid,
                         'courseid': courseid,
                         'videoid': clickedVideo.data('id')
@@ -229,7 +229,7 @@ define(['jquery', 'core/modal_factory', 'core/modal_events',
             $('#workflowconfigpaneldiv').addClass('d-none');
             $('#workflowconfigpanelloading').removeClass('d-none');
             $('#config-frame').attr('src', '');
-            var configpanelsrc = url.relativeUrl('blocks/opencast/serveworkflowconfigpanel.php', {
+            var configpanelsrc = url.relativeUrl('admin/tool/opencast/serveworkflowconfigpanel.php', {
                 'ocinstanceid': ocinstanceid,
                 'courseid': courseid,
                 'workflowid': workflowid
@@ -254,7 +254,7 @@ define(['jquery', 'core/modal_factory', 'core/modal_events',
                     type: ModalFactory.types.SAVE_CANCEL,
                     title: langstrings[0],
                     body: '<form id="reportProblemForm" method="post" action="' +
-                        url.relativeUrl('blocks/opencast/reportproblem.php', {
+                        url.relativeUrl('admin/tool/opencast/reportproblem.php', {
                             'ocinstanceid': ocinstanceid,
                             'courseid': courseid,
                             'videoid': clickedVideo.data('id')

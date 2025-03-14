@@ -403,7 +403,7 @@ class admin_settings_builder {
                 new \admin_setting_configtext('tool_opencast/opencast_studio_return_url_' . $instance->id,
                     get_string('opencaststudioreturnurl', 'tool_opencast'),
                     get_string('opencaststudioreturnurl_desc', 'tool_opencast'),
-                    '/blocks/opencast/index.php?courseid=[COURSEID]&ocinstanceid=[OCINSTANCEID]'));
+                    '/admin/tool/opencast/index.php?courseid=[COURSEID]&ocinstanceid=[OCINSTANCEID]'));
 
             $additionalsettings->add(
                 new \admin_setting_configtext('tool_opencast/opencast_studio_custom_settings_filename_' . $instance->id,

@@ -74,25 +74,25 @@ class massaction_helper {
     public $massactions = [
         self::MASSACTION_DELETE => [
             'path' => [
-                'url' => '/blocks/opencast/deleteevent_massaction.php',
+                'url' => '/admin/tool/opencast/deleteevent_massaction.php',
             ],
             'enable' => true,
         ],
         self::MASSACTION_UPDATEMETADATA => [
             'path' => [
-                'url' => '/blocks/opencast/updatemetadata_massaction.php',
+                'url' => '/admin/tool/opencast/updatemetadata_massaction.php',
             ],
             'enable' => true,
         ],
         self::MASSACTION_CHANGEVISIBILITY => [
             'path' => [
-                'url' => '/blocks/opencast/changevisibility_massaction.php',
+                'url' => '/admin/tool/opencast/changevisibility_massaction.php',
             ],
             'enable' => true,
         ],
         self::MASSACTION_STARTWORKFLOW => [
             'path' => [
-                'url' => '/blocks/opencast/startworkflow_massaction.php',
+                'url' => '/admin/tool/opencast/startworkflow_massaction.php',
             ],
             'enable' => true,
         ],
