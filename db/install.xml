@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="admin/tool/opencast/db" VERSION="2021070800" COMMENT="XMLDB file for Moodle tool/opencast"
+<XMLDB PATH="admin/tool/opencast/db" VERSION="20250314" COMMENT="XMLDB file for Moodle tool/opencast"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -17,7 +17,7 @@
         <KEY NAME="fk_course" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-        <TABLE NAME="tool_opencast_uploadjob" COMMENT="Videos to upload by cron job.">
+    <TABLE NAME="tool_opencast_uploadjob" COMMENT="Videos to upload by cron job.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="presenter_fileid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Presenter file id in files table"/>

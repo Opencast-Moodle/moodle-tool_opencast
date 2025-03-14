@@ -23,10 +23,10 @@ use tool_opencast\local\visibility_helper; // TODO: migrieren
 use tool_opencast\local\ltimodulemanager; // TODO: migrieren
 use tool_opencast\empty_configuration_exception;
 
-require_once(__DIR__ . '/../../setting_default_manager.php');
-require_once(__DIR__ . '/../../admin_setting_hiddenhelpbtn.php');
-require_once(__DIR__ . '/../../setting_helper.php');
-require_once(__DIR__ . '/../../admin_setting_configtextvalidate.php');
+require_once(__DIR__ . '/../setting_default_manager.php');
+require_once(__DIR__ . '/../admin_setting_hiddenhelpbtn.php');
+require_once(__DIR__ . '/../setting_helper.php');
+require_once(__DIR__ . '/../admin_setting_configtextvalidate.php');
 
 
 

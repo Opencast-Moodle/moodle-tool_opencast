@@ -15,19 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Handle the course backup.
  *
- * @package     tool_opencast
- * @copyright   2024 Thomas Niedermaier <thomas.niedermaier@uni-muenster.de>
- * @copyright   2018 Tobias Reischmann <tobias.reischmann@wi.uni-muenster.de>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    tool_opencast
+ * @copyright  2025 Berthold Bußkamp, ssystems GmbH <bbusskamp@ssystems.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'tool_opencast';
-$plugin->release = 'v4.5-r4';
-$plugin->version = 2025031401;
-$plugin->requires = 2024100700; // Requires Moodle 4.5+.
-$plugin->supported = [405, 405];
-$plugin->maturity = MATURITY_STABLE;
+global $CFG;
+
+require_once($CFG->dirroot . '/backup/moodle2/backup_tool_plugin.class.php');
+
+class backup_tool_opencast_plugin extends backup_tool_plugin {
+
+    protected function define_course_plugin_structure() {
+        echo "Hello, backup!";
+        $plugin = $this->get_plugin_element();
+        $this->step->log('Yay, backup!', backup::LOG_DEBUG);
+        return $plugin;
+    }
+
+}
