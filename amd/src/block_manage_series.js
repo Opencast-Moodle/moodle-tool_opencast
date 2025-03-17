@@ -381,18 +381,12 @@ export const init = (contextid, ocinstanceid, createseries, series, numseriesall
         // Create new series in modal
         // Button for connection a new series
         $('#createseries')?.click(function() {
-
-
-            /* eslint-disable no-console */
-            console.log('Log start');
             ModalFactory.create({
                 type: ModalFactory.types.SAVE_CANCEL,
                 title: jsstrings[4],
                 body: getBody(contextid, ocinstanceid, '', undefined)
             })
                 .then(function(modal) {
-                    console.log('Function');
-                    console.log('JSString: ' + jsstrings[4]);
                     modal.setSaveButtonText(jsstrings[4]);
                     modal.setLarge();
 
