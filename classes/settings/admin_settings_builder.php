@@ -19,10 +19,12 @@ namespace tool_opencast\settings;
 use tool_opencast\local\settings_api;
 use tool_opencast\local\maintenance_class;
 use tool_opencast\exception\opencast_api_response_exception;
-use tool_opencast\local\visibility_helper; // TODO: migrieren
-use tool_opencast\local\ltimodulemanager; // TODO: migrieren
+use tool_opencast\local\visibility_helper;
+use tool_opencast\local\ltimodulemanager;
 use tool_opencast\empty_configuration_exception;
 
+
+require_once(__DIR__ . '/admin_setting_configeditabletable.php');
 require_once(__DIR__ . '/../setting_default_manager.php');
 require_once(__DIR__ . '/../admin_setting_hiddenhelpbtn.php');
 require_once(__DIR__ . '/../setting_helper.php');
@@ -252,7 +254,7 @@ class admin_settings_builder {
 
         $instancessettings->add($instancesconfig);
 
-        $instancessettings->add(new admin_setting_configeditabletable(
+        $instancessettings->add(new admin_setting_configeditabletable_addinstance(
                 'tool_opencast/instancestable',
                 'instancestable')
         );
@@ -653,7 +655,7 @@ class admin_settings_builder {
 
             $additionalsettings->add($transcriptionflavors);
             $additionalsettings->add(
-                new admin_setting_configeditabletable_with_buttontext(
+                new admin_setting_configeditabletable(
                     'tool_opencast/transcriptionflavorsoptions_' . $instance->id,
                     'transcriptionflavorsoptions_' . $instance->id,
                     get_string('addtranscriptionflavor', 'tool_opencast')));

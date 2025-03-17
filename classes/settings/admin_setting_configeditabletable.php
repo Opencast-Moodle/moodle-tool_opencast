@@ -23,7 +23,7 @@ namespace tool_opencast\settings;
  * @copyright  2021 Tamara Gunkel, University of Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class admin_setting_configeditabletable extends \admin_setting {
+class admin_setting_configeditabletable_addinstance extends \admin_setting {
     /** @var string Id of the div tag */
     private $divid;
 
@@ -88,7 +88,7 @@ class admin_setting_configeditabletable extends \admin_setting {
  * @copyright  2021 Tamara Gunkel, University of Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class admin_setting_configeditabletable_with_buttontext extends \admin_setting {
+class admin_setting_configeditabletable extends \admin_setting {
 
     /** @var string Id of the div tag */
     private $divid;
