@@ -44,7 +44,6 @@ class setting_default_manager {
      * @param int $ocinstanceid ocinstance id
      */
     public static function init_regirstered_defaults($ocinstanceid = 1) {
-        file_put_contents('/tmp/log', 'Test', FILE_APPEND);
         $classmethods = get_class_methods('\tool_opencast\settings\setting_default_manager');
         foreach ($classmethods as $methodname) {
             if (strpos($methodname, 'set_default') !== false) {

@@ -776,19 +776,14 @@ class admin_settings_builder {
 
 
         $opencasterror = false;
-        error_log('Test');
 
-        // error_log(print_r(get_declared_classes(), true));
 
         // Initialize the default settings for each instance.
         setting_default_manager::init_regirstered_defaults($instanceid);
-        error_log('Test2');
         // Setup js.
         $rolesdefault = setting_default_manager::get_default_roles();
-        error_log('roles: ' . print_r($rolesdefault, true));
         $metadatadefault = setting_default_manager::get_default_metadata();
         $metadataseriesdefault = setting_default_manager::get_default_metadataseries();
-        error_log('Test3');
 
         $generalsettings->add(new admin_setting_hiddenhelpbtn('tool_opencast/hiddenhelpname_' . $instanceid,
             'helpbtnname_' . $instanceid, 'descriptionmdfn', 'tool_opencast'));
@@ -807,8 +802,6 @@ class admin_settings_builder {
             get_string('aclrolesname', 'tool_opencast'),
             get_string('aclrolesnamedesc', 'tool_opencast'),
             $rolesdefault);
-        error_log('rolesetting: ' . print_r($rolessetting, true));
-        error_log('rolesetting id: ' . print_r($rolessetting->get_id(), true));
 
 
         $dcmitermsnotice = get_string('dcmitermsnotice', 'tool_opencast');
@@ -1016,7 +1009,6 @@ class admin_settings_builder {
             get_string('addcatalog', 'tool_opencast')));
 
         // Don't spam other setting pages with error messages just because the tree was built.
-        error_log('PAGETYPE: ' . print_r($PAGE->pagetype, true));
         if ($opencasterror && ($PAGE->pagetype == 'admin-setting-tool_opencast' || $PAGE->pagetype == 'admin-setting-tool_opencast_generalsettings_' . $instanceid)) {
             notification::error($opencasterror);
         }
@@ -1331,7 +1323,6 @@ class admin_settings_builder {
                 'tool_opencast/importvideosmanualenabled_' . $instance->id, 'notchecked');
         }
 
-        error_log('PAGETYPE: ' . print_r($PAGE->pagetype, true));
         // Don't spam other setting pages with error messages just because the tree was built.
         if ($opencasterror && ($PAGE->pagetype == 'admin-setting-tool_opencast' || $PAGE->pagetype == 'admin-setting-tool_opencast_importvideossettings_' . $instanceid)) {
             notification::error($opencasterror);
