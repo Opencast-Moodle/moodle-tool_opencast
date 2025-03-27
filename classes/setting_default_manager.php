@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- namespace tool_opencast\settings;
+ namespace tool_opencast;
 
 
 /**
@@ -44,7 +44,7 @@ class setting_default_manager {
      * @param int $ocinstanceid ocinstance id
      */
     public static function init_regirstered_defaults($ocinstanceid = 1) {
-        $classmethods = get_class_methods('\tool_opencast\settings\setting_default_manager');
+        $classmethods = get_class_methods('\tool_opencast\setting_default_manager');
         foreach ($classmethods as $methodname) {
             if (strpos($methodname, 'set_default') !== false) {
                 self::$methodname($ocinstanceid);

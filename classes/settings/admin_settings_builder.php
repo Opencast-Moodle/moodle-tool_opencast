@@ -16,16 +16,17 @@
 
 namespace tool_opencast\settings;
 
+use core\notification;
 use tool_opencast\local\settings_api;
 use tool_opencast\local\maintenance_class;
 use tool_opencast\exception\opencast_api_response_exception;
 use tool_opencast\local\visibility_helper;
 use tool_opencast\local\ltimodulemanager;
 use tool_opencast\empty_configuration_exception;
+use tool_opencast\setting_default_manager;
 
 
 require_once(__DIR__ . '/admin_setting_configeditabletable.php');
-require_once(__DIR__ . '/../setting_default_manager.php');
 require_once(__DIR__ . '/../admin_setting_hiddenhelpbtn.php');
 require_once(__DIR__ . '/../setting_helper.php');
 require_once(__DIR__ . '/../admin_setting_configtextvalidate.php');
@@ -129,8 +130,7 @@ class admin_settings_builder {
             $instanceid = $instance->id;
 
             if (count($instances) <= 1) {
-                $settings = self::create_admin_settingpage('tool_opencast_configuration',
-                    'configuration');
+                $settings = self::create_admin_settingpage('tool_opencast_configuration', 'configuration');
             } else {
                 $settings = self::create_admin_settingpage('tool_opencast_configuration_' . $instanceid, 'configuration_instance', $instance->name);
             }
