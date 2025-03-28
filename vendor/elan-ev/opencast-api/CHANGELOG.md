@@ -50,3 +50,20 @@
 
 # 1.8.0
 - Fix for unauthorized access when extracting the Opencast API Version.
+
+# 1.9.0
+- Allow passing additional options to Guzzle [#30]
+- Added `OcUtils` class, a utility class providing additional functionality to simplify the integration and consumption of this library.
+  - Initially includes the `findValueByKey` function, which is meant to retrieve a specific value from the response body. [#33]
+- WorkflowApi endpoint methods got updated
+  - `withconfigurationpaneljson` parameter has been added to `/api/workflow-definitions` endpoints. [#34]
+  - `@deprecated` removal of OcWorkflowsApi::geAll() method!
+- Repair and enhance Event API `addTrack`under `/api/events/{eventId}/track` [#36]
+  - Tags are now added, therefore it can be replaced by ingest method.
+  - overwriteExisting flag has been fixed and works as expected now!
+- Introduce `includeInternalPublication` in Events API `getAll`, `get` and `getPublications` methods [#37]
+- Deprecated methods cleanup! [#39]
+  - `OcWorkflow->getStatistics()`
+  - `OcWorkflow->getInstances()`
+  - `OcSeries->getTitles()`
+  - `OcSeries->getAll()`

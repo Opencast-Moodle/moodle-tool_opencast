@@ -50,16 +50,6 @@ class OcWorkflowTest extends TestCase
         $responseGetStateMappings = $this->ocWorkflow->getStateMappings();
         $this->assertSame(200, $responseGetStateMappings['code'], 'Failure to get State Mappings');
 
-        // Get statistics @depricated
-        // $responseGetStatistics = $this->ocWorkflow->getStatistics();
-        // $this->assertSame(200, $responseGetStatistics['code'], 'Failure to get statistics');
-
-        // Get All Instances  @depricated
-        // $responseGetInstances = $this->ocWorkflow->getInstances();
-        // $this->assertSame(200, $responseGetInstances['code'], 'Failure to get workflow Instances');
-        // $instances = $responseGetInstances['body']->workflows->workflow;
-        // $this->assertNotEmpty($instances);
-
         // Get Single Instance
         $dummyInstanceId = 1234567890;
         $responseGetInstance = $this->ocWorkflow->getInstance($dummyInstanceId);
