@@ -50,7 +50,7 @@ use tool_opencast\opencast_state_exception;
 
 require_once($CFG->dirroot . '/lib/filelib.php');
 require_once(__DIR__ . '/../../renderer.php');
-require_once($CFG->dirroot . '/blocks/opencast/tests/helper/apibridge_testable.php');
+require_once($CFG->dirroot . '/admin/tool/opencast/tests/helper/apibridge_testable.php');
 
 /**
  * API-bridge for opencast. Contain all the function, which uses the external API.
