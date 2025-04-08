@@ -48,25 +48,45 @@ class backup_tool_opencast_plugin extends backup_tool_plugin {
         // SITE information.
         $site = new backup_nested_element('site', [], ['ocinstanceid', 'apiurl']);
         $plugin->add_child($site);
+
+        // Define root of backup structure
+        $opencast = new backup_nested_element('opencast');
+        $plugin->add_child($opencast);
+
         $sitedata = [];
+        $eventlist = [];
+        $serieslist = [];
+        $importdata = (object)['sourcecourseid' => $courseid];
+
+        // EVENTS information.
+        $events = new backup_nested_element('events');
+        $event = new backup_nested_element('event', [], ['eventid', 'instanceid']);
+        $events->add_child($event);
+        $opencast->add_child($events);
+
+        // SERIES import information.
+        $import = new backup_nested_element('import', [], ['sourcecourseid']);
+        $serieselement = new backup_nested_element('series', [], ['seriesid', 'instanceid']);
+        $import->add_child($serieselement);
+        $opencast->add_child($import);
+
 
         // Handle each Opencast instance
         foreach($ocinstances as $ocinstance) {
-            $ocinstanceid = $ocinstance->id;
 
             // // Define root of backup structure
             // $opencast = new backup_nested_element('opencast_' . $ocinstanceid, [], ['ocinstanceid']);
             // $plugin->add_child($opencast);
 
-            $apibridge = apibridge::get_instance($ocinstanceid);
             // $series_array = $apibridge->get_course_series($courseid);
             // foreach($series_array as $series) {
             //     $seriesid = $series->series;
             //     echo $seriesid;
             // }
 
-            $opencast = new backup_nested_element('opencast_' . $ocinstanceid);
-            $plugin->add_child($opencast);
+            $ocinstanceid = $ocinstance->id;
+
+            $apibridge = apibridge::get_instance($ocinstanceid);
 
             $apiurl = settings_api::get_apiurl($ocinstanceid);
             $sitedata[] = (object)[
@@ -74,51 +94,36 @@ class backup_tool_opencast_plugin extends backup_tool_plugin {
                 'apiurl' => $apiurl,
             ];
 
-            // EVENTS information.
-            $events = new backup_nested_element('events');
-            $event = new backup_nested_element('event', [], ['eventid']);
-            $events->add_child($event);
-            $opencast->add_child($events); //Hier knallts
-
             $coursevideos = $apibridge->get_course_videos_for_backup($courseid);
 
-            $list = [];
             // Add course videos.
             foreach ($coursevideos as $video) {
-                $list[] = (object)['eventid' => $video->identifier];
+                $eventlist[] = (object)[
+                    'eventid' => $video->identifier,
+                    'instanceid' => $ocinstanceid,
+                ];
             }
-
-            // Define sources.
-            $event->set_source_array($list);
-
-
-            // SERIES import information.
-            $import = new backup_nested_element('import', [], ['sourcecourseid']);
-            $serieselement = new backup_nested_element('series', [], ['seriesid']);
-            $import->add_child($serieselement);
-            $opencast->add_child($import);
 
             // Get the stored seriesid for this course.
             $courseseries = $apibridge->get_course_series($courseid);
 
-            $list = [];
             foreach ($courseseries as $series) {
-                $list[] = (object)['seriesid' => $series->series];
+                $serieslist[] = (object)[
+                    'seriesid' => $series->series,
+                    'instanceid' => $ocinstanceid
+                ];
             }
-            $serieselement->set_source_array($list);
-
-            $importdata = (object)[
-                'sourcecourseid' => $courseid,
-            ];
-
-            $import->set_source_array([$importdata]);
-
-            echo 'Series: ' . print_r($importdata, true) . PHP_EOL;
-            echo 'Events: ' . print_r($list, true) . PHP_EOL;
-
         }
 
-        $site->set_source_array([$sitedata]);
+        echo 'Series: ' . print_r($serieslist, true) . PHP_EOL;
+        echo 'Events: ' . print_r($eventlist, true) . PHP_EOL;
+        echo 'Events: ' . print_r($sitedata, true) . PHP_EOL;
+
+        // Define sources.
+        $event->set_source_array($eventlist);
+        $serieselement->set_source_array($serieslist);
+        $import->set_source_array([$importdata]);
+        $site->set_source_array($sitedata);
 
         // $this->step = new backup_opencast_block_structure_step('opencast_structure', 'opencast_structure');
         // $this->step->set_path('/opencast_structure');

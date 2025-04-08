@@ -24,6 +24,9 @@
 
 use tool_opencast\local\settings_api;
 use tool_opencast\local\apibridge;
+use tool_opencast\local\event;
+use tool_opencast\local\notifications;
+use tool_opencast\local\importvideosmanager;
 
 
 defined('MOODLE_INTERNAL') || die();
@@ -36,6 +39,16 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
     protected $series = [];
     protected $importmode;
+    protected $missingimportmappingeventids = [];
+    protected $missingimportmappingseriesids = [];
+    protected $backupeventids = [];
+    protected $restoreuniqueid;
+    protected $sourcecourseid;
+    protected $aclchanged = [];
+    protected $instanceid_skip = [];
+
+
+    //TODO checken was series hier macht
 
     protected function define_structure() {
 
@@ -46,15 +59,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
         echo "Hello, restore structure!";
 
         global $USER;
-        // $ocinstanceid = intval(ltrim($this->get_name(), "opencast_structure_"));
-        // $this->ocinstanceid = $ocinstanceid;
-
-        // // Check, target series.
-        // $courseid = $this->get_courseid();
-
-        // // Generate restore unique identifier,
-        // // to keep track of restore session in later stages e.g. module mapping and repair.
-        // $this->restoreuniqueid = uniqid('oc_restore_' . $ocinstanceid . '_' . $courseid);
 
         $paths = [];
 
@@ -66,9 +70,73 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
         $context = \core\context::instance_by_id($contextid);
         $courseid = $context->instanceid;
 
+        // Generate restore unique identifier,
+        // to keep track of restore session in later stages e.g. module mapping and repair.
+        $this->restoreuniqueid = uniqid('oc_restore_' . $ocinstanceid . '_' . $courseid);
+
+
+        $paths[] = new restore_path_element('site', $this->connectionpoint->get_path() . '/site');
+
+
+
+        // Processing events, grouped by main opencast, in order to get series as well.
+        $paths[] = new restore_path_element('opencast', $this->connectionpoint->get_path()  . '/opencast', true);
+        $paths[] = new restore_path_element('events', $this->connectionpoint->get_path() . '/opencast/events');
+        $paths[] = new restore_path_element('event', $this->connectionpoint->get_path() . '/opencast/events/event');
+
+
+        // Adding import property here, to access series.
+        $paths[] = new restore_path_element('import', $this->connectionpoint->get_path() . '/opencast/import');
+        $paths[] = new restore_path_element('series', $this->connectionpoint->get_path() . '/opencast/import/series');
+
+        return $paths;
+    }
+
+    public function process_import($data) {
+
+        echo "Hello, restore import!";
+        echo('Data: ' . print_r($data, true) . PHP_EOL);
+
+    }
+
+    public function process_opencast_import($data) {
+
+        echo "Hello, restore opencast import!";
+        echo('Data: ' . print_r($data, true) . PHP_EOL);
+
+    }
+
+    public function process_opencast($data) {
+
+        global $USER;
+
+        $data = (object) $data;
+
+        echo "Hello, restore opencat!";
+        echo('Data: ' . print_r($data, true) . PHP_EOL);
+
+
+        $paths = [];
+
+        // Get instace ids
+        $ocinstances = settings_api::get_ocinstances();
+
+        // Get course id
+        $contextid = $this->task->get_contextid();
+        $context = \core\context::instance_by_id($contextid);
+        $courseid = $context->instanceid;
+
+
         // Handle each Opencast instance
         foreach($ocinstances as $ocinstance) {
             $ocinstanceid = $ocinstance->id;
+            echo "Hello, restore instanceid: " . $ocinstanceid . PHP_EOL;
+
+            // Check against skip list
+            if(in_array($ocinstanceid, $this->instanceid_skip)) {
+                // Skip instance id, to avoid restoring into wrong instance.
+                continue;
+            }
 
             // Get apibridge instance.
             $apibridge = apibridge::get_instance($ocinstanceid);
@@ -77,13 +145,42 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
             $importmode = get_config('tool_opencast', 'importmode_' . $ocinstanceid);
             $this->importmode = $importmode;
 
+
             // If ACL Change is the mode.
             if ($importmode == 'acl') {
-                // Processing series, grouped by import.
-                $paths[] = new restore_path_element('import', $this->connectionpoint->get_path() . '/opencast/import', true);
-                $paths[] = new restore_path_element('series', $this->connectionpoint->get_path() . '/opencast/import/series');
+
+                // Collect sourcecourseid for further processing.
+                $this->sourcecourseid = $data->import->sourcecourseid;
+
+                // First level checker.
+                // Exit when the course by any chance wanted to restore itself.
+                if (!empty($this->sourcecourseid) && $courseid == $this->sourcecourseid) {
+                    return;
+                }
+
+                // Get apibridge instance, to ensure series validity and edit series mapping.
+                $apibridge = apibridge::get_instance($ocinstanceid);
+
+                if (isset($data->import->series)) {
+                    foreach ($data->import->series as $series) {
+                        $seriesid = $series['seriesid'];
+
+                        // Second level checker.
+                        // Exit when there is no original series, or the series is invalid.
+                        if (empty($seriesid) || !$apibridge->ensure_series_is_valid($seriesid)) {
+                            continue;
+                        }
+
+                        // Collect series id for notifications.
+                        $this->series[] = $seriesid;
+
+                        // Assign Seriesid to new course and change ACL.
+                        $this->aclchanged[] = $apibridge->import_series_to_course_with_acl_change($courseid, $seriesid, $USER->id);
+                    }
+                }
+
+
             } else if ($importmode == 'duplication') {
-                // In case Duplicating Events is the mode.
 
                 // Get series id.
                 $seriesid = $apibridge->get_stored_seriesid($courseid, true, $USER->id);
@@ -95,45 +192,77 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                 }
                 $this->series[] = $seriesid;
 
-                // Processing events, grouped by main opencast, in order to get series as well.
-                $paths[] = new restore_path_element('opencast', $this->connectionpoint->get_path()  . '/opencast', true);
-                $paths[] = new restore_path_element('events', $this->connectionpoint->get_path() . '/opencast/events');
-                $paths[] = new restore_path_element('event', $this->connectionpoint->get_path() . '/opencast/events/event');
 
-                $paths[] = new restore_path_element('site', $this->connectionpoint->get_path()  . '/site', true);
+                // Check if all required information is available.
+                if (empty($this->series) || !isset($data->import) || !isset($data->events) ||
+                    empty($data->import[0]['series']) || empty($data->events['event'])) {
+                    // Nothing to do here, as the data is not enough.
+                    return;
+                }
 
-                // Adding import property here, to access series.
-                $paths[] = new restore_path_element('import', $this->connectionpoint->get_path() . '/opencast/import');
-                $paths[] = new restore_path_element('series', $this->connectionpoint->get_path() . '/opencast/import/series');
+
+                // Proceed with the backedup series, to save the mapping and repair the modules.
+                foreach ($data->import[0]['series'] as $series) {
+                    // Skip when the series is not from the current instance.
+                    if($series['instanceid'] != $ocinstanceid) {
+                        continue;
+                    }
+                    $seriesid = $series['seriesid'] ?? null;
+                    // Skip when there is no original series, or the series is invalid.
+                    if (empty($seriesid) || !$apibridge->ensure_series_is_valid($seriesid)) {
+                        continue;
+                    }
+                    // Record series mapping for module fix.
+                    $issaved = importvideosmanager::save_series_import_mapping_record(
+                        $ocinstanceid,
+                        $courseid,
+                        $seriesid,
+                        $this->restoreuniqueid
+                    );
+                    if (!$issaved) {
+                        $this->missingimportmappingseriesids[] = $seriesid;
+                    }
+                }
+
+                foreach ($data->events['event'] as $event) {
+
+                    // Skip when the event is not from the current instance.
+                    if($event['instanceid'] != $ocinstanceid) {
+                        continue;
+                    }
+                    $eventid = $event['eventid'] ?? null;
+                    $this->backupeventids[] = $eventid;
+
+                    // Only duplicate, when the event exists in opencast.
+                    if (!$apibridge->get_already_existing_event([$eventid])) {
+                        $this->missingeventids[] = $eventid;
+                    } else {
+                        // Check for and record the module mappings.
+                        $issaved = importvideosmanager::save_episode_import_mapping_record(
+                            $ocinstanceid,
+                            $courseid,
+                            $eventid,
+                            $this->restoreuniqueid
+                        );
+                        if (!$issaved) {
+                            $this->missingimportmappingeventids[] = $eventid;
+                        }
+
+                        // Add the duplication task.
+                        event::create_duplication_task(
+                            $ocinstanceid,
+                            $courseid,
+                            $this->series[0],
+                            $eventid,
+                            false,
+                            null,
+                            $this->restoreuniqueid
+                        );
+                    }
+                }
             }
 
         }
-        return $paths;
-    }
-
-    public function process_import($data) {
-
-        echo "Hello, restore import!";
-        echo('Data: ' . print_r($data, true) . PHP_EOL);
-
-
-    }
-
-    public function process_opencast($data) {
-
-        $data = (object) $data;
-
-        // Check if all required information is available.
-        if (empty($this->series) || !isset($data->import) || !isset($data->events) ||
-            empty($data->import[0]['series']) || empty($data->events['event'])) {
-            // Nothing to do here, as the data is not enough.
-            echo "No data to process!" . PHP_EOL;
-            echo('Data: ' . print_r($data, true) . PHP_EOL);
-            return;
-        }
-
-        echo "Hello, restore opencat!";
-        echo('Data: ' . print_r($data, true) . PHP_EOL);
 
     }
 
@@ -141,6 +270,24 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
         echo "Hello, restore site!";
         echo('Data: ' . print_r($data, true) . PHP_EOL);
+        echo('Ocinstanceid: ' . print_r($data['ocinstanceid'], true) . PHP_EOL);
+        echo('Apiurl: ' . print_r($data['apiurl'], true) . PHP_EOL);
+
+
+        // Verify if ocinstance exists. Throw exception if not.
+        $ocinstanceid = $data['ocinstanceid'];
+        $apiurl = settings_api::get_apiurl($ocinstanceid);
+        if(!$apiurl) {
+            throw new dml_exception('dmlreadexception', null,
+                "No Opencast instance with id: " . $ocinstanceid);
+        }
+        if($apiurl != $data['apiurl']) {
+
+            // Skip instance id, to avoid restoring into wrong instance.
+            $this->instanceid_skip[] = $ocinstanceid;
+            throw new dml_exception('dmlreadexception', null,
+                "Opencast instance with id: " . $ocinstanceid . " has a different apiurl: " . $apiurl);
+        }
 
     }
 
