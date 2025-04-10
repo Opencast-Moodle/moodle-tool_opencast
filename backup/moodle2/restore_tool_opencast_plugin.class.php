@@ -72,7 +72,7 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
         // Generate restore unique identifier,
         // to keep track of restore session in later stages e.g. module mapping and repair.
-        $this->restoreuniqueid = uniqid('oc_restore_' . $ocinstanceid . '_' . $courseid);
+        $this->restoreuniqueid = uniqid('oc_restore_' . $courseid);
 
 
         $paths[] = new restore_path_element('site', $this->connectionpoint->get_path() . '/site');
@@ -149,8 +149,10 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
             // If ACL Change is the mode.
             if ($importmode == 'acl') {
 
+                echo("Source course id: " . $data->import[0]["sourcecourseid"] . PHP_EOL);
+
                 // Collect sourcecourseid for further processing.
-                $this->sourcecourseid = $data->import->sourcecourseid;
+                $this->sourcecourseid = $data->import[0]["sourcecourseid"];
 
                 // First level checker.
                 // Exit when the course by any chance wanted to restore itself.
@@ -161,8 +163,8 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                 // Get apibridge instance, to ensure series validity and edit series mapping.
                 $apibridge = apibridge::get_instance($ocinstanceid);
 
-                if (isset($data->import->series)) {
-                    foreach ($data->import->series as $series) {
+                if (isset($data->import[0]['series'][0])) {
+                    foreach ($data->import[0]['series'] as $series) {
                         $seriesid = $series['seriesid'];
 
                         // Second level checker.
@@ -212,6 +214,9 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                     if (empty($seriesid) || !$apibridge->ensure_series_is_valid($seriesid)) {
                         continue;
                     }
+
+                    echo('Saving series importvideosmanager for instanceid: ' . $ocinstanceid . ' and seriesid: ' . $seriesid . ' and courseid: ' . $courseid . PHP_EOL);
+
                     // Record series mapping for module fix.
                     $issaved = importvideosmanager::save_series_import_mapping_record(
                         $ocinstanceid,
@@ -247,6 +252,8 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                         if (!$issaved) {
                             $this->missingimportmappingeventids[] = $eventid;
                         }
+
+                        echo('Creating duplication task for eventid: ' . $eventid . ' and seriesid: ' . $this->series[0] . ' and courseid: ' . $courseid . PHP_EOL);
 
                         // Add the duplication task.
                         event::create_duplication_task(
