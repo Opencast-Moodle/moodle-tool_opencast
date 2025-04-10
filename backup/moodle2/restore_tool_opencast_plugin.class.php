@@ -281,19 +281,16 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
         echo('Apiurl: ' . print_r($data['apiurl'], true) . PHP_EOL);
 
 
-        // Verify if ocinstance exists. Throw exception if not.
+        // Verify if ocinstance exists. Skip if not.
         $ocinstanceid = $data['ocinstanceid'];
         $apiurl = settings_api::get_apiurl($ocinstanceid);
         if(!$apiurl) {
-            throw new dml_exception('dmlreadexception', null,
-                "No Opencast instance with id: " . $ocinstanceid);
-        }
-        if($apiurl != $data['apiurl']) {
-
+            echo('No apiurl found for instanceid: ' . $ocinstanceid . ' Skipping this instance while restoring.' . PHP_EOL);
+            $this->instanceid_skip[] = $ocinstanceid;
+        }else if($apiurl != $data['apiurl']) {
             // Skip instance id, to avoid restoring into wrong instance.
             $this->instanceid_skip[] = $ocinstanceid;
-            throw new dml_exception('dmlreadexception', null,
-                "Opencast instance with id: " . $ocinstanceid . " has a different apiurl: " . $apiurl);
+            echo('Wrong apiurl found for instanceid: ' . $ocinstanceid . ' Skipping this instance while restoring.' . PHP_EOL);
         }
 
     }
