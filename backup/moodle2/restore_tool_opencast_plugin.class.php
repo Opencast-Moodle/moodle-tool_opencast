@@ -174,7 +174,7 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                         }
 
                         // Collect series id for notifications.
-                        $this->series[] = $seriesid;
+                        $this->series[$ocinstanceid] = $seriesid;
 
                         // Assign Seriesid to new course and change ACL.
                         $this->aclchanged[] = $apibridge->import_series_to_course_with_acl_change($courseid, $seriesid, $USER->id);
@@ -192,7 +192,7 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                     // Make sure to create using another method.
                     $seriesid = $apibridge->create_course_series($courseid, null, $USER->id);
                 }
-                $this->series[] = $seriesid;
+                $this->series[$ocinstanceid] = $seriesid;
 
 
                 // Check if all required information is available.
@@ -253,13 +253,13 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                             $this->missingimportmappingeventids[] = $eventid;
                         }
 
-                        echo('Creating duplication task for eventid: ' . $eventid . ' and seriesid: ' . $this->series[0] . ' and courseid: ' . $courseid . PHP_EOL);
+                        echo('Creating duplication task for eventid: ' . $eventid . ' and seriesid: ' . $this->series[$ocinstanceid] . ' and courseid: ' . $courseid . PHP_EOL);
 
                         // Add the duplication task.
                         event::create_duplication_task(
                             $ocinstanceid,
                             $courseid,
-                            $this->series[0],
+                            $this->series[$ocinstanceid],
                             $eventid,
                             false,
                             null,
@@ -268,13 +268,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                     }
                 }
 
-                // After all, we proceed to fix the series modules because they should not wait for the duplicate workflow to finish!
-                importvideosmanager::fix_imported_series_modules_in_new_course(
-                    $ocinstanceid,
-                    $courseid,
-                    $this->series[0],
-                    $this->restoreuniqueid
-                );
             }
 
         }
@@ -306,7 +299,72 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
     public function after_restore() {
 
         echo "Hello, after restore!";
-        echo('Data: ' . print_r($data, true) . PHP_EOL);
+        file_put_contents(
+            '/var/www/moodledata/temp/restore_opencast.log',
+            'Hello, after restore!' . PHP_EOL,
+            FILE_APPEND
+        );
+        // echo('Data: ' . print_r($data, true) . PHP_EOL);
+
+    }
+
+    public function after_restore_course() {
+        global $DB;
+
+        // // Check if the course is restored.
+        // $courseid = $this->task->get_courseid();
+        // $course = $DB->get_record('course', ['id' => $courseid], 'id, shortname, fullname');
+        // if ($course) {
+        //     notifications::add_notification(
+        //         'Course restored successfully: ' . $course->fullname,
+        //         notifications::NOTIFICATION_SUCCESS
+        //     );
+        // } else {
+        //     notifications::add_notification(
+        //         'Course restoration failed.',
+        //         notifications::NOTIFICATION_ERROR
+        //     );
+        // }
+
+        echo "Hello, after restore course!";
+        file_put_contents(
+            '/var/www/moodledata/temp/restore_opencast.log',
+            'Hello, after restore course!' . PHP_EOL,
+            FILE_APPEND
+        );
+
+        // Get instace ids
+        $ocinstances = settings_api::get_ocinstances();
+
+        // Get course id
+        $contextid = $this->task->get_contextid();
+        $context = \core\context::instance_by_id($contextid);
+        $courseid = $context->instanceid;
+
+        // Handle each Opencast instance
+        foreach($ocinstances as $ocinstance) {
+
+            $ocinstanceid = $ocinstance->id;
+
+            // Check against skip list
+            if(in_array($ocinstanceid, $this->instanceid_skip)) {
+                // Skip instance id, to avoid restoring into wrong instance.
+                continue;
+            }
+
+            $importmode = get_config('tool_opencast', 'importmode_' . $ocinstanceid);
+
+            if ($importmode == 'duplication') {
+
+                    // After all, we proceed to fix the series modules because they should not wait for the duplicate workflow to finish!
+                    importvideosmanager::fix_imported_series_modules_in_new_course(
+                        $ocinstanceid,
+                        $courseid,
+                        $this->series[$ocinstanceid],
+                        $this->restoreuniqueid
+                    );
+                }
+        }
 
     }
 
