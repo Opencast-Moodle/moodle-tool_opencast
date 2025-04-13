@@ -95,6 +95,10 @@ class backup_tool_opencast_plugin extends backup_tool_plugin {
             ];
 
             $coursevideos = $apibridge->get_course_videos_for_backup($courseid);
+            $backup_usedvideos = true;
+            if($backup_usedvideos) {
+                $coursevideos = $apibridge->get_used_course_videos_for_backup($courseid);
+            }
 
             // Add course videos.
             foreach ($coursevideos as $video) {

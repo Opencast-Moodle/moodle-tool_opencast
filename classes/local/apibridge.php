@@ -2015,6 +2015,92 @@ class apibridge {
     }
 
     /**
+     * Check if the LTI tool exists in the course.
+     *
+     * @param string $referenceid The id of the epsiode or series.
+     * @param int $courseid The course id.
+     * @param int $toolid The tool id.
+     */
+    public function has_lti_tool_in_course($referenceid, $courseid, $toolid) {
+        global $DB;
+        // Get the LTI episode module(s) in the course which point to the reference id.
+        $sql = 'SELECT cm.id AS cmid FROM {lti} l ' .
+            'JOIN {course_modules} cm ' .
+            'ON l.id = cm.instance ' .
+            'WHERE l.typeid = :toolid ' .
+            'AND cm.course = :course ' .
+            'AND ' . $DB->sql_like('l.instructorcustomparameters', ':referenceid');
+        $params = ['toolid' => $toolid,
+            'course' => $courseid,
+            'referenceid' => '%' . $referenceid . '%', ];
+        $episodemodules = $DB->get_fieldset_sql($sql, $params);
+        // If there are any existing episode modules in this course.
+        if (count($episodemodules) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get course videos for backup, that are used in the course via lti or acitivity.
+     *
+     * @param int $courseid
+     * @param int $ocinstanceid
+     *
+     * @return array list of videos for backup.
+     */
+    public function get_used_course_videos_for_backup($courseid){
+
+        $ocinstanceid = $this->ocinstanceid;
+
+        if (!$result = $this->get_course_videos($courseid)) {
+            return [];
+        }
+        if ($result->error != 0) {
+            return [];
+        }
+        $videosforbackup = [];
+
+        // Get the id of the preconfigured tool.
+        $episodetoolid = ltimodulemanager::get_preconfigured_tool_for_episode($ocinstanceid);
+
+        // Check for every episode if it is used in the course.
+        foreach ($result->videos as $video) {
+            // Check if the video is used in the course via LTI.
+            $episodetool = $this->has_lti_tool_in_course($video->identifier, $courseid, $episodetoolid);
+            // Check if the video is used in the course via activity.
+            $episodeactivity = activitymodulemanager::get_module_for_episode($courseid, $eventid, $ocinstanceid);
+            // Add the video to the list of videos for backup if it is used in the course.
+            if($episodetool || ($episodeactivity !== false)){
+                $videosforbackup[$video->identifier] = $video;
+            }
+        }
+        // Filter the videos by LTI SERIES tools in the course.
+        $seriestoolid = ltimodulemanager::get_preconfigured_tool_for_series($ocinstanceid);
+        // Get the stored seriesids for this course.
+        $courseseries = $this->get_course_series($courseid);
+
+        foreach ($courseseries as $series) {
+            // Check if the series is used in the course via LTI.
+            $seriestool = $this->has_lti_tool_in_course($series->series, $courseid, $seriestoolid);
+            // Check if the series is used in the course via activity.
+            $seriesactivity = activitymodulemanager::get_module_for_series($ocinstanceid, $courseid, $series->series);
+            // Add the all the videos of the series to the list of videos for backup.
+            if($seriestool || ($seriesactivity !== false)){
+                // Get the series videos.
+                $seriesvideos = $this->get_series_videos($series->series);
+                foreach ($seriesvideos->videos as $video) {
+                    if($video->processing_state == 'SUCCEEDED'){
+                        $videosforbackup[$video->identifier] = $video;
+                    }
+                }
+            }
+        }
+        return $videosforbackup;
+    }
+
+
+    /**
      * Get course videos for backup from all course series. This might retrieve only the videos, that
      * have a processing state of SUCCEDED.
      *

@@ -267,6 +267,14 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                         );
                     }
                 }
+
+                // After all, we proceed to fix the series modules because they should not wait for the duplicate workflow to finish!
+                importvideosmanager::fix_imported_series_modules_in_new_course(
+                    $ocinstanceid,
+                    $courseid,
+                    $this->series[0],
+                    $this->restoreuniqueid
+                );
             }
 
         }
