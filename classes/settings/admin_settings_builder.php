@@ -1253,6 +1253,16 @@ class admin_settings_builder {
                 'tool_opencast/importmode_' . $instance->id, 'eq', 'acl');
         }
 
+        $importvideossettings->add(
+            new \admin_setting_configcheckbox('tool_opencast/importreducedduplication_' . $instance->id,
+                get_string('importreducedduplication', 'tool_opencast'),
+                get_string('importreducedduplication_desc', 'tool_opencast'), 0));
+
+        if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+            $importvideossettings->hide_if('tool_opencast/importreducedduplication_' . $instance->id,
+                'tool_opencast/importvideosenabled_' . $instance->id, 'notchecked');
+        }
+
         // Import videos: Enable import videos within Moodle core course import wizard feature.
         // This setting applies to both of import modes, therefore hide_if is only limited to importvideosenabled.
         $importvideossettings->add(

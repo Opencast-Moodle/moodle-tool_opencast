@@ -94,10 +94,13 @@ class backup_tool_opencast_plugin extends backup_tool_plugin {
                 'apiurl' => $apiurl,
             ];
 
-            $coursevideos = $apibridge->get_course_videos_for_backup($courseid);
-            $backup_usedvideos = true;
-            if($backup_usedvideos) {
+            $coursevideos = [];
+            // If config is set we only want to backup the videos that are used in the course.
+            $only_backup_usedvideos = get_config('tool_opencast', 'importreducedduplication_' . $ocinstanceid);
+            if($only_backup_usedvideos) {
                 $coursevideos = $apibridge->get_used_course_videos_for_backup($courseid);
+            } else {
+                $coursevideos = $apibridge->get_course_videos_for_backup($courseid);
             }
 
             // Add course videos.

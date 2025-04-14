@@ -2069,7 +2069,7 @@ class apibridge {
             // Check if the video is used in the course via LTI.
             $episodetool = $this->has_lti_tool_in_course($video->identifier, $courseid, $episodetoolid);
             // Check if the video is used in the course via activity.
-            $episodeactivity = activitymodulemanager::get_module_for_episode($courseid, $eventid, $ocinstanceid);
+            $episodeactivity = activitymodulemanager::get_module_for_episode($courseid, $video->identifier, $ocinstanceid);
             // Add the video to the list of videos for backup if it is used in the course.
             if($episodetool || ($episodeactivity !== false)){
                 $videosforbackup[$video->identifier] = $video;
