@@ -38,25 +38,16 @@
 }
 
 /* Styles for the overview page */
-#page-blocks-opencast-index h2 ~ .resettable {
+#page-admin-tool-opencast-index h2 ~ .resettable {
     display: none;
 }
 
-#page-blocks-opencast-index #region-main h2 {
+#page-admin-tool-opencast-index #region-main h2 {
     margin-top: 50px;
 }
 
-#page-blocks-opencast-index #region-main h2:first-of-type {
+#page-admin-tool-opencast-index #region-main h2:first-of-type {
     margin-top: inherit;
-}
-
-/* Styles for the admin settings page */
-#page-admin-blocks-opencast-adminsettings #roles_table .fitemtitle {
-    width: 0;
-}
-
-#page-admin-blocks-opencast-adminsettings #roles_table .felement {
-    margin-left: 0;
 }
 
 /* Styles for the add video page */
@@ -83,11 +74,6 @@
 
 #page-admin-tool-opencast-addvideo .form-filetypes-descriptions ul {
     margin-bottom: 0;
-}
-
-/* Hide empty label columns in tables on admin settings page. */
-#page-admin-blocks-opencast-adminsettings .generaltable .col-md-3 {
-    display: none;
 }
 
 .inline-action-menu .menubar,
