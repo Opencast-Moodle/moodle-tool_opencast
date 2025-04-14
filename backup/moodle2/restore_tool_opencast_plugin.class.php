@@ -51,8 +51,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
     protected function define_course_plugin_structure() {
 
-        echo "Hello, restore structure!";
-
         global $USER;
 
         $paths = [];
@@ -71,8 +69,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
 
         $paths[] = new restore_path_element('site', $this->connectionpoint->get_path() . '/site');
-
-
 
         // Processing events, grouped by main opencast, in order to get series as well.
         $paths[] = new restore_path_element('opencast', $this->connectionpoint->get_path()  . '/opencast', true);
@@ -93,10 +89,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
         $data = (object) $data;
 
-        echo "Hello, restore opencat!";
-        echo('Data: ' . print_r($data, true) . PHP_EOL);
-
-
         $paths = [];
 
         // Get instace ids
@@ -111,7 +103,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
         // Handle each Opencast instance
         foreach($ocinstances as $ocinstance) {
             $ocinstanceid = $ocinstance->id;
-            echo "Hello, restore instanceid: " . $ocinstanceid . PHP_EOL;
 
             // Check against skip list
             if(in_array($ocinstanceid, $this->instanceid_skip)) {
@@ -129,8 +120,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
             // If ACL Change is the mode.
             if ($importmode == 'acl') {
-
-                echo("Source course id: " . $data->import[0]["sourcecourseid"] . PHP_EOL);
 
                 // Collect sourcecourseid for further processing.
                 $this->sourcecourseid = $data->import[0]["sourcecourseid"];
@@ -196,8 +185,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                         continue;
                     }
 
-                    echo('Saving series importvideosmanager for instanceid: ' . $ocinstanceid . ' and seriesid: ' . $seriesid . ' and courseid: ' . $courseid . PHP_EOL);
-
                     // Record series mapping for module fix.
                     $issaved = importvideosmanager::save_series_import_mapping_record(
                         $ocinstanceid,
@@ -234,8 +221,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                             $this->missingimportmappingeventids[] = $eventid;
                         }
 
-                        echo('Creating duplication task for eventid: ' . $eventid . ' and seriesid: ' . $this->series[$ocinstanceid] . ' and courseid: ' . $courseid . PHP_EOL);
-
                         // Add the duplication task.
                         event::create_duplication_task(
                             $ocinstanceid,
@@ -257,12 +242,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
     public function process_site($data) {
 
-        echo "Hello, restore site!";
-        echo('Data: ' . print_r($data, true) . PHP_EOL);
-        echo('Ocinstanceid: ' . print_r($data['ocinstanceid'], true) . PHP_EOL);
-        echo('Apiurl: ' . print_r($data['apiurl'], true) . PHP_EOL);
-
-
         // Verify if ocinstance exists. Skip if not.
         $ocinstanceid = $data['ocinstanceid'];
         $apiurl = settings_api::get_apiurl($ocinstanceid);
@@ -279,28 +258,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
     public function after_restore_course() {
         global $DB;
-
-        // // Check if the course is restored.
-        // $courseid = $this->task->get_courseid();
-        // $course = $DB->get_record('course', ['id' => $courseid], 'id, shortname, fullname');
-        // if ($course) {
-        //     notifications::add_notification(
-        //         'Course restored successfully: ' . $course->fullname,
-        //         notifications::NOTIFICATION_SUCCESS
-        //     );
-        // } else {
-        //     notifications::add_notification(
-        //         'Course restoration failed.',
-        //         notifications::NOTIFICATION_ERROR
-        //     );
-        // }
-
-        echo "Hello, after restore course!";
-        file_put_contents(
-            '/var/www/moodledata/temp/restore_opencast.log',
-            'Hello, after restore course!' . PHP_EOL,
-            FILE_APPEND
-        );
 
         // Get instace ids
         $ocinstances = settings_api::get_ocinstances();

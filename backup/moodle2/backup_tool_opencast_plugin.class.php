@@ -34,7 +34,7 @@ require_once($CFG->dirroot . '/backup/moodle2/backup_tool_plugin.class.php');
 class backup_tool_opencast_plugin extends backup_tool_plugin {
 
     protected function define_course_plugin_structure() {
-        echo "Hello, backup!";
+
         $plugin = $this->get_plugin_element();
 
         // Get instace ids
@@ -74,16 +74,6 @@ class backup_tool_opencast_plugin extends backup_tool_plugin {
         // Handle each Opencast instance
         foreach($ocinstances as $ocinstance) {
 
-            // // Define root of backup structure
-            // $opencast = new backup_nested_element('opencast_' . $ocinstanceid, [], ['ocinstanceid']);
-            // $plugin->add_child($opencast);
-
-            // $series_array = $apibridge->get_course_series($courseid);
-            // foreach($series_array as $series) {
-            //     $seriesid = $series->series;
-            //     echo $seriesid;
-            // }
-
             $ocinstanceid = $ocinstance->id;
 
             $apibridge = apibridge::get_instance($ocinstanceid);
@@ -122,30 +112,12 @@ class backup_tool_opencast_plugin extends backup_tool_plugin {
             }
         }
 
-        echo 'Series: ' . print_r($serieslist, true) . PHP_EOL;
-        echo 'Events: ' . print_r($eventlist, true) . PHP_EOL;
-        echo 'Events: ' . print_r($sitedata, true) . PHP_EOL;
-
         // Define sources.
         $event->set_source_array($eventlist);
         $serieselement->set_source_array($serieslist);
         $import->set_source_array([$importdata]);
         $site->set_source_array($sitedata);
 
-        // $this->step = new backup_opencast_block_structure_step('opencast_structure', 'opencast_structure');
-        // $this->step->set_path('/opencast_structure');
-        // $this->step->set_task($this->task);
-        // $this->step->set_contextid($this->task->get_contextid());
-        // $this->step->set_plugin($this);
-        // $this->step->set_plugin_name('opencast');
-        // $this->step->set_plugin_type('block');
-        // $this->step->set_plugin_id($this->task->get_contextid());
-        // $this->step->set_plugin_type('block');
-        // $this->step->set_plugin_name('opencast');
-
-        // $plugin = $this->get_plugin_element();
-        $this->step->log('Yay, backup!', backup::LOG_DEBUG);
-        // Return the root element ($opencast)
         return $plugin;
     }
 
