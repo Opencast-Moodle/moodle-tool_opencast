@@ -39,6 +39,7 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
     protected $series = [];
     protected $importmode;
+    protected $missingeventids = [];
     protected $missingimportmappingeventids = [];
     protected $missingimportmappingseriesids = [];
     protected $backupeventids = [];
@@ -47,12 +48,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
     protected $aclchanged = [];
     protected $instanceid_skip = [];
 
-
-    //TODO checken was series hier macht
-
-    protected function define_structure() {
-
-    }
 
     protected function define_course_plugin_structure() {
 
@@ -90,20 +85,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
         $paths[] = new restore_path_element('series', $this->connectionpoint->get_path() . '/opencast/import/series');
 
         return $paths;
-    }
-
-    public function process_import($data) {
-
-        echo "Hello, restore import!";
-        echo('Data: ' . print_r($data, true) . PHP_EOL);
-
-    }
-
-    public function process_opencast_import($data) {
-
-        echo "Hello, restore opencast import!";
-        echo('Data: ' . print_r($data, true) . PHP_EOL);
-
     }
 
     public function process_opencast($data) {
@@ -296,18 +277,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
     }
 
-    public function after_restore() {
-
-        echo "Hello, after restore!";
-        file_put_contents(
-            '/var/www/moodledata/temp/restore_opencast.log',
-            'Hello, after restore!' . PHP_EOL,
-            FILE_APPEND
-        );
-        // echo('Data: ' . print_r($data, true) . PHP_EOL);
-
-    }
-
     public function after_restore_course() {
         global $DB;
 
@@ -340,6 +309,42 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
         $contextid = $this->task->get_contextid();
         $context = \core\context::instance_by_id($contextid);
         $courseid = $context->instanceid;
+
+        // Import mode is not defined.
+        if (!$this->importmode) {
+            notifications::notify_failed_importmode($courseid);
+            return;
+        }
+
+        if ($this->importmode == 'duplication') {
+            // None of the backupeventids are used for starting a workflow.
+            if (!$this->series) {
+                notifications::notify_failed_course_series($courseid, $this->backupeventids);
+                return;
+            }
+
+            // A course series is created, but some events are not found on opencast server.
+            if ($this->missingeventids) {
+                notifications::notify_missing_events($courseid, $this->missingeventids);
+            }
+
+            // Notify those series that were unable to have an import mapping record.
+            if (!empty($this->missingimportmappingseriesids)) {
+                notifications::notify_missing_import_mapping($courseid, $this->missingimportmappingseriesids, 'series');
+            }
+
+            // Notify those events that were unable to have an import mapping record.
+            if (!empty($this->missingimportmappingeventids)) {
+                notifications::notify_missing_import_mapping($courseid, $this->missingimportmappingeventids, 'events');
+            }
+
+            // Set the completion for mapping.
+            $report = importvideosmanager::set_import_mapping_completion_status($this->restoreuniqueid);
+            // If it is report has values, that means there were failures and we report them.
+            if (is_array($report)) {
+                notifications::notify_incompleted_import_mapping_records($courseid, $report);
+            }
+        }
 
         // Handle each Opencast instance
         foreach($ocinstances as $ocinstance) {
