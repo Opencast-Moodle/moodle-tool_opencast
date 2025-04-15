@@ -224,9 +224,9 @@ class setting_default_manager {
      */
     public static function set_default_limitvideos($ocinstanceid = 1) {
         $configname = 'limitvideos_' . $ocinstanceid;
-        $currentmetadata = get_config('tool_opencast', $configname);
+        $currentmetadata = get_config('block_opencast', $configname);
         if (empty($currentmetadata)) {
-            set_config($configname, self::get_default_limitvideos(), 'tool_opencast');
+            set_config($configname, self::get_default_limitvideos(), 'block_opencast');
         }
     }
 }

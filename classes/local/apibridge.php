@@ -329,7 +329,7 @@ class apibridge {
             return $result;
         }
 
-        $limitvideosconfig = intval(get_config('tool_opencast', 'limitvideos_' . $this->ocinstanceid));
+        $limitvideosconfig = intval(get_config('block_opencast', 'limitvideos_' . $this->ocinstanceid));
         $allvideos = [];
 
         foreach ($series as $s) {
