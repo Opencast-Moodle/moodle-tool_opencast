@@ -17,7 +17,8 @@
 /**
  * Admin setting class which is used to create an editable table.
  * @package    tool_opencast
- * @author     Berthold Bußkamp <bbusskamp@ssystems.de>
+ * @author     Tamara Gunkel <bbusskamp@ssystems.de>
+ * @copyright  2021 Tamara Gunkel, University of Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
