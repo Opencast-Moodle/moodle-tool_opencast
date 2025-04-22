@@ -17,7 +17,7 @@
 /**
  * Unit tests for the block_opencast implementation of the privacy API.
  *
- * @package    block_opencast
+ * @package    tool_opencast
  * @category   test
  * @copyright  2018 Tamara Gunkel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

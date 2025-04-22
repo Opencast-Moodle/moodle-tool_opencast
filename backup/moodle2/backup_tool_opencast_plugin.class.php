@@ -31,16 +31,24 @@ global $CFG, $DB;
 
 require_once($CFG->dirroot . '/backup/moodle2/backup_tool_plugin.class.php');
 
+/**
+ * Class backup_tool_opencast_plugin
+ */
 class backup_tool_opencast_plugin extends backup_tool_plugin {
 
+    /**
+     * Returns plugin structure for the backup.
+     *
+     * @return string
+     */
     protected function define_course_plugin_structure() {
 
         $plugin = $this->get_plugin_element();
 
-        // Get instace ids
+        // Get instace ids.
         $ocinstances = settings_api::get_ocinstances();
 
-        // Get course ids
+        // Get course ids.
         $contextid = $this->task->get_contextid();
         $context = \core\context::instance_by_id($contextid);
         $courseid = $context->instanceid;
@@ -49,7 +57,7 @@ class backup_tool_opencast_plugin extends backup_tool_plugin {
         $site = new backup_nested_element('site', [], ['ocinstanceid', 'apiurl']);
         $plugin->add_child($site);
 
-        // Define root of backup structure
+        // Define root of backup structure.
         $opencast = new backup_nested_element('opencast');
         $plugin->add_child($opencast);
 
@@ -70,9 +78,8 @@ class backup_tool_opencast_plugin extends backup_tool_plugin {
         $import->add_child($serieselement);
         $opencast->add_child($import);
 
-
-        // Handle each Opencast instance
-        foreach($ocinstances as $ocinstance) {
+        // Handle each Opencast instance.
+        foreach ($ocinstances as $ocinstance) {
 
             $ocinstanceid = $ocinstance->id;
 
@@ -86,8 +93,8 @@ class backup_tool_opencast_plugin extends backup_tool_plugin {
 
             $coursevideos = [];
             // If config is set we only want to backup the videos that are used in the course.
-            $only_backup_usedvideos = get_config('tool_opencast', 'importreducedduplication_' . $ocinstanceid);
-            if($only_backup_usedvideos) {
+            $onlybackupusedvideos = get_config('tool_opencast', 'importreducedduplication_' . $ocinstanceid);
+            if ($onlybackupusedvideos) {
                 $coursevideos = $apibridge->get_used_course_videos_for_backup($courseid);
             } else {
                 $coursevideos = $apibridge->get_course_videos_for_backup($courseid);
@@ -107,7 +114,7 @@ class backup_tool_opencast_plugin extends backup_tool_plugin {
             foreach ($courseseries as $series) {
                 $serieslist[] = (object)[
                     'seriesid' => $series->series,
-                    'instanceid' => $ocinstanceid
+                    'instanceid' => $ocinstanceid,
                 ];
             }
         }

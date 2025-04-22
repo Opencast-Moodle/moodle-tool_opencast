@@ -16,6 +16,8 @@
 
 namespace tool_opencast\settings;
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Admin setting class which is used to create an editable table.
  *

@@ -16,7 +16,7 @@
 
 /**
  * Test apibridge.
- * @package block_opencast
+ * @package tool_opencast
  * @copyright 2022 Tamara Gunkel, WWU
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

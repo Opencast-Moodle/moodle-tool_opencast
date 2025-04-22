@@ -27,13 +27,18 @@ use tool_opencast\local\apibridge;
 use tool_opencast\local\series_form;
 use tool_opencast\seriesmapping;
 
-defined('MOODLE_INTERNAL') || die;
-
-
+/**
+ * Extend the navigation for the course page.
+ *
+ * @param navigation_node $navigation The navigation node to extend.
+ * @param stdClass $course The course object.
+ * @param context $context The context of the course.
+ */
 function tool_opencast_extend_navigation_course($navigation, $course, $context) {
     if (has_capability('tool/opencast:addactivity', $context)) {
-        $url = new moodle_url('/admin/tool/opencast/index.php', array('courseid'=>$course->id));
-        $navigation->add(get_string('pluginname', 'tool_opencast'), $url, navigation_node::TYPE_COURSE, null, null, new pix_icon('i/report', ''));
+        $url = new moodle_url('/admin/tool/opencast/index.php', array('courseid' => $course->id));
+        $navigation->add(get_string('pluginname', 'tool_opencast'), $url, navigation_node::TYPE_COURSE,
+        null, null, new pix_icon('i/report', ''));
     }
 }
 

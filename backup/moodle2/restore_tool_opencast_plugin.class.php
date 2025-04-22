@@ -35,30 +35,68 @@ global $CFG, $DB;
 
 require_once($CFG->dirroot . '/backup/moodle2/restore_tool_plugin.class.php');
 
+/**
+ * Class restore_tool_opencast_plugin
+ */
 class restore_tool_opencast_plugin extends restore_tool_plugin {
 
+    /**
+     * @var array Series list.
+     */
     protected $series = [];
+    /**
+     * @var string Import mode.
+     */
     protected $importmode;
+    /**
+     * @var array Missing event ids.
+     */
     protected $missingeventids = [];
+    /**
+     * @var array Missing import mapping event ids.
+     */
     protected $missingimportmappingeventids = [];
+    /**
+     * @var array Missing import mapping series ids.
+     */
     protected $missingimportmappingseriesids = [];
+    /**
+     * @var array Backup event ids.
+     */
     protected $backupeventids = [];
+    /**
+     * @var string Restore unique identifier.
+     */
     protected $restoreuniqueid;
+    /**
+     * @var int Source course id.
+     */
     protected $sourcecourseid;
+    /**
+     * @var array List of Series with ACL changed.
+     */
     protected $aclchanged = [];
-    protected $instanceid_skip = [];
+    /**
+     * @var array List of instance ids to skip, because they are missing on the restore system.
+     */
+    protected $instanceidskip = [];
 
 
+    /**
+     * Returns plugin strucutre for the restore.
+     *
+     * @return string
+     */
     protected function define_course_plugin_structure() {
 
         global $USER;
 
         $paths = [];
 
-        // Get instace ids
+        // Get instace ids.
         $ocinstances = settings_api::get_ocinstances();
 
-        // Get course id
+        // Get course id.
         $contextid = $this->task->get_contextid();
         $context = \core\context::instance_by_id($contextid);
         $courseid = $context->instanceid;
@@ -67,14 +105,12 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
         // to keep track of restore session in later stages e.g. module mapping and repair.
         $this->restoreuniqueid = uniqid('oc_restore_' . $courseid);
 
-
         $paths[] = new restore_path_element('site', $this->connectionpoint->get_path() . '/site');
 
         // Processing events, grouped by main opencast, in order to get series as well.
         $paths[] = new restore_path_element('opencast', $this->connectionpoint->get_path()  . '/opencast', true);
         $paths[] = new restore_path_element('events', $this->connectionpoint->get_path() . '/opencast/events');
         $paths[] = new restore_path_element('event', $this->connectionpoint->get_path() . '/opencast/events/event');
-
 
         // Adding import property here, to access series.
         $paths[] = new restore_path_element('import', $this->connectionpoint->get_path() . '/opencast/import');
@@ -91,21 +127,20 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
         $paths = [];
 
-        // Get instace ids
+        // Get instace ids.
         $ocinstances = settings_api::get_ocinstances();
 
-        // Get course id
+        // Get course id.
         $contextid = $this->task->get_contextid();
         $context = \core\context::instance_by_id($contextid);
         $courseid = $context->instanceid;
 
-
-        // Handle each Opencast instance
-        foreach($ocinstances as $ocinstance) {
+        // Handle each Opencast instance.
+        foreach ($ocinstances as $ocinstance) {
             $ocinstanceid = $ocinstance->id;
 
-            // Check against skip list
-            if(in_array($ocinstanceid, $this->instanceid_skip)) {
+            // Check against skip list.
+            if (in_array($ocinstanceid, $this->instanceidskip)) {
                 // Skip instance id, to avoid restoring into wrong instance.
                 continue;
             }
@@ -116,7 +151,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
             // Get the import mode to decide the way of importing opencast videos.
             $importmode = get_config('tool_opencast', 'importmode_' . $ocinstanceid);
             $this->importmode = $importmode;
-
 
             // If ACL Change is the mode.
             if ($importmode == 'acl') {
@@ -176,7 +210,7 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                 // Proceed with the backedup series, to save the mapping and repair the modules.
                 foreach ($data->import[0]['series'] as $series) {
                     // Skip when the series is not from the current instance.
-                    if($series['instanceid'] != $ocinstanceid) {
+                    if ($series['instanceid'] != $ocinstanceid) {
                         continue;
                     }
                     $seriesid = $series['seriesid'] ?? null;
@@ -200,7 +234,7 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                 foreach ($data->events['event'] as $event) {
 
                     // Skip when the event is not from the current instance.
-                    if($event['instanceid'] != $ocinstanceid) {
+                    if ($event['instanceid'] != $ocinstanceid) {
                         continue;
                     }
                     $eventid = $event['eventid'] ?? null;
@@ -240,29 +274,39 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
     }
 
+    /**
+     * Process the oc instance information.
+     *
+     * @param array $data
+     */
     public function process_site($data) {
 
         // Verify if ocinstance exists. Skip if not.
         $ocinstanceid = $data['ocinstanceid'];
         $apiurl = settings_api::get_apiurl($ocinstanceid);
-        if(!$apiurl) {
+        if (!$apiurl) {
             echo('No apiurl found for instanceid: ' . $ocinstanceid . ' Skipping this instance while restoring.' . PHP_EOL);
-            $this->instanceid_skip[] = $ocinstanceid;
-        }else if($apiurl != $data['apiurl']) {
+            $this->instanceidskip[] = $ocinstanceid;
+        } else if ($apiurl != $data['apiurl']) {
             // Skip instance id, to avoid restoring into wrong instance.
-            $this->instanceid_skip[] = $ocinstanceid;
+            $this->instanceidskip[] = $ocinstanceid;
             echo('Wrong apiurl found for instanceid: ' . $ocinstanceid . ' Skipping this instance while restoring.' . PHP_EOL);
         }
 
     }
 
+    /**
+     * Process the series information.
+     *
+     * @param array $data
+     */
     public function after_restore_course() {
         global $DB;
 
-        // Get instace ids
+        // Get instace ids.
         $ocinstances = settings_api::get_ocinstances();
 
-        // Get course id
+        // Get course id.
         $contextid = $this->task->get_contextid();
         $context = \core\context::instance_by_id($contextid);
         $courseid = $context->instanceid;
@@ -303,13 +347,13 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
             }
         }
 
-        // Handle each Opencast instance
-        foreach($ocinstances as $ocinstance) {
+        // Handle each Opencast instance.
+        foreach ($ocinstances as $ocinstance) {
 
             $ocinstanceid = $ocinstance->id;
 
-            // Check against skip list
-            if(in_array($ocinstanceid, $this->instanceid_skip)) {
+            // Check against skip list.
+            if (in_array($ocinstanceid, $this->instanceidskip)) {
                 // Skip instance id, to avoid restoring into wrong instance.
                 continue;
             }
@@ -318,14 +362,15 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
             if ($importmode == 'duplication') {
 
-                    // After all, we proceed to fix the series modules because they should not wait for the duplicate workflow to finish!
-                    importvideosmanager::fix_imported_series_modules_in_new_course(
-                        $ocinstanceid,
-                        $courseid,
-                        $this->series[$ocinstanceid],
-                        $this->restoreuniqueid
-                    );
-                }
+                // After all, we proceed to fix the series modules,
+                // because they should not wait for the duplicate workflow to finish!
+                importvideosmanager::fix_imported_series_modules_in_new_course(
+                    $ocinstanceid,
+                    $courseid,
+                    $this->series[$ocinstanceid],
+                    $this->restoreuniqueid
+                );
+            }
         }
 
     }

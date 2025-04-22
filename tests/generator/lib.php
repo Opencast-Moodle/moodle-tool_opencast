@@ -44,7 +44,7 @@ class tool_opencast_generator extends testing_module_generator {
         $DB->insert_record('tool_opencast_series', $series);
     }
 
-        /**
+    /**
      * Creates a file.
      * @param null $record
      * @return stored_file
