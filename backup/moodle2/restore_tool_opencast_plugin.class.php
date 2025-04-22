@@ -185,7 +185,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                     }
                 }
 
-
             } else if ($importmode == 'duplication') {
 
                 // Get series id.
@@ -198,14 +197,12 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                 }
                 $this->series[$ocinstanceid] = $seriesid;
 
-
                 // Check if all required information is available.
                 if (empty($this->series) || !isset($data->import) || !isset($data->events) ||
                     empty($data->import[0]['series']) || empty($data->events['event'])) {
                     // Nothing to do here, as the data is not enough.
                     return;
                 }
-
 
                 // Proceed with the backedup series, to save the mapping and repair the modules.
                 foreach ($data->import[0]['series'] as $series) {

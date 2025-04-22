@@ -2070,7 +2070,7 @@ class apibridge {
             // Check if the video is used in the course via activity.
             $episodeactivity = activitymodulemanager::get_module_for_episode($courseid, $video->identifier, $ocinstanceid);
             // Add the video to the list of videos for backup if it is used in the course.
-            if ($episodetool || ($episodeactivity !== false)){
+            if ($episodetool || ($episodeactivity !== false)) {
                 $videosforbackup[$video->identifier] = $video;
             }
         }
@@ -2085,11 +2085,11 @@ class apibridge {
             // Check if the series is used in the course via activity.
             $seriesactivity = activitymodulemanager::get_module_for_series($ocinstanceid, $courseid, $series->series);
             // Add the all the videos of the series to the list of videos for backup.
-            if ($seriestool || ($seriesactivity !== false)){
+            if ($seriestool || ($seriesactivity !== false)) {
                 // Get the series videos.
                 $seriesvideos = $this->get_series_videos($series->series);
                 foreach ($seriesvideos->videos as $video) {
-                    if ($video->processing_state == 'SUCCEEDED'){
+                    if ($video->processing_state == 'SUCCEEDED') {
                         $videosforbackup[$video->identifier] = $video;
                     }
                 }

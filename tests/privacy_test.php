@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Unit tests for the block_opencast implementation of the privacy API.
+ * Unit tests for the tool_opencast implementation of the privacy API.
  *
  * @package    tool_opencast
  * @category   test
@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_opencast;
+namespace tool_opencast;
 
 use tool_opencast\local\upload_helper;
 use context_course;
@@ -32,14 +32,14 @@ use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 use core_privacy\local\request\approved_contextlist;
-use block_opencast\privacy\provider;
+use tool_opencast\privacy\provider;
 use core_privacy\tests\provider_testcase;
 use stdClass;
 
 /**
- * Unit tests for the block_opencast implementation of the privacy API.
+ * Unit tests for the tool_opencast implementation of the privacy API.
  *
- * @group block_opencast
+ * @group tool_opencast
  * @copyright  2018 Tamara Gunkel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -56,10 +56,10 @@ final class privacy_test extends provider_testcase {
     /**
      * Test for provider::get_metadata().
      *
-     * @covers \block_opencast\privacy\provider
+     * @covers \tool_opencast\privacy\provider
      */
     public function test_get_metadata(): void {
-        $collection = new collection('block_opencast');
+        $collection = new collection('tool_opencast');
         $newcollection = provider::get_metadata($collection);
         $itemcollection = $newcollection->get_collection();
         $this->assertCount(2, $itemcollection);
@@ -90,7 +90,7 @@ final class privacy_test extends provider_testcase {
     /**
      * Test for provider::get_contexts_for_userid().
      *
-     * @covers \block_opencast\privacy\provider::get_contexts_for_userid
+     * @covers \tool_opencast\privacy\provider::get_contexts_for_userid
      */
     public function test_get_contexts_for_userid(): void {
         global $DB;
@@ -163,7 +163,7 @@ final class privacy_test extends provider_testcase {
     /**
      * Test for provider::export_user_data().
      *
-     * @covers \block_opencast\privacy\provider::export_user_data
+     * @covers \tool_opencast\privacy\provider::export_user_data
      */
     public function test_export_user_data(): void {
         global $DB;
@@ -207,7 +207,7 @@ final class privacy_test extends provider_testcase {
         $this->assertEquals(CONTEXT_COURSE, $context->contextlevel);
         $this->assertEquals(1, $context->instanceid);
 
-        $approvedcontextlist = new approved_contextlist($teacher, 'block_opencast', $contextlist->get_contextids());
+        $approvedcontextlist = new approved_contextlist($teacher, 'tool_opencast', $contextlist->get_contextids());
 
         // Retrieve Calendar Event and Subscriptions data only for this user.
         provider::export_user_data($approvedcontextlist);
@@ -221,7 +221,7 @@ final class privacy_test extends provider_testcase {
     /**
      * Test for provider::delete_data_for_all_users_in_context().
      *
-     * @covers \block_opencast\privacy\provider::delete_data_for_all_users_in_context
+     * @covers \tool_opencast\privacy\provider::delete_data_for_all_users_in_context
      */
     public function test_delete_data_for_all_users_in_context(): void {
         global $DB;
@@ -268,7 +268,7 @@ final class privacy_test extends provider_testcase {
     /**
      * Test for provider::delete_data_for_user().
      *
-     * @covers \block_opencast\privacy\provider::delete_data_for_user
+     * @covers \tool_opencast\privacy\provider::delete_data_for_user
      */
     public function test_delete_data_for_user(): void {
         global $DB;
@@ -336,7 +336,7 @@ final class privacy_test extends provider_testcase {
         $this->assertEquals(CONTEXT_COURSE, $context->contextlevel);
         $this->assertEquals(1, $context->instanceid);
 
-        $approvedcontextlist = new approved_contextlist($teacher1, 'block_opencast', $contextlist->get_contextids());
+        $approvedcontextlist = new approved_contextlist($teacher1, 'tool_opencast', $contextlist->get_contextids());
         provider::delete_data_for_user($approvedcontextlist);
         $jobs = $DB->get_records('tool_opencast_uploadjob', ['userid' => $teacher1->id]);
         $this->assertCount(0, $jobs);
@@ -358,7 +358,7 @@ final class privacy_test extends provider_testcase {
     /**
      * Test for provider::get_users_in_context().
      *
-     * @covers \block_opencast\privacy\provider::get_users_in_context
+     * @covers \tool_opencast\privacy\provider::get_users_in_context
      */
     public function test_get_users_in_context(): void {
         global $DB;
@@ -400,10 +400,10 @@ final class privacy_test extends provider_testcase {
         $coursecontext1 = context_course::instance($course1->id);
         $coursecontext2 = context_course::instance($course2->id);
 
-        $userlist = new userlist($coursecontext1, 'block_opencast');
+        $userlist = new userlist($coursecontext1, 'tool_opencast');
         provider::get_users_in_context($userlist);
         $this->assertCount(1, $userlist);
-        $userlist2 = new userlist($coursecontext2, 'block_opencast');
+        $userlist2 = new userlist($coursecontext2, 'tool_opencast');
         provider::get_users_in_context($userlist2);
         $this->assertCount(0, $userlist2);
 
@@ -426,10 +426,10 @@ final class privacy_test extends provider_testcase {
 
         $DB->insert_record('tool_opencast_uploadjob', $job);
 
-        $userlist = new userlist($coursecontext1, 'block_opencast');
+        $userlist = new userlist($coursecontext1, 'tool_opencast');
         provider::get_users_in_context($userlist);
         $this->assertCount(1, $userlist);
-        $userlist2 = new userlist($coursecontext2, 'block_opencast');
+        $userlist2 = new userlist($coursecontext2, 'tool_opencast');
         provider::get_users_in_context($userlist2);
         $this->assertCount(1, $userlist2);
 
@@ -452,10 +452,10 @@ final class privacy_test extends provider_testcase {
 
         $DB->insert_record('tool_opencast_uploadjob', $job);
 
-        $userlist = new userlist($coursecontext1, 'block_opencast');
+        $userlist = new userlist($coursecontext1, 'tool_opencast');
         provider::get_users_in_context($userlist);
         $this->assertCount(2, $userlist);
-        $userlist2 = new userlist($coursecontext2, 'block_opencast');
+        $userlist2 = new userlist($coursecontext2, 'tool_opencast');
         provider::get_users_in_context($userlist2);
         $this->assertCount(1, $userlist2);
     }
@@ -463,7 +463,7 @@ final class privacy_test extends provider_testcase {
     /**
      * Test for provider::delete_data_for_users().
      *
-     * @covers \block_opencast\privacy\provider::delete_data_for_users
+     * @covers \tool_opencast\privacy\provider::delete_data_for_users
      */
     public function test_delete_data_for_users(): void {
         global $DB;
@@ -547,7 +547,7 @@ final class privacy_test extends provider_testcase {
         $coursecontext1 = context_course::instance($course1->id);
         $coursecontext2 = context_course::instance($course2->id);
 
-        $approveduserlist = new approved_userlist($coursecontext2, 'block_opencast',
+        $approveduserlist = new approved_userlist($coursecontext2, 'tool_opencast',
             [$teacher1->id]);
         provider::delete_data_for_users($approveduserlist);
         $this->assertCount(1, $approveduserlist);

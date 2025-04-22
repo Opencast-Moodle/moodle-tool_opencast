@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Admin setting class which is used to create an editable table.
+ * @package    tool_opencast
+ * @author     Berthold Bußkamp <bbusskamp@ssystems.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace tool_opencast\settings;
 
 defined('MOODLE_INTERNAL') || die();
