@@ -297,8 +297,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
     /**
      * Process the series information.
-     *
-     * @param array $data
      */
     public function after_restore_course() {
         global $DB;
