@@ -96,6 +96,9 @@ class importvideos_step3_form extends moodleform {
             }
         }
 
+        echo "Logging some debug info\n";
+        error_log("Warning: Something went wrong");
+
         $handleepisodemodules = false;
         $referencedepisodemodules = [];
         // Check if the handle episode feature is enabled _and_ the user is allowed to use the feature.
