@@ -98,7 +98,7 @@ class process_duplicated_event_module_fix extends adhoc_task {
             // Make sure the restore session is completed.
             if ($mapping->restorecompleted != importvideosmanager::RESTORE_STATUS_COMPLETED) {
                 // If not, throw the error and repeat the task.
-                throw new moodle_exception('restore_still_in_progress', 'tool_opencast', '', $a);
+                throw new moodle_exception('importmapping_restore_still_in_progress', 'tool_opencast', '', $a);
             }
 
             $apibridge = apibridge::get_instance($mapping->ocinstanceid);
