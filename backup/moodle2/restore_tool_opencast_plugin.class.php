@@ -340,31 +340,61 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
             if (is_array($report)) {
                 notifications::notify_incompleted_import_mapping_records($courseid, $report);
             }
-        }
 
-        // Handle each Opencast instance.
-        foreach ($ocinstances as $ocinstance) {
+            // Handle each Opencast instance.
+            foreach ($ocinstances as $ocinstance) {
 
-            $ocinstanceid = $ocinstance->id;
+                $ocinstanceid = $ocinstance->id;
 
-            // Check against skip list.
-            if (in_array($ocinstanceid, $this->instanceidskip)) {
-                // Skip instance id, to avoid restoring into wrong instance.
-                continue;
+                // Check against skip list.
+                if (in_array($ocinstanceid, $this->instanceidskip)) {
+                    // Skip instance id, to avoid restoring into wrong instance.
+                    continue;
+                }
+
+                $importmode = get_config('tool_opencast', 'importmode_' . $ocinstanceid);
+
+                if ($importmode == 'duplication') {
+
+                    // After all, we proceed to fix the series modules,
+                    // because they should not wait for the duplicate workflow to finish!
+                    importvideosmanager::fix_imported_series_modules_in_new_course(
+                        $ocinstanceid,
+                        $courseid,
+                        $this->series[$ocinstanceid],
+                        $this->restoreuniqueid
+                    );
+                }
+            }
+        } else if ($this->importmode == 'acl') {
+            // The required data or the conditions to perform ACL change were missing.
+            if (!$this->sourcecourseid) {
+                notifications::notify_missing_sourcecourseid($courseid);
+                return;
             }
 
-            $importmode = get_config('tool_opencast', 'importmode_' . $ocinstanceid);
+            if (!$this->series) {
+                notifications::notify_missing_seriesid($courseid);
+                return;
+            }
+            // The ACL change import process is not successful.
+            foreach ($this->aclchanged as $aclchange) {
+                if ($aclchange->error == 1) {
+                    if (!$aclchange->seriesaclchange) {
+                        notifications::notify_failed_series_acl_change($courseid, $this->sourcecourseid, $aclchange->seriesid);
+                        return;
+                    }
 
-            if ($importmode == 'duplication') {
+                    if (!$aclchange->eventsaclchange && count($aclchange->eventsaclchange->failed) > 0) {
+                        notifications::notify_failed_events_acl_change($courseid, $this->sourcecourseid,
+                            $aclchange->eventsaclchange->failed);
+                        return;
+                    }
 
-                // After all, we proceed to fix the series modules,
-                // because they should not wait for the duplicate workflow to finish!
-                importvideosmanager::fix_imported_series_modules_in_new_course(
-                    $ocinstanceid,
-                    $courseid,
-                    $this->series[$ocinstanceid],
-                    $this->restoreuniqueid
-                );
+                    if (!$aclchange->seriesmapped) {
+                        notifications::notify_failed_series_mapping($courseid, $this->sourcecourseid, $aclchange->seriesid);
+                    }
+                }
             }
         }
 
