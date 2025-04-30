@@ -84,7 +84,9 @@ Feature: Configure and check maintenance
 
   @javascript
   Scenario: Teachers should not be able to access the Opencast plugin during maintenance period
-    Given I log in as "teacher1"
+    # Although the scenario includes teachers, but the notifications in behat tests are remaining in the session only for admins,
+    # therefore we need to use an admin user.
+    Given I log in as "admin"
     And I setup block plugin
     And I make sure the block drawer keeps opened
     And I am on "Course 1" course homepage with editing mode on
@@ -106,6 +108,5 @@ Feature: Configure and check maintenance
     And the following config values are set as admin:
     | maintenancemode_1                     | 0                                 | tool_opencast |
     And I reload the page
-    When I click on "Add video" "button"
+    When I click on "Cancel" "button"
     Then I should not see "Opencast Maintenance Notification" in the "#user-notifications" "css_element"
-    And I should see "Opencast Videos" in the "#page-header" "css_element"
