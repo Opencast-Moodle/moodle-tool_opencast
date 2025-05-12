@@ -33,48 +33,35 @@ import Notification from "core/notification";
 
 export const init_general_settings = (rolesinputid, metadatainputid, metadataseriesinputid, ocinstanceid) => {
 
-    console.log("Hello WOrld");
-
     // Load strings
     var strings = [
-        {key: 'name', component: 'tool_opencast'},
-        {key: 'isvisible', component: 'tool_opencast'},
-        {key: 'addinstance', component: 'tool_opencast'},
-        {key: 'delete_instance', component: 'tool_opencast'},
-        {key: 'delete_instance_confirm', component: 'tool_opencast'},
+        {key: 'heading_role', component: 'block_opencast'},
+        {key: 'heading_actions', component: 'block_opencast'},
+        {key: 'heading_permanent', component: 'block_opencast'},
+        {key: 'delete_role', component: 'block_opencast'},
+        {key: 'delete_confirm_role', component: 'block_opencast'},
+        {key: 'delete_metadata', component: 'block_opencast'},
+        {key: 'delete_confirm_metadata', component: 'block_opencast'},
+        {key: 'heading_name', component: 'block_opencast'},
+        {key: 'heading_datatype', component: 'block_opencast'},
+        {key: 'heading_description', component: 'block_opencast'},
+        {key: 'heading_required', component: 'block_opencast'},
+        {key: 'heading_readonly', component: 'block_opencast'},
+        {key: 'heading_params', component: 'block_opencast'},
+        {key: 'heading_defaultable', component: 'block_opencast'},
         {key: 'delete', component: 'moodle'},
-        {key: 'isdefault', component: 'tool_opencast'},
-        {key: 'heading_role', component: 'tool_opencast'},
-        {key: 'heading_actions', component: 'tool_opencast'},
-        {key: 'heading_permanent', component: 'tool_opencast'},
-        {key: 'delete_role', component: 'tool_opencast'},
-        {key: 'delete_confirm_role', component: 'tool_opencast'},
-        {key: 'delete_metadata', component: 'tool_opencast'},
-        {key: 'delete_confirm_metadata', component: 'tool_opencast'},
-        {key: 'heading_name', component: 'tool_opencast'},
-        {key: 'heading_datatype', component: 'tool_opencast'},
-        {key: 'heading_description', component: 'tool_opencast'},
-        {key: 'heading_required', component: 'tool_opencast'},
-        {key: 'heading_readonly', component: 'tool_opencast'},
-        {key: 'heading_params', component: 'tool_opencast'},
-        {key: 'heading_defaultable', component: 'tool_opencast'},
-        {key: 'transcription_flavor_key', component: 'tool_opencast'},
-        {key: 'transcription_flavor_value', component: 'tool_opencast'},
-        {key: 'transcription_flavor_delete', component: 'tool_opencast'},
-        {key: 'transcription_flavor_confirm_delete', component: 'tool_opencast'},
-        {key: 'readonly_disabled_tooltip_text', component: 'tool_opencast'},
-        {key: 'heading_batchable', component: 'tool_opencast'},
+        {key: 'transcription_flavor_key', component: 'block_opencast'},
+        {key: 'transcription_flavor_value', component: 'block_opencast'},
+        {key: 'transcription_flavor_delete', component: 'block_opencast'},
+        {key: 'transcription_flavor_confirm_delete', component: 'block_opencast'},
+        {key: 'readonly_disabled_tooltip_text', component: 'block_opencast'},
+        {key: 'heading_batchable', component: 'block_opencast'},
     ];
     str.get_strings(strings).then(function(jsstrings) {
 
-        // Style hidden input.
-        console.log('rolesinputid:', rolesinputid);  // Logs the full object
 
         var rolesinput = $('#' + rolesinputid);
 
-        console.log('rolesinput:', rolesinput);  // Logs the full object
-        console.log('rolesinput: ' + JSON.stringify(rolesinput, null, 2));
-        console.log('rolesinput val:', rolesinput.val());  // Logs the full object
 
 
         rolesinput.parent().hide();
@@ -513,16 +500,12 @@ export const init_general_settings = (rolesinputid, metadatainputid, metadataser
             metadataseriestable.addRow({'datatype': 'text', 'required': 0, 'readonly': 0, 'param_json': null});
         });
 
-        console.log("Bye WOrld");
-
         return;
     }).catch(Notification.exception);
 };
 
 
     export const init_tool = (instancesinputid) => {
-
-        console.log("Hello Dude");
 
         // Load strings
         var strings = [
@@ -641,37 +624,29 @@ export const init_general_settings = (rolesinputid, metadatainputid, metadataser
 
 export const init_additional_settings = (transcriptionflavorinputid, ocinstanceid) => {
 
-    console.log("Hello WOrld");
-
     // Load strings
     var strings = [
-        {key: 'name', component: 'tool_opencast'},
-        {key: 'isvisible', component: 'tool_opencast'},
-        {key: 'addinstance', component: 'tool_opencast'},
-        {key: 'delete_instance', component: 'tool_opencast'},
-        {key: 'delete_instance_confirm', component: 'tool_opencast'},
+        {key: 'heading_role', component: 'block_opencast'},
+        {key: 'heading_actions', component: 'block_opencast'},
+        {key: 'heading_permanent', component: 'block_opencast'},
+        {key: 'delete_role', component: 'block_opencast'},
+        {key: 'delete_confirm_role', component: 'block_opencast'},
+        {key: 'delete_metadata', component: 'block_opencast'},
+        {key: 'delete_confirm_metadata', component: 'block_opencast'},
+        {key: 'heading_name', component: 'block_opencast'},
+        {key: 'heading_datatype', component: 'block_opencast'},
+        {key: 'heading_description', component: 'block_opencast'},
+        {key: 'heading_required', component: 'block_opencast'},
+        {key: 'heading_readonly', component: 'block_opencast'},
+        {key: 'heading_params', component: 'block_opencast'},
+        {key: 'heading_defaultable', component: 'block_opencast'},
         {key: 'delete', component: 'moodle'},
-        {key: 'isdefault', component: 'tool_opencast'},
-        {key: 'heading_role', component: 'tool_opencast'},
-        {key: 'heading_actions', component: 'tool_opencast'},
-        {key: 'heading_permanent', component: 'tool_opencast'},
-        {key: 'delete_role', component: 'tool_opencast'},
-        {key: 'delete_confirm_role', component: 'tool_opencast'},
-        {key: 'delete_metadata', component: 'tool_opencast'},
-        {key: 'delete_confirm_metadata', component: 'tool_opencast'},
-        {key: 'heading_name', component: 'tool_opencast'},
-        {key: 'heading_datatype', component: 'tool_opencast'},
-        {key: 'heading_description', component: 'tool_opencast'},
-        {key: 'heading_required', component: 'tool_opencast'},
-        {key: 'heading_readonly', component: 'tool_opencast'},
-        {key: 'heading_params', component: 'tool_opencast'},
-        {key: 'heading_defaultable', component: 'tool_opencast'},
-        {key: 'transcription_flavor_key', component: 'tool_opencast'},
-        {key: 'transcription_flavor_value', component: 'tool_opencast'},
-        {key: 'transcription_flavor_delete', component: 'tool_opencast'},
-        {key: 'transcription_flavor_confirm_delete', component: 'tool_opencast'},
-        {key: 'readonly_disabled_tooltip_text', component: 'tool_opencast'},
-        {key: 'heading_batchable', component: 'tool_opencast'},
+        {key: 'transcription_flavor_key', component: 'block_opencast'},
+        {key: 'transcription_flavor_value', component: 'block_opencast'},
+        {key: 'transcription_flavor_delete', component: 'block_opencast'},
+        {key: 'transcription_flavor_confirm_delete', component: 'block_opencast'},
+        {key: 'readonly_disabled_tooltip_text', component: 'block_opencast'},
+        {key: 'heading_batchable', component: 'block_opencast'},
     ];
     str.get_strings(strings).then(function(jsstrings) {
 
