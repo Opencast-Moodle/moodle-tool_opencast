@@ -97,7 +97,7 @@ class admin_settings_builder {
             self::add_admin_settingpage('tool_opencast_appearancesettings_1', 'appearance_settings');
             self::add_admin_settingpage('tool_opencast_additionalsettings_1', 'additional_settings');
             self::add_admin_settingpage('tool_opencast_ltimodulesettings_1', 'ltimodule_settings');
-            self::add_admin_settingpage('tool_opencast_importvideossettings_', 'importvideos_settings');
+            self::add_admin_settingpage('tool_opencast_importvideossettings_1', 'importvideos_settings');
 
         } else {
             foreach ($instances as $instance) {
@@ -1323,6 +1323,21 @@ class admin_settings_builder {
                 'tool_opencast/importmode_' . $instance->id, 'eq', 'acl');
         }
 
+        // Import videos: Define if the videos should be imported during the course backup restore.
+        $importvideosonbackup = [
+            0 => get_string('importvideos_settingonbackupvalue_false', 'tool_opencast'),
+            1 => get_string('importvideos_settingonbackupvalue_true', 'tool_opencast'), ];
+        $defaultvaluechioce = 1;
+        $importvideossettings->add(
+            new \admin_setting_configselect('tool_opencast/importvideosonbackup_' . $instance->id,
+                get_string('importvideos_settingonbackupvalue', 'tool_opencast'),
+                get_string('importvideos_settingonbackupvalue_desc', 'tool_opencast'),
+                $defaultvaluechioce, $importvideosonbackup));
+        if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
+            $importvideossettings->hide_if('tool_opencast/importvideosonbackup_' . $instance->id,
+                'tool_opencast/importvideosonbackup_' . $instance->id, 'notchecked');
+        }
+
         $importvideossettings->add(
             new \admin_setting_configcheckbox('tool_opencast/importreducedduplication_' . $instance->id,
                 get_string('importreducedduplication', 'tool_opencast'),
@@ -1342,22 +1357,6 @@ class admin_settings_builder {
         if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
             $importvideossettings->hide_if('tool_opencast/importvideoscoreenabled_' . $instance->id,
                 'tool_opencast/importvideosenabled_' . $instance->id, 'notchecked');
-        }
-
-        // Import videos: Define a pre-defined configuration to enabled the import core settings.
-        // This setting depends on the importvideoscoreenabled setting.
-        $importvideoscorevaluechioces = [
-            0 => get_string('importvideos_settingcoredefaultvalue_false', 'tool_opencast'),
-            1 => get_string('importvideos_settingcoredefaultvalue_true', 'tool_opencast'), ];
-        $defaultvaluechioce = 0;
-        $importvideossettings->add(
-            new \admin_setting_configselect('tool_opencast/importvideoscoredefaultvalue_' . $instance->id,
-                get_string('importvideos_settingcoredefaultvalue', 'tool_opencast'),
-                get_string('importvideos_settingcoredefaultvalue_desc', 'tool_opencast'),
-                $defaultvaluechioce, $importvideoscorevaluechioces));
-        if ($CFG->branch >= 37) { // The hide_if functionality for admin settings is not available before Moodle 3.7.
-            $importvideossettings->hide_if('tool_opencast/importvideoscoredefaultvalue_' . $instance->id,
-                'tool_opencast/importvideoscoreenabled_' . $instance->id, 'notchecked');
         }
 
         // Import videos: Enable manual import videos feature.
