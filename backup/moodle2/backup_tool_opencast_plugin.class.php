@@ -97,7 +97,7 @@ class backup_tool_opencast_plugin extends backup_tool_plugin {
             $onlybackupusedvideos = get_config('tool_opencast', 'importreducedduplication_' . $ocinstanceid);
 
             // If the config is not set we do not backup any videos.
-            if($enablevideobackup){
+            if ($enablevideobackup) {
                 // If the config is set we only want to backup a reduced set of videos (the videos that are used in the course).
                 if ($onlybackupusedvideos) {
                     $coursevideos = $apibridge->get_used_course_videos_for_backup($courseid);
