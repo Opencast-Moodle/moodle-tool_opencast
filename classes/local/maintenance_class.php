@@ -325,6 +325,16 @@ class maintenance_class {
         $iscli = defined('CLI_SCRIPT') && CLI_SCRIPT;
         $isphpunit = defined('PHPUNIT_TEST') && PHPUNIT_TEST;
 
+        // To avoid system level processing interruption,
+        // we check if it is a system is in installation or upgrade process.
+        // We simply return 404 in this case.
+        $issystemprocessing = during_initial_install() || !upgrade_ensure_not_running(true);
+        if ($issystemprocessing) {
+            debugging('An attempt was made to access Opencast during a maintenance period ' .
+                'while the system was undergoing installation or an upgrade.');
+            return ['code' => 404];
+        }
+
         $wwwroot = $CFG->wwwroot;
 
         // Hanlde behat wwwroot.
@@ -366,7 +376,7 @@ class maintenance_class {
             $blacklist['modedit'] = $wwwrootparsed['path'] . '/course/modedit'; // Match for mod_opencast plugin.
             $blacklist['repository_opencast'] = $wwwrootparsed['path'] . '/repository'; // Match for repository_opencast plugin.
             $blacklist['admin_cron'] = $wwwrootparsed['path'] . '/admin/cron'; // Match for admin cron.
-            $blacklist['admin_cron'] = $wwwrootparsed['path'] . '/local'; // Match for local plugins like och5p and och5pcore.
+            $blacklist['h5p_plugins'] = $wwwrootparsed['path'] . '/local'; // Match for local plugins like och5p and och5pcore.
 
             // If admin and it is not admin cron page,
             // we let it pass to avoid interrupting any installation, configuration or upgrade.
@@ -442,9 +452,28 @@ class maintenance_class {
      *
      * @global moodle_page $PAGE The global Moodle page object.
      * @return void
+     * @throws moodle_exception
      */
     public function handle_notification_message_display() {
         global $PAGE;
+
+        $pageisnotcapable = is_in_popup() || (defined('AJAX_SCRIPT') && AJAX_SCRIPT);
+        $isclicriptrunning = defined('CLI_SCRIPT') && CLI_SCRIPT;
+        if ($pageisnotcapable || $isclicriptrunning) {
+            return;
+        }
+
+        try {
+            // To avoid any complications with page context in admin settings,
+            // we don't display notifications on system level pages.
+            if (!$PAGE || $PAGE->context instanceof \core\context\system) {
+                return;
+            }
+        } catch (\moodle_exception $e) {
+            // If the PAGE does not have context, the moodle_page class throws an exception,
+            // so we simply catch it and return here.
+            return;
+        }
 
         // Get the formatted message.
         $message = $this->get_formatted_message();
@@ -459,10 +488,8 @@ class maintenance_class {
         // We notify only when it is activated!
         $notify = $this->is_activated();
 
-        // Make sure that the $PAGE is ready for notifications js module load.
-        if ($PAGE) {
-            $PAGE->requires->js_call_amd('tool_opencast/maintenance', 'notification', [$message, $level, $notify]);
-        }
+        // Load js.
+        $PAGE->requires->js_call_amd('tool_opencast/maintenance', 'notification', [$message, $level, $notify]);
     }
 
     /**
