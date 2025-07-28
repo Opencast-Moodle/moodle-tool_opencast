@@ -11,4 +11,4 @@ jobs:
     uses: Opencast-Moodle/moodle-workflows-opencast/.github/workflows/moodle-ci.yml@main
     with:
       requires-block-plugin: true
-      branch-block-plugin: upgrade-500
+      branch-block-plugin: issue-418-500
