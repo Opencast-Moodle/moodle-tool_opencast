@@ -36,7 +36,7 @@ use tool_opencast\seriesmapping;
  */
 function tool_opencast_extend_navigation_course($navigation, $course, $context) {
     if (has_capability('tool/opencast:addactivity', $context)) {
-        $url = new moodle_url('/admin/tool/opencast/index.php', array('courseid' => $course->id));
+        $url = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $course->id]);
         $navigation->add(get_string('pluginname', 'tool_opencast'), $url, navigation_node::TYPE_COURSE,
         null, null, new pix_icon('i/report', ''));
     }
