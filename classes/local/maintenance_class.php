@@ -440,7 +440,6 @@ class maintenance_class {
      * to load the 'tool_opencast/maintenance' JavaScript module and passes the necessary
      * parameters to display the notification.
      *
-     * @global moodle_page $PAGE The global Moodle page object.
      * @return void
      */
     public function handle_notification_message_display() {

@@ -119,6 +119,16 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
         return $paths;
     }
 
+    /**
+     * Processes the Opencast data during course restore.
+     *
+     * Handles the restoration of Opencast series and events for each Opencast instance,
+     * depending on the configured import mode (ACL change or duplication).
+     * Updates internal state for series, events, and mappings, and schedules duplication tasks if needed.
+     *
+     * @param array $data The Opencast data from the backup file.
+     * @return void
+     */
     public function process_opencast($data) {
 
         global $USER;

@@ -138,7 +138,8 @@ class admin_settings_builder {
             if (count($instances) <= 1) {
                 $settings = self::create_admin_settingpage('tool_opencast_configuration', 'configuration');
             } else {
-                $settings = self::create_admin_settingpage('tool_opencast_configuration_' . $instanceid, 'configuration_instance', $instance->name);
+                $settings = self::create_admin_settingpage('tool_opencast_configuration_' . $instanceid,
+                    'configuration_instance', $instance->name);
             }
 
             self::add_notification_banner_for_demo_instance($settings, $instanceid);
