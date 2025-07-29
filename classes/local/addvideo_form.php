@@ -437,7 +437,9 @@ class addvideo_form extends moodleform {
         $mform->setType('courseid', PARAM_INT);
 
         // Upload transcription.
-        if (!empty(get_config('tool_opencast', 'transcriptionworkflow_' . $ocinstanceid))) {
+        $transcriptionlanguagesconfig = get_config('tool_opencast', 'transcriptionlanguages_' . $ocinstanceid);
+        $transcriptionuploadenabled = (bool) get_config('tool_opencast', 'enableuploadtranscription_' . $ocinstanceid);
+        if ($transcriptionuploadenabled && !empty($transcriptionlanguagesconfig)) {
             $mform->closeHeaderBefore('uploadtranscription_header');
 
             $mform->addElement('header', 'uploadtranscription_header', get_string('transcriptionheader', 'tool_opencast'));
@@ -460,37 +462,15 @@ class addvideo_form extends moodleform {
                 }
             }
 
-            // Preparing flavors as for service types.
-            $flavorsconfig = get_config('tool_opencast', 'transcriptionflavors_' . $ocinstanceid);
-            $flavors = [
-                '' => get_string('emptyflavoroption', 'tool_opencast'),
-            ];
-            if (!empty($flavorsconfig)) {
-                $flavorsarray = json_decode($flavorsconfig);
-                foreach ($flavorsarray as $flavor) {
-                    if (!empty($flavor->key) && !empty($flavor->value)) {
-                        $flavors[$flavor->key] = format_string($flavor->value);
-                    }
+            $transcriptionlanguagesarray = json_decode($transcriptionlanguagesconfig);
+            foreach ($transcriptionlanguagesarray as $index => $language) {
+                if (empty($language->key)) {
+                    continue;
                 }
-            }
-
-            $maxtranscriptionupload = (int)get_config('tool_opencast', 'maxtranscriptionupload_' . $ocinstanceid);
-            if (!$maxtranscriptionupload || $maxtranscriptionupload < 0) {
-                $maxtranscriptionupload = 1;
-            }
-
-            for ($transcriptionindex = 0; $transcriptionindex < $maxtranscriptionupload; $transcriptionindex++) {
-                if ($transcriptionindex > 0) {
-                    $line = html_writer::tag('hr', '');
-                    $mform->addElement('html', $line);
-                }
-                $mform->addElement('select', 'transcription_flavor_' . $transcriptionindex,
-                    get_string('transcriptionflavorfield', 'tool_opencast'), $flavors);
-                $mform->addElement('filepicker', 'transcription_file_' . $transcriptionindex,
-                    get_string('transcriptionfilefield', 'tool_opencast'),
-                    null, ['accepted_types' => $transcriptiontypes]);
-                $mform->disabledIf('transcription_file_' . $transcriptionindex,
-                    'transcription_flavor_' . $transcriptionindex, 'eq', '');
+                $languagefieldname = !empty($language->value) ? format_string($language->value, true) :
+                        get_string('transcriptionfilefield', 'tool_opencast', $language->key);
+                $mform->addElement('filepicker', 'transcription_file_' . $language->key,
+                    $languagefieldname, null, ['accepted_types' => $transcriptiontypes]);
             }
         }
 

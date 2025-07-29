@@ -50,7 +50,7 @@ $redirecturl = new moodle_url('/admin/tool/opencast/managetranscriptions.php',
 
 require_login($courseid, false);
 
-$PAGE->set_pagelayout('incourse');
+$PAGE->set_pagelayout('popup');
 $PAGE->set_title(get_string('downloadtranscription', 'tool_opencast'));
 $PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
 $PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $indexurl);
@@ -62,9 +62,14 @@ $coursecontext = context_course::instance($courseid);
 require_capability('tool/opencast:addvideo', $coursecontext);
 
 // Make sure transcription as well as the downlaod is enabled.
-$transcriptionenabled = get_config('tool_opencast', 'transcriptionworkflow_' . $ocinstanceid);
+$transcriptionmanagementenabled = (bool) get_config('tool_opencast', 'enablemanagetranscription_' . $ocinstanceid);
+if (!$transcriptionmanagementenabled) {
+    redirect($redirecturl,
+        get_string('transcriptionmanagementdisabled', 'tool_opencast'), null, notification::NOTIFY_ERROR);
+}
+
 $downloadenabled = get_config('tool_opencast', 'allowdownloadtranscription_' . $ocinstanceid);
-if (empty($downloadenabled) || empty($transcriptionenabled)) {
+if (empty($downloadenabled)) {
     redirect($redirecturl,
         get_string('unabletodownloadtranscription', 'tool_opencast'),
         null,
