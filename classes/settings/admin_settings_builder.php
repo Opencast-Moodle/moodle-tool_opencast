@@ -658,54 +658,52 @@ class admin_settings_builder {
                 ''));
 
         $additionalsettings->add(
-            new \admin_setting_configtext('tool_opencast/transcriptionworkflow_' . $instance->id,
-                get_string('transcriptionworkflow', 'tool_opencast'),
-                get_string('transcriptionworkflow_desc', 'tool_opencast'), '', PARAM_TEXT));
+            new \admin_setting_configcheckbox('tool_opencast/enableuploadtranscription_' . $instance->id,
+                get_string('transcriptionsettingsenableupload', 'tool_opencast'),
+                get_string('transcriptionsettingsenableupload_desc', 'tool_opencast'), 0));
 
         $additionalsettings->add(
-            new \admin_setting_configtext('tool_opencast/deletetranscriptionworkflow_' . $instance->id,
-                get_string('deletetranscriptionworkflow', 'tool_opencast'),
-                get_string('deletetranscriptionworkflow_desc', 'tool_opencast'), '', PARAM_TEXT));
-        $additionalsettings->hide_if('tool_opencast/deletetranscriptionworkflow_' . $instance->id,
-            'tool_opencast/transcriptionworkflow_' . $instance->id, 'eq', '');
+            new \admin_setting_configcheckbox('tool_opencast/enablemanagetranscription_' . $instance->id,
+                get_string('transcriptionsettingsenablemanage', 'tool_opencast'),
+                get_string('transcriptionsettingsenablemanage_desc', 'tool_opencast'), 0));
 
         $additionalsettings->add(
             new \admin_setting_configcheckbox('tool_opencast/allowdownloadtranscription_' . $instance->id,
                 get_string('allowdownloadtranscriptionsetting', 'tool_opencast'),
                 get_string('allowdownloadtranscriptionsetting_desc', 'tool_opencast'), 1));
         $additionalsettings->hide_if('tool_opencast/allowdownloadtranscription_' . $instance->id,
-            'tool_opencast/transcriptionworkflow_' . $instance->id, 'eq', '');
+            'tool_opencast/enablemanagetranscription_' . $instance->id, 'notchecked');
 
-        $defaulttranscriptionflavors = setting_default_manager::get_default_transcriptionflavors();
+        $additionalsettings->add(
+            new \admin_setting_configtext('tool_opencast/transcriptionworkflow_' . $instance->id,
+                get_string('transcriptionworkflow', 'tool_opencast'),
+                get_string('transcriptionworkflow_desc', 'tool_opencast'), 'publish', PARAM_TEXT));
 
-        $transcriptionflavors = new \admin_setting_configtext('tool_opencast/transcriptionflavors_' . $instanceid,
-        get_string('transcriptionflavors', 'tool_opencast'),
-        get_string('transcriptionflavors_desc', 'tool_opencast'), $defaulttranscriptionflavors);
+        $additionalsettings->add(
+            new \admin_setting_configtext('tool_opencast/deletetranscriptionworkflow_' . $instance->id,
+                get_string('deletetranscriptionworkflow', 'tool_opencast'),
+                get_string('deletetranscriptionworkflow_desc', 'tool_opencast'), 'publish', PARAM_TEXT));
+
+        $defaulttranscriptionlanguages = setting_default_manager::get_default_transcriptionlanguages();
+
+        $transcriptionlanguages = new \admin_setting_configtext('tool_opencast/transcriptionlanguages_' . $instanceid,
+            get_string('transcriptionlanguages', 'tool_opencast'),
+            get_string('transcriptionlanguages_desc', 'tool_opencast'), $defaulttranscriptionlanguages);
 
         // Crashes if plugins.php is opened because css cannot be included anymore.
         if ($PAGE->state !== \moodle_page::STATE_IN_BODY) {
             $PAGE->requires->js_call_amd('tool_opencast/tool_settings', 'init_additional_settings', [
-                $transcriptionflavors->get_id(),
+                $transcriptionlanguages->get_id(),
                 $instanceid,
             ]);
         }
 
-        $additionalsettings->add($transcriptionflavors);
+        $additionalsettings->add($transcriptionlanguages);
         $additionalsettings->add(
             new admin_setting_configeditabletable(
-                'tool_opencast/transcriptionflavorsoptions_' . $instance->id,
-                'transcriptionflavorsoptions_' . $instance->id,
-                get_string('addtranscriptionflavor', 'tool_opencast')));
-
-        $additionalsettings->hide_if('tool_opencast/transcriptionflavorsoptions_' . $instance->id,
-            'tool_opencast/transcriptionworkflow_' . $instance->id, 'eq', '');
-
-        $additionalsettings->add(new \admin_setting_configtext('tool_opencast/maxtranscriptionupload_' . $instance->id,
-            new \lang_string('maxtranscriptionupload', 'tool_opencast'),
-            get_string('maxtranscriptionupload_desc', 'tool_opencast'), 3, PARAM_INT
-        ));
-        $additionalsettings->hide_if('tool_opencast/maxtranscriptionupload_' . $instance->id,
-            'tool_opencast/transcriptionworkflow_' . $instance->id, 'eq', '');
+                'tool_opencast/transcriptionlanguagesoptions_' . $instance->id,
+                'transcriptionlanguagesoptions_' . $instance->id,
+                get_string('transcriptionaddnewlanguage', 'tool_opencast')));
 
         $additionalsettings->add(
             new \admin_setting_filetypes('tool_opencast/transcriptionfileextensions_' . $instance->id,
@@ -713,8 +711,6 @@ class admin_settings_builder {
                 get_string('transcriptionfileextensions_desc', 'tool_opencast',
                     $CFG->wwwroot . '/admin/tool/filetypes/index.php')
             ));
-        $additionalsettings->hide_if('tool_opencast/transcriptionfileextensions_' . $instance->id,
-            'tool_opencast/transcriptionworkflow_' . $instance->id, 'eq', '');
         // End of transcription upload settings.
         // Live Status Update.
         // Setting for live status update for processing as well as uploading events.
