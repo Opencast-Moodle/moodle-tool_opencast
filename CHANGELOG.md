@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+4.5.4 (2025-08-01)
+------------------
+* [FIX] #86, #87 Fix for behat test in maintenance mode
+* [CHANGES] #82 Mark old cURL methods as deprecated
+* [FEATURE] #84 Upgrade to oc-php-lib v1.9.0
+* [FEATURE] #92 Enhance maintenance handling
+
+
 4.5.3 (2025-01-16)
 ------------------
 * [FIX] #74 Refactor settings handling when propagating
