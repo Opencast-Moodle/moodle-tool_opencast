@@ -1,0 +1,215 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Page overview.
+ *
+ * @package    tool_opencast
+ * @copyright  2018 Tobias Reischmann, WWU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+require_once('../../../config.php');
+require_once('./renderer.php');
+
+use tool_opencast\groupaccess;
+use tool_opencast\local\apibridge;
+use tool_opencast\local\visibility_form;
+use tool_opencast\local\visibility_helper;
+use core\output\notification;
+use tool_opencast\local\settings_api;
+
+global $PAGE, $OUTPUT, $CFG;
+
+$identifier = required_param('identifier', PARAM_ALPHANUMEXT);
+$courseid = required_param('courseid', PARAM_INT);
+$ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinstance()->id, PARAM_INT);
+
+$baseurl = new moodle_url('/admin/tool/opencast/changevisibility.php',
+    ['identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$PAGE->set_url($baseurl);
+
+require_login($courseid, false);
+
+$PAGE->set_pagelayout('incourse');
+$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+
+$redirecturl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->navbar->add(get_string('changevisibility', 'tool_opencast'), $baseurl);
+
+// Check if the ACL control feature is enabled.
+if (get_config('tool_opencast', 'aclcontrolafter_' . $ocinstanceid) != true) {
+    throw new moodle_exception('ACL control feature not enabled', 'tool_opencast', $redirecturl);
+}
+
+// Capability check.
+$coursecontext = context_course::instance($courseid);
+require_capability('tool/opencast:addvideo', $coursecontext);
+
+$apibridge = apibridge::get_instance($ocinstanceid);
+$visibility = $apibridge->is_event_visible($identifier, $courseid);
+if ($visibility === tool_opencast_renderer::MIXED_VISIBILITY) {
+    $groups = groupaccess::get_record(['opencasteventid' => $identifier, 'ocinstanceid' => $ocinstanceid]);
+    if ($groups) {
+        $visibility = tool_opencast_renderer::GROUP;
+    } else {
+        $visibility = tool_opencast_renderer::HIDDEN;
+    }
+}
+$scheduledvisibility = visibility_helper::get_event_scheduled_visibility($ocinstanceid, $courseid, $identifier);
+
+$changevisibilityform = new visibility_form(null, ['courseid' => $courseid,
+    'identifier' => $identifier, 'visibility' => $visibility, 'ocinstanceid' => $ocinstanceid,
+    'scheduledvisibility' => $scheduledvisibility, ]);
+
+// Check if video exists.
+$courseseries = $apibridge->get_course_series($courseid);
+$video = null;
+foreach ($courseseries as $series) {
+    $videos = $apibridge->get_series_videos($series->series);
+    foreach ($videos->videos as $v) {
+        if ($v->identifier === $identifier) {
+            $video = $v;
+            break;
+        }
+    }
+    if ($video) {
+        break;
+    }
+}
+
+if (!$video) {
+    $message = get_string('videonotfound', 'tool_opencast');
+    redirect($redirecturl, $message);
+}
+
+if ($video->processing_state == 'RUNNING' || $video->processing_state == 'PAUSED') {
+    $message = get_string('worklowisrunning', 'tool_opencast');
+    redirect($redirecturl, $message, null, notification::NOTIFY_WARNING);
+}
+
+// Workflow is not set.
+if (get_config('tool_opencast', 'workflow_roles_' . $ocinstanceid) == "") {
+    $message = get_string('workflownotdefined', 'tool_opencast');
+    redirect($redirecturl, $message, null, \core\notification::ERROR);
+}
+
+if ($changevisibilityform->is_cancelled()) {
+    redirect($redirecturl);
+}
+
+if ($data = $changevisibilityform->get_data()) {
+    if (confirm_sesskey()) {
+
+        $visibilitycode = '';
+        $requestscheduling = false;
+        if (isset($data->enableschedulingchangevisibility) && boolval($data->enableschedulingchangevisibility)) {
+            $requestscheduling = true;
+        }
+        // Change current visibility, if it is different from the previous visibility status.
+        if ($visibility != $data->visibility) {
+            $groups = null;
+            if (property_exists($data, 'groups')) {
+                $groups = $data->groups;
+            }
+            $visibilitycode = $apibridge->change_visibility($identifier, $courseid, $data->visibility, $groups);
+            // If there is any error, redirect with error message and skip the scheduling process.
+            if ($visibilitycode === false) {
+                $text = get_string('aclroleschangeerror', 'tool_opencast', $video);
+                if ($requestscheduling) {
+                    $text .= get_string('scheduledvisibilitychangeskipped', 'tool_opencast');
+                }
+                redirect($redirecturl, $text, null, notification::NOTIFY_ERROR);
+            }
+        }
+
+        $schedulingcode = '';
+        $schedulingresult = true;
+        // Check if the scheduled visibility is set, we update the record.
+        if ($requestscheduling) {
+            $initialvisibilitygroups = null;
+            if ($data->visibility == tool_opencast_renderer::GROUP
+                && !empty($data->groups)) {
+                $initialvisibilitygroups = json_encode($data->groups);
+            }
+            $scheduledvisibilitygroups = null;
+            if ($data->scheduledvisibilitystatus == tool_opencast_renderer::GROUP
+                && !empty($data->scheduledvisibilitygroups)) {
+                $scheduledvisibilitygroups = json_encode($data->scheduledvisibilitygroups);
+            }
+
+            // If the record already exists, we update it.
+            if (!empty($scheduledvisibility)) {
+                $scheduledvisibility->scheduledvisibilitytime = $data->scheduledvisibilitytime;
+                $scheduledvisibility->scheduledvisibilitystatus = $data->scheduledvisibilitystatus;
+                $scheduledvisibility->scheduledvisibilitygroups = $scheduledvisibilitygroups;
+                $schedulingresult = visibility_helper::update_visibility_job($scheduledvisibility);
+                $schedulingcode = $schedulingresult ? 'scheduledvisibilitychangeupdated' : 'scheduledvisibilityupdatefailed';
+            } else {
+                // Otherwise, we create a new record.
+                $scheduledvisibility = new stdClass();
+                $scheduledvisibility->initialvisibilitystatus = $data->visibility;
+                $scheduledvisibility->initialvisibilitygroups = $initialvisibilitygroups;
+                $scheduledvisibility->scheduledvisibilitytime = $data->scheduledvisibilitytime;
+                $scheduledvisibility->scheduledvisibilitystatus = $data->scheduledvisibilitystatus;
+                $scheduledvisibility->scheduledvisibilitygroups = $scheduledvisibilitygroups;
+                $scheduledvisibility->ocinstanceid = $ocinstanceid;
+                $scheduledvisibility->courseid = $courseid;
+                $scheduledvisibility->opencasteventid = $identifier;
+                $schedulingresult = visibility_helper::save_visibility_job($scheduledvisibility);
+                $schedulingcode = $schedulingresult ? 'scheduledvisibilitychangecreated' : 'scheduledvisibilitycreatefailed';
+            }
+        } else if (!empty($scheduledvisibility)) {
+            // If disabled and there is a scheduled visibility record, that means that it has to be removed.
+            $schedulingresult = visibility_helper::delete_visibility_job($scheduledvisibility);
+            $schedulingcode = $schedulingresult ? 'scheduledvisibilitychangedeleted' : 'scheduledvisibilitydeletefailed';
+        }
+
+        $text = '';
+        $status = notification::NOTIFY_SUCCESS;
+        if (!empty($visibilitycode)) {
+            $text = get_string($visibilitycode, 'tool_opencast', $video);
+        }
+        if (!empty($schedulingcode)) {
+            if (!$schedulingresult) {
+                $status = empty($visibilitycode) ? notification::NOTIFY_ERROR :
+                    notification::NOTIFY_WARNING;
+            }
+            $schedulingtext = get_string($schedulingcode, 'tool_opencast');
+            $text = $text . (!empty($visibilitycode) ? '<br>' : '') . $schedulingtext;
+        }
+
+        // That happens when no changes are made to the visibility.
+        if (empty($text)) {
+            $text = get_string('novisibilitychange', 'tool_opencast');
+            $redirecturl = $baseurl;
+            $status = notification::NOTIFY_WARNING;
+        }
+        redirect($redirecturl, $text, null, $status);
+    }
+}
+
+$renderer = $PAGE->get_renderer('tool_opencast');
+
+echo $OUTPUT->header();
+if (!empty($scheduledvisibility) && intval($scheduledvisibility->status) == visibility_helper::STATUS_FAILED) {
+    echo $OUTPUT->notification(get_string('scheduledvisibilitychangefailed', 'tool_opencast'), 'error');
+}
+echo $OUTPUT->heading(get_string('changevisibility_header', 'tool_opencast', $video));
+$changevisibilityform->display();
+echo $OUTPUT->footer();

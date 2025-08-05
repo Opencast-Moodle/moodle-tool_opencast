@@ -14,13 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Tool opencast test data generator class
- *
- * @package tool_opencast
- * @copyright 2021 Tamara Gunkel, University of Münster
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+ use tool_opencast\local\upload_helper;
 
 /**
  * Tool opencast test data generator class
@@ -48,5 +42,58 @@ class tool_opencast_generator extends testing_module_generator {
             'ocinstanceid' => $data['ocinstanceid'],
         ];
         $DB->insert_record('tool_opencast_series', $series);
+    }
+
+    /**
+     * Creates a file.
+     * @param null $record
+     * @return stored_file
+     * @throws file_exception
+     * @throws moodle_exception
+     * @throws stored_file_creation_exception
+     */
+    public function create_file($record = null) {
+        global $USER;
+
+        if (!isset($record['courseid'])) {
+            throw new moodle_exception('course id missing');
+        }
+
+        $record['contextid'] = context_course::instance($record['courseid'])->id;
+        $record['component'] = 'tool_opencast';
+
+        if (!isset($record['filearea'])) {
+            $record['filearea'] = upload_helper::OC_FILEAREA;
+        }
+        $record['itemid'] = 0;
+
+        if (!isset($record['filepath'])) {
+            $record['filepath'] = '/';
+        }
+
+        if (!isset($record['filename'])) {
+            $record['filename'] = 'test.mp4';
+        }
+
+        if (!isset($record['userid'])) {
+            $record['userid'] = $USER->id;
+        }
+
+        $record['source'] = 'Copyright stuff';
+
+        if (!isset($record['author'])) {
+            $record['author'] = fullname($USER);
+        }
+
+        if (!isset($record['license'])) {
+            $record['license'] = 'cc';
+        }
+
+        if (!isset($record['filecontent'])) {
+            throw new moodle_exception('file is missing');
+        }
+
+        $fs = get_file_storage();
+        return $fs->create_file_from_string($record, $record['filecontent']);
     }
 }

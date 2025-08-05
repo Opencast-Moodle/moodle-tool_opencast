@@ -4,9 +4,9 @@ This tool provides API functions as well as general settings for the different o
 
 This file is part of the mod_opencast plugin for Moodle - <http://moodle.org/>
 
-*Maintainer:*   Thomas Niedermaier (Universität Münster), Farbod Zamani (Elan e.V.)
+*Maintainer:*   Thomas Niedermaier (University of Münster), Farbod Zamani (Elan e.V.)
 
-*Copyright:* 2024 Thomas Niedermaier, UNIVERSITÄT MÜNSTER
+*Copyright:* 2024 Thomas Niedermaier, University of Münster
 
 *License:*   [GNU GPL v3 or later](http://www.gnu.org/copyleft/gpl.html)
 

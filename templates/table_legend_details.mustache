@@ -1,0 +1,94 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tool_opencast/table_legend_details
+
+    This template renders the table containing details for table columns legend.
+
+    Example context (json):
+    {
+        "showstatusdetails": true,
+        "showvisibilitydetails": false
+    }
+}}
+<div class="p-1">
+    <table class="table table-striped">
+        {{#showstatusdetails}}
+            <tbody>
+            <tr>
+                <td>{{#pix}}succeeded, tool_opencast{{/pix}}</td>
+                <td>{{#str}}ocstatesucceeded, tool_opencast{{/str}}</td>
+                <td>{{#str}}legendocstatesucceededdesc, tool_opencast{{/str}}</td>
+            </tr>
+            <tr>
+                <td>{{#pix}}processing, tool_opencast{{/pix}}</td>
+                <td>{{#str}}ocstateprocessing, tool_opencast{{/str}}</td>
+                <td>{{#str}}legendocstateprocessingdesc, tool_opencast{{/str}}</td>
+            </tr>
+            <tr>
+                <td>{{#pix}}t/delete, core{{/pix}}</td>
+                <td>{{#str}}deleting, tool_opencast{{/str}}</td>
+                <td>{{#str}}legenddeletingdesc, tool_opencast{{/str}}</td>
+            </tr>
+            <tr>
+                <td>{{#pix}}e/cut, core{{/pix}}</td>
+                <td>{{#str}}ocstateneedscutting, tool_opencast{{/str}}</td>
+                <td>{{#str}}legendocstateneedscuttingdesc, tool_opencast{{/str}}</td>
+            </tr>
+            <tr>
+                <td>{{#pix}}capturing, tool_opencast{{/pix}}</td>
+                <td>{{#str}}ocstatecapturing, tool_opencast{{/str}}</td>
+                <td>{{#str}}legendocstatecapturingdesc, tool_opencast{{/str}}</td>
+            </tr>
+            <tr>
+                <td>{{#pix}}c/event, core{{/pix}}</td>
+                <td>{{#str}}planned, tool_opencast{{/str}}</td>
+                <td>{{#str}}legendplanneddesc, tool_opencast{{/str}}</td>
+            </tr>
+            <tr>
+                <td>{{#pix}}failed, tool_opencast{{/pix}}</td>
+                <td>{{#str}}ocstatefailed, tool_opencast{{/str}}</td>
+                <td>{{#str}}legendocstatefaileddesc, tool_opencast{{/str}}</td>
+            </tr>
+            </tbody>
+        {{/showstatusdetails}}
+        {{#showvisibilitydetails}}
+            <tbody>
+            <tr>
+                <td>{{#pix}}t/show, core{{/pix}}</td>
+                <td>{{#str}}legendvisibility_hidden, tool_opencast{{/str}}</td>
+                <td>{{#str}}legendvisibility_hiddendesc, tool_opencast{{/str}}</td>
+            </tr>
+            <tr>
+                <td>{{#pix}}t/hide, core{{/pix}}</td>
+                <td>{{#str}}legendvisibility_visible, tool_opencast{{/str}}</td>
+                <td>{{#str}}legendvisibility_visibledesc, tool_opencast{{/str}}</td>
+            </tr>
+            <tr>
+                <td>{{#pix}}i/warning, core{{/pix}}</td>
+                <td>{{#str}}legendvisibility_mixed, tool_opencast{{/str}}</td>
+                <td>{{#str}}legendvisibility_mixeddesc, tool_opencast{{/str}}</td>
+            </tr>
+            <tr>
+                <td>{{#pix}}t/groups, core{{/pix}}</td>
+                <td>{{#str}}legendvisibility_group, tool_opencast{{/str}}</td>
+                <td>{{#str}}legendvisibility_groupdesc, tool_opencast{{/str}}</td>
+            </tr>
+            </tbody>
+        {{/showvisibilitydetails}}
+    </table>
+</div>

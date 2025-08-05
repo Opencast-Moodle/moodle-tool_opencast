@@ -1,6 +1,24 @@
 CHANGELOG
 =========
 
+5.0.0 (2025-08-01)
+------------------
+* [FEATURE] The Opencast Course Overview is now accessible via the course navigation bar
+* [CHANGE] Most features from the Opencast Block plugin have been moved to
+the Opencast Tool plugin. The Opencast Block plugin is now optional.
+* [CHANGE] The course backup functionality has changed. The option to select
+individual events has been removed.\
+Two site-wide admin settings (`importvideosonbackup`) and (`importreducedduplication`) have been added.\
+If (`importvideosonbackup`) is enabled, videos will be backed up during course backups.\
+If (`importreducedduplication`) is enabled, only the events and series embedded via LTI or the Opencast
+activity module will be backed up.\
+If disabled (default), all events from
+the course will be included in the backup.
+* [CHANGE] Introducing workflows config panel json compatibility
+* [CHANGE] Refactor and upgrade transcription feature
+* Moodle 5.0 compatible version
+
+
 4.5.4 (2025-08-01)
 ------------------
 * [FIX] #86, #87 Fix for behat test in maintenance mode
@@ -25,5 +43,5 @@ CHANGELOG
  
 4.5.0 (2024-11-12)
 ------------------
-Moodle 4.5 compatible version
+* Moodle 4.5 compatible version
 

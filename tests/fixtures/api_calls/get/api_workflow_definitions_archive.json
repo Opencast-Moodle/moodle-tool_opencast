@@ -1,0 +1,38 @@
+{
+  "resource": "/api/workflow-definitions?filter=tag:archive",
+  "status": 200,
+  "body": [
+    {
+      "identifier": "duplicate-event",
+      "description": "",
+      "title": "Duplicate Event",
+      "tags": [
+        "archive"
+      ]
+    },
+    {
+      "identifier": "publish",
+      "description": "",
+      "title": "Publish",
+      "tags": [
+        "archive"
+      ]
+    },
+    {
+      "identifier": "republish-metadata",
+      "description": "",
+      "title": "Republish metadata",
+      "tags": [
+        "archive"
+      ]
+    },
+    {
+      "identifier": "retract",
+      "description": "Retract a recording",
+      "title": "Retract",
+      "tags": [
+        "archive"
+      ]
+    }
+  ]
+}

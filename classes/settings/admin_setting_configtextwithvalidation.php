@@ -91,8 +91,8 @@ class admin_setting_configtextwithvalidation extends \admin_setting_configtext {
             }
 
             // Block settings.
-            if (core_plugin_manager::instance()->get_plugin_info('block_opencast')) {
-                $blocksettings = $adminroot->locate('block_opencast');
+            if (core_plugin_manager::instance()->get_plugin_info('tool_opencast')) {
+                $blocksettings = $adminroot->locate('tool_opencast');
                 foreach ($blocksettings->get_children() as $category) {
                     // Making sure that category is current.
                     if (!$this->is_setting_current($category->name, $newocinstanceids)) {
@@ -240,7 +240,7 @@ class admin_setting_configtextwithvalidation extends \admin_setting_configtext {
         // Setting plugins to loop through and find configs to delete.
         $plugins = [
             'tool_opencast',
-            'block_opencast',
+            'tool_opencast',
             'mod_opencast',
             'filter_opencast',
         ];
