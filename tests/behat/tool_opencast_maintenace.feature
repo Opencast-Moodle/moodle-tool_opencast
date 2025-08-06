@@ -90,9 +90,7 @@ Feature: Configure and check maintenance
     And I setup block plugin
     And I make sure the block drawer keeps opened
     And I am on "Course 1" course homepage with editing mode on
-    And I add the "Opencast Videos" block
-    And I wait "2" seconds
-    And I reload the page
+    And I navigate to "Opencast API" in current page administration
     And I should see "Opencast Videos"
     And the following config values are set as admin:
     | maintenancemode_1                     | 2                                 | tool_opencast |

@@ -9,3 +9,6 @@ on: [ push, pull_request ]
 jobs:
   call-moodle-ci-workflow:
     uses: Opencast-Moodle/moodle-workflows-opencast/.github/workflows/moodle-ci.yml@main
+    with:
+      requires-block-plugin: true
+      branch-block-plugin: upgrade-500
