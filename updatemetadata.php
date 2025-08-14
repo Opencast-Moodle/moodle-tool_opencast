@@ -55,9 +55,9 @@ if ($redirectpage == 'overviewvideos') {
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+$PAGE->set_title(get_string('servicename', 'tool_opencast'));
+$PAGE->set_heading(get_string('servicename', 'tool_opencast'));
+$PAGE->navbar->add(get_string('servicename', 'tool_opencast'), $redirecturl);
 $PAGE->navbar->add(get_string('updatemetadata', 'tool_opencast'), $baseurl);
 
 // Capability check.

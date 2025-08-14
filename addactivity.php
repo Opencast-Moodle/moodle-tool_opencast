@@ -48,9 +48,9 @@ $redirecturlcourse = new moodle_url('/course/view.php', ['id' => $courseid]);
 require_login($courseid, false);
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturloverview);
+$PAGE->set_title(get_string('servicename', 'tool_opencast'));
+$PAGE->set_heading(get_string('servicename', 'tool_opencast'));
+$PAGE->navbar->add(get_string('servicename', 'tool_opencast'), $redirecturloverview);
 $PAGE->navbar->add(get_string('addactivity_addbuttontitle', 'tool_opencast'), $baseurl);
 
 // Check if the Opencast Activity module feature is enabled and working.

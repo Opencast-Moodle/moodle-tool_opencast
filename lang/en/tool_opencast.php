@@ -866,6 +866,7 @@ $string['seriesoverview'] = 'Series overview';
 $string['seriesoverviewexplanation'] = 'Here you can see all series that are used in any course where you have the permission to manage videos.<br>Series might be manageable by the block in the course and/or might be provided as activity to the students.';
 $string['seriesoverviewof'] = 'Series overview of {$a} instance';
 $string['serverconnectionerror'] = 'There was a problem with the connection to the Opencast server. Please check your Opencast API credentials and your network settings.';
+$string['servicename'] = 'Opencast';
 $string['setdefaultseries'] = 'Do you really want to use this series as new default series?';
 $string['setdefaultseries_heading'] = 'Set default series';
 $string['setdefaultseriesfailed'] = 'Changing the default series failed. Please try again later or contact an administrator.';
