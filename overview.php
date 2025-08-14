@@ -43,7 +43,7 @@ $PAGE->set_context(context_system::instance());
 
 require_login(get_course($SITE->id), false);
 $PAGE->set_pagelayout('standard');
-$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_title(get_string('servicename', 'tool_opencast'));
 
 $courses = get_user_capability_course('tool/opencast:viewunpublishedvideos');
 
@@ -51,9 +51,9 @@ $apibridge = apibridge::get_instance($ocinstanceid);
 $opencasterror = null;
 
 if (settings_api::num_ocinstances() > 1) {
-    $PAGE->set_heading(get_string('pluginname', 'tool_opencast') . ': ' . settings_api::get_ocinstance($ocinstanceid)->name);
+    $PAGE->set_heading(get_string('servicename', 'tool_opencast') . ': ' . settings_api::get_ocinstance($ocinstanceid)->name);
 } else {
-    $PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+    $PAGE->set_heading(get_string('servicename', 'tool_opencast'));
 }
 
 $PAGE->navbar->add(get_string('opencastseries', 'tool_opencast'), $baseurl);

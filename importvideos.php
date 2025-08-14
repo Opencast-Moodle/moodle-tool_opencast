@@ -72,9 +72,9 @@ require_login($courseid, false);
 
 // Set page and navbar properties.
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturloverview);
+$PAGE->set_title(get_string('servicename', 'tool_opencast'));
+$PAGE->set_heading(get_string('servicename', 'tool_opencast'));
+$PAGE->navbar->add(get_string('servicename', 'tool_opencast'), $redirecturloverview);
 $PAGE->navbar->add(get_string('importvideos_importbuttontitle', 'tool_opencast'), $baseurl);
 
 // Check if the manual import videos feature is enabled and working.

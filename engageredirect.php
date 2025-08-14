@@ -49,7 +49,7 @@ $context = context_course::instance($courseid);
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_title(get_string('engageredirect', 'tool_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_heading(get_string('servicename', 'tool_opencast'));
 
 $endpoint = get_config('tool_opencast', 'engageurl_' . $ocinstanceid);
 

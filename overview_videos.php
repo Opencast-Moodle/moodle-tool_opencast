@@ -42,15 +42,15 @@ $PAGE->set_context(context_system::instance());
 
 require_login(get_course($SITE->id), false);
 $PAGE->set_pagelayout('standard');
-$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_title(get_string('servicename', 'tool_opencast'));
 
 $apibridge = apibridge::get_instance($ocinstanceid);
 $opencasterror = null;
 
 if (settings_api::num_ocinstances() > 1) {
-    $PAGE->set_heading(get_string('pluginname', 'tool_opencast') . ': ' . settings_api::get_ocinstance($ocinstanceid)->name);
+    $PAGE->set_heading(get_string('servicename', 'tool_opencast') . ': ' . settings_api::get_ocinstance($ocinstanceid)->name);
 } else {
-    $PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+    $PAGE->set_heading(get_string('servicename', 'tool_opencast'));
 }
 
 /** @var tool_opencast_renderer $renderer */
@@ -110,7 +110,7 @@ $isseriesowner = $ocseries && ($apibridge->is_owner($ocseries->acl, $USER->id, $
 
 $PAGE->navbar->add(get_string('opencastseries', 'tool_opencast'),
     new moodle_url('/admin/tool/opencast/overview.php', ['ocinstanceid' => $ocinstanceid]));
-$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $baseurl);
+$PAGE->navbar->add(get_string('servicename', 'tool_opencast'), $baseurl);
 $PAGE->requires->js_call_amd('tool_opencast/block_massaction', 'init',
     [
         $SITE->id,

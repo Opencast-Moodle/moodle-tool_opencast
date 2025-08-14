@@ -52,8 +52,8 @@ require_login($courseid, false);
 
 $PAGE->set_pagelayout('popup');
 $PAGE->set_title(get_string('downloadtranscription', 'tool_opencast'));
-$PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
-$PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $indexurl);
+$PAGE->set_heading(get_string('servicename', 'tool_opencast'));
+$PAGE->navbar->add(get_string('servicename', 'tool_opencast'), $indexurl);
 $PAGE->navbar->add(get_string('managetranscriptions', 'tool_opencast'), $redirecturl);
 $PAGE->navbar->add(get_string('downloadtranscription', 'tool_opencast'), $baseurl);
 
