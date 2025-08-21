@@ -41,7 +41,6 @@ use tool_opencast\exception\opencast_api_response_exception;
  */
 class setting_helper {
 
-
     /**
      * Validate if the selected workflow does indeed exist.
      *
@@ -75,6 +74,7 @@ class setting_helper {
 
     /**
      * Returns available workflows with the given tag.
+     *
      * @param int $ocinstanceid Opencast instance id.
      * @param string $workflowtags comma separated list of tags
      * @return array|opencast_api_response_exception|Exception|empty_configuration_exception|null
@@ -133,23 +133,31 @@ class setting_helper {
                 return get_string('role_not_permanent', 'tool_opencast');
             }
 
-            $userrelated = false;
-            $userplaceholders = ['[USERNAME]', '[USERNAME_LOW]', '[USERNAME_UP]', '[USER_EMAIL]', '[USER_EXTERNAL_ID]'];
-            foreach ($userplaceholders as $placeholder) {
-                if (strpos($data, $placeholder) !== false) {
-                    $userrelated = true;
-                    break;
-                }
-            }
-
-            if (!$userrelated) {
-                // Role is not user-related.
-                return get_string('role_not_user_related', 'tool_opencast');
-            }
-
-            return true;
+            return self::validate_user_role_placeholder($data);
         }
 
         return true;
     }
+
+    /**
+     * Validates if the role contains a user-related placeholder.
+     *
+     * Checks if the provided role string includes any of the predefined
+     * user-related placeholders.
+     *
+     * @param string $data The role string to validate.
+     * @return bool|lang_string|string Returns true if valid, or an error message if invalid.
+     */
+    public static function validate_user_role_placeholder($data): bool | lang_string | string {
+        $userplaceholders = ['[USERNAME]', '[USERNAME_LOW]', '[USERNAME_UP]', '[USER_EMAIL]', '[USER_EXTERNAL_ID]'];
+
+        foreach ($userplaceholders as $placeholder) {
+            if (str_contains($data, $placeholder)) {
+                return true;
+            }
+        }
+
+        return get_string('role_not_user_related', 'tool_opencast');
+    }
+
 }
