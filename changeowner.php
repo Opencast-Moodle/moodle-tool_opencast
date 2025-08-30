@@ -104,9 +104,9 @@ if (!$isowner &&
     throw new moodle_exception(get_string('userisntowner', 'tool_opencast'));
 } else {
     $PAGE->set_pagelayout('incourse');
-    $PAGE->set_title(get_string('pluginname', 'tool_opencast'));
-    $PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
-    $PAGE->navbar->add(get_string('pluginname', 'tool_opencast'), $redirecturl);
+    $PAGE->set_title(get_string('servicename', 'tool_opencast'));
+    $PAGE->set_heading(get_string('servicename', 'tool_opencast'));
+    $PAGE->navbar->add(get_string('servicename', 'tool_opencast'), $redirecturl);
     $PAGE->navbar->add(get_string('changeowner', 'tool_opencast'), $baseurl);
 
     $excludeusers = [];
