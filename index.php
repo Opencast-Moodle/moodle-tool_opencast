@@ -32,6 +32,7 @@ use tool_opencast\local\upload_helper;
 use tool_opencast\exception\opencast_api_response_exception;
 use core\notification;
 use tool_opencast\local\settings_api;
+
 require_once('../../../config.php');
 require_once($CFG->dirroot . '/lib/tablelib.php');
 
@@ -92,12 +93,12 @@ $PAGE->requires->js_call_amd('tool_opencast/block_massaction', 'init',
     ]
 );
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('pluginname', 'tool_opencast'));
+$PAGE->set_title(get_string('servicename', 'tool_opencast'));
 
 if (settings_api::num_ocinstances() > 1) {
-    $PAGE->set_heading(get_string('pluginname', 'tool_opencast') . ': ' . settings_api::get_ocinstance($ocinstanceid)->name);
+    $PAGE->set_heading(get_string('servicename', 'tool_opencast') . ': ' . settings_api::get_ocinstance($ocinstanceid)->name);
 } else {
-    $PAGE->set_heading(get_string('pluginname', 'tool_opencast'));
+    $PAGE->set_heading(get_string('servicename', 'tool_opencast'));
 }
 
 $PAGE->navbar->add(get_string('overview', 'tool_opencast'), $baseurl);
