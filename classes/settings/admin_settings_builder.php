@@ -29,9 +29,9 @@ use tool_opencast\setting_default_manager;
 
 
 require_once(__DIR__ . '/admin_setting_configeditabletable.php');
-require_once(__DIR__ . '/../admin_setting_hiddenhelpbtn.php');
-require_once(__DIR__ . '/../setting_helper.php');
-require_once(__DIR__ . '/../admin_setting_configtextvalidate.php');
+require_once(__DIR__ . '/admin_setting_hiddenhelpbtn.php');
+require_once(__DIR__ . '/setting_helper.php');
+require_once(__DIR__ . '/admin_setting_configtextvalidate.php');
 
 
 /**
