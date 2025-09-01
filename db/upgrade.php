@@ -291,7 +291,7 @@ function remove_default_opencast_instance_settings_without_id(): bool {
 
     $defaultocinstanceid = $defaultocinstance->id;
 
-        try {
+    try {
         replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'apiurl');
         replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'apiusername');
         replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'apipassword');

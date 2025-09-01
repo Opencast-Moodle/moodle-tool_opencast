@@ -83,23 +83,6 @@ if ($addtranscriptionform->is_cancelled()) {
 }
 
 if ($data = $addtranscriptionform->get_data()) {
-    /* $storedfile = $addtranscriptionform->save_stored_file('transcription_file', $coursecontext->id,
-        'tool_opencast', attachment_helper::OC_FILEAREA_ATTACHMENT, $data->transcription_file);
-    $flavor = $data->transcription_flavor;
-    if (isset($storedfile) && $storedfile && !empty($flavor)) {
-        $success = attachment_helper::upload_single_transcription($storedfile, $flavor, $ocinstanceid, $identifier);
-        $message = get_string('transcriptionuploadsuccessed', 'tool_opencast');
-        $status = notification::NOTIFY_SUCCESS;
-        if (!$success) {
-            $message = get_string('transcriptionuploadfailed', 'tool_opencast');
-            $status = notification::NOTIFY_ERROR;
-        }
-        attachment_helper::remove_single_transcription_file($storedfile->get_itemid());
-        redirect($redirecturl, $message, null, $status);
-    } else {
-        redirect($redirecturl,
-            get_string('missingtranscriptionuploadparams', 'tool_opencast'), null, notification::NOTIFY_ERROR);
-    } */
     $languagesarray = json_decode($transcriptionlanguagesconfig) ?? [];
     $storedlanguagefiles = [];
     foreach ($languagesarray as $language) {
