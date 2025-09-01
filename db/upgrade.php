@@ -156,6 +156,112 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, $newversion, 'tool', 'opencast');
     }
 
+    if ($oldversion < 2025080100) {
+
+        // Changes for migrating most of the block admin setting to tool in version 5.
+
+        // Migrate admin settings in config_plugin table.
+        // Loop through records and rename the setting if not done yet.
+        $records = $DB->get_records_select('config_plugins',
+            "plugin = 'block_opencast' AND name != 'version'");
+        foreach ($records as $record) {
+            if (!$existingrecord = $DB->get_record('config_plugins', ['name' => $record->name, 'plugin' => 'tool_opencast'])) {
+                $record->plugin = 'tool_opencast';
+                $DB->update_record('config_plugins', $record);
+            } else {
+                $existingrecord->value = $record->value;
+                $DB->update_record('config_plugins', $existingrecord);
+                $DB->delete_records('config_plugins', ['name' => $record->name, 'plugin' => 'block_opencast']);
+            }
+        }
+
+        // Migrate tables.
+        $tableuploadjob = new xmldb_table('block_opencast_uploadjob');
+        if ($dbman->table_exists($tableuploadjob)) {
+            $dbman->rename_table($tableuploadjob, 'tool_opencast_uploadjob');
+        }
+
+        $tabledeletejob = new xmldb_table('block_opencast_deletejob');
+        if ($dbman->table_exists($tabledeletejob)) {
+            $dbman->rename_table($tabledeletejob, 'tool_opencast_deletejob');
+        }
+
+        $tablegroupaccess = new xmldb_table('block_opencast_groupaccess');
+        if ($dbman->table_exists($tablegroupaccess)) {
+            $dbman->rename_table($tablegroupaccess, 'tool_opencast_groupaccess');
+        }
+
+        $tabledraftitemid = new xmldb_table('block_opencast_draftitemid');
+        if ($dbman->table_exists($tabledraftitemid)) {
+            $dbman->rename_table($tabledraftitemid, 'tool_opencast_draftitemid');
+        }
+
+        $tablemetadata = new xmldb_table('block_opencast_metadata');
+        if ($dbman->table_exists($tablemetadata)) {
+            $dbman->rename_table($tablemetadata, 'tool_opencast_metadata');
+        }
+
+        $tableltimodule = new xmldb_table('block_opencast_ltimodule');
+        if ($dbman->table_exists($tableltimodule)) {
+            $dbman->rename_table($tableltimodule, 'tool_opencast_ltimodule');
+        }
+
+        $tableltiepisode = new xmldb_table('block_opencast_ltiepisode');
+        if ($dbman->table_exists($tableltiepisode)) {
+            $dbman->rename_table($tableltiepisode, 'tool_opencast_ltiepisode');
+        }
+
+        $tableltiepisodecu = new xmldb_table('block_opencast_ltiepisode_cu');
+        if ($dbman->table_exists($tableltiepisodecu)) {
+            $dbman->rename_table($tableltiepisodecu, 'tool_opencast_ltiepisode_cu');
+        }
+
+        $tablenotifications = new xmldb_table('block_opencast_notifications');
+        if ($dbman->table_exists($tablenotifications)) {
+            $dbman->rename_table($tablenotifications, 'tool_opencast_notifications');
+        }
+
+        $tablevisibility = new xmldb_table('block_opencast_visibility');
+        if ($dbman->table_exists($tablevisibility)) {
+            $dbman->rename_table($tablevisibility, 'tool_opencast_visibility');
+        }
+
+        $tableuserdefault = new xmldb_table('block_opencast_user_default');
+        if ($dbman->table_exists($tableuserdefault)) {
+            $dbman->rename_table($tableuserdefault, 'tool_opencast_user_default');
+        }
+
+        $tableattachments = new xmldb_table('block_opencast_attachments');
+        if ($dbman->table_exists($tableattachments)) {
+            $dbman->rename_table($tableattachments, 'tool_opencast_attachments');
+        }
+
+        $tableimportmapping = new xmldb_table('block_opencast_importmapping');
+        if ($dbman->table_exists($tableimportmapping)) {
+            $dbman->rename_table($tableimportmapping, 'tool_opencast_importmapping');
+        }
+
+        // Migrate the queued adhoc tasks.
+        $tasks = [
+            '\block_opencast\task\process_duplicate_event',
+            '\block_opencast\task\process_duplicated_event_module_fix',
+            '\block_opencast\task\process_duplicated_event_visibility_change',
+        ];
+        foreach ($tasks as $task) {
+            $sql = "SELECT * FROM {task_adhoc} WHERE component = 'block_opencast' AND classname = '" . $task . "'";
+            // Change component.
+            $DB->execute("UPDATE {task_adhoc} SET component='tool_opencast'
+            WHERE component = 'block_opencast' AND classname = '" . $task . "'");
+            // Change classname.
+            $newclassname = str_replace('block_opencast', 'tool_opencast', $task);
+            $DB->execute("UPDATE {task_adhoc} SET classname='" . $newclassname .
+                "' WHERE component = 'tool_opencast' AND classname = '" . $task . "'");
+        }
+
+        upgrade_block_savepoint(true, 2025080100, 'opencast');
+
+    }
+
     return true;
 }
 
@@ -185,7 +291,7 @@ function remove_default_opencast_instance_settings_without_id(): bool {
 
     $defaultocinstanceid = $defaultocinstance->id;
 
-    try {
+        try {
         replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'apiurl');
         replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'apiusername');
         replace_default_opencast_instance_setting_without_id($defaultocinstanceid, 'apipassword');

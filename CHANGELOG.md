@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+5.0.1 (2025-09-01)
+------------------
+* [CHANGE] upgrade.php: make sure to run upgrade job for version 5.0 without errors
+* [CHANGE] #95 Updates the composer-managed dependencies and bumps the CI PHP version to 8.4
+* [CHANGE] #96 Introduces a new language string servicename for end-user-facing pages
+* [CHANGE] #98 Refactor settings helper: Moved user placeholder validation logic to a separate function to
+  decouple it from ACL owner validation
+* [FIXED] #97 The declared namespace and the location of the class files did occasionally not match
+
+
 5.0.0 (2025-08-01)
 ------------------
 * [FEATURE] The Opencast Course Overview is now accessible via the course navigation bar
