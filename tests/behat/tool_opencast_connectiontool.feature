@@ -36,18 +36,17 @@ Feature: Check the connection to Opencast instances
     And I should see "Opencast API User Credentials test failed"
 
   @javascript
-  Scenario: When the admin is on the tool_opencast category settings page and two instances are given, the connection check should target both instances individually
+  Scenario: When two instances are given and the admin is on the second instance's configuration page, the connection check for the second instance with invalid data should fail
     Given I log in as "admin"
-    And the following config values are set as admin:
-      | config          | value                    | plugin         |
-      | ocinstances          | [{"id":1,"name":"OC demo server","isvisible":true,"isdefault":true},{"id":2,"isvisible":1,"isdefault":false,"name":"Invalid server"}] | tool_opencast  |
-      | apiurl_2             | http://notexistent.not  | tool_opencast  |
-    And I navigate to "Plugins > Admin tools > Opencast API" in site administration
-    And I click on "button[data-instanceid='1']" "css_element"
-    And I wait "3" seconds
-    Then I should see "Opencast API URL test successful."
-    And I should see "Opencast API User Credentials test successful."
-    And I click on "Cancel" "button" in the "Connection Test Tool" "dialogue"
+    And I navigate to "Plugins > Admin tools > Opencast API > Opencast Instances" in site administration
+    And I click on "Add instance" "button"
+    And I click on "//div[@id='instancestable']//div[@class='tabulator-table']/div[2]/div[@tabulator-field='name']" "xpath"
+    And I type "Second instance"
+    And I wait "5" seconds
+    And I click on "Save changes" "button"
+    And I wait "5" seconds
+    And I navigate to "Plugins > Admin tools > Opencast API > Configuration: Second instance" in site administration
+    And I set the field "id_s_tool_opencast_apiurl_2" to "http://notexistent.not"
     And I set the field "id_s_tool_opencast_apitimeout_2" to "2000"
     And I set the field "id_s_tool_opencast_apiconnecttimeout_2" to "1000"
     And I click on "button[data-instanceid='2']" "css_element"

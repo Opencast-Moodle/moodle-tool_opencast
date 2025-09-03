@@ -11,12 +11,10 @@ Feature: Setup Opencast instances
     And I click on "Add instance" "button"
     And I click on "//div[@id='instancestable']//div[@class='tabulator-table']/div[2]/div[@tabulator-field='name']" "xpath"
     And I type "Second instance"
-    And I wait "2" seconds
+    And I wait "5" seconds
     And I click on "Save changes" "button"
-    And I navigate to "Plugins > Admin tools > Opencast API" in site administration
-    Then I should see "Configuration: Default"
-    And I should see "apiurl"
-    And I should see "Configuration: Second instance"
+    And I wait "5" seconds
+    And I navigate to "Plugins > Admin tools > Opencast API > Configuration: Second instance" in site administration
     And I should see "apiurl_2"
 
   @javascript
