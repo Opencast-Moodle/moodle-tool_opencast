@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+5.0.2 (2025-09-22)
+------------------
+* [FIXED] upgrade.php: fix wrong savepoint statement
+
+
 5.0.1 (2025-09-01)
 ------------------
 * [CHANGE] upgrade.php: make sure to run upgrade job for version 5.0 without errors

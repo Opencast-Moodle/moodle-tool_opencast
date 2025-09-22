@@ -258,7 +258,7 @@ function xmldb_tool_opencast_upgrade($oldversion) {
                 "' WHERE component = 'tool_opencast' AND classname = '" . $task . "'");
         }
 
-        upgrade_block_savepoint(true, 2025080100, 'opencast');
+        upgrade_plugin_savepoint(true, 2025080100, 'tool', 'opencast');
 
     }
 
