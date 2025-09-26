@@ -17,6 +17,7 @@
 namespace tool_opencast\settings;
 
 use admin_category;
+use admin_settingpage;
 use core_plugin_manager;
 
 /**
@@ -117,17 +118,44 @@ class admin_setting_configtextwithvalidation extends \admin_setting_configtext {
 
             // Activity settings.
             if (core_plugin_manager::instance()->get_plugin_info('mod_opencast')) {
-                $modsettings = $adminroot->locate('modsettingopencast');
-                $modchildsettings = property_exists($modsettings, 'settings') ? $modsettings->settings : [];
-                foreach ($modchildsettings as $name => $setting) {
-                    // Making sure that setting is current.
-                    if (!$this->is_setting_current($name, $newocinstanceids)) {
-                        continue;
+                // Old Settings in mod_opencast plugin.
+                $modsettingopencast = $adminroot->locate('modsettingopencast');
+                if (!empty($modsettingopencast)) {
+                    $modchildsettings = property_exists($modsettingopencast, 'settings') ? $modsettingopencast->settings : [];
+                    foreach ($modchildsettings as $name => $setting) {
+                        // Making sure that setting is current.
+                        if (!$this->is_setting_current($name, $newocinstanceids)) {
+                            continue;
+                        }
+                        $data = $setting->get_setting();
+                        if (is_null($data)) {
+                            $data = $setting->get_defaultsetting();
+                            $setting->write_setting($data);
+                        }
                     }
-                    $data = $setting->get_setting();
-                    if (is_null($data)) {
-                        $data = $setting->get_defaultsetting();
-                        $setting->write_setting($data);
+                }
+                // New Settings in mod_opencast plugin.
+                $modopencast = $adminroot->locate('mod_opencast');
+                if (!empty($modopencast) && !empty($modopencast->get_children())) {
+                    foreach ($modopencast->get_children() as $settingspage) {
+                        // Making sure that setting page is current.
+                        if (!$this->is_setting_current($settingspage->name, $newocinstanceids)) {
+                            continue;
+                        }
+                        if ($settingspage instanceof admin_settingpage) {
+                            $modchildsettings = property_exists($settingspage, 'settings') ? $settingspage->settings : [];
+                            foreach ($modchildsettings as $name => $setting) {
+                                // Making sure that setting is current.
+                                if (!$this->is_setting_current($name, $newocinstanceids)) {
+                                    continue;
+                                }
+                                $data = $setting->get_setting();
+                                if (is_null($data)) {
+                                    $data = $setting->get_defaultsetting();
+                                    $setting->write_setting($data);
+                                }
+                            }
+                        }
                     }
                 }
             }
