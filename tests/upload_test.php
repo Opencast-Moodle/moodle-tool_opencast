@@ -229,7 +229,7 @@ final class upload_test extends advanced_testcase {
      */
     private function notest_ensure_video_processed($identifier, $apibridge) {
         $isprocessed = false;
-        $limiter = 15;
+        $limiter = 30;
         $counter = 0;
         do {
             $isprocessed = $this->notest_check_processed_video($identifier, $apibridge);
