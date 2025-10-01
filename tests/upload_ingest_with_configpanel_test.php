@@ -159,7 +159,7 @@ final class upload_ingest_with_configpanel_test extends advanced_testcase {
             }
         } while (!$isuploaded);
 
-        $this->assertEquals(false, $isuploaded, 'Video was not uploaded after reaching the maximum number of retries.');
+        $this->assertEquals(true, $isuploaded, 'Video was not uploaded after reaching the maximum number of retries.');
 
         // Check if video was uploaded.
         $videos = $apibridge->get_course_videos($course->id);
