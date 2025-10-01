@@ -88,7 +88,7 @@ final class upload_ingest_with_configpanel_test extends advanced_testcase {
         set_config('apitimeout_1', $this->apitimeout, 'tool_opencast');
         set_config('apiconnecttimeout_1', $this->apiconnecttimeout, 'tool_opencast');
         set_config('ingestupload_1', 1, 'tool_opencast');
-        set_config('uploadworkflow_1', 'schedule-and-upload', 'tool_opencast');
+        set_config('uploadworkflow_1', 'fast', 'tool_opencast');
         set_config('enableuploadwfconfigpanel_1', 1, 'tool_opencast');
         set_config('alloweduploadwfconfigs_1', 'straightToPublishing', 'tool_opencast');
         set_config('limituploadjobs_1', 2, 'tool_opencast');
@@ -158,6 +158,8 @@ final class upload_ingest_with_configpanel_test extends advanced_testcase {
                 break;
             }
         } while (!$isuploaded);
+
+        $this->assertEquals(false, $isuploaded, 'Video was not uploaded after reaching the maximum number of retries.');
 
         // Check if video was uploaded.
         $videos = $apibridge->get_course_videos($course->id);
