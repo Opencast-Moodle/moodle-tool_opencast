@@ -403,7 +403,7 @@ class attachment_helper {
         $apibridge = apibridge::get_instance($ocinstanceid);
         $opencastversion = $apibridge->get_opencast_version();
         // Main support happens here, as for Opencast 16 and above the endpoint /api/events/../track can handle tags.
-        if (false/* version_compare($opencastversion, '16.0.0', '>=') */) {
+        if (version_compare($opencastversion, '16.0.0', '>=')) {
             foreach ($storedlanguagefiles as $lang => $file) {
                 $subtitletags = $basesubtitletags;
                 $subtitletags[] = "lang:$lang";
