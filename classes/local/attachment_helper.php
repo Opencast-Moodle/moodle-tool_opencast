@@ -403,7 +403,7 @@ class attachment_helper {
         $apibridge = apibridge::get_instance($ocinstanceid);
         $opencastversion = $apibridge->get_opencast_version();
         // Main support happens here, as for Opencast 16 and above the endpoint /api/events/../track can handle tags.
-        if (version_compare($opencastversion, '16.0.0', '>=')) {
+        if (false/* version_compare($opencastversion, '16.0.0', '>=') */) {
             foreach ($storedlanguagefiles as $lang => $file) {
                 $subtitletags = $basesubtitletags;
                 $subtitletags[] = "lang:$lang";
@@ -423,14 +423,13 @@ class attachment_helper {
             foreach ($storedlanguagefiles as $lang => $file) {
                 $subtitletags = $basesubtitletags;
                 $subtitletags[] = "lang:$lang";
-                $filestream = $apibridge->get_upload_filestream($file, 'file');
                 $mediapackagestr = self::removing_existing_transcription_in_mediapackage(
                     $mediapackagestr,
                     $mainmanualflavor,
                     $subtitletags
                 );
                 // Now that the existing are removed, we perform the add track via ingest.
-                $mediapackagestr = $apibridge->ingest_add_track($mediapackagestr, $mainmanualflavor, $filestream, $subtitletags);
+                $mediapackagestr = $apibridge->ingest_add_track($mediapackagestr, $mainmanualflavor, $file, $subtitletags);
             }
         }
 
