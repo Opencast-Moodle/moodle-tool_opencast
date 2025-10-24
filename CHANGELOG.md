@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+4.5.5 (2025-10-24)
+------------------
+* [CHANGES] #102 Compatibility with new settings in mod opencast plugin
+
 4.5.4 (2025-08-01)
 ------------------
 * [FIX] #86, #87 Fix for behat test in maintenance mode
