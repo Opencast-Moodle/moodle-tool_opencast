@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+5.0.3 (2025-10-24)
+------------------
+* [CHANGE] Add opencast 18 coverage
+* [CHANGE] Compatibility with new settings in mod plugin
+* [FIXED] Tuning the phpunit tests
+* [FIXED] Fix transcription upload
+
+
 5.0.2 (2025-09-22)
 ------------------
 * [FIXED] upgrade.php: fix wrong savepoint statement
