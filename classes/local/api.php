@@ -686,16 +686,18 @@ class api extends \curl {
      */
     public function connection_test_url() {
         // The "/api" resource endpoint returns key characteristics of the API such as the server name and the default version.
+        // We need to call it without any authentication headers, in order to only test the URL reachability.
         $response = $this->opencastapi->baseApi->noHeader()->get();
         // If the connection fails or the Opencast instance could not be found, return the http code.
         $httpcode = $response['code'];
-        if ($httpcode === false) {
-            $httpcode = 404; // Not Found.
-        }
-        if ($httpcode != 200) {
-            return $httpcode;
+        // With newer versions of Opencast this endpoint returns 403 when no header is specified,
+        // therefore we treat 403 as a successful connection.
+        // With faulty connections, $httpcode may be false or 0, so we only treat these as not found (404).
+        if ($httpcode === false || $httpcode === 0) {
+            return 404;
         }
 
+        // Other than that, any response code indicates that an Opencast instance is running on that URL.
         return true;
     }
 
