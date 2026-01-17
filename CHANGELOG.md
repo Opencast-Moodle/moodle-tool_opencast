@@ -1,7 +1,12 @@
 CHANGELOG
 =========
 
-5.0.2 (2025-09-22)
+5.1.0 (2026-01-17)
+------------------
+* Moodle 5.1 compatible version
+
+
+* 5.0.2 (2025-09-22)
 ------------------
 * [FIXED] upgrade.php: fix wrong savepoint statement
 
