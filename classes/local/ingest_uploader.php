@@ -76,7 +76,7 @@ class ingest_uploader {
         $wfconfighelper = workflowconfiguration_helper::get_instance($job->ocinstanceid);
 
         switch ($job->status) {
-            case self::STATUS_INGEST_CREATING_MEDIA_PACKAGE: // Intentional fallthrough to next case if success.
+            case self::STATUS_INGEST_CREATING_MEDIA_PACKAGE:
                 try {
                     $mediapackage = $apibridge->ingest_create_media_package();
                     mtrace('... media package created');
@@ -94,7 +94,9 @@ class ingest_uploader {
                     mtrace($e->getMessage());
                     break;
                 }
-            case self::STATUS_INGEST_ADDING_EPISODE_CATALOG: // Intentional fallthrough to next case if success.
+                // Intentional fallthrough to next case if success.
+
+            case self::STATUS_INGEST_ADDING_EPISODE_CATALOG:
                 try {
                     upload_helper::ensure_series_metadata($job, $apibridge);
                     $episodexml = self::create_episode_xml($job);
@@ -117,8 +119,9 @@ class ingest_uploader {
                     mtrace($e->getMessage());
                     break;
                 }
+                // Intentional fallthrough to next case if success.
 
-            case self::STATUS_INGEST_ADDING_FIRST_TRACK: // Intentional fallthrough to next case if success.
+            case self::STATUS_INGEST_ADDING_FIRST_TRACK:
                 $validstoredfile = true;
                 $presenter = null;
                 if ($job->presenter_fileid) {
@@ -171,8 +174,9 @@ class ingest_uploader {
                         break;
                     }
                 }
+                // Intentional fallthrough to next case if success.
 
-            case self::STATUS_INGEST_ADDING_SECOND_TRACK: // Intentional fallthrough to next case if success.
+            case self::STATUS_INGEST_ADDING_SECOND_TRACK:
                 $validstoredfile = true;
                 $presentation = null;
                 if ($job->presentation_fileid) {
@@ -225,8 +229,9 @@ class ingest_uploader {
                         break;
                     }
                 }
+                // Intentional fallthrough to next case if success.
 
-            case self::STATUS_INGEST_ADDING_ACL_ATTACHMENT: // Intentional fallthrough to next case if success.
+            case self::STATUS_INGEST_ADDING_ACL_ATTACHMENT:
                 try {
                     $initialvisibility = visibility_helper::get_initial_visibility($job);
                     $aclxml = self::create_acl_xml($initialvisibility->roles, $job);
@@ -249,6 +254,8 @@ class ingest_uploader {
                     mtrace($e->getMessage());
                     break;
                 }
+                // Intentional fallthrough to next case if success.
+
             case self::STATUS_INGEST_INGESTING:
                 try {
                     // Prepare workflow configuration beforehand.

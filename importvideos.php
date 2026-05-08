@@ -127,7 +127,7 @@ $importvideosform = null;
 $jumpto4 = false;
 switch ($step) {
     default:
-    case 1: // Intentional fallthrough to next case if nextstep is true.
+    case 1:
         $nextstep = false;
 
         // While we use custom mforms in step 2 to 3, we rely on a Moodle core component in step 1.
@@ -178,7 +178,9 @@ switch ($step) {
         if (!$nextstep) {
             break;
         }
-    case 2: // Intentional fallthrough to next case if nextstep is true.
+        // Intentional fallthrough to next case if nextstep is true.
+
+    case 2:
         $nextstep = false;
         $step = 2;
         $aclheadingstringname = '';
@@ -252,8 +254,9 @@ switch ($step) {
         if (!$nextstep) {
             break;
         }
+        // Intentional fallthrough to next case if nextstep is true.
 
-    case 3: // Intentional fallthrough to next case if nextstep is true.
+    case 3:
         $nextstep = false;
         $step = 3;
 
@@ -310,6 +313,8 @@ switch ($step) {
                 break;
             }
         }
+        // Intentional fallthrough to next case if nextstep is true.
+
     case 4:
         $step = 4;
         // Use step 4 form.
