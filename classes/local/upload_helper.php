@@ -554,6 +554,7 @@ class upload_helper {
         switch ($job->status) {
             case self::STATUS_READY_TO_UPLOAD:
                 $this->update_status($job, self::STATUS_CREATING_GROUP, true, true);
+                // Intentional fallthrough to next case.
             case self::STATUS_CREATING_GROUP:
                 if (boolval(get_config('tool_opencast', 'group_creation_' . $job->ocinstanceid))) {
                     try {
@@ -572,6 +573,7 @@ class upload_helper {
                 } else {
                     // Move on to next status.
                     $this->update_status($job, self::STATUS_CREATING_SERIES);
+                    // Intentional fallthrough to next case.
                 }
 
             case self::STATUS_CREATING_SERIES:
