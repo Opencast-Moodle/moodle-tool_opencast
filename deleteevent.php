@@ -36,9 +36,13 @@ $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinsta
 $redirectpage = optional_param('redirectpage', null, PARAM_ALPHA);
 $series = optional_param('series', null, PARAM_ALPHANUMEXT);
 
-$baseurl = new moodle_url('/admin/tool/opencast/deleteevent.php',
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/deleteevent.php',
     ['identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid,
-        'redirectpage' => $redirectpage, 'series' => $series, ]);
+    'redirectpage' => $redirectpage,
+    'series' => $series,
+    ]
+);
 $PAGE->set_url($baseurl);
 
 require_login($courseid, false);

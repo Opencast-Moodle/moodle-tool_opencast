@@ -40,8 +40,6 @@ require_once($CFG->dirroot . '/backup/util/ui/import_extensions.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class importvideos_coursesearch extends import_course_search {
-
-
     /**
      * Sets up the access restrictions for the courses to be displayed in the search.
      */

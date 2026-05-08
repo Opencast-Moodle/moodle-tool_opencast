@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp\Cookie;
 
@@ -28,8 +42,7 @@ class FileCookieJar extends CookieJar
      *
      * @throws \RuntimeException if the file cannot be found or created
      */
-    public function __construct(string $cookieFile, bool $storeSessionCookies = false)
-    {
+    public function __construct(string $cookieFile, bool $storeSessionCookies = false) {
         parent::__construct();
         $this->filename = $cookieFile;
         $this->storeSessionCookies = $storeSessionCookies;
@@ -42,8 +55,7 @@ class FileCookieJar extends CookieJar
     /**
      * Saves the file when shutting down
      */
-    public function __destruct()
-    {
+    public function __destruct() {
         $this->save($this->filename);
     }
 
@@ -54,8 +66,7 @@ class FileCookieJar extends CookieJar
      *
      * @throws \RuntimeException if the file cannot be found or created
      */
-    public function save(string $filename): void
-    {
+    public function save(string $filename): void {
         $json = [];
         /** @var SetCookie $cookie */
         foreach ($this as $cookie) {
@@ -79,8 +90,7 @@ class FileCookieJar extends CookieJar
      *
      * @throws \RuntimeException if the file cannot be loaded.
      */
-    public function load(string $filename): void
-    {
+    public function load(string $filename): void {
         $json = \file_get_contents($filename);
         if (false === $json) {
             throw new \RuntimeException("Unable to load file {$filename}");
@@ -94,7 +104,7 @@ class FileCookieJar extends CookieJar
             foreach ($data as $cookie) {
                 $this->setCookie(new SetCookie($cookie));
             }
-        } elseif (\is_scalar($data) && !empty($data)) {
+        } else if (\is_scalar($data) && !empty($data)) {
             throw new \RuntimeException("Invalid cookie file: {$filename}");
         }
     }

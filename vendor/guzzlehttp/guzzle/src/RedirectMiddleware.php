@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp;
 
@@ -42,13 +56,11 @@ class RedirectMiddleware
     /**
      * @param callable(RequestInterface, array): PromiseInterface $nextHandler Next handler to invoke.
      */
-    public function __construct(callable $nextHandler)
-    {
+    public function __construct(callable $nextHandler) {
         $this->nextHandler = $nextHandler;
     }
 
-    public function __invoke(RequestInterface $request, array $options): PromiseInterface
-    {
+    public function __invoke(RequestInterface $request, array $options): PromiseInterface {
         $fn = $this->nextHandler;
 
         if (empty($options['allow_redirects'])) {
@@ -57,7 +69,7 @@ class RedirectMiddleware
 
         if ($options['allow_redirects'] === true) {
             $options['allow_redirects'] = self::$defaultSettings;
-        } elseif (!\is_array($options['allow_redirects'])) {
+        } else if (!\is_array($options['allow_redirects'])) {
             throw new \InvalidArgumentException('allow_redirects must be true, false, or array');
         } else {
             // Merge the default settings with the provided settings
@@ -77,9 +89,9 @@ class RedirectMiddleware
     /**
      * @return ResponseInterface|PromiseInterface
      */
-    public function checkRedirect(RequestInterface $request, array $options, ResponseInterface $response)
-    {
-        if (\strpos((string) $response->getStatusCode(), '3') !== 0
+    public function checkRedirect(RequestInterface $request, array $options, ResponseInterface $response) {
+        if (
+            \strpos((string) $response->getStatusCode(), '3') !== 0
             || !$response->hasHeader('Location')
         ) {
             return $response;
@@ -121,8 +133,7 @@ class RedirectMiddleware
     /**
      * Enable tracking on promise.
      */
-    private function withTracking(PromiseInterface $promise, string $uri, int $statusCode): PromiseInterface
-    {
+    private function withTracking(PromiseInterface $promise, string $uri, int $statusCode): PromiseInterface {
         return $promise->then(
             static function (ResponseInterface $response) use ($uri, $statusCode) {
                 // Note that we are pushing to the front of the list as this
@@ -134,7 +145,7 @@ class RedirectMiddleware
                 \array_unshift($statusHeader, (string) $statusCode);
 
                 return $response->withHeader(self::HISTORY_HEADER, $historyHeader)
-                                ->withHeader(self::STATUS_HISTORY_HEADER, $statusHeader);
+                    ->withHeader(self::STATUS_HISTORY_HEADER, $statusHeader);
             }
         );
     }
@@ -144,8 +155,7 @@ class RedirectMiddleware
      *
      * @throws TooManyRedirectsException Too many redirects.
      */
-    private function guardMax(RequestInterface $request, ResponseInterface $response, array &$options): void
-    {
+    private function guardMax(RequestInterface $request, ResponseInterface $response, array &$options): void {
         $current = $options['__redirect_count']
             ?? 0;
         $options['__redirect_count'] = $current + 1;
@@ -156,8 +166,7 @@ class RedirectMiddleware
         }
     }
 
-    public function modifyRequest(RequestInterface $request, array $options, ResponseInterface $response): RequestInterface
-    {
+    public function modifyRequest(RequestInterface $request, array $options, ResponseInterface $response): RequestInterface {
         // Request modifications to apply.
         $modify = [];
         $protocols = $options['allow_redirects']['protocols'];
@@ -166,7 +175,8 @@ class RedirectMiddleware
         // not forcing RFC compliance, but rather emulating what all browsers
         // would do.
         $statusCode = $response->getStatusCode();
-        if ($statusCode == 303
+        if (
+            $statusCode == 303
             || ($statusCode <= 302 && !$options['allow_redirects']['strict'])
         ) {
             $safeMethods = ['GET', 'HEAD', 'OPTIONS'];
@@ -187,7 +197,8 @@ class RedirectMiddleware
 
         // Add the Referer header if it is told to do so and only
         // add the header if we are not redirecting from https to http.
-        if ($options['allow_redirects']['referer']
+        if (
+            $options['allow_redirects']['referer']
             && $modify['uri']->getScheme() === $request->getUri()->getScheme()
         ) {
             $uri = $request->getUri()->withUserInfo('');

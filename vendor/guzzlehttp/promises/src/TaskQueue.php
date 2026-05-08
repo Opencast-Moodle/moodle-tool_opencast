@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -20,8 +34,7 @@ class TaskQueue implements TaskQueueInterface
     private $enableShutdown = true;
     private $queue = [];
 
-    public function __construct(bool $withShutdown = true)
-    {
+    public function __construct(bool $withShutdown = true) {
         if ($withShutdown) {
             register_shutdown_function(function (): void {
                 if ($this->enableShutdown) {
@@ -35,18 +48,15 @@ class TaskQueue implements TaskQueueInterface
         }
     }
 
-    public function isEmpty(): bool
-    {
+    public function isEmpty(): bool {
         return !$this->queue;
     }
 
-    public function add(callable $task): void
-    {
+    public function add(callable $task): void {
         $this->queue[] = $task;
     }
 
-    public function run(): void
-    {
+    public function run(): void {
         while ($task = array_shift($this->queue)) {
             /** @var callable $task */
             $task();
@@ -64,8 +74,7 @@ class TaskQueue implements TaskQueueInterface
      *
      * Note: This shutdown will occur before any destructors are triggered.
      */
-    public function disableShutdown(): void
-    {
+    public function disableShutdown(): void {
         $this->enableShutdown = false;
     }
 }

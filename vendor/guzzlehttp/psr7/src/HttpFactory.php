@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -39,13 +53,11 @@ final class HttpFactory implements RequestFactoryInterface, ResponseFactoryInter
         return new UploadedFile($stream, $size, $error, $clientFilename, $clientMediaType);
     }
 
-    public function createStream(string $content = ''): StreamInterface
-    {
+    public function createStream(string $content = ''): StreamInterface {
         return Utils::streamFor($content);
     }
 
-    public function createStreamFromFile(string $file, string $mode = 'r'): StreamInterface
-    {
+    public function createStreamFromFile(string $file, string $mode = 'r'): StreamInterface {
         try {
             $resource = Utils::tryFopen($file, $mode);
         } catch (\RuntimeException $e) {
@@ -59,13 +71,11 @@ final class HttpFactory implements RequestFactoryInterface, ResponseFactoryInter
         return Utils::streamFor($resource);
     }
 
-    public function createStreamFromResource($resource): StreamInterface
-    {
+    public function createStreamFromResource($resource): StreamInterface {
         return Utils::streamFor($resource);
     }
 
-    public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
-    {
+    public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface {
         if (empty($method)) {
             if (!empty($serverParams['REQUEST_METHOD'])) {
                 $method = $serverParams['REQUEST_METHOD'];
@@ -77,18 +87,15 @@ final class HttpFactory implements RequestFactoryInterface, ResponseFactoryInter
         return new ServerRequest($method, $uri, [], null, '1.1', $serverParams);
     }
 
-    public function createResponse(int $code = 200, string $reasonPhrase = ''): ResponseInterface
-    {
+    public function createResponse(int $code = 200, string $reasonPhrase = ''): ResponseInterface {
         return new Response($code, [], null, '1.1', $reasonPhrase);
     }
 
-    public function createRequest(string $method, $uri): RequestInterface
-    {
+    public function createRequest(string $method, $uri): RequestInterface {
         return new Request($method, $uri);
     }
 
-    public function createUri(string $uri = ''): UriInterface
-    {
+    public function createUri(string $uri = ''): UriInterface {
         return new Uri($uri);
     }
 }

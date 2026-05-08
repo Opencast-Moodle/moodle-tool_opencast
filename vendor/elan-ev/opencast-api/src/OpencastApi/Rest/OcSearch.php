@@ -1,4 +1,19 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 namespace OpencastApi\Rest;
 
 class OcSearch extends OcRest
@@ -6,8 +21,7 @@ class OcSearch extends OcRest
     const URI = '/search';
     public $lucene = false; // By default false, main support for OC 16.
 
-    public function __construct($restClient)
-    {
+    public function __construct($restClient) {
         $restClient->registerHeaderException('Accept', self::URI);
         parent::__construct($restClient);
         if ($restClient->readFeatures('lucene')) {
@@ -35,8 +49,7 @@ class OcSearch extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The search results, formatted as xml or json}']
      */
-    public function getEpisodes($params = [], $format = '')
-    {
+    public function getEpisodes($params = [], $format = '') {
         $uri = self::URI . "/episode.json";
         if (!empty($format) && strtolower($format) == 'xml') {
             $uri = str_replace('json', 'xml', $uri);
@@ -68,13 +81,12 @@ class OcSearch extends OcRest
             $query['sign'] = $params['sign'];
         }
 
-
         // OC <= 15
         if ($this->lucene) {
             $sortsASC = [
                 'DATE_CREATED', 'DATE_MODIFIED', 'TITLE', 'SERIES_ID',
                 'MEDIA_PACKAGE_ID', 'CREATOR', 'CONTRIBUTOR', 'LANGUAGE',
-                'LICENSE','SUBJECT','DESCRIPTION','PUBLISHER',
+                'LICENSE', 'SUBJECT', 'DESCRIPTION', 'PUBLISHER',
             ];
             $sortsDESC = array_map(function ($sort) {
                 return "{$sort}_DESC";
@@ -82,15 +94,17 @@ class OcSearch extends OcRest
 
             $sorts = array_merge($sortsASC, $sortsDESC);
 
-            if (array_key_exists('sort', $params) && !empty($params['sort']) &&
-                in_array($params['sort'], $sorts)) {
+            if (
+                array_key_exists('sort', $params) && !empty($params['sort']) &&
+                in_array($params['sort'], $sorts)
+            ) {
                 $query['sort'] = $params['sort'];
             }
 
-        // OC >= 16
+            // OC >= 16
         } else {
             $sorts = [
-                'modified', 'title', 'creator', 'contributor'
+                'modified', 'title', 'creator', 'contributor',
             ];
 
             $sortsASC = array_map(function ($sort) {
@@ -103,8 +117,10 @@ class OcSearch extends OcRest
 
             $sorts_list = array_merge($sorts, $sortsASC, $sortsDESC);
 
-            if (array_key_exists('sort', $params) && !empty($params['sort']) &&
-                in_array(strtolower($params['sort']), $sorts_list)) {
+            if (
+                array_key_exists('sort', $params) && !empty($params['sort']) &&
+                in_array(strtolower($params['sort']), $sorts_list)
+            ) {
                 $query['sort'] = strtolower($params['sort']);
             }
         }
@@ -133,8 +149,7 @@ class OcSearch extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The search results, formatted as xml or json}']
      */
-    public function getLucene($params = [], $format = '')
-    {
+    public function getLucene($params = [], $format = '') {
         if (!$this->lucene) {
             return ['code' => 410, 'reason' => 'Lucene search endpoint is not available!'];
         }
@@ -167,7 +182,7 @@ class OcSearch extends OcRest
         $sortsASC = [
             'DATE_CREATED', 'DATE_MODIFIED', 'TITLE', 'SERIES_ID',
             'MEDIA_PACKAGE_ID', 'CREATOR', 'CONTRIBUTOR', 'LANGUAGE',
-            'LICENSE','SUBJECT','DESCRIPTION','PUBLISHER',
+            'LICENSE', 'SUBJECT', 'DESCRIPTION', 'PUBLISHER',
         ];
         $sortsDESC = array_map(function ($sort) {
             return "{$sort}_DESC";
@@ -175,8 +190,10 @@ class OcSearch extends OcRest
 
         $sorts = array_merge($sortsASC, $sortsDESC);
 
-        if (array_key_exists('sort', $params) && !empty($params['sort']) &&
-            in_array($params['sort'], $sorts)) {
+        if (
+            array_key_exists('sort', $params) && !empty($params['sort']) &&
+            in_array($params['sort'], $sorts)
+        ) {
             $query['sort'] = $params['sort'];
         }
 
@@ -202,8 +219,7 @@ class OcSearch extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The search results, formatted as xml or json}']
      */
-    public function getSeries($params = [], $format = '')
-    {
+    public function getSeries($params = [], $format = '') {
         $uri = self::URI . "/series.json";
         if (!empty($format) && strtolower($format) == 'xml') {
             $uri = str_replace('json', 'xml', $uri);
@@ -237,7 +253,7 @@ class OcSearch extends OcRest
             $sortsASC = [
                 'DATE_CREATED', 'DATE_MODIFIED', 'TITLE', 'SERIES_ID',
                 'MEDIA_PACKAGE_ID', 'CREATOR', 'CONTRIBUTOR', 'LANGUAGE',
-                'LICENSE','SUBJECT','DESCRIPTION','PUBLISHER',
+                'LICENSE', 'SUBJECT', 'DESCRIPTION', 'PUBLISHER',
             ];
             $sortsDESC = array_map(function ($sort) {
                 return "{$sort}_DESC";
@@ -245,15 +261,17 @@ class OcSearch extends OcRest
 
             $sorts = array_merge($sortsASC, $sortsDESC);
 
-            if (array_key_exists('sort', $params) && !empty($params['sort']) &&
-                in_array($params['sort'], $sorts)) {
+            if (
+                array_key_exists('sort', $params) && !empty($params['sort']) &&
+                in_array($params['sort'], $sorts)
+            ) {
                 $query['sort'] = $params['sort'];
             }
 
-        // OC >= 16
+            // OC >= 16
         } else {
             $sorts = [
-                'modified', 'title', 'creator', 'contributor'
+                'modified', 'title', 'creator', 'contributor',
             ];
 
             $sortsASC = array_map(function ($sort) {
@@ -266,8 +284,10 @@ class OcSearch extends OcRest
 
             $sorts_list = array_merge($sorts, $sortsASC, $sortsDESC);
 
-            if (array_key_exists('sort', $params) && !empty($params['sort']) &&
-                in_array(strtolower($params['sort']), $sorts_list)) {
+            if (
+                array_key_exists('sort', $params) && !empty($params['sort']) &&
+                in_array(strtolower($params['sort']), $sorts_list)
+            ) {
                 $query['sort'] = strtolower($params['sort']);
             }
         }
@@ -276,4 +296,3 @@ class OcSearch extends OcRest
         return $this->restClient->performGet($uri, $options);
     }
 }
-?>

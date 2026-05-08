@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -17,8 +31,7 @@ final class Query
      * @param string   $str         Query string to parse
      * @param int|bool $urlEncoding How the query string is encoded
      */
-    public static function parse(string $str, $urlEncoding = true): array
-    {
+    public static function parse(string $str, $urlEncoding = true): array {
         $result = [];
 
         if ($str === '') {
@@ -29,9 +42,9 @@ final class Query
             $decoder = function ($value) {
                 return rawurldecode(str_replace('+', ' ', (string) $value));
             };
-        } elseif ($urlEncoding === PHP_QUERY_RFC3986) {
+        } else if ($urlEncoding === PHP_QUERY_RFC3986) {
             $decoder = 'rawurldecode';
-        } elseif ($urlEncoding === PHP_QUERY_RFC1738) {
+        } else if ($urlEncoding === PHP_QUERY_RFC1738) {
             $decoder = 'urldecode';
         } else {
             $decoder = function ($str) {
@@ -71,8 +84,7 @@ final class Query
      * @param bool      $treatBoolsAsInts Set to true to encode as 0/1, and
      *                                    false as false/true.
      */
-    public static function build(array $params, $encoding = PHP_QUERY_RFC3986, bool $treatBoolsAsInts = true): string
-    {
+    public static function build(array $params, $encoding = PHP_QUERY_RFC3986, bool $treatBoolsAsInts = true): string {
         if (!$params) {
             return '';
         }
@@ -81,15 +93,19 @@ final class Query
             $encoder = function (string $str): string {
                 return $str;
             };
-        } elseif ($encoding === PHP_QUERY_RFC3986) {
+        } else if ($encoding === PHP_QUERY_RFC3986) {
             $encoder = 'rawurlencode';
-        } elseif ($encoding === PHP_QUERY_RFC1738) {
+        } else if ($encoding === PHP_QUERY_RFC1738) {
             $encoder = 'urlencode';
         } else {
             throw new \InvalidArgumentException('Invalid type');
         }
 
-        $castBool = $treatBoolsAsInts ? static function ($v) { return (int) $v; } : static function ($v) { return $v ? 'true' : 'false'; };
+        $castBool = $treatBoolsAsInts ? static function ($v) {
+            return (int) $v;
+        } : static function ($v) {
+            return $v ? 'true' : 'false';
+        };
 
         $qs = '';
         foreach ($params as $k => $v) {
@@ -98,7 +114,7 @@ final class Query
                 $qs .= $k;
                 $v = is_bool($v) ? $castBool($v) : $v;
                 if ($v !== null) {
-                    $qs .= '='.$encoder((string) $v);
+                    $qs .= '=' . $encoder((string) $v);
                 }
                 $qs .= '&';
             } else {
@@ -106,7 +122,7 @@ final class Query
                     $qs .= $k;
                     $vv = is_bool($vv) ? $castBool($vv) : $vv;
                     if ($vv !== null) {
-                        $qs .= '='.$encoder((string) $vv);
+                        $qs .= '=' . $encoder((string) $vv);
                     }
                     $qs .= '&';
                 }

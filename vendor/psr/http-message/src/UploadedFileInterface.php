@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace Psr\Http\Message;
 
@@ -63,7 +77,7 @@ interface UploadedFileInterface
      *     the second or subsequent call to the method.
      */
     public function moveTo(string $targetPath): void;
-    
+
     /**
      * Retrieve the file size.
      *
@@ -74,7 +88,7 @@ interface UploadedFileInterface
      * @return int|null The file size in bytes or null if unknown.
      */
     public function getSize(): ?int;
-    
+
     /**
      * Retrieve the error associated with the uploaded file.
      *
@@ -90,7 +104,7 @@ interface UploadedFileInterface
      * @return int One of PHP's UPLOAD_ERR_XXX constants.
      */
     public function getError(): int;
-    
+
     /**
      * Retrieve the filename sent by the client.
      *
@@ -105,7 +119,7 @@ interface UploadedFileInterface
      *     was provided.
      */
     public function getClientFilename(): ?string;
-    
+
     /**
      * Retrieve the media type sent by the client.
      *

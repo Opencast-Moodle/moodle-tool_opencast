@@ -40,7 +40,6 @@ use tool_opencast\exception\opencast_api_response_exception;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class setting_helper {
-
     /**
      * Validate if the selected workflow does indeed exist.
      *
@@ -159,5 +158,4 @@ class setting_helper {
 
         return get_string('role_not_user_related', 'tool_opencast');
     }
-
 }

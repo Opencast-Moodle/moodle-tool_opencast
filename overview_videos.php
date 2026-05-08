@@ -91,9 +91,12 @@ if (!$ocseries || !$apibridge->is_owner($ocseries->acl, $USER->id, $SITE->id)) {
     }
 
     if (!$hasviewpermission) {
-        redirect(new moodle_url('/admin/tool/opencast/overview.php', ['ocinstanceid' => $ocinstanceid]),
-            get_string('viewviedeosnotallowed', 'tool_opencast'), null,
-            \core\output\notification::NOTIFY_ERROR);
+        redirect(
+            new moodle_url('/admin/tool/opencast/overview.php', ['ocinstanceid' => $ocinstanceid]),
+            get_string('viewviedeosnotallowed', 'tool_opencast'),
+            null,
+            \core\output\notification::NOTIFY_ERROR
+        );
     }
 }
 
@@ -108,10 +111,14 @@ if ($apibridge->is_owner($ocseries->acl, $USER->id, $SITE->id)) {
 $isseriesowner = $ocseries && ($apibridge->is_owner($ocseries->acl, $USER->id, $SITE->id) ||
         !$apibridge->has_owner($ocseries->acl));
 
-$PAGE->navbar->add(get_string('opencastseries', 'tool_opencast'),
-    new moodle_url('/admin/tool/opencast/overview.php', ['ocinstanceid' => $ocinstanceid]));
+$PAGE->navbar->add(
+    get_string('opencastseries', 'tool_opencast'),
+    new moodle_url('/admin/tool/opencast/overview.php', ['ocinstanceid' => $ocinstanceid])
+);
 $PAGE->navbar->add(get_string('servicename', 'tool_opencast'), $baseurl);
-$PAGE->requires->js_call_amd('tool_opencast/block_massaction', 'init',
+$PAGE->requires->js_call_amd(
+    'tool_opencast/block_massaction',
+    'init',
     [
         $SITE->id,
         $ocinstanceid,
@@ -138,8 +145,10 @@ echo html_writer::div($addvideobutton);
 
 // Show "Add videos (batch)" button.
 if (get_config('tool_opencast', 'batchuploadenabled_' . $ocinstanceid)) {
-    $batchuploadurl = new moodle_url('/admin/tool/opencast/batchupload.php',
-        ['courseid' => $SITE->id, 'ocinstanceid' => $ocinstanceid, 'intoseries' => $series]);
+    $batchuploadurl = new moodle_url(
+        '/admin/tool/opencast/batchupload.php',
+        ['courseid' => $SITE->id, 'ocinstanceid' => $ocinstanceid, 'intoseries' => $series]
+    );
     $batchuploadbutton = $OUTPUT->single_button($batchuploadurl, get_string('batchupload', 'tool_opencast'), 'get');
     echo html_writer::div($batchuploadbutton, 'opencast-batchupload-wrap');
 }
@@ -209,9 +218,23 @@ $showchangeownerlink = has_capability('tool/opencast:viewusers', context_system:
 
 // To store rows, and use them later, which gives better control over the table.
 $rows = [];
-foreach ($renderer->create_overview_videos_rows($videos, $apibridge, $ocinstanceid,
-    $activityinstalled, $showchangeownerlink, false, $isseriesowner, $hasaddvideopermission,
-    $hasdownloadpermission, $hasdeletepermission, '', $hasaccesspermission, $massaction) as $row) {
+foreach (
+    $renderer->create_overview_videos_rows(
+        $videos,
+        $apibridge,
+        $ocinstanceid,
+        $activityinstalled,
+        $showchangeownerlink,
+        false,
+        $isseriesowner,
+        $hasaddvideopermission,
+        $hasdownloadpermission,
+        $hasdeletepermission,
+        '',
+        $hasaccesspermission,
+        $massaction
+    ) as $row
+) {
     $rows[] = $row;
 }
 

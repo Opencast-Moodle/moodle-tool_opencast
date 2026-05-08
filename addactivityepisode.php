@@ -36,12 +36,16 @@ $courseid = required_param('courseid', PARAM_INT);
 $submitbutton2 = optional_param('submitbutton2', '', PARAM_ALPHA);
 $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinstance()->id, PARAM_INT);
 
-$baseurl = new moodle_url('/admin/tool/opencast/addactivityepisode.php',
-    ['episodeuuid' => $episodeuuid, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/addactivityepisode.php',
+    ['episodeuuid' => $episodeuuid, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
 $PAGE->set_url($baseurl);
 
-$redirecturloverview = new moodle_url('/admin/tool/opencast/index.php',
-    ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$redirecturloverview = new moodle_url(
+    '/admin/tool/opencast/index.php',
+    ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
 $redirecturlcourse = new moodle_url('/course/view.php', ['id' => $courseid]);
 
 require_login($courseid, false);
@@ -54,8 +58,11 @@ $PAGE->navbar->add(get_string('addactivityepisode_addicontitle', 'tool_opencast'
 
 // Check if the Opencast Activity module feature is enabled and working.
 if (activitymodulemanager::is_enabled_and_working_for_episodes($ocinstanceid) == false) {
-    throw new moodle_exception('add opencast activity episode module not enabled or working',
-        'tool_opencast', $redirecturloverview);
+    throw new moodle_exception(
+        'add opencast activity episode module not enabled or working',
+        'tool_opencast',
+        $redirecturloverview
+    );
 }
 
 // Capability check.
@@ -66,12 +73,18 @@ require_capability('tool/opencast:addactivityepisode', $coursecontext);
 $moduleid = activitymodulemanager::get_module_for_episode($courseid, $episodeuuid, $ocinstanceid);
 if ($moduleid) {
     // Redirect to Opencast videos overview page.
-    redirect($redirecturloverview,
-        get_string('addactivityepisode_moduleexists', 'tool_opencast'), null, notification::NOTIFY_WARNING);
+    redirect(
+        $redirecturloverview,
+        get_string('addactivityepisode_moduleexists', 'tool_opencast'),
+        null,
+        notification::NOTIFY_WARNING
+    );
 }
 
-$addactivityform = new addactivityepisode_form(null,
-    ['episodeuuid' => $episodeuuid, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$addactivityform = new addactivityepisode_form(
+    null,
+    ['episodeuuid' => $episodeuuid, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
 
 if ($addactivityform->is_cancelled()) {
     redirect($redirecturloverview);
@@ -95,8 +108,10 @@ if ($data = $addactivityform->get_data()) {
     }
 
     // If the section feature is disabled or if we do not have an intro, use the default section.
-    if (get_config('tool_opencast', 'addactivityepisodesection_' . $ocinstanceid) != true ||
-        !isset($data->section) || !$data->section) {
+    if (
+        get_config('tool_opencast', 'addactivityepisodesection_' . $ocinstanceid) != true ||
+        !isset($data->section) || !$data->section
+    ) {
         $sectionid = 0;
 
         // Otherwise.
@@ -105,9 +120,11 @@ if ($data = $addactivityform->get_data()) {
     }
 
     // If the availability feature is disabled or if we do not have an availability given, use null.
-    if (get_config('tool_opencast', 'addactivityepisodeavailability_' . $ocinstanceid) != true ||
+    if (
+        get_config('tool_opencast', 'addactivityepisodeavailability_' . $ocinstanceid) != true ||
         empty($CFG->enableavailability) ||
-        !isset($data->availabilityconditionsjson) || !$data->availabilityconditionsjson) {
+        !isset($data->availabilityconditionsjson) || !$data->availabilityconditionsjson
+    ) {
         $availability = null;
 
         // Otherwise.
@@ -116,35 +133,50 @@ if ($data = $addactivityform->get_data()) {
     }
 
     // Create the module.
-    $result = activitymodulemanager::create_module_for_episode($courseid, $ocinstanceid,
-        $data->title, $episodeuuid, $sectionid, $introtext, $introformat, $availability, $data->allowdownload);
+    $result = activitymodulemanager::create_module_for_episode(
+        $courseid,
+        $ocinstanceid,
+        $data->title,
+        $episodeuuid,
+        $sectionid,
+        $introtext,
+        $introformat,
+        $availability,
+        $data->allowdownload
+    );
 
     // Check if the module was created successfully.
     if ($result == true) {
         // Form was submitted with second submit button.
         if ($submitbutton2) {
             // Redirect to course overview.
-            redirect($redirecturlcourse,
+            redirect(
+                $redirecturlcourse,
                 get_string('addactivityepisode_modulecreated', 'tool_opencast', $data->title),
                 null,
-                notification::NOTIFY_SUCCESS);
+                notification::NOTIFY_SUCCESS
+            );
 
             // Form was submitted with first submit button.
         } else {
             // Redirect to Opencast videos overview page.
-            redirect($redirecturloverview,
+            redirect(
+                $redirecturloverview,
                 get_string('addactivityepisode_modulecreated', 'tool_opencast', $data->title),
                 null,
-                notification::NOTIFY_SUCCESS);
+                notification::NOTIFY_SUCCESS
+            );
         }
 
         // Otherwise.
     } else {
         // Redirect to Opencast videos overview page.
-        redirect($redirecturloverview,
+        redirect(
+            $redirecturloverview,
             get_string('addactivityepisode_modulenotcreated', 'tool_opencast', $data->title),
             null,
-            notification::NOTIFY_ERROR);
+            notification::NOTIFY_ERROR
+        );
     }
 }
 

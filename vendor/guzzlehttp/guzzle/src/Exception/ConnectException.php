@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp\Exception;
 
@@ -36,8 +50,7 @@ class ConnectException extends TransferException implements NetworkExceptionInte
     /**
      * Get the request that caused the exception
      */
-    public function getRequest(): RequestInterface
-    {
+    public function getRequest(): RequestInterface {
         return $this->request;
     }
 
@@ -49,8 +62,7 @@ class ConnectException extends TransferException implements NetworkExceptionInte
      * couple you to a specific handler, but can give more debug information
      * when needed.
      */
-    public function getHandlerContext(): array
-    {
+    public function getHandlerContext(): array {
         return $this->handlerContext;
     }
 }

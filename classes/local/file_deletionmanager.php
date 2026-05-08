@@ -34,8 +34,6 @@ use stored_file;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class file_deletionmanager extends \file_system_filedir {
-
-
     /**
      * Delete all the users draft file entries that belongs to a videofile within
      * the same course.

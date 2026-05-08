@@ -44,8 +44,6 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class privacy_test extends provider_testcase {
-
-
     /**
      * Overriding setUp() function to always reset after tests.
      */
@@ -548,8 +546,11 @@ final class privacy_test extends provider_testcase {
         $coursecontext1 = context_course::instance($course1->id);
         $coursecontext2 = context_course::instance($course2->id);
 
-        $approveduserlist = new approved_userlist($coursecontext2, 'tool_opencast',
-            [$teacher1->id]);
+        $approveduserlist = new approved_userlist(
+            $coursecontext2,
+            'tool_opencast',
+            [$teacher1->id]
+        );
         provider::delete_data_for_users($approveduserlist);
         $this->assertCount(1, $approveduserlist);
 
@@ -561,5 +562,4 @@ final class privacy_test extends provider_testcase {
         $jobs = $DB->get_records('tool_opencast_uploadjob', ['userid' => $teacher2->id]);
         $this->assertCount(1, $jobs);
     }
-
 }

@@ -1,16 +1,30 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use OpencastApi\Opencast;
-use \OpencastApi\Mock\OcMockHanlder;
+use OpencastApi\Mock\OcMockHanlder;
 
 class OcIngestTestMock extends TestCase
 {
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
         $mockResponse = \Tests\DataProvider\SetupDataProvider::getMockResponses('ingests');
         if (empty($mockResponse)) {
@@ -26,8 +40,7 @@ class OcIngestTestMock extends TestCase
     /**
      * @test
      */
-    public function empty_ingest_data(): array
-    {
+    public function empty_ingest_data(): array {
         $ingestData = [];
         $this->assertEmpty($ingestData);
 
@@ -38,8 +51,7 @@ class OcIngestTestMock extends TestCase
      * @test
      * @depends empty_ingest_data
      */
-    public function get_mediapackage_create_series(array $ingestData): array
-    {
+    public function get_mediapackage_create_series(array $ingestData): array {
 
         $responseCreateMediaPackage = $this->ocIngest->createMediaPackage();
         $this->assertSame(200, $responseCreateMediaPackage['code'], 'Failure to get mediaPackage');
@@ -56,8 +68,7 @@ class OcIngestTestMock extends TestCase
      * @test
      * @depends get_mediapackage_create_series
      */
-    public function add_catalog_all(array $ingestData): array
-    {
+    public function add_catalog_all(array $ingestData): array {
         $flavor = 'dublincore/episode';
 
         // Add Catalog with file
@@ -94,8 +105,7 @@ class OcIngestTestMock extends TestCase
      * @test
      * @depends add_catalog_all
      */
-    public function add_presenter_track(array $ingestData): array
-    {
+    public function add_presenter_track(array $ingestData): array {
         $flavor = 'presenter/source';
         // Add track file
         $responseAddTrackPresenter = $this->ocIngest->addTrack(
@@ -103,7 +113,7 @@ class OcIngestTestMock extends TestCase
             $flavor,
             \Tests\DataProvider\IngestDataProvider::getPresenterFile(),
             '',
-            array($this, 'progressCallback')
+            [$this, 'progressCallback']
         );
         $this->assertSame(200, $responseAddTrackPresenter['code'], 'Failure to add presenter track ingest');
         $mediaPackage = $responseAddTrackPresenter['body'];
@@ -127,26 +137,24 @@ class OcIngestTestMock extends TestCase
         return $ingestData;
     }
 
-    public function progressCallback($downloadSize, $downloaded, $uploadSize, $uploaded)
-	{
+    public function progressCallback($downloadSize, $downloaded, $uploadSize, $uploaded) {
         set_time_limit(0);// Reset time limit for big files
         static $previous_progress = 0;
-		$progress = 0;
-        if($uploadSize > 0) {
-			$progress = round(($uploaded / $uploadSize)  * 100);
-		}
+        $progress = 0;
+        if ($uploadSize > 0) {
+            $progress = round(($uploaded / $uploadSize) * 100);
+        }
         if ($progress > $previous_progress) {
-			$previous_progress = $progress;
+            $previous_progress = $progress;
             file_put_contents(__DIR__ . '/../Results/progress_ingest.txt', $progress);
-		}
+        }
     }
 
     /**
      * @test
      * @depends add_presenter_track
      */
-    public function add_presentation_track(array $ingestData): array
-    {
+    public function add_presentation_track(array $ingestData): array {
         $flavor = 'presentation/source';
         $responseAddTrackPresentation = $this->ocIngest->addTrack(
             $ingestData['mediaPackage'],
@@ -179,8 +187,7 @@ class OcIngestTestMock extends TestCase
      * @test
      * @depends add_presentation_track
      */
-    public function add_attachment_all(array $ingestData): array
-    {
+    public function add_attachment_all(array $ingestData): array {
         $flavor = 'security/xacml+episode';
         // Add attachment file
         if ($episodeAclXmlFile = \Tests\DataProvider\IngestDataProvider::getEpisodeAclXMLFile()) {
@@ -208,8 +215,7 @@ class OcIngestTestMock extends TestCase
      * @test
      * @depends add_attachment_all
      */
-    public function ingest(array $ingestData): void
-    {
+    public function ingest(array $ingestData): void {
         $workflowDefinitionId = 'schedule-and-upload';
         $responseIngest = $this->ocIngest->ingest($ingestData['mediaPackage'], $workflowDefinitionId);
         $this->assertSame(200, $responseIngest['code'], 'Failure to ingest');
@@ -218,4 +224,3 @@ class OcIngestTestMock extends TestCase
         $ingestData['mediaPackage'] = $mediaPackage;
     }
 }
-?>

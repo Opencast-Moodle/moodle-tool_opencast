@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp;
 
@@ -44,8 +58,7 @@ class HandlerStack
      *                                                                            handler is provided, the best handler for your
      *                                                                            system will be utilized.
      */
-    public static function create(?callable $handler = null): self
-    {
+    public static function create(?callable $handler = null): self {
         $stack = new self($handler ?: Utils::chooseHandler());
         $stack->push(Middleware::httpErrors(), 'http_errors');
         $stack->push(Middleware::redirect(), 'allow_redirects');
@@ -58,8 +71,7 @@ class HandlerStack
     /**
      * @param (callable(RequestInterface, array): PromiseInterface)|null $handler Underlying HTTP handler.
      */
-    public function __construct(?callable $handler = null)
-    {
+    public function __construct(?callable $handler = null) {
         $this->handler = $handler;
     }
 
@@ -68,8 +80,7 @@ class HandlerStack
      *
      * @return ResponseInterface|PromiseInterface
      */
-    public function __invoke(RequestInterface $request, array $options)
-    {
+    public function __invoke(RequestInterface $request, array $options) {
         $handler = $this->resolve();
 
         return $handler($request, $options);
@@ -80,20 +91,19 @@ class HandlerStack
      *
      * @return string
      */
-    public function __toString()
-    {
+    public function __toString() {
         $depth = 0;
         $stack = [];
 
         if ($this->handler !== null) {
-            $stack[] = '0) Handler: '.$this->debugCallable($this->handler);
+            $stack[] = '0) Handler: ' . $this->debugCallable($this->handler);
         }
 
         $result = '';
         foreach (\array_reverse($this->stack) as $tuple) {
             ++$depth;
             $str = "{$depth}) Name: '{$tuple[1]}', ";
-            $str .= 'Function: '.$this->debugCallable($tuple[0]);
+            $str .= 'Function: ' . $this->debugCallable($tuple[0]);
             $result = "> {$str}\n{$result}";
             $stack[] = $str;
         }
@@ -111,8 +121,7 @@ class HandlerStack
      * @param callable(RequestInterface, array): PromiseInterface $handler Accepts a request and array of options and
      *                                                                     returns a Promise.
      */
-    public function setHandler(callable $handler): void
-    {
+    public function setHandler(callable $handler): void {
         $this->handler = $handler;
         $this->cached = null;
     }
@@ -120,8 +129,7 @@ class HandlerStack
     /**
      * Returns true if the builder has a handler.
      */
-    public function hasHandler(): bool
-    {
+    public function hasHandler(): bool {
         return $this->handler !== null;
     }
 
@@ -131,8 +139,7 @@ class HandlerStack
      * @param callable(callable): callable $middleware Middleware function
      * @param string                       $name       Name to register for this middleware.
      */
-    public function unshift(callable $middleware, ?string $name = null): void
-    {
+    public function unshift(callable $middleware, ?string $name = null): void {
         \array_unshift($this->stack, [$middleware, $name]);
         $this->cached = null;
     }
@@ -143,8 +150,7 @@ class HandlerStack
      * @param callable(callable): callable $middleware Middleware function
      * @param string                       $name       Name to register for this middleware.
      */
-    public function push(callable $middleware, string $name = ''): void
-    {
+    public function push(callable $middleware, string $name = ''): void {
         $this->stack[] = [$middleware, $name];
         $this->cached = null;
     }
@@ -156,8 +162,7 @@ class HandlerStack
      * @param callable(callable): callable $middleware Middleware function
      * @param string                       $withName   Name to register for this middleware.
      */
-    public function before(string $findName, callable $middleware, string $withName = ''): void
-    {
+    public function before(string $findName, callable $middleware, string $withName = ''): void {
         $this->splice($findName, $withName, $middleware, true);
     }
 
@@ -168,8 +173,7 @@ class HandlerStack
      * @param callable(callable): callable $middleware Middleware function
      * @param string                       $withName   Name to register for this middleware.
      */
-    public function after(string $findName, callable $middleware, string $withName = ''): void
-    {
+    public function after(string $findName, callable $middleware, string $withName = ''): void {
         $this->splice($findName, $withName, $middleware, false);
     }
 
@@ -178,8 +182,7 @@ class HandlerStack
      *
      * @param callable|string $remove Middleware to remove by instance or name.
      */
-    public function remove($remove): void
-    {
+    public function remove($remove): void {
         if (!is_string($remove) && !is_callable($remove)) {
             trigger_deprecation('guzzlehttp/guzzle', '7.4', 'Not passing a callable or string to %s::%s() is deprecated and will cause an error in 8.0.', __CLASS__, __FUNCTION__);
         }
@@ -199,8 +202,7 @@ class HandlerStack
      *
      * @return callable(RequestInterface, array): PromiseInterface
      */
-    public function resolve(): callable
-    {
+    public function resolve(): callable {
         if ($this->cached === null) {
             if (($prev = $this->handler) === null) {
                 throw new \LogicException('No handler has been specified');
@@ -217,8 +219,7 @@ class HandlerStack
         return $this->cached;
     }
 
-    private function findByName(string $name): int
-    {
+    private function findByName(string $name): int {
         foreach ($this->stack as $k => $v) {
             if ($v[1] === $name) {
                 return $k;
@@ -231,8 +232,7 @@ class HandlerStack
     /**
      * Splices a function into the middleware list at a specific position.
      */
-    private function splice(string $findName, string $withName, callable $middleware, bool $before): void
-    {
+    private function splice(string $findName, string $withName, callable $middleware, bool $before): void {
         $this->cached = null;
         $idx = $this->findByName($findName);
         $tuple = [$middleware, $withName];
@@ -244,7 +244,7 @@ class HandlerStack
                 $replacement = [$tuple, $this->stack[$idx]];
                 \array_splice($this->stack, $idx, 1, $replacement);
             }
-        } elseif ($idx === \count($this->stack) - 1) {
+        } else if ($idx === \count($this->stack) - 1) {
             $this->stack[] = $tuple;
         } else {
             $replacement = [$this->stack[$idx], $tuple];
@@ -257,8 +257,7 @@ class HandlerStack
      *
      * @param callable|string $fn Function to write as a string.
      */
-    private function debugCallable($fn): string
-    {
+    private function debugCallable($fn): string {
         if (\is_string($fn)) {
             return "callable({$fn})";
         }
@@ -266,10 +265,10 @@ class HandlerStack
         if (\is_array($fn)) {
             return \is_string($fn[0])
                 ? "callable({$fn[0]}::{$fn[1]})"
-                : "callable(['".\get_class($fn[0])."', '{$fn[1]}'])";
+                : "callable(['" . \get_class($fn[0]) . "', '{$fn[1]}'])";
         }
 
         /** @var object $fn */
-        return 'callable('.\spl_object_hash($fn).')';
+        return 'callable(' . \spl_object_hash($fn) . ')';
     }
 }

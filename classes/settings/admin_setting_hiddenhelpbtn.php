@@ -34,7 +34,6 @@ use admin_setting;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class admin_setting_hiddenhelpbtn extends admin_setting {
-
     /** @var string Id of the div tag */
     private $divid;
 

@@ -40,7 +40,6 @@ use moodle_exception;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class process_duplicated_event_module_fix extends adhoc_task {
-
     /** @var int max number of pending retries for one task */
     const MAX_COUNT_PENDING = 20;
 

@@ -1,16 +1,30 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use OpencastApi\Opencast;
-use \OpencastApi\Mock\OcMockHanlder;
+use OpencastApi\Mock\OcMockHanlder;
 
 class OcWorkflowsApiTestMock extends TestCase
 {
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
         $mockResponse = \Tests\DataProvider\SetupDataProvider::getMockResponses('api_workflows');
         if (empty($mockResponse)) {
@@ -27,8 +41,7 @@ class OcWorkflowsApiTestMock extends TestCase
     /**
      * @test
      */
-    public function get_definition_run_update_delete_workflow(): void
-    {
+    public function get_definition_run_update_delete_workflow(): void {
         $data = [];
         // Get event
         $response0 = $this->ocEventsApi->getAll();
@@ -55,7 +68,6 @@ class OcWorkflowsApiTestMock extends TestCase
         $this->assertNotEmpty($definition);
         $data['workflow_definition_identifier'] = $definition->identifier;
 
-
         // Create (run) Workflow.
         $response3 = $this->ocWorkflowsApi->run(
             $data['event_identifier'],
@@ -78,4 +90,3 @@ class OcWorkflowsApiTestMock extends TestCase
         $this->assertSame(204, $response6['code'], 'Failure to delete a workflow');
     }
 }
-?>

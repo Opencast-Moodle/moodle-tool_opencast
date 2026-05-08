@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -11,8 +25,7 @@ final class Create
      *
      * @param mixed $value Promise or value.
      */
-    public static function promiseFor($value): PromiseInterface
-    {
+    public static function promiseFor($value): PromiseInterface {
         if ($value instanceof PromiseInterface) {
             return $value;
         }
@@ -36,8 +49,7 @@ final class Create
      *
      * @param mixed $reason Promise or reason.
      */
-    public static function rejectionFor($reason): PromiseInterface
-    {
+    public static function rejectionFor($reason): PromiseInterface {
         if ($reason instanceof PromiseInterface) {
             return $reason;
         }
@@ -50,8 +62,7 @@ final class Create
      *
      * @param mixed $reason
      */
-    public static function exceptionFor($reason): \Throwable
-    {
+    public static function exceptionFor($reason): \Throwable {
         if ($reason instanceof \Throwable) {
             return $reason;
         }
@@ -64,8 +75,7 @@ final class Create
      *
      * @param mixed $value
      */
-    public static function iterFor($value): \Iterator
-    {
+    public static function iterFor($value): \Iterator {
         if ($value instanceof \Iterator) {
             return $value;
         }

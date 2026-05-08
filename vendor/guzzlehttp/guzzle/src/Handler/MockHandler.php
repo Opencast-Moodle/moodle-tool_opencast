@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp\Handler;
 
@@ -52,8 +66,7 @@ class MockHandler implements \Countable
      * @param callable|null $onFulfilled Callback to invoke when the return value is fulfilled.
      * @param callable|null $onRejected  Callback to invoke when the return value is rejected.
      */
-    public static function createWithMiddleware(?array $queue = null, ?callable $onFulfilled = null, ?callable $onRejected = null): HandlerStack
-    {
+    public static function createWithMiddleware(?array $queue = null, ?callable $onFulfilled = null, ?callable $onRejected = null): HandlerStack {
         return HandlerStack::create(new self($queue, $onFulfilled, $onRejected));
     }
 
@@ -66,8 +79,7 @@ class MockHandler implements \Countable
      * @param callable|null          $onFulfilled Callback to invoke when the return value is fulfilled.
      * @param callable|null          $onRejected  Callback to invoke when the return value is rejected.
      */
-    public function __construct(?array $queue = null, ?callable $onFulfilled = null, ?callable $onRejected = null)
-    {
+    public function __construct(?array $queue = null, ?callable $onFulfilled = null, ?callable $onRejected = null) {
         $this->onFulfilled = $onFulfilled;
         $this->onRejected = $onRejected;
 
@@ -77,8 +89,7 @@ class MockHandler implements \Countable
         }
     }
 
-    public function __invoke(RequestInterface $request, array $options): PromiseInterface
-    {
+    public function __invoke(RequestInterface $request, array $options): PromiseInterface {
         if (!$this->queue) {
             throw new \OutOfBoundsException('Mock queue is empty');
         }
@@ -124,9 +135,9 @@ class MockHandler implements \Countable
 
                     if (\is_resource($sink)) {
                         \fwrite($sink, $contents);
-                    } elseif (\is_string($sink)) {
+                    } else if (\is_string($sink)) {
                         \file_put_contents($sink, $contents);
-                    } elseif ($sink instanceof StreamInterface) {
+                    } else if ($sink instanceof StreamInterface) {
                         $sink->write($contents);
                     }
                 }
@@ -150,17 +161,17 @@ class MockHandler implements \Countable
      *
      * @param mixed ...$values
      */
-    public function append(...$values): void
-    {
+    public function append(...$values): void {
         foreach ($values as $value) {
-            if ($value instanceof ResponseInterface
+            if (
+                $value instanceof ResponseInterface
                 || $value instanceof \Throwable
                 || $value instanceof PromiseInterface
                 || \is_callable($value)
             ) {
                 $this->queue[] = $value;
             } else {
-                throw new \TypeError('Expected a Response, Promise, Throwable or callable. Found '.Utils::describeType($value));
+                throw new \TypeError('Expected a Response, Promise, Throwable or callable. Found ' . Utils::describeType($value));
             }
         }
     }
@@ -168,29 +179,25 @@ class MockHandler implements \Countable
     /**
      * Get the last received request.
      */
-    public function getLastRequest(): ?RequestInterface
-    {
+    public function getLastRequest(): ?RequestInterface {
         return $this->lastRequest;
     }
 
     /**
      * Get the last received request options.
      */
-    public function getLastOptions(): array
-    {
+    public function getLastOptions(): array {
         return $this->lastOptions;
     }
 
     /**
      * Returns the number of remaining items in the queue.
      */
-    public function count(): int
-    {
+    public function count(): int {
         return \count($this->queue);
     }
 
-    public function reset(): void
-    {
+    public function reset(): void {
         $this->queue = [];
     }
 

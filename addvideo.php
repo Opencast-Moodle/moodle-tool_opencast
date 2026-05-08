@@ -77,9 +77,12 @@ $PAGE->navbar->add(get_string('addvideo', 'tool_opencast'), $baseurl);
 if ($courseid == $SITE->id) {
     // If upload initiated from overview page, check that capability is given in specific course or ownership.
     if (!$series) {
-        redirect(new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid, 'series' => null]),
-            get_string('addvideonotallowed', 'tool_opencast'), null,
-            notification::NOTIFY_ERROR);
+        redirect(
+            new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid, 'series' => null]),
+            get_string('addvideonotallowed', 'tool_opencast'),
+            null,
+            notification::NOTIFY_ERROR
+        );
     }
 
     $records = $DB->get_records('tool_opencast_series', ['series' => $series, 'ocinstanceid' => $ocinstanceid]);
@@ -97,17 +100,23 @@ if ($courseid == $SITE->id) {
         $apibridge = apibridge::get_instance($ocinstanceid);
         $ocseries = $apibridge->get_series_by_identifier($series);
         if (!$ocseries) {
-            redirect(new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid,
+            redirect(
+                new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid,
                 'series' => $series, ]),
-                get_string('connection_failure', 'tool_opencast'), null,
-                notification::NOTIFY_ERROR);
+                get_string('connection_failure', 'tool_opencast'),
+                null,
+                notification::NOTIFY_ERROR
+            );
         }
 
         if (!$apibridge->is_owner($ocseries->acl, $USER->id, $SITE->id)) {
-            redirect(new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid,
+            redirect(
+                new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid,
                 'series' => $series, ]),
-                get_string('addvideonotallowed', 'tool_opencast'), null,
-                notification::NOTIFY_ERROR);
+                get_string('addvideonotallowed', 'tool_opencast'),
+                null,
+                notification::NOTIFY_ERROR
+            );
         }
     }
 } else {
@@ -122,12 +131,14 @@ $userdefaults = $userdefaultsrecord ? json_decode($userdefaultsrecord->defaults,
 $usereventdefaults = (!empty($userdefaults['event'])) ? $userdefaults['event'] : [];
 
 if ($series) {
-    $addvideoform = new addvideo_form($PAGE->url,
+    $addvideoform = new addvideo_form(
+        $PAGE->url,
         ['courseid' => $courseid, 'metadata_catalog' => $metadatacatalog,
             'eventdefaults' => $usereventdefaults, 'ocinstanceid' => $ocinstanceid, 'series' => $series, ]
     );
 } else {
-    $addvideoform = new addvideo_form($PAGE->url,
+    $addvideoform = new addvideo_form(
+        $PAGE->url,
         ['courseid' => $courseid, 'metadata_catalog' => $metadatacatalog,
             'eventdefaults' => $usereventdefaults, 'ocinstanceid' => $ocinstanceid, ]
     );
@@ -141,17 +152,31 @@ if ($data = $addvideoform->get_data()) {
     $chunkuploadinstalled = class_exists('\local_chunkupload\chunkupload_form_element');
 
     // Record the user draft area in this context.
-    if (!$chunkuploadinstalled || !get_config('tool_opencast', 'enablechunkupload_' . $ocinstanceid) ||
-        property_exists($data, 'presenter_already_uploaded') && $data->presenter_already_uploaded) {
-        $storedfilepresenter = $addvideoform->save_stored_file('video_presenter', $coursecontext->id,
-            'tool_opencast', upload_helper::OC_FILEAREA, $data->video_presenter);
+    if (
+        !$chunkuploadinstalled || !get_config('tool_opencast', 'enablechunkupload_' . $ocinstanceid) ||
+        property_exists($data, 'presenter_already_uploaded') && $data->presenter_already_uploaded
+    ) {
+        $storedfilepresenter = $addvideoform->save_stored_file(
+            'video_presenter',
+            $coursecontext->id,
+            'tool_opencast',
+            upload_helper::OC_FILEAREA,
+            $data->video_presenter
+        );
     } else {
         $chunkuploadpresenter = $data->video_presenter_chunk;
     }
-    if (!$chunkuploadinstalled || !get_config('tool_opencast', 'enablechunkupload_' . $ocinstanceid) ||
-        property_exists($data, 'presentation_already_uploaded') && $data->presentation_already_uploaded) {
-        $storedfilepresentation = $addvideoform->save_stored_file('video_presentation', $coursecontext->id,
-            'tool_opencast', upload_helper::OC_FILEAREA, $data->video_presentation);
+    if (
+        !$chunkuploadinstalled || !get_config('tool_opencast', 'enablechunkupload_' . $ocinstanceid) ||
+        property_exists($data, 'presentation_already_uploaded') && $data->presentation_already_uploaded
+    ) {
+        $storedfilepresentation = $addvideoform->save_stored_file(
+            'video_presentation',
+            $coursecontext->id,
+            'tool_opencast',
+            upload_helper::OC_FILEAREA,
+            $data->video_presentation
+        );
     } else {
         $chunkuploadpresentation = $data->video_presentation_chunk;
     }
@@ -175,8 +200,13 @@ if ($data = $addvideoform->get_data()) {
             }
             $fileelm = "transcription_file_{$language->key}";
             if (property_exists($data, $fileelm)) {
-                $storedfile = $addvideoform->save_stored_file($fileelm, $coursecontext->id,
-                    'tool_opencast', tool_opencast\local\attachment_helper::OC_FILEAREA_ATTACHMENT, $data->{$fileelm});
+                $storedfile = $addvideoform->save_stored_file(
+                    $fileelm,
+                    $coursecontext->id,
+                    'tool_opencast',
+                    tool_opencast\local\attachment_helper::OC_FILEAREA_ATTACHMENT,
+                    $data->{$fileelm}
+                );
                 if (isset($storedfile) && $storedfile) {
                     $transcriptions[] = [
                         'file_itemid' => $storedfile->get_itemid(),

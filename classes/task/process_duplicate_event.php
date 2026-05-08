@@ -43,8 +43,6 @@ use tool_opencast\local\importvideosmanager;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class process_duplicate_event extends adhoc_task {
-
-
     /** @var int max number of retries for one task */
     const MAX_COUNT_RETRIES = 10;
 
@@ -80,7 +78,6 @@ class process_duplicate_event extends adhoc_task {
         // Test, whether opencast server is available.
 
         try {
-
             // Get duplication workflow.
             $duplicateworkflow = get_config('tool_opencast', 'duplicateworkflow_' . $data->ocinstanceid);
             if (empty($duplicateworkflow)) {
@@ -125,8 +122,10 @@ class process_duplicate_event extends adhoc_task {
             // Set workflow configuration. It is necessary to set the following for default duplicate-event workflow.
             $configuration['mpTitle'] = 'Duplicated Event';
             $configuration['seriesId'] = $data->seriesid;
-            $configuration['startDateTime'] = (new DateTime('now',
-                new DateTimeZone('UTC')))->format('Y-m-d\TH:i:s\Z');
+            $configuration['startDateTime'] = (new DateTime(
+                'now',
+                new DateTimeZone('UTC')
+            ))->format('Y-m-d\TH:i:s\Z');
             $configuration['numberOfEvents'] = "1";
             $configuration['noCopySuffix'] = "false";
             $sourcevideo = $apibridge->get_opencast_video($data->eventid);
@@ -149,15 +148,21 @@ class process_duplicate_event extends adhoc_task {
             // If requested and only if we have a OC workflow ID, schedule the Opencast LTI episode module to be cleaned up
             // by writing the necessary episode information to the database. This will be read and processed by the
             // \tool_opencast\task\cleanup_imported_episodes_cron scheduled task.
-            if ($data->schedulemodulecleanup == true && is_number($ocworkflowid) &&
-                $data->episodemodules != null && count((array)$data->episodemodules) > 0) {
+            if (
+                $data->schedulemodulecleanup == true && is_number($ocworkflowid) &&
+                $data->episodemodules != null && count((array)$data->episodemodules) > 0
+            ) {
                 // Iterate over the existing modules for this episode.
                 // Most probably, there will just be 0 or 1 instance, but we have to handle them all if there are more.
                 $now = time(); // This is fetched before the loop to ensure that all records for this workflow get the same time.
                 foreach ($data->episodemodules as $coursemoduleid => $oldepisodeid) {
                     // Just proceed if the record does not already exist for some reason.
-                    if (!$DB->record_exists('tool_opencast_ltiepisode_cu',
-                        ['cmid' => $coursemoduleid, 'ocinstanceid' => $data->ocinstanceid])) {
+                    if (
+                        !$DB->record_exists(
+                            'tool_opencast_ltiepisode_cu',
+                            ['cmid' => $coursemoduleid, 'ocinstanceid' => $data->ocinstanceid]
+                        )
+                    ) {
                         $record = new stdClass();
                         $record->courseid = $course->id;
                         $record->cmid = $coursemoduleid;
@@ -208,9 +213,7 @@ class process_duplicate_event extends adhoc_task {
                 $task->set_custom_data($visibiltytaskdata);
                 return manager::queue_adhoc_task($task, true);
             }
-
         } catch (Exception $e) {
-
             // Increase failure counter.
             if (isset($data->countfailed)) {
                 $data->countfailed++;
@@ -224,7 +227,6 @@ class process_duplicate_event extends adhoc_task {
             if ($data->countfailed < 10) {
                 throw new moodle_exception('errorduplicatetaskretry', 'tool_opencast', '', $e->getMessage());
             } else {
-
                 // Terminate (do not throw error) and notify admin.
                 notifications::notify_error('errorduplicatetaskterminate', $e);
             }

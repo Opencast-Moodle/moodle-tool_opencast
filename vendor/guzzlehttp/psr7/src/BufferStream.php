@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -29,81 +43,67 @@ final class BufferStream implements StreamInterface
      *                 but will return 0 to inform writers to slow down
      *                 until the buffer has been drained by reading from it.
      */
-    public function __construct(int $hwm = 16384)
-    {
+    public function __construct(int $hwm = 16384) {
         $this->hwm = $hwm;
     }
 
-    public function __toString(): string
-    {
+    public function __toString(): string {
         return $this->getContents();
     }
 
-    public function getContents(): string
-    {
+    public function getContents(): string {
         $buffer = $this->buffer;
         $this->buffer = '';
 
         return $buffer;
     }
 
-    public function close(): void
-    {
+    public function close(): void {
         $this->buffer = '';
     }
 
-    public function detach()
-    {
+    public function detach() {
         $this->close();
 
         return null;
     }
 
-    public function getSize(): ?int
-    {
+    public function getSize(): ?int {
         return strlen($this->buffer);
     }
 
-    public function isReadable(): bool
-    {
+    public function isReadable(): bool {
         return true;
     }
 
-    public function isWritable(): bool
-    {
+    public function isWritable(): bool {
         return true;
     }
 
-    public function isSeekable(): bool
-    {
+    public function isSeekable(): bool {
         return false;
     }
 
-    public function rewind(): void
-    {
+    public function rewind(): void {
         $this->seek(0);
     }
 
-    public function seek($offset, $whence = SEEK_SET): void
-    {
+    public function seek($offset, $whence = SEEK_SET): void {
         throw new \RuntimeException('Cannot seek a BufferStream');
     }
 
-    public function eof(): bool
-    {
+    public function eof(): bool {
         return strlen($this->buffer) === 0;
     }
 
-    public function tell(): int
-    {
+    public function tell(): int {
         throw new \RuntimeException('Cannot determine the position of a BufferStream');
     }
 
     /**
      * Reads data from the buffer.
      */
-    public function read($length): string
-    {
+    public function read($length): string {
         $currentLength = strlen($this->buffer);
 
         if ($length >= $currentLength) {
@@ -122,8 +122,7 @@ final class BufferStream implements StreamInterface
     /**
      * Writes data to the buffer.
      */
-    public function write($string): int
-    {
+    public function write($string): int {
         $this->buffer .= $string;
 
         if (strlen($this->buffer) >= $this->hwm) {
@@ -136,8 +135,7 @@ final class BufferStream implements StreamInterface
     /**
      * @return mixed
      */
-    public function getMetadata($key = null)
-    {
+    public function getMetadata($key = null) {
         if ($key === 'hwm') {
             return $this->hwm;
         }

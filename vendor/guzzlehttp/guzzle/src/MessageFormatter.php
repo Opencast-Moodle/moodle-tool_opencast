@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp;
 
@@ -56,8 +70,7 @@ class MessageFormatter implements MessageFormatterInterface
     /**
      * @param string $template Log message template
      */
-    public function __construct(?string $template = self::CLF)
-    {
+    public function __construct(?string $template = self::CLF) {
         $this->template = $template ?: self::CLF;
     }
 
@@ -68,8 +81,7 @@ class MessageFormatter implements MessageFormatterInterface
      * @param ResponseInterface|null $response Response that was received
      * @param \Throwable|null        $error    Exception that was received
      */
-    public function format(RequestInterface $request, ?ResponseInterface $response = null, ?\Throwable $error = null): string
-    {
+    public function format(RequestInterface $request, ?ResponseInterface $response = null, ?\Throwable $error = null): string {
         $cache = [];
 
         /** @var string */
@@ -90,9 +102,9 @@ class MessageFormatter implements MessageFormatterInterface
                         break;
                     case 'req_headers':
                         $result = \trim($request->getMethod()
-                                .' '.$request->getRequestTarget())
-                            .' HTTP/'.$request->getProtocolVersion()."\r\n"
-                            .$this->headers($request);
+                                . ' ' . $request->getRequestTarget())
+                            . ' HTTP/' . $request->getProtocolVersion() . "\r\n"
+                            . $this->headers($request);
                         break;
                     case 'res_headers':
                         $result = $response ?
@@ -101,7 +113,7 @@ class MessageFormatter implements MessageFormatterInterface
                                 $response->getProtocolVersion(),
                                 $response->getStatusCode(),
                                 $response->getReasonPhrase()
-                            )."\r\n".$this->headers($response)
+                            ) . "\r\n" . $this->headers($response)
                             : 'NULL';
                         break;
                     case 'req_body':
@@ -169,7 +181,7 @@ class MessageFormatter implements MessageFormatterInterface
                         // handle prefixed dynamic headers
                         if (\strpos($matches[1], 'req_header_') === 0) {
                             $result = $request->getHeaderLine(\substr($matches[1], 11));
-                        } elseif (\strpos($matches[1], 'res_header_') === 0) {
+                        } else if (\strpos($matches[1], 'res_header_') === 0) {
                             $result = $response
                                 ? $response->getHeaderLine(\substr($matches[1], 11))
                                 : 'NULL';
@@ -187,11 +199,10 @@ class MessageFormatter implements MessageFormatterInterface
     /**
      * Get headers from message as string
      */
-    private function headers(MessageInterface $message): string
-    {
+    private function headers(MessageInterface $message): string {
         $result = '';
         foreach ($message->getHeaders() as $name => $values) {
-            $result .= $name.': '.\implode(', ', $values)."\r\n";
+            $result .= $name . ': ' . \implode(', ', $values) . "\r\n";
         }
 
         return \trim($result);

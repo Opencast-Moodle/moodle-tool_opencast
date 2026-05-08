@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -14,8 +28,7 @@ final class Header
      *
      * @param string|array $header Header to parse into components.
      */
-    public static function parse($header): array
-    {
+    public static function parse($header): array {
         static $trimmed = "\"'  \n\t\r";
         $params = $matches = [];
 
@@ -49,8 +62,7 @@ final class Header
      *
      * @deprecated Use self::splitList() instead.
      */
-    public static function normalize($header): array
-    {
+    public static function normalize($header): array {
         $result = [];
         foreach ((array) $header as $value) {
             foreach (self::splitList($value) as $parsed) {
@@ -74,8 +86,7 @@ final class Header
      *
      * @return string[]
      */
-    public static function splitList($values): array
-    {
+    public static function splitList($values): array {
         if (!\is_array($values)) {
             $values = [$values];
         }

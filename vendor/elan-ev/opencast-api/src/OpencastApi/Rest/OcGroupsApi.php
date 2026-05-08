@@ -1,32 +1,45 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 namespace OpencastApi\Rest;
 
 class OcGroupsApi extends OcRest
 {
     const URI = '/api/groups';
 
-    public function __construct($restClient)
-    {
+    public function __construct($restClient) {
         parent::__construct($restClient);
     }
 
-    ## [Section 1]: General API endpoints.
+    // [Section 1]: General API endpoints.
 
     /**
      * Returns a list of groups.
-     * 
+     *
      * @param array $params (optional) The list of query params to pass which can contain the followings:
      * [
      *      'sort' => (array) {an assiciative array for sorting e.g. ['name' => 'DESC', 'description' => '', 'role' => '']},
      *      'limit' => (int) {the maximum number of results to return},
      *      'offset' => (int) {the index of the first result to return},
      *      'filter' => (array) {an assiciative array for filtering e.g. ['name' => '{Groups where the name specified in the metadata field match}']},
-     * ]     
-     * 
+     * ]
+     *
      * @return array the response result ['code' => 200, 'body' => '{A (potentially empty) list of groups}']
      */
-    public function getAll($params = [])
-    {
+    public function getAll($params = []) {
         $uri = self::URI;
 
         $query = [];
@@ -38,7 +51,7 @@ class OcGroupsApi extends OcRest
         }
 
         $acceptableParams = [
-            'sort', 'limit', 'offset', 'filter'
+            'sort', 'limit', 'offset', 'filter',
         ];
 
         foreach ($params as $param_name => $param_value) {
@@ -53,33 +66,31 @@ class OcGroupsApi extends OcRest
 
     /**
      * Returns a single group.
-     * 
+     *
      * @param string $groupId the identifier of the group.
-     * 
+     *
      * @return array the response result ['code' => 200, 'body' => '{The group}']
      */
-    public function get($groupId)
-    {
+    public function get($groupId) {
         $uri = self::URI . "/{$groupId}";
         return $this->restClient->performGet($uri);
     }
 
     /**
      * Creates a group.
-     * 
+     *
      * @param string $name Group Name
      * @param string $description (optional) Group Description
      * @param array $roles (optional) list of roles
      * @param array $members (optional) list of members
-     * 
+     *
      * @return array the response result ['code' => 201, 'reason' => 'CREATED'] (A new group is created)
      */
-    public function create($name, $description = '', $roles = [], $members = [])
-    {
+    public function create($name, $description = '', $roles = [], $members = []) {
         $uri = self::URI;
 
         $formData = [
-            'name' => $name
+            'name' => $name,
         ];
         if (!empty($description)) {
             $formData['description'] = $description;
@@ -98,20 +109,19 @@ class OcGroupsApi extends OcRest
     /**
      * Updates a group.
      * If any of form parameters are ommited, the respective fields of the group will not be changed.
-     * 
+     *
      * @param string $groupId group id
      * @param string $name (optional) Group Name
      * @param string $description (optional) Group Description
      * @param array $roles (optional) list of roles
      * @param array $members (optional) list of members
-     * 
+     *
      * @return array the response result ['code' => 201, 'reason' => 'CREATED'] (The group has been updated)
      */
-    public function update($groupId, $name = '', $description = '', $roles = [], $members = [])
-    {
+    public function update($groupId, $name = '', $description = '', $roles = [], $members = []) {
         $uri = self::URI . "/{$groupId}";
         $formData = [
-            'name' => $name
+            'name' => $name,
         ];
         if (!empty($description)) {
             $formData['description'] = $description;
@@ -129,36 +139,34 @@ class OcGroupsApi extends OcRest
 
     /**
      * Deletes a group.
-     * 
+     *
      * @param string $groupId group id
-     * 
+     *
      * @return array the response result ['code' => 204, 'reason' => 'No Content'] (The group has been deleted)
      */
-    public function delete($groupId)
-    {
+    public function delete($groupId) {
         $uri = self::URI . "/{$groupId}";
         return $this->restClient->performDelete($uri);
     }
 
-    ## End of: [Section 1]: General API endpoints.
+    // End of: [Section 1]: General API endpoints.
 
-    ## [Section 2]: Members.
+    // [Section 2]: Members.
 
     /**
      * Adds a member to a group.
-     * 
+     *
      * @param string $groupId group id
      * @param string $member The username of the member to be added
-     * 
+     *
      * @return array the response result:
      * ['code' => 204, 'reason' => 'No Content'] (The member has been added)
      * ['code' => 200, 'reason' => 'OK'] (The member was already member of the group)
      */
-    public function addMember($groupId, $member)
-    {
+    public function addMember($groupId, $member) {
         $uri = self::URI . "/{$groupId}/members";
         $formData = [
-            'member' => $member
+            'member' => $member,
         ];
         $options = $this->restClient->getFormParams($formData);
         return $this->restClient->performPost($uri, $options);
@@ -166,18 +174,16 @@ class OcGroupsApi extends OcRest
 
     /**
      * Removes a member from a group
-     * 
+     *
      * @param string $groupId group id
      * @param string $memberId member id
-     * 
+     *
      * @return array the response result ['code' => 204, 'reason' => 'No Content'] (The member has been removed)
      */
-    public function deleteMember($groupId, $memberId)
-    {
+    public function deleteMember($groupId, $memberId) {
         $uri = self::URI . "/{$groupId}/members/{$memberId}";
         return $this->restClient->performDelete($uri);
     }
 
-    ## End of: [Section 2]: Members.
+    // End of: [Section 2]: Members.
 }
-?>

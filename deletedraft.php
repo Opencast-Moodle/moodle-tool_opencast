@@ -38,9 +38,13 @@ $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinsta
 $redirectpage = optional_param('redirectpage', null, PARAM_ALPHA);
 $series = optional_param('series', null, PARAM_ALPHANUMEXT);
 
-$baseurl = new moodle_url('/admin/tool/opencast/deletedraft.php',
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/deletedraft.php',
     ['identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid,
-        'redirectpage' => $redirectpage, 'series' => $series, ]);
+    'redirectpage' => $redirectpage,
+    'series' => $series,
+    ]
+);
 $PAGE->set_url($baseurl);
 
 require_login($courseid, false);
@@ -81,8 +85,11 @@ $allowedstatuses = [
     upload_helper::STATUS_ARCHIVED_FAILED_UPLOAD,
 ];
 if (!in_array($jobtodelete->status, $allowedstatuses)) {
-    $message = get_string('videodraftnotdeletable', 'tool_opencast',
-        upload_helper::get_status_string($jobtodelete->status));
+    $message = get_string(
+        'videodraftnotdeletable',
+        'tool_opencast',
+        upload_helper::get_status_string($jobtodelete->status)
+    );
     redirect($redirecturl, $message, null, notification::NOTIFY_WARNING);
 }
 
@@ -91,8 +98,11 @@ if (($action == 'delete') && confirm_sesskey()) {
     $deleted = upload_helper::delete_video_draft($jobtodelete);
 
     $message = $deleted ? get_string('videodraftdeletionsucceeded', 'tool_opencast') :
-        get_string('videodraftnotdeletable', 'tool_opencast',
-            upload_helper::get_status_string($jobtodelete->status));
+        get_string(
+            'videodraftnotdeletable',
+            'tool_opencast',
+            upload_helper::get_status_string($jobtodelete->status)
+        );
     redirect($redirecturl, $message);
 }
 

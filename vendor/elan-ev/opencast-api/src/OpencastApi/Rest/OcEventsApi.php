@@ -1,16 +1,30 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 namespace OpencastApi\Rest;
 
 class OcEventsApi extends OcRest
 {
     const URI = '/api/events';
 
-    public function __construct($restClient)
-    {
+    public function __construct($restClient) {
         parent::__construct($restClient);
     }
 
-    ## [Section 1]: General API endpoints.
+    // [Section 1]: General API endpoints.
 
     /**
      * Returns a list of events.
@@ -34,8 +48,7 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => 'A (potentially empty) array list of events is returned.']
      */
-    public function getAll($params = [])
-    {
+    public function getAll($params = []) {
         $uri = self::URI;
 
         $query = [];
@@ -48,7 +61,7 @@ class OcEventsApi extends OcRest
 
         $acceptableParams = [
             'sign', 'withacl', 'withmetadata', 'withpublications',
-            'onlyWithWriteAccess', 'sort', 'limit', 'offset', 'filter', 'includeInternalPublication'
+            'onlyWithWriteAccess', 'sort', 'limit', 'offset', 'filter', 'includeInternalPublication',
         ];
 
         if ($this->restClient->hasVersion('1.1.0')) {
@@ -85,8 +98,7 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => 'A (potentially empty) array list of events in a series is returned.']
      */
-    public function getBySeries($seriesId, $params = [])
-    {
+    public function getBySeries($seriesId, $params = []) {
         $filter = isset($params['filter']) ? $params['filter'] : [];
         $filter['is_part_of'] = $seriesId;
         $params['filter'] = $filter;
@@ -112,13 +124,12 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => 'The event (Object)']
      */
-    public function get($eventId, $params = [])
-    {
+    public function get($eventId, $params = []) {
         $uri = self::URI . "/{$eventId}";
         $query = [];
 
         $acceptableParams = [
-            'sign', 'withacl', 'withmetadata', 'withpublications', 'includeInternalPublication'
+            'sign', 'withacl', 'withmetadata', 'withpublications', 'includeInternalPublication',
         ];
 
         if ($this->restClient->hasVersion('1.1.0')) {
@@ -155,8 +166,7 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 201, 'body' => '{A new event is created and its identifier is returned}', 'location' => '{the url of new event'}]
      */
-    public function create($acls, $metadata, $processing, $scheduling = '', $presenterFile = null, $presentationFile = null, $audioFile = null, $progressCallable = null)
-    {
+    public function create($acls, $metadata, $processing, $scheduling = '', $presenterFile = null, $presentationFile = null, $audioFile = null, $progressCallable = null) {
         $uri = self::URI;
 
         $formData = [
@@ -199,8 +209,7 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 204, 'reason' => 'NO CONTENT'] (The event has been updated)
      */
-    public function update($eventId, $acls = '', $metadata = '', $processing = '', $scheduling = '', $presenterFile = null, $presentationFile = null, $audioFile = null)
-    {
+    public function update($eventId, $acls = '', $metadata = '', $processing = '', $scheduling = '', $presenterFile = null, $presentationFile = null, $audioFile = null) {
         $uri = self::URI . "/{$eventId}";
         $formData = [];
         if (!empty($acls)) {
@@ -238,15 +247,14 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 204, 'reason' => 'NO CONTENT'] (The event has been deleted)
      */
-    public function delete($eventId)
-    {
+    public function delete($eventId) {
         $uri = self::URI . "/{$eventId}";
         return $this->restClient->performDelete($uri);
     }
 
-    ## End of [Section 1]: General API endpoints.
+    // End of [Section 1]: General API endpoints.
 
-    ## [Section 2]: Access Policy.
+    // [Section 2]: Access Policy.
 
     /**
      * Returns an event's access policy.
@@ -255,8 +263,7 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The access control list for the specified event (Object)}']
      */
-    public function getAcl($eventId)
-    {
+    public function getAcl($eventId) {
         $uri = self::URI . "/{$eventId}/acl";
         return $this->restClient->performGet($uri);
     }
@@ -269,8 +276,7 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 204, 'reason' => 'NO CONTENT'] (The access control list for the specified event is updated)
      */
-    public function updateAcl($eventId, $acl)
-    {
+    public function updateAcl($eventId, $acl) {
         $uri = self::URI . "/{$eventId}/acl";
         $formData['acl'] = $acl;
         $options = $this->restClient->getFormParams($formData);
@@ -287,8 +293,7 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 204, 'reason' => 'NO CONTENT'] (The permission has been created in the access control list of the specified event)
      */
-    public function addSingleAcl($eventId, $action, $role)
-    {
+    public function addSingleAcl($eventId, $action, $role) {
         $uri = self::URI . "/{$eventId}/acl/{$action}";
         $params['role'] = $role;
         $options = $this->restClient->getFormParams($params);
@@ -301,8 +306,7 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 204, 'reason' => 'NO CONTENT'] (The access control list for the specified event is updated)
      */
-    public function emptyAcl($eventId)
-    {
+    public function emptyAcl($eventId) {
         $acl = [];
         return $this->updateAcl($eventId, $acl);
     }
@@ -316,15 +320,14 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 204, 'reason' => 'NO CONTENT'] (The permission has been revoked from the access control list of the specified event)
      */
-    public function deleteSingleAcl($eventId, $action, $role)
-    {
+    public function deleteSingleAcl($eventId, $action, $role) {
         $uri = self::URI . "/{$eventId}/acl/{$action}/{$role}";
         return $this->restClient->performDelete($uri);
     }
 
-    ## End of [Section 2]: Access Policy.
+    // End of [Section 2]: Access Policy.
 
-    ## [Section 3]: Media.
+    // [Section 3]: Media.
 
     /**
      * Returns the complete set of media tracks.
@@ -332,8 +335,7 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The list of media tracks is returned}']
      */
-    public function getMedia($eventId)
-    {
+    public function getMedia($eventId) {
         $uri = self::URI . "/{$eventId}/media";
         return $this->restClient->performGet($uri);
     }
@@ -348,8 +350,7 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The track was added successfully.}']
      */
-    public function addTrack($eventId, $flavor, $track, $overwriteExisting = false, $tags = null)
-    {
+    public function addTrack($eventId, $flavor, $track, $overwriteExisting = false, $tags = null) {
         $uri = self::URI . "/{$eventId}/track";
         $formData['flavor'] = $flavor;
         $formData['track'] = $track;
@@ -366,9 +367,9 @@ class OcEventsApi extends OcRest
         return $this->restClient->performPost($uri, $options);
     }
 
-    ## End of [Section 3]: Media.
+    // End of [Section 3]: Media.
 
-    ## [Section 4]: Metadata.
+    // [Section 4]: Metadata.
 
     /**
      * Returns the event's metadata (if type is defined of the specified type).
@@ -379,8 +380,7 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The metadata collection (array)}']
      */
-    public function getMetadata($eventId, $type = '')
-    {
+    public function getMetadata($eventId, $type = '') {
         $uri = self::URI . "/{$eventId}/metadata";
         $query = [];
         if (!empty($type)) {
@@ -400,8 +400,7 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'reason' => 'OK'] (The metadata of the given namespace has been updated)
      */
-    public function updateMetadata($eventId, $type, $metadata)
-    {
+    public function updateMetadata($eventId, $type, $metadata) {
         $uri = self::URI . "/{$eventId}/metadata";
         $query['type'] = $type;
         $formData = [
@@ -423,17 +422,16 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 204, 'reason' => 'No Content'] (The metadata of the given namespace has been delete)
      */
-    public function deleteMetadata($eventId, $type)
-    {
+    public function deleteMetadata($eventId, $type) {
         $uri = self::URI . "/{$eventId}/metadata";
         $query['type'] = $type;
         $options = $this->restClient->getQueryParams($query);
         return $this->restClient->performDelete($uri, $options);
     }
 
-    ## End of [Section 4]: Metadata.
+    // End of [Section 4]: Metadata.
 
-    ## [Section 5]: Publications.
+    // [Section 5]: Publications.
 
     /**
      * Returns an event's list of publications.
@@ -444,8 +442,7 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The list of publications}']
      */
-    public function getPublications($eventId, $sign = false, $includeInternalPublication = false)
-    {
+    public function getPublications($eventId, $sign = false, $includeInternalPublication = false) {
         $uri = self::URI . "/{$eventId}/publications";
         if ($sign) {
             $query['sign'] = 'true';
@@ -467,17 +464,16 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The track details}']
      */
-    public function getSinglePublication($eventId, $publicationId ,$sign = false)
-    {
+    public function getSinglePublication($eventId, $publicationId, $sign = false) {
         $uri = self::URI . "/{$eventId}/publications/{$publicationId}";
         $query['sign'] = $sign;
         $options = $this->restClient->getQueryParams($query);
         return $this->restClient->performGet($uri, $options);
     }
 
-    ## End of [Section 5]: Publications.
+    // End of [Section 5]: Publications.
 
-    ## [Section 6]: Scheduling Information.
+    // [Section 6]: Scheduling Information.
 
     /**
      * Returns an event's scheduling information.
@@ -487,12 +483,11 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The scheduling information for the specified event}']
      */
-    public function getScheduling($eventId)
-    {
+    public function getScheduling($eventId) {
         if (!$this->restClient->hasVersion('1.1.0')) {
             return [
                 'code' => 403,
-                'reason' => 'API Version (>= 1.1.0) is required'
+                'reason' => 'API Version (>= 1.1.0) is required',
             ];
         }
         $uri = self::URI . "/{$eventId}/scheduling";
@@ -509,19 +504,18 @@ class OcEventsApi extends OcRest
      *
      * @return array the response result ['code' => 204, 'reason' => 'NO CONTENT'] (The scheduling information for the specified event is updated)
      */
-    public function updateScheduling($eventId, $scheduling, $allowConflict = false)
-    {
+    public function updateScheduling($eventId, $scheduling, $allowConflict = false) {
         if (!$this->restClient->hasVersion('1.1.0')) {
             return [
                 'code' => 403,
-                'reason' => 'API Version (>= 1.1.0) is required'
+                'reason' => 'API Version (>= 1.1.0) is required',
             ];
         }
 
         $uri = self::URI . "/{$eventId}/scheduling";
 
         $formData = [
-            'scheduling' => $scheduling
+            'scheduling' => $scheduling,
         ];
 
         if ($this->restClient->hasVersion('1.2.0') && is_bool($allowConflict)) {
@@ -532,6 +526,5 @@ class OcEventsApi extends OcRest
         return $this->restClient->performPut($uri, $options);
     }
 
-    ## End of [Section 6]: Scheduling Information.
+    // End of [Section 6]: Scheduling Information.
 }
-?>

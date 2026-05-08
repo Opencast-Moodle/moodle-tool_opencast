@@ -36,8 +36,6 @@ require_once($CFG->dirroot . '/lib/filestorage/file_system_filedir.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class file_system_filedir extends \file_system_filedir {
-
-
     /**
      * Unlink one file in the trashdir by contenthash
      *

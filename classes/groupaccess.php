@@ -34,8 +34,6 @@ use core\persistent;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class groupaccess extends persistent {
-
-
     /** Table name for the persistent. */
     const TABLE = 'tool_opencast_groupaccess';
 

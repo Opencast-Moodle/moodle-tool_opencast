@@ -34,7 +34,6 @@ function xmldb_tool_opencast_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
     if ($oldversion < 2018013002) {
-
         // Define table tool_opencast_series to be created.
         $table = new xmldb_table('tool_opencast_series');
 
@@ -157,13 +156,14 @@ function xmldb_tool_opencast_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025080100) {
-
         // Changes for migrating most of the block admin setting to tool in version 5.
 
         // Migrate admin settings in config_plugin table.
         // Loop through records and rename the setting if not done yet.
-        $records = $DB->get_records_select('config_plugins',
-            "plugin = 'block_opencast' AND name != 'version'");
+        $records = $DB->get_records_select(
+            'config_plugins',
+            "plugin = 'block_opencast' AND name != 'version'"
+        );
         foreach ($records as $record) {
             if (!$existingrecord = $DB->get_record('config_plugins', ['name' => $record->name, 'plugin' => 'tool_opencast'])) {
                 $record->plugin = 'tool_opencast';
@@ -259,7 +259,6 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         }
 
         upgrade_plugin_savepoint(true, 2025080100, 'tool', 'opencast');
-
     }
 
     return true;
@@ -319,8 +318,10 @@ function remove_default_opencast_instance_settings_without_id(): bool {
  *
  * @throws \dml_exception
  */
-function replace_default_opencast_instance_setting_without_id(int $defaultinstanceid,
-                                                              string $name): void {
+function replace_default_opencast_instance_setting_without_id(
+    int $defaultinstanceid,
+    string $name
+): void {
     $pluginname = 'tool_opencast';
 
     $value = get_config($pluginname, $name);

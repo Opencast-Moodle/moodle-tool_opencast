@@ -1,12 +1,26 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 namespace OpencastApi\Rest;
 
 class OcSeries extends OcRest
 {
     const URI = '/series';
 
-    public function __construct($restClient)
-    {
+    public function __construct($restClient) {
         $restClient->registerHeaderException('Accept', self::URI);
         parent::__construct($restClient);
     }
@@ -16,8 +30,7 @@ class OcSeries extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The number of series}']
      */
-    public function getCount()
-    {
+    public function getCount() {
         $uri = self::URI . "/count";
         return $this->restClient->performGet($uri);
     }
@@ -30,8 +43,7 @@ class OcSeries extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The access control list as JSON (Object) or XML (text)}']
      */
-    public function getAcl($seriesId, $format = '')
-    {
+    public function getAcl($seriesId, $format = '') {
         $uri = self::URI . "/{$seriesId}/acl.json";
         if (!empty($format) && strtolower($format) == 'xml') {
             $uri = str_replace('.json', '.xml', $uri);
@@ -48,8 +60,7 @@ class OcSeries extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{the series dublin core as JSON (Object) or XML (text) document}']
      */
-    public function get($seriesId, $format = '')
-    {
+    public function get($seriesId, $format = '') {
         $uri = self::URI . "/{$seriesId}.json";
         if (!empty($format) && strtolower($format) == 'xml') {
             $uri = str_replace('.json', '.xml', $uri);
@@ -66,8 +77,7 @@ class OcSeries extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The data of the series element}']
      */
-    public function getElement($seriesId, $elementType)
-    {
+    public function getElement($seriesId, $elementType) {
         $uri = self::URI . "/{$seriesId}/elements/{$elementType}";
         return $this->restClient->performGet($uri);
     }
@@ -79,8 +89,7 @@ class OcSeries extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{JSON (array) with all the types of elements of the given series}']
      */
-    public function getElements($seriesId)
-    {
+    public function getElements($seriesId) {
         $uri = self::URI . "/{$seriesId}/elements.json";
         return $this->restClient->performGet($uri);
     }
@@ -92,8 +101,7 @@ class OcSeries extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{JSON (array) list of series properties}']
      */
-    public function getProperties($seriesId)
-    {
+    public function getProperties($seriesId) {
         $uri = self::URI . "/{$seriesId}/properties.json";
         return $this->restClient->performGet($uri);
     }
@@ -106,8 +114,7 @@ class OcSeries extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{JSON (object) series property value}']
      */
-    public function getProperty($seriesId, $propertyName)
-    {
+    public function getProperty($seriesId, $propertyName) {
         $uri = self::URI . "/{$seriesId}/property/{$propertyName}.json";
         return $this->restClient->performGet($uri);
     }
@@ -119,8 +126,7 @@ class OcSeries extends OcRest
      *
      * @return array the response result ['code' => 204, 'reason' => 'No Content'] (The series was deleted.)
      */
-    public function delete($seriesId)
-    {
+    public function delete($seriesId) {
         $uri = self::URI . "/{$seriesId}";
         return $this->restClient->performDelete($uri);
     }
@@ -133,8 +139,7 @@ class OcSeries extends OcRest
      *
      * @return array the response result ['code' => 204, 'reason' => 'No Content'] (Series element deleted)
      */
-    public function deleteElement($seriesId, $elementType)
-    {
+    public function deleteElement($seriesId, $elementType) {
         $uri = self::URI . "/{$seriesId}/elements/{$elementType}";
         return $this->restClient->performDelete($uri);
     }
@@ -147,8 +152,7 @@ class OcSeries extends OcRest
      *
      * @return array the response result ['code' => 204, 'reason' => 'No Content'] (The series property has been deleted)
      */
-    public function deleteProperty($seriesId, $propertyName)
-    {
+    public function deleteProperty($seriesId, $propertyName) {
         $uri = self::URI . "/{$seriesId}/property/{$propertyName}";
         return $this->restClient->performDelete($uri);
     }
@@ -164,12 +168,11 @@ class OcSeries extends OcRest
      * ['code' => 201, 'reason' => 'Created'] (The access control list has been created)
      * ['code' => 204, 'reason' => 'No Content'] (The access control list has been updated)
      */
-    public function updateAcl($seriesId, $acl, $override = false)
-    {
+    public function updateAcl($seriesId, $acl, $override = false) {
         $uri = self::URI . "/{$seriesId}/accesscontrol";
 
         $formData = [
-            'acl' => $acl
+            'acl' => $acl,
         ];
         if (is_bool($override)) {
             $formData['override'] = $override;
@@ -222,8 +225,7 @@ class OcSeries extends OcRest
      * ['code' => 204, 'reason' => 'No Content'] (series updated)
      *
      */
-    public function update($params, $override = false)
-    {
+    public function update($params, $override = false) {
         $uri = self::URI;
 
         $formData = [];
@@ -233,7 +235,7 @@ class OcSeries extends OcRest
             'description', 'extent', 'format', 'identifier', 'isPartOf',
             'isReferencedBy', 'isReplacedBy', 'language', 'license', 'publisher',
             'relation', 'replaces', 'rights', 'rightsHolder', 'source',
-            'spatial', 'subject', 'temporal', 'title', 'type'
+            'spatial', 'subject', 'temporal', 'title', 'type',
         ];
         foreach ($params as $param_name => $param_value) {
             if (in_array($param_name, $acceptableParams) && !empty($param_value)) {
@@ -258,8 +260,7 @@ class OcSeries extends OcRest
      * ['code' => 201, 'reason' => 'Created'] (Series element created)
      * ['code' => 204, 'reason' => 'No Content'] (Series element updated)
      */
-    public function updateElement($seriesId, $elementType)
-    {
+    public function updateElement($seriesId, $elementType) {
         $uri = self::URI . "/{$seriesId}/elements/{$elementType}";
         return $this->restClient->performPut($uri);
     }
@@ -273,17 +274,15 @@ class OcSeries extends OcRest
      *
      * @return array the response result ['code' => 204, 'reason' => 'No Content'] (property has been updated.)
      */
-    public function updateProperty($seriesId, $name, $value)
-    {
+    public function updateProperty($seriesId, $name, $value) {
         $uri = self::URI . "/{$seriesId}/property";
 
         $formData = [
             'name' => $name,
-            'value' => $value
+            'value' => $value,
         ];
 
         $options = $this->restClient->getFormParams($formData);
         return $this->restClient->performPost($uri, $options);
     }
 }
-?>

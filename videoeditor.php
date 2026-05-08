@@ -39,8 +39,10 @@ $courseid = required_param('courseid', PARAM_INT);
 $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinstance()->id, PARAM_INT);
 
 $redirecturl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
-$baseurl = new moodle_url('/admin/tool/opencast/videoeditor.php',
-    ['video_identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/videoeditor.php',
+    ['video_identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
 $PAGE->set_url($baseurl);
 
 require_login($courseid, false);
@@ -87,8 +89,10 @@ $ltiendpoint = rtrim($editorbaseurl, '/') . '/lti';
 $video = $opencast->get_opencast_video($identifier);
 
 // Validate the video and make sure the video can be edited by the editor (double check).
-if ((empty($editorbaseurl) || empty($editorendpoint) ||
-    !$video || $video->error == true || !$opencast->can_edit_event_in_editor($video->video, $courseid))) {
+if (
+    (empty($editorbaseurl) || empty($editorendpoint) ||
+    !$video || $video->error == true || !$opencast->can_edit_event_in_editor($video->video, $courseid))
+) {
     redirect($redirecturl, get_string('videoeditorinvalidconfig', 'tool_opencast'), null, notification::NOTIFY_ERROR);
 }
 

@@ -1,4 +1,19 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -8,8 +23,7 @@ use OpencastApi\Opencast;
 
 class OcWorkflowsApiTest extends TestCase
 {
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
         $ocRestApi = new Opencast($config, [], false);
@@ -20,8 +34,7 @@ class OcWorkflowsApiTest extends TestCase
     /**
      * @test
      */
-    public function get_definition_run_update_delete_workflow(): void
-    {
+    public function get_definition_run_update_delete_workflow(): void {
         $data = [];
         // Get event
         $response0 = $this->ocEventsApi->getAll(
@@ -59,7 +72,6 @@ class OcWorkflowsApiTest extends TestCase
         $this->assertNotEmpty($definition);
         $data['workflow_definition_identifier'] = $definition->identifier;
 
-
         // Create (run) Workflow.
         $response3 = $this->ocWorkflowsApi->run(
             $data['event_identifier'],
@@ -90,8 +102,7 @@ class OcWorkflowsApiTest extends TestCase
      * @test
      * @dataProvider \Tests\DataProvider\WorkflowsApiDataProvider::getAllDefinitionsCases()
      */
-    public function get_all_definitions($params): void
-    {
+    public function get_all_definitions($params): void {
         $response = $this->ocWorkflowsApi->getAllDefinitions($params);
         $this->assertSame(200, $response['code'], 'Failure to get workflows list');
     }
@@ -100,8 +111,7 @@ class OcWorkflowsApiTest extends TestCase
      * @test
      * This test is meant to check the integrity of the response body, to make sure it contains the correct properties.
      */
-    public function get_single_definition_with_parameters(): void
-    {
+    public function get_single_definition_with_parameters(): void {
         $response = $this->ocWorkflowsApi->getDefinition(
             'fast',
             true,
@@ -134,4 +144,3 @@ class OcWorkflowsApiTest extends TestCase
         $this->assertArrayHasKey('identifier', $bodyArray, 'No configuration_panel_json is defined');
     }
 }
-?>

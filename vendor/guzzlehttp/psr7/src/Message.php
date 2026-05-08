@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -15,19 +29,18 @@ final class Message
      *
      * @param MessageInterface $message Message to convert to a string.
      */
-    public static function toString(MessageInterface $message): string
-    {
+    public static function toString(MessageInterface $message): string {
         if ($message instanceof RequestInterface) {
-            $msg = trim($message->getMethod().' '
-                    .$message->getRequestTarget())
-                .' HTTP/'.$message->getProtocolVersion();
+            $msg = trim($message->getMethod() . ' '
+                    . $message->getRequestTarget())
+                . ' HTTP/' . $message->getProtocolVersion();
             if (!$message->hasHeader('host')) {
-                $msg .= "\r\nHost: ".$message->getUri()->getHost();
+                $msg .= "\r\nHost: " . $message->getUri()->getHost();
             }
-        } elseif ($message instanceof ResponseInterface) {
-            $msg = 'HTTP/'.$message->getProtocolVersion().' '
-                .$message->getStatusCode().' '
-                .$message->getReasonPhrase();
+        } else if ($message instanceof ResponseInterface) {
+            $msg = 'HTTP/' . $message->getProtocolVersion() . ' '
+                . $message->getStatusCode() . ' '
+                . $message->getReasonPhrase();
         } else {
             throw new \InvalidArgumentException('Unknown message type');
         }
@@ -35,14 +48,14 @@ final class Message
         foreach ($message->getHeaders() as $name => $values) {
             if (is_string($name) && strtolower($name) === 'set-cookie') {
                 foreach ($values as $value) {
-                    $msg .= "\r\n{$name}: ".$value;
+                    $msg .= "\r\n{$name}: " . $value;
                 }
             } else {
-                $msg .= "\r\n{$name}: ".implode(', ', $values);
+                $msg .= "\r\n{$name}: " . implode(', ', $values);
             }
         }
 
-        return "{$msg}\r\n\r\n".$message->getBody();
+        return "{$msg}\r\n\r\n" . $message->getBody();
     }
 
     /**
@@ -53,8 +66,7 @@ final class Message
      * @param MessageInterface $message    The message to get the body summary
      * @param int              $truncateAt The maximum allowed size of the summary
      */
-    public static function bodySummary(MessageInterface $message, int $truncateAt = 120): ?string
-    {
+    public static function bodySummary(MessageInterface $message, int $truncateAt = 120): ?string {
         $body = $message->getBody();
 
         if (!$body->isSeekable() || !$body->isReadable()) {
@@ -94,8 +106,7 @@ final class Message
      *
      * @throws \RuntimeException
      */
-    public static function rewindBody(MessageInterface $message): void
-    {
+    public static function rewindBody(MessageInterface $message): void {
         $body = $message->getBody();
 
         if ($body->tell()) {
@@ -112,8 +123,7 @@ final class Message
      *
      * @param string $message HTTP request or response to parse.
      */
-    public static function parseMessage(string $message): array
-    {
+    public static function parseMessage(string $message): array {
         if (!$message) {
             throw new \InvalidArgumentException('Invalid message');
         }
@@ -173,8 +183,7 @@ final class Message
      * @param string $path    Path from the start-line
      * @param array  $headers Array of headers (each value an array).
      */
-    public static function parseRequestUri(string $path, array $headers): string
-    {
+    public static function parseRequestUri(string $path, array $headers): string {
         $hostKey = array_filter(array_keys($headers), function ($k) {
             // Numeric array keys are converted to int by PHP.
             $k = (string) $k;
@@ -190,7 +199,7 @@ final class Message
         $host = $headers[reset($hostKey)][0];
         $scheme = substr($host, -4) === ':443' ? 'https' : 'http';
 
-        return $scheme.'://'.$host.'/'.ltrim($path, '/');
+        return $scheme . '://' . $host . '/' . ltrim($path, '/');
     }
 
     /**
@@ -198,8 +207,7 @@ final class Message
      *
      * @param string $message Request message string.
      */
-    public static function parseRequest(string $message): RequestInterface
-    {
+    public static function parseRequest(string $message): RequestInterface {
         $data = self::parseMessage($message);
         $matches = [];
         if (!preg_match('/^[\S]+\s+([a-zA-Z]+:\/\/|\/).*/', $data['start-line'], $matches)) {
@@ -224,14 +232,13 @@ final class Message
      *
      * @param string $message Response message string.
      */
-    public static function parseResponse(string $message): ResponseInterface
-    {
+    public static function parseResponse(string $message): ResponseInterface {
         $data = self::parseMessage($message);
         // According to https://datatracker.ietf.org/doc/html/rfc7230#section-3.1.2
         // the space between status-code and reason-phrase is required. But
         // browsers accept responses without space and reason as well.
         if (!preg_match('/^HTTP\/.* [0-9]{3}( .*|$)/', $data['start-line'])) {
-            throw new \InvalidArgumentException('Invalid response string: '.$data['start-line']);
+            throw new \InvalidArgumentException('Invalid response string: ' . $data['start-line']);
         }
         $parts = explode(' ', $data['start-line'], 3);
 

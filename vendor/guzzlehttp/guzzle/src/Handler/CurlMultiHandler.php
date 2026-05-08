@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp\Handler;
 
@@ -66,13 +80,12 @@ class CurlMultiHandler
      * - options: An associative array of CURLMOPT_* options and
      *   corresponding values for curl_multi_setopt()
      */
-    public function __construct(array $options = [])
-    {
+    public function __construct(array $options = []) {
         $this->factory = $options['handle_factory'] ?? new CurlFactory(50);
 
         if (isset($options['select_timeout'])) {
             $this->selectTimeout = $options['select_timeout'];
-        } elseif ($selectTimeout = Utils::getenv('GUZZLE_CURL_SELECT_TIMEOUT')) {
+        } else if ($selectTimeout = Utils::getenv('GUZZLE_CURL_SELECT_TIMEOUT')) {
             @trigger_error('Since guzzlehttp/guzzle 7.2.0: Using environment variable GUZZLE_CURL_SELECT_TIMEOUT is deprecated. Use option "select_timeout" instead.', \E_USER_DEPRECATED);
             $this->selectTimeout = (int) $selectTimeout;
         } else {
@@ -94,8 +107,7 @@ class CurlMultiHandler
      * @throws \BadMethodCallException when another field as `_mh` will be gotten
      * @throws \RuntimeException       when curl can not initialize a multi handle
      */
-    public function __get($name)
-    {
+    public function __get($name) {
         if ($name !== '_mh') {
             throw new \BadMethodCallException("Can not get other property as '_mh'.");
         }
@@ -116,16 +128,14 @@ class CurlMultiHandler
         return $this->_mh;
     }
 
-    public function __destruct()
-    {
+    public function __destruct() {
         if (isset($this->_mh)) {
             \curl_multi_close($this->_mh);
             unset($this->_mh);
         }
     }
 
-    public function __invoke(RequestInterface $request, array $options): PromiseInterface
-    {
+    public function __invoke(RequestInterface $request, array $options): PromiseInterface {
         $easy = $this->factory->create($request, $options);
         $id = (int) $easy->handle;
 
@@ -144,8 +154,7 @@ class CurlMultiHandler
     /**
      * Ticks the curl event loop.
      */
-    public function tick(): void
-    {
+    public function tick(): void {
         // Add any delayed handles if needed.
         if ($this->delays) {
             $currentTime = Utils::currentTime();
@@ -183,8 +192,7 @@ class CurlMultiHandler
     /**
      * Runs \curl_multi_exec() inside the event loop, to prevent busy looping
      */
-    private function tickInQueue(): void
-    {
+    private function tickInQueue(): void {
         if (\curl_multi_exec($this->_mh, $this->active) === \CURLM_CALL_MULTI_PERFORM) {
             \curl_multi_select($this->_mh, 0);
             P\Utils::queue()->add(Closure::fromCallable([$this, 'tickInQueue']));
@@ -194,8 +202,7 @@ class CurlMultiHandler
     /**
      * Runs until all outstanding connections have completed.
      */
-    public function execute(): void
-    {
+    public function execute(): void {
         $queue = P\Utils::queue();
 
         while ($this->handles || !$queue->isEmpty()) {
@@ -207,8 +214,7 @@ class CurlMultiHandler
         }
     }
 
-    private function addRequest(array $entry): void
-    {
+    private function addRequest(array $entry): void {
         $easy = $entry['easy'];
         $id = (int) $easy->handle;
         $this->handles[$id] = $entry;
@@ -226,8 +232,7 @@ class CurlMultiHandler
      *
      * @return bool True on success, false on failure.
      */
-    private function cancel($id): bool
-    {
+    private function cancel($id): bool {
         if (!is_int($id)) {
             trigger_deprecation('guzzlehttp/guzzle', '7.4', 'Not passing an integer to %s::%s() is deprecated and will cause an error in 8.0.', __CLASS__, __FUNCTION__);
         }
@@ -245,8 +250,7 @@ class CurlMultiHandler
         return true;
     }
 
-    private function processMessages(): void
-    {
+    private function processMessages(): void {
         while ($done = \curl_multi_info_read($this->_mh)) {
             if ($done['msg'] !== \CURLMSG_DONE) {
                 // if it's not done, then it would be premature to remove the handle. ref https://github.com/guzzle/guzzle/pull/2892#issuecomment-945150216
@@ -269,8 +273,7 @@ class CurlMultiHandler
         }
     }
 
-    private function timeToNext(): int
-    {
+    private function timeToNext(): int {
         $currentTime = Utils::currentTime();
         $nextTime = \PHP_INT_MAX;
         foreach ($this->delays as $time) {

@@ -49,8 +49,11 @@ array_walk($series, function ($item) {
 $series = array_values($series);
 $numseriesallowed = get_config('tool_opencast', 'maxseries_' . $ocinstanceid);
 
-$PAGE->requires->js_call_amd('tool_opencast/block_manage_series', 'init',
-    [$coursecontext->id, $ocinstanceid, $createseries, $series, $numseriesallowed]);
+$PAGE->requires->js_call_amd(
+    'tool_opencast/block_manage_series',
+    'init',
+    [$coursecontext->id, $ocinstanceid, $createseries, $series, $numseriesallowed]
+);
 $PAGE->requires->css('/admin/tool/opencast/css/tabulator.min.css');
 $PAGE->requires->css('/admin/tool/opencast/css/tabulator_bootstrap4.min.css');
 

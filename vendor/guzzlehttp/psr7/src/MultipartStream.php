@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -32,19 +46,16 @@ final class MultipartStream implements StreamInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $elements = [], ?string $boundary = null)
-    {
+    public function __construct(array $elements = [], ?string $boundary = null) {
         $this->boundary = $boundary ?: bin2hex(random_bytes(20));
         $this->stream = $this->createStream($elements);
     }
 
-    public function getBoundary(): string
-    {
+    public function getBoundary(): string {
         return $this->boundary;
     }
 
-    public function isWritable(): bool
-    {
+    public function isWritable(): bool {
         return false;
     }
 
@@ -53,21 +64,19 @@ final class MultipartStream implements StreamInterface
      *
      * @param string[] $headers
      */
-    private function getHeaders(array $headers): string
-    {
+    private function getHeaders(array $headers): string {
         $str = '';
         foreach ($headers as $key => $value) {
             $str .= "{$key}: {$value}\r\n";
         }
 
-        return "--{$this->boundary}\r\n".trim($str)."\r\n\r\n";
+        return "--{$this->boundary}\r\n" . trim($str) . "\r\n\r\n";
     }
 
     /**
      * Create the aggregate stream that will be used to upload the POST data
      */
-    protected function createStream(array $elements = []): StreamInterface
-    {
+    protected function createStream(array $elements = []): StreamInterface {
         $stream = new AppendStream();
 
         foreach ($elements as $element) {
@@ -83,8 +92,7 @@ final class MultipartStream implements StreamInterface
         return $stream;
     }
 
-    private function addElement(AppendStream $stream, array $element): void
-    {
+    private function addElement(AppendStream $stream, array $element): void {
         foreach (['contents', 'name'] as $key) {
             if (!array_key_exists($key, $element)) {
                 throw new \InvalidArgumentException("A '{$key}' key is required");
@@ -117,8 +125,7 @@ final class MultipartStream implements StreamInterface
      *
      * @return array{0: StreamInterface, 1: string[]}
      */
-    private function createElement(string $name, StreamInterface $stream, ?string $filename, array $headers): array
-    {
+    private function createElement(string $name, StreamInterface $stream, ?string $filename, array $headers): array {
         // Set a default content-disposition header if one was no provided
         $disposition = self::getHeader($headers, 'content-disposition');
         if (!$disposition) {
@@ -151,8 +158,7 @@ final class MultipartStream implements StreamInterface
     /**
      * @param string[] $headers
      */
-    private static function getHeader(array $headers, string $key): ?string
-    {
+    private static function getHeader(array $headers, string $key): ?string {
         $lowercaseHeader = strtolower($key);
         foreach ($headers as $k => $v) {
             if (strtolower((string) $k) === $lowercaseHeader) {

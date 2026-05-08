@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -16,8 +30,7 @@ final class Utils
      *
      * @param (string|int)[] $keys
      */
-    public static function caselessRemove(array $keys, array $data): array
-    {
+    public static function caselessRemove(array $keys, array $data): array {
         $result = [];
 
         foreach ($keys as &$key) {
@@ -44,8 +57,7 @@ final class Utils
      *
      * @throws \RuntimeException on error.
      */
-    public static function copyToStream(StreamInterface $source, StreamInterface $dest, int $maxLen = -1): void
-    {
+    public static function copyToStream(StreamInterface $source, StreamInterface $dest, int $maxLen = -1): void {
         $bufferSize = 8192;
 
         if ($maxLen === -1) {
@@ -78,8 +90,7 @@ final class Utils
      *
      * @throws \RuntimeException on error.
      */
-    public static function copyToString(StreamInterface $stream, int $maxLen = -1): string
-    {
+    public static function copyToString(StreamInterface $stream, int $maxLen = -1): string {
         $buffer = '';
 
         if ($maxLen === -1) {
@@ -119,8 +130,7 @@ final class Utils
      *
      * @throws \RuntimeException on error.
      */
-    public static function hash(StreamInterface $stream, string $algo, bool $rawOutput = false): string
-    {
+    public static function hash(StreamInterface $stream, string $algo, bool $rawOutput = false): string {
         $pos = $stream->tell();
 
         if ($pos > 0) {
@@ -156,8 +166,7 @@ final class Utils
      * @param RequestInterface $request Request to clone and modify.
      * @param array            $changes Changes to apply.
      */
-    public static function modifyRequest(RequestInterface $request, array $changes): RequestInterface
-    {
+    public static function modifyRequest(RequestInterface $request, array $changes): RequestInterface {
         if (!$changes) {
             return $request;
         }
@@ -175,7 +184,7 @@ final class Utils
                     $standardPorts = ['http' => 80, 'https' => 443];
                     $scheme = $changes['uri']->getScheme();
                     if (isset($standardPorts[$scheme]) && $port != $standardPorts[$scheme]) {
-                        $changes['set_headers']['Host'] .= ':'.$port;
+                        $changes['set_headers']['Host'] .= ':' . $port;
                     }
                 }
             }
@@ -231,8 +240,7 @@ final class Utils
      * @param StreamInterface $stream    Stream to read from
      * @param int|null        $maxLength Maximum buffer length
      */
-    public static function readLine(StreamInterface $stream, ?int $maxLength = null): string
-    {
+    public static function readLine(StreamInterface $stream, ?int $maxLength = null): string {
         $buffer = '';
         $size = 0;
 
@@ -253,8 +261,7 @@ final class Utils
     /**
      * Redact the password in the user info part of a URI.
      */
-    public static function redactUserInfo(UriInterface $uri): UriInterface
-    {
+    public static function redactUserInfo(UriInterface $uri): UriInterface {
         $userInfo = $uri->getUserInfo();
 
         if (false !== ($pos = \strpos($userInfo, ':'))) {
@@ -298,8 +305,7 @@ final class Utils
      *
      * @throws \InvalidArgumentException if the $resource arg is not valid.
      */
-    public static function streamFor($resource = '', array $options = []): StreamInterface
-    {
+    public static function streamFor($resource = '', array $options = []): StreamInterface {
         if (is_scalar($resource)) {
             $stream = self::tryFopen('php://temp', 'r+');
             if ($resource !== '') {
@@ -330,7 +336,7 @@ final class Utils
                 /** @var object $resource */
                 if ($resource instanceof StreamInterface) {
                     return $resource;
-                } elseif ($resource instanceof \Iterator) {
+                } else if ($resource instanceof \Iterator) {
                     return new PumpStream(function () use ($resource) {
                         if (!$resource->valid()) {
                             return false;
@@ -340,7 +346,7 @@ final class Utils
 
                         return $result;
                     }, $options);
-                } elseif (method_exists($resource, '__toString')) {
+                } else if (method_exists($resource, '__toString')) {
                     return self::streamFor((string) $resource, $options);
                 }
                 break;
@@ -352,7 +358,7 @@ final class Utils
             return new PumpStream($resource, $options);
         }
 
-        throw new \InvalidArgumentException('Invalid resource type: '.gettype($resource));
+        throw new \InvalidArgumentException('Invalid resource type: ' . gettype($resource));
     }
 
     /**
@@ -368,8 +374,7 @@ final class Utils
      *
      * @throws \RuntimeException if the file cannot be opened
      */
-    public static function tryFopen(string $filename, string $mode)
-    {
+    public static function tryFopen(string $filename, string $mode) {
         $ex = null;
         set_error_handler(static function (int $errno, string $errstr) use ($filename, $mode, &$ex): bool {
             $ex = new \RuntimeException(sprintf(
@@ -415,8 +420,7 @@ final class Utils
      *
      * @throws \RuntimeException if the stream cannot be read
      */
-    public static function tryGetContents($stream): string
-    {
+    public static function tryGetContents($stream): string {
         $ex = null;
         set_error_handler(static function (int $errno, string $errstr) use (&$ex): bool {
             $ex = new \RuntimeException(sprintf(
@@ -462,8 +466,7 @@ final class Utils
      *
      * @throws \InvalidArgumentException
      */
-    public static function uriFor($uri): UriInterface
-    {
+    public static function uriFor($uri): UriInterface {
         if ($uri instanceof UriInterface) {
             return $uri;
         }

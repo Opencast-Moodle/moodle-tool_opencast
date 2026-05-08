@@ -1,17 +1,31 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 namespace OpencastApi\Rest;
 
 class OcPlaylistsApi extends OcRest
 {
     const URI = '/api/playlists';
 
-    public function __construct($restClient)
-    {
+    public function __construct($restClient) {
         // The Playlist API is available since API version 1.11.0.
         parent::__construct($restClient);
     }
 
-    ## [Section 1]: General API endpoints.
+    // [Section 1]: General API endpoints.
 
     /**
      * Get playlists.
@@ -26,8 +40,7 @@ class OcPlaylistsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{A (potentially empty) list of playlists}']
      */
-    public function getAll($params = [])
-    {
+    public function getAll($params = []) {
         $uri = self::URI;
 
         $query = [];
@@ -40,14 +53,16 @@ class OcPlaylistsApi extends OcRest
         }
 
         $supportedSortNames = ['updated'];
-        $supportedSorts= [];
+        $supportedSorts = [];
         foreach ($supportedSortNames as $sortName) {
             $supportedSorts[] = "$sortName:ASC";
             $supportedSorts[] = "$sortName:DESC";
         }
 
-        if (array_key_exists('sort', $params) && !empty($params['sort']) &&
-            in_array($params['sort'], $supportedSorts)) {
+        if (
+            array_key_exists('sort', $params) && !empty($params['sort']) &&
+            in_array($params['sort'], $supportedSorts)
+        ) {
             $query['sort'] = $params['sort'];
         }
 
@@ -62,8 +77,7 @@ class OcPlaylistsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The playlist (object)}']
      */
-    public function get($playlistId)
-    {
+    public function get($playlistId) {
         $uri = self::URI . "/{$playlistId}";
         return $this->restClient->performGet($uri);
     }
@@ -75,8 +89,7 @@ class OcPlaylistsApi extends OcRest
      *
      * @return array the response result ['code' => 201, 'body' => '{The new playlist (object)}']
      */
-    public function create($playlist)
-    {
+    public function create($playlist) {
         $formData = [
             'playlist' => $playlist,
         ];
@@ -93,8 +106,7 @@ class OcPlaylistsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The updated playlist (object)}']
      */
-    public function update($playlistId, $playlist)
-    {
+    public function update($playlistId, $playlist) {
         $uri = self::URI . "/{$playlistId}";
 
         $formData = [
@@ -112,15 +124,14 @@ class OcPlaylistsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The removed playlist (object)}']
      */
-    public function delete($playlistId)
-    {
+    public function delete($playlistId) {
         $uri = self::URI . "/{$playlistId}";
         return $this->restClient->performDelete($uri);
     }
 
-    ## End of [Section 1]: General API endpoints.
+    // End of [Section 1]: General API endpoints.
 
-    ## [Section 2]: Entries.
+    // [Section 2]: Entries.
 
     /**
      * Updates the entries of a playlist
@@ -130,14 +141,13 @@ class OcPlaylistsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The updated playlist (object)}']
      */
-    public function updateEntries($playlistId, $playlistEntries)
-    {
+    public function updateEntries($playlistId, $playlistEntries) {
         $uri = self::URI . "/{$playlistId}";
 
         $formData = [
             'playlist' => [
-                'entries' => $playlistEntries
-            ]
+                'entries' => $playlistEntries,
+            ],
         ];
 
         $options = $this->restClient->getFormParams($formData);
@@ -151,11 +161,9 @@ class OcPlaylistsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The updated playlist (object)}']
      */
-    public function emptyEntries($playlistId)
-    {
+    public function emptyEntries($playlistId) {
         return $this->updateEntries($playlistId, []);
     }
 
-    ## End of [Section 2]: Entries.
+    // End of [Section 2]: Entries.
 }
-?>

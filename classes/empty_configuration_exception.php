@@ -32,5 +32,4 @@ namespace tool_opencast;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class empty_configuration_exception extends \moodle_exception {
-
 }

@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp;
 
@@ -38,8 +52,7 @@ class Pool implements PromisorInterface
      *                                  - fulfilled: (callable) Function to invoke when a request completes.
      *                                  - rejected: (callable) Function to invoke when a request is rejected.
      */
-    public function __construct(ClientInterface $client, $requests, array $config = [])
-    {
+    public function __construct(ClientInterface $client, $requests, array $config = []) {
         if (!isset($config['concurrency'])) {
             $config['concurrency'] = 25;
         }
@@ -56,7 +69,7 @@ class Pool implements PromisorInterface
             foreach ($iterable as $key => $rfn) {
                 if ($rfn instanceof RequestInterface) {
                     yield $key => $client->sendAsync($rfn, $opts);
-                } elseif (\is_callable($rfn)) {
+                } else if (\is_callable($rfn)) {
                     yield $key => $rfn($opts);
                 } else {
                     throw new \InvalidArgumentException('Each value yielded by the iterator must be a Psr7\Http\Message\RequestInterface or a callable that returns a promise that fulfills with a Psr7\Message\Http\ResponseInterface object.');
@@ -70,8 +83,7 @@ class Pool implements PromisorInterface
     /**
      * Get promise
      */
-    public function promise(): PromiseInterface
-    {
+    public function promise(): PromiseInterface {
         return $this->each->promise();
     }
 
@@ -93,8 +105,7 @@ class Pool implements PromisorInterface
      *
      * @throws \InvalidArgumentException if the event format is incorrect.
      */
-    public static function batch(ClientInterface $client, $requests, array $options = []): array
-    {
+    public static function batch(ClientInterface $client, $requests, array $options = []): array {
         $res = [];
         self::cmpCallback($options, 'fulfilled', $res);
         self::cmpCallback($options, 'rejected', $res);
@@ -108,8 +119,7 @@ class Pool implements PromisorInterface
     /**
      * Execute callback(s)
      */
-    private static function cmpCallback(array &$options, string $name, array &$results): void
-    {
+    private static function cmpCallback(array &$options, string $name, array &$results): void {
         if (!isset($options[$name])) {
             $options[$name] = static function ($v, $k) use (&$results) {
                 $results[$k] = $v;

@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp\Handler;
 
@@ -66,8 +80,7 @@ final class EasyHandle
      * @throws \RuntimeException if no headers have been received or the first
      *                           header line is invalid.
      */
-    public function createResponse(): void
-    {
+    public function createResponse(): void {
         [$ver, $status, $reason, $headers] = HeaderProcessor::parseHeaders($this->headers);
 
         $normalizedKeys = Utils::normalizeHeaderKeys($headers);
@@ -104,9 +117,8 @@ final class EasyHandle
      *
      * @throws \BadMethodCallException
      */
-    public function __get($name)
-    {
-        $msg = $name === 'handle' ? 'The EasyHandle has been released' : 'Invalid property: '.$name;
+    public function __get($name) {
+        $msg = $name === 'handle' ? 'The EasyHandle has been released' : 'Invalid property: ' . $name;
         throw new \BadMethodCallException($msg);
     }
 }

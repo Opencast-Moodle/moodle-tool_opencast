@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp;
 
@@ -19,13 +33,12 @@ final class Utils
      * @return string Returns a string containing the type of the variable and
      *                if a class is provided, the class name.
      */
-    public static function describeType($input): string
-    {
+    public static function describeType($input): string {
         switch (\gettype($input)) {
             case 'object':
-                return 'object('.\get_class($input).')';
+                return 'object(' . \get_class($input) . ')';
             case 'array':
-                return 'array('.\count($input).')';
+                return 'array(' . \count($input) . ')';
             default:
                 \ob_start();
                 \var_dump($input);
@@ -43,8 +56,7 @@ final class Utils
      * @param iterable $lines Header lines array of strings in the following
      *                        format: "Name: Value"
      */
-    public static function headersFromLines(iterable $lines): array
-    {
+    public static function headersFromLines(iterable $lines): array {
         $headers = [];
 
         foreach ($lines as $line) {
@@ -62,8 +74,7 @@ final class Utils
      *
      * @return resource
      */
-    public static function debugResource($value = null)
-    {
+    public static function debugResource($value = null) {
         if (\is_resource($value)) {
             return $value;
         }
@@ -83,16 +94,15 @@ final class Utils
      *
      * @throws \RuntimeException if no viable Handler is available.
      */
-    public static function chooseHandler(): callable
-    {
+    public static function chooseHandler(): callable {
         $handler = null;
 
         if (\defined('CURLOPT_CUSTOMREQUEST') && \function_exists('curl_version') && version_compare(curl_version()['version'], '7.21.2') >= 0) {
             if (\function_exists('curl_multi_exec') && \function_exists('curl_exec')) {
                 $handler = Proxy::wrapSync(new CurlMultiHandler(), new CurlHandler());
-            } elseif (\function_exists('curl_exec')) {
+            } else if (\function_exists('curl_exec')) {
                 $handler = new CurlHandler();
-            } elseif (\function_exists('curl_multi_exec')) {
+            } else if (\function_exists('curl_multi_exec')) {
                 $handler = new CurlMultiHandler();
             }
         }
@@ -101,7 +111,7 @@ final class Utils
             $handler = $handler
                 ? Proxy::wrapStreaming($handler, new StreamHandler())
                 : new StreamHandler();
-        } elseif (!$handler) {
+        } else if (!$handler) {
             throw new \RuntimeException('GuzzleHttp requires cURL, the allow_url_fopen ini setting, or a custom HTTP handler.');
         }
 
@@ -111,8 +121,7 @@ final class Utils
     /**
      * Get the default User-Agent string to use with Guzzle.
      */
-    public static function defaultUserAgent(): string
-    {
+    public static function defaultUserAgent(): string {
         return sprintf('GuzzleHttp/%d', ClientInterface::MAJOR_VERSION);
     }
 
@@ -131,8 +140,7 @@ final class Utils
      *
      * @deprecated Utils::defaultCaBundle will be removed in guzzlehttp/guzzle:8.0. This method is not needed in PHP 5.6+.
      */
-    public static function defaultCaBundle(): string
-    {
+    public static function defaultCaBundle(): string {
         static $cached = null;
         static $cafiles = [
             // Red Hat, CentOS, Fedora (provided by the ca-certificates package)
@@ -191,8 +199,7 @@ EOT
      * Creates an associative array of lowercase header names to the actual
      * header casing.
      */
-    public static function normalizeHeaderKeys(array $headers): array
-    {
+    public static function normalizeHeaderKeys(array $headers): array {
         $result = [];
         foreach (\array_keys($headers) as $key) {
             $result[\strtolower($key)] = $key;
@@ -220,8 +227,7 @@ EOT
      *
      * @throws InvalidArgumentException
      */
-    public static function isHostInNoProxy(string $host, array $noProxyArray): bool
-    {
+    public static function isHostInNoProxy(string $host, array $noProxyArray): bool {
         if (\strlen($host) === 0) {
             throw new InvalidArgumentException('Empty host provided');
         }
@@ -246,7 +252,7 @@ EOT
             }
             // Special match if the area when prefixed with ".". Remove any
             // existing leading "." and add a new leading ".".
-            $area = '.'.\ltrim($area, '.');
+            $area = '.' . \ltrim($area, '.');
             if (\substr($host, -\strlen($area)) === $area) {
                 return true;
             }
@@ -270,11 +276,10 @@ EOT
      *
      * @see https://www.php.net/manual/en/function.json-decode.php
      */
-    public static function jsonDecode(string $json, bool $assoc = false, int $depth = 512, int $options = 0)
-    {
+    public static function jsonDecode(string $json, bool $assoc = false, int $depth = 512, int $options = 0) {
         $data = \json_decode($json, $assoc, $depth, $options);
         if (\JSON_ERROR_NONE !== \json_last_error()) {
-            throw new InvalidArgumentException('json_decode error: '.\json_last_error_msg());
+            throw new InvalidArgumentException('json_decode error: ' . \json_last_error_msg());
         }
 
         return $data;
@@ -291,11 +296,10 @@ EOT
      *
      * @see https://www.php.net/manual/en/function.json-encode.php
      */
-    public static function jsonEncode($value, int $options = 0, int $depth = 512): string
-    {
+    public static function jsonEncode($value, int $options = 0, int $depth = 512): string {
         $json = \json_encode($value, $options, $depth);
         if (\JSON_ERROR_NONE !== \json_last_error()) {
-            throw new InvalidArgumentException('json_encode error: '.\json_last_error_msg());
+            throw new InvalidArgumentException('json_encode error: ' . \json_last_error_msg());
         }
 
         /** @var string */
@@ -310,8 +314,7 @@ EOT
      *
      * @internal
      */
-    public static function currentTime(): float
-    {
+    public static function currentTime(): float {
         return (float) \function_exists('hrtime') ? \hrtime(true) / 1e9 : \microtime(true);
     }
 
@@ -320,8 +323,7 @@ EOT
      *
      * @internal
      */
-    public static function idnUriConvert(UriInterface $uri, int $options = 0): UriInterface
-    {
+    public static function idnUriConvert(UriInterface $uri, int $options = 0): UriInterface {
         if ($uri->getHost()) {
             $asciiHost = self::idnToAsci($uri->getHost(), $options, $info);
             if ($asciiHost === false) {
@@ -340,7 +342,7 @@ EOT
 
                 $errorMessage = 'IDN conversion failed';
                 if ($errors) {
-                    $errorMessage .= ' (errors: '.implode(', ', $errors).')';
+                    $errorMessage .= ' (errors: ' . implode(', ', $errors) . ')';
                 }
 
                 throw new InvalidArgumentException($errorMessage);
@@ -357,8 +359,7 @@ EOT
     /**
      * @internal
      */
-    public static function getenv(string $name): ?string
-    {
+    public static function getenv(string $name): ?string {
         if (isset($_SERVER[$name])) {
             return (string) $_SERVER[$name];
         }
@@ -373,8 +374,7 @@ EOT
     /**
      * @return string|false
      */
-    private static function idnToAsci(string $domain, int $options, ?array &$info = [])
-    {
+    private static function idnToAsci(string $domain, int $options, ?array &$info = []) {
         if (\function_exists('idn_to_ascii') && \defined('INTL_IDNA_VARIANT_UTS46')) {
             return \idn_to_ascii($domain, $options, \INTL_IDNA_VARIANT_UTS46, $info);
         }

@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp\Exception;
 
@@ -46,8 +60,7 @@ class RequestException extends TransferException implements RequestExceptionInte
     /**
      * Wrap non-RequestExceptions with a RequestException
      */
-    public static function wrapException(RequestInterface $request, \Throwable $e): RequestException
-    {
+    public static function wrapException(RequestInterface $request, \Throwable $e): RequestException {
         return $e instanceof RequestException ? $e : new RequestException($e->getMessage(), $request, null, $e);
     }
 
@@ -81,7 +94,7 @@ class RequestException extends TransferException implements RequestExceptionInte
         if ($level === 4) {
             $label = 'Client error';
             $className = ClientException::class;
-        } elseif ($level === 5) {
+        } else if ($level === 5) {
             $label = 'Server error';
             $className = ServerException::class;
         } else {
@@ -114,24 +127,21 @@ class RequestException extends TransferException implements RequestExceptionInte
     /**
      * Get the request that caused the exception
      */
-    public function getRequest(): RequestInterface
-    {
+    public function getRequest(): RequestInterface {
         return $this->request;
     }
 
     /**
      * Get the associated response
      */
-    public function getResponse(): ?ResponseInterface
-    {
+    public function getResponse(): ?ResponseInterface {
         return $this->response;
     }
 
     /**
      * Check if a response was received
      */
-    public function hasResponse(): bool
-    {
+    public function hasResponse(): bool {
         return $this->response !== null;
     }
 
@@ -143,8 +153,7 @@ class RequestException extends TransferException implements RequestExceptionInte
      * couple you to a specific handler, but can give more debug information
      * when needed.
      */
-    public function getHandlerContext(): array
-    {
+    public function getHandlerContext(): array {
         return $this->handlerContext;
     }
 }

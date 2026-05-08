@@ -49,10 +49,12 @@ $apibridge = apibridge::get_instance($ocinstanceid);
 $video = $apibridge->get_opencast_video($videoid);
 $seriesid = $apibridge->get_default_course_series($courseid);
 if ($seriesid->identifier != $video->video->is_part_of) {
-    redirect($redirecturl,
+    redirect(
+        $redirecturl,
         get_string('video_notallowed', 'tool_opencast'),
         null,
-        notification::NOTIFY_ERROR);
+        notification::NOTIFY_ERROR
+    );
 }
 
 $apiworkflow = $apibridge->get_workflow_definition($workflow);
@@ -64,23 +66,29 @@ if (!empty($workflowtagsconfig)) {
     $workflowtags = array_map('trim', $workflowtags);
 }
 if (!$apiworkflow || empty(array_intersect($apiworkflow->tags, $workflowtags))) {
-    redirect($redirecturl,
+    redirect(
+        $redirecturl,
         get_string('workflow_opencast_invalid', 'tool_opencast'),
         null,
-        notification::NOTIFY_ERROR);
+        notification::NOTIFY_ERROR
+    );
 }
 
 $result = $apibridge->start_workflow($videoid, $workflow, ['configuration' => $configparams]);
 
 if ($result) {
     // Redirect with success message.
-    redirect($redirecturl,
+    redirect(
+        $redirecturl,
         get_string('workflow_started_success', 'tool_opencast'),
         null,
-        notification::NOTIFY_SUCCESS);
+        notification::NOTIFY_SUCCESS
+    );
 } else {
-    redirect($redirecturl,
+    redirect(
+        $redirecturl,
         get_string('workflow_started_failure', 'tool_opencast'),
         null,
-        notification::NOTIFY_ERROR);
+        notification::NOTIFY_ERROR
+    );
 }

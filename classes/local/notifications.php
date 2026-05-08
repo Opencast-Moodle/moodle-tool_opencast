@@ -36,8 +36,6 @@ use Exception;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class notifications {
-
-
     /**
      * Helperfunction to send all following messages .
      *
@@ -155,8 +153,13 @@ class notifications {
     public static function notify_problem_reported($message) {
         global $USER;
 
-        self::send_message('reportproblem_confirmation', $USER,
-            get_string('reportproblem_subject', 'tool_opencast'), nl2br($message), FORMAT_MOODLE);
+        self::send_message(
+            'reportproblem_confirmation',
+            $USER,
+            get_string('reportproblem_subject', 'tool_opencast'),
+            nl2br($message),
+            FORMAT_MOODLE
+        );
     }
 
 
@@ -396,8 +399,12 @@ class notifications {
      * @param string $notificationtype the type of the notification to determine the suitable message.
      * @param string $exceptionmessage extra exception message to pass along the normal message.
      */
-    public static function notify_cleanup_imported_modules_force_deletion($courseid, $workflowid, $notificationtype,
-                                                                          $exceptionmessage = '') {
+    public static function notify_cleanup_imported_modules_force_deletion(
+        $courseid,
+        $workflowid,
+        $notificationtype,
+        $exceptionmessage = ''
+    ) {
         global $DB;
 
         $a = (object)[

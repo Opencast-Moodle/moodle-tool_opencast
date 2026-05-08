@@ -35,8 +35,6 @@ use moodle_url;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class upload_failed extends base {
-
-
     /**
      * Init method.
      *
@@ -79,8 +77,9 @@ class upload_failed extends base {
      * @return moodle_url
      */
     public function get_url() {
-        return new moodle_url('/admin/tool/opencast/index.php',
-            ['courseid' => $this->data['courseid'], 'ocinstanceid' => $this->data['ocinstanceid']]);
+        return new moodle_url(
+            '/admin/tool/opencast/index.php',
+            ['courseid' => $this->data['courseid'], 'ocinstanceid' => $this->data['ocinstanceid']]
+        );
     }
-
 }

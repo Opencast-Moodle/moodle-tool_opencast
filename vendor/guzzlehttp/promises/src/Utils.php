@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -21,13 +35,12 @@ final class Utils
      *
      * @param TaskQueueInterface|null $assign Optionally specify a new queue instance.
      */
-    public static function queue(?TaskQueueInterface $assign = null): TaskQueueInterface
-    {
+    public static function queue(?TaskQueueInterface $assign = null): TaskQueueInterface {
         static $queue;
 
         if ($assign) {
             $queue = $assign;
-        } elseif (!$queue) {
+        } else if (!$queue) {
             $queue = new TaskQueue();
         }
 
@@ -40,8 +53,7 @@ final class Utils
      *
      * @param callable $task Task function to run.
      */
-    public static function task(callable $task): PromiseInterface
-    {
+    public static function task(callable $task): PromiseInterface {
         $queue = self::queue();
         $promise = new Promise([$queue, 'run']);
         $queue->add(function () use ($task, $promise): void {
@@ -69,8 +81,7 @@ final class Utils
      *
      * @param PromiseInterface $promise Promise or value.
      */
-    public static function inspect(PromiseInterface $promise): array
-    {
+    public static function inspect(PromiseInterface $promise): array {
         try {
             return [
                 'state' => PromiseInterface::FULFILLED,
@@ -93,8 +104,7 @@ final class Utils
      *
      * @param PromiseInterface[] $promises Traversable of promises to wait upon.
      */
-    public static function inspectAll($promises): array
-    {
+    public static function inspectAll($promises): array {
         $results = [];
         foreach ($promises as $key => $promise) {
             $results[$key] = self::inspect($promise);
@@ -114,8 +124,7 @@ final class Utils
      *
      * @throws \Throwable on error
      */
-    public static function unwrap($promises): array
-    {
+    public static function unwrap($promises): array {
         $results = [];
         foreach ($promises as $key => $promise) {
             $results[$key] = $promise->wait();
@@ -135,8 +144,7 @@ final class Utils
      * @param mixed $promises  Promises or values.
      * @param bool  $recursive If true, resolves new promises that might have been added to the stack during its own resolution.
      */
-    public static function all($promises, bool $recursive = false): PromiseInterface
-    {
+    public static function all($promises, bool $recursive = false): PromiseInterface {
         $results = [];
         $promise = Each::of(
             $promises,
@@ -183,8 +191,7 @@ final class Utils
      * @param int   $count    Total number of promises.
      * @param mixed $promises Promises or values.
      */
-    public static function some(int $count, $promises): PromiseInterface
-    {
+    public static function some(int $count, $promises): PromiseInterface {
         $results = [];
         $rejections = [];
 
@@ -223,8 +230,7 @@ final class Utils
      *
      * @param mixed $promises Promises or values.
      */
-    public static function any($promises): PromiseInterface
-    {
+    public static function any($promises): PromiseInterface {
         return self::some(1, $promises)->then(function ($values) {
             return $values[0];
         });
@@ -240,8 +246,7 @@ final class Utils
      *
      * @param mixed $promises Promises or values.
      */
-    public static function settle($promises): PromiseInterface
-    {
+    public static function settle($promises): PromiseInterface {
         $results = [];
 
         return Each::of(

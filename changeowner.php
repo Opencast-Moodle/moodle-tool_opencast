@@ -37,8 +37,10 @@ $courseid = optional_param('courseid', $SITE->id, PARAM_INT);
 $isseries = optional_param('isseries', false, PARAM_BOOL);
 $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinstance()->id, PARAM_INT);
 
-$baseurl = new moodle_url('/admin/tool/opencast/changeowner.php',
-    ['identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid, 'isseries' => $isseries]);
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/changeowner.php',
+    ['identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid, 'isseries' => $isseries]
+);
 $PAGE->set_url($baseurl);
 
 if ($courseid == $SITE->id) {
@@ -60,8 +62,12 @@ if ($courseid == $SITE->id) {
 }
 
 if (empty(get_config('tool_opencast', 'aclownerrole_' . $ocinstanceid))) {
-    redirect($redirecturl, get_string('functionalitydisabled', 'tool_opencast'), null,
-        notification::NOTIFY_ERROR);
+    redirect(
+        $redirecturl,
+        get_string('functionalitydisabled', 'tool_opencast'),
+        null,
+        notification::NOTIFY_ERROR
+    );
 }
 
 $apibridge = apibridge::get_instance($ocinstanceid);
@@ -69,19 +75,26 @@ $apibridge = apibridge::get_instance($ocinstanceid);
 if ($isseries) {
     $series = $apibridge->get_series_by_identifier($identifier, true);
     if (!$series) {
-        redirect($redirecturl, get_string('series_does_not_exist_admin', 'tool_opencast', $identifier), null,
-            notification::NOTIFY_ERROR);
+        redirect(
+            $redirecturl,
+            get_string('series_does_not_exist_admin', 'tool_opencast', $identifier),
+            null,
+            notification::NOTIFY_ERROR
+        );
     }
     $title = $series->title;
     $acls = $series->acl;
     $noowner = !$apibridge->has_owner($series->acl);
-
 } else {
     $video = $apibridge->get_opencast_video($identifier, false, true);
 
     if ($video->error) {
-        redirect($redirecturl, get_string('failedtogetvideo', 'tool_opencast'), null,
-            notification::NOTIFY_ERROR);
+        redirect(
+            $redirecturl,
+            get_string('failedtogetvideo', 'tool_opencast'),
+            null,
+            notification::NOTIFY_ERROR
+        );
     } else {
         $title = $video->video->title;
         $acls = $video->video->acl;
@@ -98,9 +111,11 @@ if ($isseries) {
 
 // Verify that current user is the owner or is admin.
 $isowner = $apibridge->is_owner($acls, $USER->id, $courseid);
-if (!$isowner &&
+if (
+    !$isowner &&
     !$noowner &&
-    !has_capability('tool/opencast:canchangeownerforallvideos', $systemcontext)) {
+    !has_capability('tool/opencast:canchangeownerforallvideos', $systemcontext)
+) {
     throw new moodle_exception(get_string('userisntowner', 'tool_opencast'));
 } else {
     $PAGE->set_pagelayout('incourse');
@@ -114,13 +129,21 @@ if (!$isowner &&
         $excludeusers = [$USER->id];
     }
 
-    $userselector = new tool_opencast_enrolled_user_selector('ownerselect',
-        ['context' => $coursecontext, 'multiselect' => false, 'exclude' => $excludeusers]);
+    $userselector = new tool_opencast_enrolled_user_selector(
+        'ownerselect',
+        ['context' => $coursecontext, 'multiselect' => false, 'exclude' => $excludeusers]
+    );
     $userselector->viewfullnames = $viewfullnames;
 
-    $changeownerform = new changeowner_form(null,
+    $changeownerform = new changeowner_form(
+        null,
         ['courseid' => $courseid, 'title' => $title, 'identifier' => $identifier,
-            'ocinstanceid' => $ocinstanceid, 'userselector' => $userselector, 'isseries' => $isseries, 'noowner' => $noowner, ]);
+        'ocinstanceid' => $ocinstanceid,
+        'userselector' => $userselector,
+        'isseries' => $isseries,
+        'noowner' => $noowner,
+        ]
+    );
 
     if ($changeownerform->is_cancelled()) {
         redirect($redirecturl);

@@ -25,7 +25,6 @@ namespace tool_opencast\settings;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class admin_setting_configdatetimeselector extends \admin_setting {
-
     /** @var bool Flag to determine whether it is optional */
     private $optional;
 
@@ -264,8 +263,10 @@ class admin_setting_configdatetimeselector extends \admin_setting {
         $html = \html_writer::start_tag('span', $spanattrs);
 
         // We record old value in a hidden input element, to avoid getting ignored when the config is optional but disabled.
-        $html .= \html_writer::empty_tag('input',
-            ['type' => 'hidden', 'name' => $this->get_element_name('oldvalue'), 'value' => json_encode($setting)]);
+        $html .= \html_writer::empty_tag(
+            'input',
+            ['type' => 'hidden', 'name' => $this->get_element_name('oldvalue'), 'value' => json_encode($setting)]
+        );
 
         // Now, we try to add (enabled/disabled) checkbox if the setting is optional.
         $html .= $this->add_optional_checkbox((bool) $setting['enabled']);
@@ -279,7 +280,9 @@ class admin_setting_configdatetimeselector extends \admin_setting {
                 // code from form to ensure consistency.
                 if ($calendartype->get_name() === 'gregorian') {
                     $image = $OUTPUT->pix_icon('i/calendar', get_string('calendar', 'calendar'), 'moodle');
-                    $html .= ' ' . \html_writer::link('#', $image,
+                    $html .= ' ' . \html_writer::link(
+                        '#',
+                        $image,
                         [
                             'name' => $this->get_element_name('calendar'),
                             'id' => $this->get_element_id('calendar'),
@@ -294,7 +297,8 @@ class admin_setting_configdatetimeselector extends \admin_setting {
             }
             $html .= \html_writer::start_tag('label', ['for' => $this->get_element_id($field)]);
             $html .= \html_writer::span(get_string($field) . ' ', 'accesshide');
-            $html .= \html_writer::start_tag('select',
+            $html .= \html_writer::start_tag(
+                'select',
                 [
                     'class' => 'custom-select opencast-config-dt-select',
                     'name' => $this->get_element_name($field),
@@ -314,8 +318,16 @@ class admin_setting_configdatetimeselector extends \admin_setting {
         }
         $html = rtrim($html) . \html_writer::end_tag('span');
 
-        return format_admin_setting($this, $this->visiblename, $html, $this->description,
-            $this->get_id(), '', $defaultinfo, $query);
+        return format_admin_setting(
+            $this,
+            $this->visiblename,
+            $html,
+            $this->description,
+            $this->get_id(),
+            '',
+            $defaultinfo,
+            $query
+        );
     }
 
     /**
@@ -333,7 +345,8 @@ class admin_setting_configdatetimeselector extends \admin_setting {
         if (!$this->optional) {
             return '';
         }
-        $html = \html_writer::start_tag('label',
+        $html = \html_writer::start_tag(
+            'label',
             ['class' => 'form-check d-inline-block pr-2']
         );
 
@@ -342,8 +355,14 @@ class admin_setting_configdatetimeselector extends \admin_setting {
             'class' => 'form-check-input',
         ];
         $checkboxlabelattrs = ['class' => 'mr-2'];
-        $checkboxhtml = \html_writer::checkbox( $this->get_enabled_element_name(),
-            '', $configvalue, '', $checkboxattrs, $checkboxlabelattrs);
+        $checkboxhtml = \html_writer::checkbox(
+            $this->get_enabled_element_name(),
+            '',
+            $configvalue,
+            '',
+            $checkboxattrs,
+            $checkboxlabelattrs
+        );
         $checkboxhtml .= ' ' . get_string('enable');
         $html .= $checkboxhtml;
         $html .= \html_writer::end_tag('label');

@@ -40,8 +40,6 @@ use tool_opencast\local\file_system_filedir;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class delete_file_test extends advanced_testcase {
-
-
     /**
      * Test how trash deletion works.
      *

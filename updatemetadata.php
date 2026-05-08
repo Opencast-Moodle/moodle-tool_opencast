@@ -38,9 +38,13 @@ $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinsta
 $redirectpage = optional_param('redirectpage', null, PARAM_ALPHA);
 $series = optional_param('series', null, PARAM_ALPHANUMEXT);
 
-$baseurl = new moodle_url('/admin/tool/opencast/updatemetadata.php',
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/updatemetadata.php',
     ['video_identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid,
-        'redirectpage' => $redirectpage, 'series' => $series, ]);
+    'redirectpage' => $redirectpage,
+    'series' => $series,
+    ]
+);
 $PAGE->set_url($baseurl);
 
 if ($redirectpage == 'overviewvideos') {
@@ -68,9 +72,14 @@ $opencast = apibridge::get_instance($ocinstanceid);
 $metadata = $opencast->get_event_metadata($identifier, 'dublincore/episode');
 $metadatacatalog = upload_helper::get_opencast_metadata_catalog($ocinstanceid);
 
-$updatemetadataform = new updatemetadata_form(null,
+$updatemetadataform = new updatemetadata_form(
+    null,
     ['metadata' => $metadata, 'metadata_catalog' => $metadatacatalog, 'courseid' => $courseid, 'identifier' => $identifier,
-        'ocinstanceid' => $ocinstanceid, 'redirectpage' => $redirectpage, 'series' => $series, ]);
+    'ocinstanceid' => $ocinstanceid,
+    'redirectpage' => $redirectpage,
+    'series' => $series,
+    ]
+);
 
 if ($updatemetadataform->is_cancelled()) {
     redirect($redirecturl);

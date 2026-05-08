@@ -44,7 +44,6 @@ require_once($CFG->libdir . '/authlib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_opencast_external extends external_api {
-
     /**
      * Describes the parameters for getting courses for a opencast instructor.
      *
@@ -284,9 +283,11 @@ class tool_opencast_external extends external_api {
      * @param string $testfailedstringidentifier The string identifier of a failed connection test.
      * @return string The html tag as string.
      */
-    private static function connection_test_tool_build_html_alert_tag($connectiontestresult,
-                                                                      string $testsuccessfulstringidentifier,
-                                                                      string $testfailedstringidentifier): string {
+    private static function connection_test_tool_build_html_alert_tag(
+        $connectiontestresult,
+        string $testsuccessfulstringidentifier,
+        string $testfailedstringidentifier
+    ): string {
         // Check, if the test was successful.
         if ($connectiontestresult === true) {
             return html_writer::tag(
@@ -320,7 +321,8 @@ class tool_opencast_external extends external_api {
     public static function connection_test_tool($apiurl, $apiusername, $apipassword, $apitimeout, $apiconnecttimeout) {
 
         // Validate the parameters.
-        $params = self::validate_parameters(self::connection_test_tool_parameters(),
+        $params = self::validate_parameters(
+            self::connection_test_tool_parameters(),
             [
                 'apiurl' => $apiurl,
                 'apiusername' => $apiusername,
@@ -344,14 +346,16 @@ class tool_opencast_external extends external_api {
         $resulthtml = self::connection_test_tool_build_html_alert_tag(
             $connectiontesturlresult,
             'apiurltestsuccessfulshort',
-            'apiurltestfailedshort');
+            'apiurltestfailedshort'
+        );
 
         // Test the Credentials.
         $connectiontestcredentialsresult = $customizedapi->connection_test_credentials();
         $resulthtml .= self::connection_test_tool_build_html_alert_tag(
             $connectiontestcredentialsresult,
             'apicreadentialstestsuccessfulshort',
-            'apicreadentialstestfailedshort');
+            'apicreadentialstestfailedshort'
+        );
 
         return [
             'testresult' => $resulthtml,
@@ -371,7 +375,8 @@ class tool_opencast_external extends external_api {
     public static function maintenance_sync($ocinstanceid) {
 
         // Validate the parameters.
-        $params = self::validate_parameters(self::maintenance_sync_parameters(),
+        $params = self::validate_parameters(
+            self::maintenance_sync_parameters(),
             [
                 'ocinstanceid' => $ocinstanceid,
             ]
@@ -504,7 +509,7 @@ class tool_opencast_external extends external_api {
         self::validate_context($context);
         require_capability('tool/opencast:createseriesforcourse', $context);
 
-        list($ignored, $course) = get_context_info_array($context->id);
+        [$ignored, $course] = get_context_info_array($context->id);
 
         // Check if the maximum number of series is already reached.
         $courseseries = $DB->get_records('tool_opencast_series', ['ocinstanceid' => $ocinstanceid, 'courseid' => $course->id]);
@@ -612,7 +617,7 @@ class tool_opencast_external extends external_api {
         self::validate_context($context);
         require_capability('tool/opencast:importseriesintocourse', $context);
 
-        list($unused, $course, $cm) = get_context_info_array($context->id);
+        [$unused, $course, $cm] = get_context_info_array($context->id);
 
         // Check if the maximum number of series is already reached.
         $courseseries = $DB->get_records('tool_opencast_series', ['ocinstanceid' => $ocinstanceid, 'courseid' => $course->id]);
@@ -673,7 +678,7 @@ class tool_opencast_external extends external_api {
         self::validate_context($context);
         require_capability('tool/opencast:manageseriesforcourse', $context);
 
-        list($unused, $course, $cm) = get_context_info_array($context->id);
+        [$unused, $course, $cm] = get_context_info_array($context->id);
 
         // In case the request comes from block deletion remove all mappings.
         if ($unlinkall) {
@@ -691,8 +696,10 @@ class tool_opencast_external extends external_api {
                 // Prevent deletion of default series.
                 // By checking the number of default series,
                 // it is still possible to correct the faulty scenario of having multi-default series in a course.
-                if (seriesmapping::count_records(['ocinstanceid' => $params['ocinstanceid'],
-                        'courseid' => $course->id, 'isdefault' => true, ]) === 1) {
+                if (
+                    seriesmapping::count_records(['ocinstanceid' => $params['ocinstanceid'],
+                        'courseid' => $course->id, 'isdefault' => true, ]) === 1
+                ) {
                     throw new moodle_exception('cantdeletedefaultseries', 'tool_opencast');
                 }
             }
@@ -733,7 +740,7 @@ class tool_opencast_external extends external_api {
         self::validate_context($context);
         require_capability('tool/opencast:manageseriesforcourse', $context);
 
-        list($unused, $course, $cm) = get_context_info_array($context->id);
+        [$unused, $course, $cm] = get_context_info_array($context->id);
 
         $olddefaultseries = seriesmapping::get_record(['ocinstanceid' => $params['ocinstanceid'],
             'courseid' => $course->id, 'isdefault' => true, ]);
@@ -834,7 +841,7 @@ class tool_opencast_external extends external_api {
         self::validate_context($context);
         require_capability('tool/opencast:addvideo', $context);
 
-        list($unused, $course, $cm) = get_context_info_array($context->id);
+        [$unused, $course, $cm] = get_context_info_array($context->id);
 
         $params = [
             'id' => $params['uploadjobid'],

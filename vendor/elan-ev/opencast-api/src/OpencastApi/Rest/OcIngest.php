@@ -1,12 +1,26 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 namespace OpencastApi\Rest;
 
 class OcIngest extends OcRest
 {
     const URI = '/ingest';
 
-    public function __construct($restClient)
-    {
+    public function __construct($restClient) {
         $restClient->registerHeaderException('Accept', self::URI);
         parent::__construct($restClient);
     }
@@ -16,8 +30,7 @@ class OcIngest extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) media package}']
      */
-    public function createMediaPackage()
-    {
+    public function createMediaPackage() {
         $uri = self::URI . '/createMediaPackage';
         return $this->restClient->performGet($uri);
     }
@@ -32,8 +45,7 @@ class OcIngest extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) augmented media package}']
      */
-    public function addCatalog($mediaPackage, $flavor, $file, $tags = '')
-    {
+    public function addCatalog($mediaPackage, $flavor, $file, $tags = '') {
         $uri = self::URI . '/addCatalog';
 
         $formData = [
@@ -61,8 +73,7 @@ class OcIngest extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) augmented media package}']
      */
-    public function addCatalogUrl($mediaPackage, $flavor, $url, $tags = '')
-    {
+    public function addCatalogUrl($mediaPackage, $flavor, $url, $tags = '') {
         $uri = self::URI . '/addCatalog';
 
         $formData = [
@@ -89,8 +100,7 @@ class OcIngest extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) augmented media package}']
      */
-    public function addDCCatalog($mediaPackage, $dublinCore, $flavor = '')
-    {
+    public function addDCCatalog($mediaPackage, $dublinCore, $flavor = '') {
         $uri = self::URI . '/addDCCatalog';
 
         $formData = [
@@ -115,8 +125,7 @@ class OcIngest extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) augmented media package}']
      */
-    public function addAttachment($mediaPackage, $flavor, $file, $tags = '')
-    {
+    public function addAttachment($mediaPackage, $flavor, $file, $tags = '') {
         $uri = self::URI . '/addAttachment';
 
         $formData = [
@@ -144,8 +153,7 @@ class OcIngest extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) augmented media package}']
      */
-    public function addAttachmentUrl($mediaPackage, $flavor, $url, $tags = '')
-    {
+    public function addAttachmentUrl($mediaPackage, $flavor, $url, $tags = '') {
         $uri = self::URI . '/addAttachment';
 
         $formData = [
@@ -220,15 +228,14 @@ class OcIngest extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{Ingest successful. Returns workflow instance as XML (text)']
      */
-    public function addMediaPackage($flavor = 'presenter/source', $file = null, $params = [], $wdID = '')
-    {
+    public function addMediaPackage($flavor = 'presenter/source', $file = null, $params = [], $wdID = '') {
         $uri = self::URI . '/addMediaPackage';
         if (!empty($wdID)) {
             $uri .= "/{$wdID}";
         }
 
         $formData = [
-            'flavor' => $flavor
+            'flavor' => $flavor,
         ];
 
         if (!empty($file)) {
@@ -260,8 +267,7 @@ class OcIngest extends OcRest
      *
      * @return array the response result ['code' => 200, 'reason' => 'OK'] (The zipped media package is uploaded)
      */
-    public function addZippedMediaPackage($zipFile, $workflowDefinitionId, $workflowInstanceId = '')
-    {
+    public function addZippedMediaPackage($zipFile, $workflowDefinitionId, $workflowInstanceId = '') {
         $uri = self::URI . "/addZippedMediaPackage/{$workflowDefinitionId}";
 
         $formData = [
@@ -283,8 +289,7 @@ class OcIngest extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) media package}']
      */
-    public function createMediaPackageWithID($id)
-    {
+    public function createMediaPackageWithID($id) {
         $uri = self::URI . "/createMediaPackageWithID/{$id}";
         return $this->restClient->performPut($uri);
     }
@@ -296,8 +301,7 @@ class OcIngest extends OcRest
      *
      * @return array the response result ['code' => 200, 'reason' => 'OK']
      */
-    public function discardMediaPackage($mediaPackage)
-    {
+    public function discardMediaPackage($mediaPackage) {
         $uri = self::URI . "/discardMediaPackage";
         $formData['mediaPackage'] = $mediaPackage;
 
@@ -315,15 +319,14 @@ class OcIngest extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) augmented media package}']
      */
-    public function addPartialTrack($mediaPackage, $flavor, $file, $startTime = 0)
-    {
+    public function addPartialTrack($mediaPackage, $flavor, $file, $startTime = 0) {
         $uri = self::URI . "/addPartialTrack";
 
         $formData = [
             'mediaPackage' => $mediaPackage,
             'flavor' => $flavor,
             'startTime' => $startTime,
-            'BODY' => $file
+            'BODY' => $file,
         ];
 
         $options = $this->restClient->getMultiPartFormParams($formData);
@@ -340,15 +343,14 @@ class OcIngest extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) augmented media package}']
      */
-    public function addPartialTrackUrl($mediaPackage, $flavor, $url, $startTime = 0)
-    {
+    public function addPartialTrackUrl($mediaPackage, $flavor, $url, $startTime = 0) {
         $uri = self::URI . "/addPartialTrack";
 
         $formData = [
             'mediaPackage' => $mediaPackage,
             'flavor' => $flavor,
             'startTime' => $startTime,
-            'url' => $url
+            'url' => $url,
         ];
 
         $options = $this->restClient->getFormParams($formData);
@@ -372,8 +374,7 @@ class OcIngest extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) augmented media package}']
      */
-    public function addTrack($mediaPackage, $flavor, $file, $tags = '', $progressCallable = null)
-    {
+    public function addTrack($mediaPackage, $flavor, $file, $tags = '', $progressCallable = null) {
         $uri = self::URI . "/addTrack";
 
         $formData = [
@@ -405,8 +406,7 @@ class OcIngest extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) augmented media package}']
      */
-    public function addTrackUrl($mediaPackage, $flavor, $url, $tags = '')
-    {
+    public function addTrackUrl($mediaPackage, $flavor, $url, $tags = '') {
         $uri = self::URI . "/addTrack";
 
         $formData = [
@@ -435,8 +435,7 @@ class OcIngest extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{XML (text) media package}']
      */
-    public function ingest($mediaPackage, $workflowDefinitionId = '', $workflowInstanceId = '', $workflowConfiguration = [])
-    {
+    public function ingest($mediaPackage, $workflowDefinitionId = '', $workflowInstanceId = '', $workflowConfiguration = []) {
         $uri = self::URI . "/ingest";
         if (!empty($workflowDefinitionId) && empty($workflowInstanceId)) {
             $uri .= "/{$workflowDefinitionId}";
@@ -471,8 +470,7 @@ class OcIngest extends OcRest
      *
      * @return array the response result ['code' => 201, 'reason' => 'Created'] (Event scheduled)
      */
-    public function schedule($mediaPackage, $workflowDefinitionId = '')
-    {
+    public function schedule($mediaPackage, $workflowDefinitionId = '') {
         $uri = self::URI . "/schedule";
         if (!empty($workflowDefinitionId)) {
             $uri .= "/{$workflowDefinitionId}";
@@ -486,4 +484,3 @@ class OcIngest extends OcRest
         return $this->restClient->performPost($uri, $options);
     }
 }
-?>

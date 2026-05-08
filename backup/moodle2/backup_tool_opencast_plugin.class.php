@@ -35,7 +35,6 @@ require_once($CFG->dirroot . '/backup/moodle2/backup_tool_plugin.class.php');
  * Class backup_tool_opencast_plugin
  */
 class backup_tool_opencast_plugin extends backup_tool_plugin {
-
     /**
      * Returns plugin structure for the backup.
      *
@@ -80,7 +79,6 @@ class backup_tool_opencast_plugin extends backup_tool_plugin {
 
         // Handle each Opencast instance.
         foreach ($ocinstances as $ocinstance) {
-
             $ocinstanceid = $ocinstance->id;
 
             $apibridge = apibridge::get_instance($ocinstanceid);
@@ -133,5 +131,4 @@ class backup_tool_opencast_plugin extends backup_tool_plugin {
 
         return $plugin;
     }
-
 }

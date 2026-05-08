@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -55,8 +69,7 @@ class EachPromise implements PromisorInterface
      * @param mixed $iterable Promises or values to iterate.
      * @param array $config   Configuration options
      */
-    public function __construct($iterable, array $config = [])
-    {
+    public function __construct($iterable, array $config = []) {
         $this->iterable = Create::iterFor($iterable);
 
         if (isset($config['concurrency'])) {
@@ -73,8 +86,7 @@ class EachPromise implements PromisorInterface
     }
 
     /** @psalm-suppress InvalidNullableReturnType */
-    public function promise(): PromiseInterface
-    {
+    public function promise(): PromiseInterface {
         if ($this->aggregate) {
             return $this->aggregate;
         }
@@ -94,8 +106,7 @@ class EachPromise implements PromisorInterface
         return $this->aggregate;
     }
 
-    private function createPromise(): void
-    {
+    private function createPromise(): void {
         $this->mutex = false;
         $this->aggregate = new Promise(function (): void {
             if ($this->checkIfFinished()) {
@@ -123,8 +134,7 @@ class EachPromise implements PromisorInterface
         $this->aggregate->then($clearFn, $clearFn);
     }
 
-    private function refillPending(): void
-    {
+    private function refillPending(): void {
         if (!$this->concurrency) {
             // Add all pending promises.
             while ($this->addPending() && $this->advanceIterator()) {
@@ -148,14 +158,15 @@ class EachPromise implements PromisorInterface
         // not advance the iterator after adding the first promise. This
         // helps work around issues with generators that might not have the
         // next value to yield until promise callbacks are called.
-        while (--$concurrency
+        while (
+            --$concurrency
             && $this->advanceIterator()
-            && $this->addPending()) {
+            && $this->addPending()
+        ) {
         }
     }
 
-    private function addPending(): bool
-    {
+    private function addPending(): bool {
         if (!$this->iterable || !$this->iterable->valid()) {
             return false;
         }
@@ -193,8 +204,7 @@ class EachPromise implements PromisorInterface
         return true;
     }
 
-    private function advanceIterator(): bool
-    {
+    private function advanceIterator(): bool {
         // Place a lock on the iterator so that we ensure to not recurse,
         // preventing fatal generator errors.
         if ($this->mutex) {
@@ -216,8 +226,7 @@ class EachPromise implements PromisorInterface
         }
     }
 
-    private function step(int $idx): void
-    {
+    private function step(int $idx): void {
         // If the promise was already resolved, then ignore this step.
         if (Is::settled($this->aggregate)) {
             return;
@@ -234,8 +243,7 @@ class EachPromise implements PromisorInterface
         }
     }
 
-    private function checkIfFinished(): bool
-    {
+    private function checkIfFinished(): bool {
         if (!$this->pending && !$this->iterable->valid()) {
             // Resolve the promise if there's nothing left to do.
             $this->aggregate->resolve(null);

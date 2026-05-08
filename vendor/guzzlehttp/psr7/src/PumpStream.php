@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -43,16 +57,14 @@ final class PumpStream implements StreamInterface
      *                                                     - metadata: Hash of metadata to use with stream.
      *                                                     - size: Size of the stream, if known.
      */
-    public function __construct(callable $source, array $options = [])
-    {
+    public function __construct(callable $source, array $options = []) {
         $this->source = $source;
         $this->size = $options['size'] ?? null;
         $this->metadata = $options['metadata'] ?? [];
         $this->buffer = new BufferStream();
     }
 
-    public function __toString(): string
-    {
+    public function __toString(): string {
         try {
             return Utils::copyToString($this);
         } catch (\Throwable $e) {
@@ -65,66 +77,54 @@ final class PumpStream implements StreamInterface
         }
     }
 
-    public function close(): void
-    {
+    public function close(): void {
         $this->detach();
     }
 
-    public function detach()
-    {
+    public function detach() {
         $this->tellPos = 0;
         $this->source = null;
 
         return null;
     }
 
-    public function getSize(): ?int
-    {
+    public function getSize(): ?int {
         return $this->size;
     }
 
-    public function tell(): int
-    {
+    public function tell(): int {
         return $this->tellPos;
     }
 
-    public function eof(): bool
-    {
+    public function eof(): bool {
         return $this->source === null;
     }
 
-    public function isSeekable(): bool
-    {
+    public function isSeekable(): bool {
         return false;
     }
 
-    public function rewind(): void
-    {
+    public function rewind(): void {
         $this->seek(0);
     }
 
-    public function seek($offset, $whence = SEEK_SET): void
-    {
+    public function seek($offset, $whence = SEEK_SET): void {
         throw new \RuntimeException('Cannot seek a PumpStream');
     }
 
-    public function isWritable(): bool
-    {
+    public function isWritable(): bool {
         return false;
     }
 
-    public function write($string): int
-    {
+    public function write($string): int {
         throw new \RuntimeException('Cannot write to a PumpStream');
     }
 
-    public function isReadable(): bool
-    {
+    public function isReadable(): bool {
         return true;
     }
 
-    public function read($length): string
-    {
+    public function read($length): string {
         $data = $this->buffer->read($length);
         $readLen = strlen($data);
         $this->tellPos += $readLen;
@@ -139,8 +139,7 @@ final class PumpStream implements StreamInterface
         return $data;
     }
 
-    public function getContents(): string
-    {
+    public function getContents(): string {
         $result = '';
         while (!$this->eof()) {
             $result .= $this->read(1000000);
@@ -152,8 +151,7 @@ final class PumpStream implements StreamInterface
     /**
      * @return mixed
      */
-    public function getMetadata($key = null)
-    {
+    public function getMetadata($key = null) {
         if (!$key) {
             return $this->metadata;
         }
@@ -161,8 +159,7 @@ final class PumpStream implements StreamInterface
         return $this->metadata[$key] ?? null;
     }
 
-    private function pump(int $length): void
-    {
+    private function pump(int $length): void {
         if ($this->source !== null) {
             do {
                 $data = ($this->source)($length);

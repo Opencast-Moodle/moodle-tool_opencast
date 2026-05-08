@@ -36,7 +36,6 @@ require_once($CFG->dirroot . '/lib/filelib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class settings_api {
-
     /**
      * Make this class not instantiable.
      */

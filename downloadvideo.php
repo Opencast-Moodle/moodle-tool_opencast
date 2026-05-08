@@ -35,8 +35,10 @@ $videoid = required_param('video_identifier', PARAM_ALPHANUMEXT);
 $mediaid = required_param('mediaid', PARAM_ALPHANUMEXT);
 $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinstance()->id, PARAM_INT);
 
-$baseurl = new moodle_url('/admin/tool/opencast/downloadvideo.php',
-    ['courseid' => $courseid, 'video_identifier' => $videoid, 'ocinstanceid' => $ocinstanceid]);
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/downloadvideo.php',
+    ['courseid' => $courseid, 'video_identifier' => $videoid, 'ocinstanceid' => $ocinstanceid]
+);
 $PAGE->set_url($baseurl);
 
 $redirecturl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
@@ -96,14 +98,18 @@ if (!$result->error) {
 
         readfile($downloadurl);
     } else {
-        redirect($redirecturl,
+        redirect(
+            $redirecturl,
             get_string('video_not_downloadable', 'tool_opencast'),
             null,
-            notification::NOTIFY_ERROR);
+            notification::NOTIFY_ERROR
+        );
     }
 } else {
-    redirect($redirecturl,
+    redirect(
+        $redirecturl,
         get_string('video_retrieval_failed', 'tool_opencast'),
         null,
-        notification::NOTIFY_ERROR);
+        notification::NOTIFY_ERROR
+    );
 }

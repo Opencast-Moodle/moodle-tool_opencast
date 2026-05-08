@@ -40,8 +40,10 @@ $videoids = required_param_array('videoids', PARAM_RAW);
 $courseid = required_param('courseid', PARAM_INT);
 $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinstance()->id, PARAM_INT);
 
-$baseurl = new moodle_url('/admin/tool/opencast/changevisibility_massaction.php',
-    ['ismassaction' => $ismassaction, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/changevisibility_massaction.php',
+    ['ismassaction' => $ismassaction, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
 $PAGE->set_url($baseurl);
 
 require_login($courseid, false);
@@ -80,7 +82,6 @@ $videosdatalist = [];
 
 $courseseries = $apibridge->get_course_series($courseid);
 foreach ($videoids as $videoid) {
-
     // Record the video data for later use.
     $videodata = new stdClass();
     $videodata->identifier = $videoid;
@@ -118,7 +119,7 @@ foreach ($videoids as $videoid) {
     }
 
     $videodata->visibility = $visibility;
-    list($visibilitystatus, $visibilitystatusdesc) = visibility_helper::get_visibility_status_legend($visibility);
+    [$visibilitystatus, $visibilitystatusdesc] = visibility_helper::get_visibility_status_legend($visibility);
 
     // To record lang string object and info.
     $langstringkey = 'changevisibility_massaction_visibility_status';
@@ -134,7 +135,7 @@ foreach ($videoids as $videoid) {
     if (!empty($scheduledvisibility) && intval($scheduledvisibility->status) === visibility_helper::STATUS_PENDING) {
         $langstringkey = 'changevisibility_massaction_visibility_status_with_scheduled';
 
-        list($scheduledvisibilitystatus, $scheduledvisibilitystatusdesc) =
+        [$scheduledvisibilitystatus, $scheduledvisibilitystatusdesc] =
             visibility_helper::get_visibility_status_legend($scheduledvisibility->scheduledvisibilitystatus);
         $scheduledvisibilitydatetime = userdate(
             $scheduledvisibility->scheduledvisibilitytime,
@@ -160,7 +161,6 @@ if ($massactionchangevisibilityform->is_cancelled()) {
 
 if ($data = $massactionchangevisibilityform->get_data()) {
     if (confirm_sesskey()) {
-
         $nochanges = [];
 
         $failed = [];
@@ -180,19 +180,22 @@ if ($data = $massactionchangevisibilityform->get_data()) {
         }
 
         $initialvisibilitygroups = null;
-        if ($data->visibility == tool_opencast_renderer::GROUP
-            && !empty($groups)) {
+        if (
+            $data->visibility == tool_opencast_renderer::GROUP
+            && !empty($groups)
+        ) {
             $initialvisibilitygroups = json_encode($groups);
         }
         $scheduledvisibilitygroups = null;
-        if ($data->scheduledvisibilitystatus == tool_opencast_renderer::GROUP
-            && !empty($data->scheduledvisibilitygroups)) {
+        if (
+            $data->scheduledvisibilitystatus == tool_opencast_renderer::GROUP
+            && !empty($data->scheduledvisibilitygroups)
+        ) {
             $scheduledvisibilitygroups = json_encode($data->scheduledvisibilitygroups);
         }
 
         // All processed video data is included in $videosdatalist variable beforehand!
         foreach ($videosdatalist as $videodata) {
-
             $haschanges = false;
 
             // Just skip if the video has any error!

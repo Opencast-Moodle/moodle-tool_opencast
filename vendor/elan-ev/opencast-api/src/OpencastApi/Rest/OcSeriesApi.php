@@ -1,20 +1,34 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 namespace OpencastApi\Rest;
 
 class OcSeriesApi extends OcRest
 {
     const URI = '/api/series';
 
-    public function __construct($restClient)
-    {
+    public function __construct($restClient) {
         parent::__construct($restClient);
     }
 
-    ## [Section 1]: General API endpoints.
+    // [Section 1]: General API endpoints.
 
     /**
      * Returns a list of series.
-     * 
+     *
      * @param array $params (optional) The list of query params to pass which can contain the followings:
      * [
      *      'onlyWithWriteAccess' => (boolean) {Whether only to get the series to which we have write access. },
@@ -24,11 +38,10 @@ class OcSeriesApi extends OcRest
      *      'offset' => (int) {the index of the first result to return},
      *      'filter' => (array) {an assiciative array for filtering e.g. ['title' => '{series title}']},
      * ]
-     * 
+     *
      * @return array the response result ['code' => 200, 'body' => '{A (potentially empty) list of series }']
      */
-    public function getAll($params = [])
-    {
+    public function getAll($params = []) {
         $uri = self::URI;
 
         $query = [];
@@ -40,7 +53,7 @@ class OcSeriesApi extends OcRest
         }
 
         $acceptableParams = [
-            'sort', 'limit', 'offset', 'filter', 'onlyWithWriteAccess'
+            'sort', 'limit', 'offset', 'filter', 'onlyWithWriteAccess',
         ];
 
         if ($this->restClient->hasVersion('1.5.0')) {
@@ -85,8 +98,7 @@ class OcSeriesApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{the series search results as JSON (array)}']
      */
-    public function getAllFullTextSearch($params = [])
-    {
+    public function getAllFullTextSearch($params = []) {
         $uri = self::URI . "/series.json";
 
         $query = [];
@@ -94,7 +106,7 @@ class OcSeriesApi extends OcRest
             'q', 'edit', 'fuzzyMatch', 'seriesId', 'seriesTitle',
             'creator', 'contributor', 'publisher', 'rightsholder', 'createdfrom',
             'createdto', 'language', 'license', 'subject', 'abstract',
-            'description', 'startPage', 'count'
+            'description', 'startPage', 'count',
         ];
         foreach ($params as $param_name => $param_value) {
             if (in_array($param_name, $acceptableParams)) {
@@ -110,35 +122,36 @@ class OcSeriesApi extends OcRest
         $sortsASC = [
             'TITLE', 'SUBJECT', 'CREATOR', 'PUBLISHER',
             'CONTRIBUTOR', 'ABSTRACT', 'DESCRIPTION', 'CREATED',
-            'AVAILABLE_FROM', 'AVAILABLE_TO','LANGUAGE', 'RIGHTS_HOLDER',
+            'AVAILABLE_FROM', 'AVAILABLE_TO', 'LANGUAGE', 'RIGHTS_HOLDER',
             'SPATIAL', 'TEMPORAL', 'IS_PART_OF', 'REPLACES', 'TYPE',
-            'ACCESS', 'LICENCE'
+            'ACCESS', 'LICENCE',
         ];
         $sortsDESC = array_map(function ($sort) {
             return "{$sort}_DESC";
         }, $sortsASC);
 
         $sorts = array_merge($sortsASC, $sortsDESC);
-        
-        if (array_key_exists('sort', $params) && !empty($params['sort']) &&
-            in_array($params['sort'], $sorts)) {
+
+        if (
+            array_key_exists('sort', $params) && !empty($params['sort']) &&
+            in_array($params['sort'], $sorts)
+        ) {
             $query['sort'] = $params['sort'];
         }
 
         $options = $this->restClient->getQueryParams($query);
         return $this->restClient->performGet($uri, $options);
     }
-    
+
     /**
      * Returns a single series.
-     * 
+     *
      * @param string $seriesId the identifier of the series.
      * @param boolean $withacl (optional) Whether the acl should be included in the response (version 1.5.0 and higher)
-     * 
+     *
      * @return array the response result ['code' => 200, 'body' => '{The series (object)}']
      */
-    public function get($seriesId, $withacl = false)
-    {
+    public function get($seriesId, $withacl = false) {
         $uri = self::URI . "/{$seriesId}";
 
         $query = [];
@@ -151,18 +164,17 @@ class OcSeriesApi extends OcRest
 
     /**
      * Creates a series.
-     * 
+     *
      * @param string|array $metadata Series metadata
      * @param string|array $acls A collection of roles with their possible action
      * @param string $theme (optional) The theme ID to be applied to the series
-     * 
+     *
      * @return array the response result ['code' => 201, 'reason' => 'Created', 'body' => '{The identifier of new series (object)}', 'location' => '{the url}']
      */
-    public function create($metadata, $acls , $theme = '')
-    {
+    public function create($metadata, $acls, $theme = '') {
         $formData = [
             'metadata' => $metadata,
-            'acl' => $acls
+            'acl' => $acls,
         ];
         if (!empty($theme)) {
             $formData['theme'] = $theme;
@@ -173,32 +185,30 @@ class OcSeriesApi extends OcRest
 
     /**
      * Deletes a series
-     * 
+     *
      * @param string $seriesId the series identifier
-     * 
+     *
      * @return array the response result ['code' => 204, 'reason' => 'No Content'] (The series has been deleted.)
      */
-    public function delete($seriesId)
-    {
+    public function delete($seriesId) {
         $uri = self::URI . "/{$seriesId}";
         return $this->restClient->performDelete($uri);
     }
 
-    ## End of [Section 1]: General API endpoints.
+    // End of [Section 1]: General API endpoints.
 
-    ## [Section 2]: Metadata.
+    // [Section 2]: Metadata.
 
     /**
-     * Returns a series' metadata of all types or returns a series' metadata collection of the given type when the query string parameter type is specified. 
+     * Returns a series' metadata of all types or returns a series' metadata collection of the given type when the query string parameter type is specified.
      * For each metadata catalog there is a unique property called the flavor such as dublincore/series so the type in this example would be 'dublincore/series'
-     * 
+     *
      * @param string $seriesId the series identifier
      * @param string $type (optional) The type of metadata to return
-     * 
+     *
      * @return array the response result ['code' => 200, 'body' => '{The series' metadata}']
      */
-    public function getMetadata($seriesId, $type = '')
-    {
+    public function getMetadata($seriesId, $type = '') {
         $uri = self::URI . "/{$seriesId}/metadata";
 
         $query = [];
@@ -218,8 +228,7 @@ class OcSeriesApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'reason' => 'OK'] (The series' metadata have been updated.)
      */
-    public function updateAllMetadata($seriesId, $metadata)
-    {
+    public function updateAllMetadata($seriesId, $metadata) {
         $uri = self::URI . "/{$seriesId}";
 
         $formData = [
@@ -233,15 +242,14 @@ class OcSeriesApi extends OcRest
     /**
      * Update a series' metadata of the given type.
      * For a metadata catalog there is the flavor such as 'dublincore/series' and this is the unique type.
-     * 
+     *
      * @param string $seriesId the series identifier
      * @param string|array $metadata Series metadata
      * @param string $type (optional) The type of metadata to get (Default: "dublincore/series")
-     * 
+     *
      * @return array the response result ['code' => 200, 'reason' => 'OK'] (The series' metadata have been updated.)
      */
-    public function updateMetadata($seriesId, $metadata, $type = 'dublincore/series')
-    {
+    public function updateMetadata($seriesId, $metadata, $type = 'dublincore/series') {
         $uri = self::URI . "/{$seriesId}/metadata";
 
         $formData = [
@@ -250,7 +258,7 @@ class OcSeriesApi extends OcRest
         $formOpt = $this->restClient->getFormParams($formData);
 
         $query = [
-            'type' => $type
+            'type' => $type,
         ];
 
         $queryOpt = $this->restClient->getQueryParams($query);
@@ -262,36 +270,34 @@ class OcSeriesApi extends OcRest
     /**
      * Deletes a series' metadata catalog of the given type.
      * All fields and values of that catalog will be deleted.
-     * 
+     *
      * @param string $seriesId the series identifier
      * @param string $type The type of metadata to delete
-     * 
+     *
      * @return array the response result ['code' => 204, 'reason' => 'No Content'] (The metadata have been deleted)
      */
-    public function deleteMetadata($seriesId, $type)
-    {
+    public function deleteMetadata($seriesId, $type) {
         $uri = self::URI . "/{$seriesId}/metadata";
         $query = [
-            'type' => $type
+            'type' => $type,
         ];
 
         $options = $this->restClient->getQueryParams($query);
         return $this->restClient->performDelete($uri, $options);
     }
 
-    ## End of [Section 2]: Metadata.
+    // End of [Section 2]: Metadata.
 
-    ## [Section 3]: Access Policy.
+    // [Section 3]: Access Policy.
 
     /**
      * Returns a series' access policy.
-     * 
+     *
      * @param string $seriesId the series identifier
-     * 
+     *
      * @return array the response result ['code' => 200, 'body' => '{The series' access policy}']
      */
-    public function getAcl($seriesId)
-    {
+    public function getAcl($seriesId) {
         $uri = self::URI . "/{$seriesId}/acl";
         return $this->restClient->performGet($uri);
     }
@@ -299,15 +305,14 @@ class OcSeriesApi extends OcRest
     /**
      * Updates a series' access policy.
      * Note that the existing access policy of the series will be overwritten.
-     * 
+     *
      * @param string $seriesId the series identifier
      * @param string|array $acls Access policy to be applied
      * @param boolean $override (optional) Whether the episode Acl of all events of this series should be removed (Default value: false) (version 1.2.0 or heigher)
-     * 
+     *
      * @return array the response result ['code' => 200, 'reason' => 'OK'] (The access control list for the specified series is updated)
      */
-    public function updateAcl($seriesId, $acls, $override = false)
-    {
+    public function updateAcl($seriesId, $acls, $override = false) {
         $uri = self::URI . "/{$seriesId}/acl";
         $formData['acl'] = $acls;
 
@@ -321,31 +326,29 @@ class OcSeriesApi extends OcRest
 
     /**
      * Removes all Acls for the series.
-     * 
+     *
      * @param string $seriesId the series identifier
      * @param boolean $override (optional) Whether the episode Acl of all events of this series should be removed (Default value: false) (version 1.2.0 or heigher)
-     * 
+     *
      * @return array the response result ['code' => 200, 'reason' => 'OK'] (The access control list for the specified series is updated)
      */
-    public function emptyAcl($seriesId, $override = false)
-    {
+    public function emptyAcl($seriesId, $override = false) {
         $acls = [];
         return $this->updateAcl($seriesId, $acls, $override);
     }
 
-    ## End of [Section 3]: Access Policy.
+    // End of [Section 3]: Access Policy.
 
-    ## [Section 4]: Properties.
-    
+    // [Section 4]: Properties.
+
     /**
      * Returns a series' properties.
-     * 
+     *
      * @param string $seriesId the series identifier
      *
      * @return array the response result ['code' => 200, 'body' => '{The series' properties}']
      */
-    public function getProperties($seriesId)
-    {
+    public function getProperties($seriesId) {
         $uri = self::URI . "/{$seriesId}/properties";
         return $this->restClient->performGet($uri);
     }
@@ -354,17 +357,16 @@ class OcSeriesApi extends OcRest
      * Add or update properties of a series.
      * The request can be used to add new properties and/or update existing properties.
      * Properties not included in the request are not affected.
-     * 
+     *
      * @param string $seriesId the series identifier
      * @param string|array $properties List of properties to be assigned to the series
-     * 
+     *
      * @return array the response result ['code' => 200, 'body' => '{The added/updated series' properties}']
      */
-    public function updateProperties($seriesId, $properties)
-    {
+    public function updateProperties($seriesId, $properties) {
         $uri = self::URI . "/{$seriesId}/properties";
         $formData['properties'] = $properties;
-        
+
         $options = $this->restClient->getFormParams($formData);
         return $this->restClient->performPut($uri, $options);
     }
@@ -373,17 +375,15 @@ class OcSeriesApi extends OcRest
      * Add or update properties of a series.
      * The request can be used to add new properties and/or update existing properties.
      * Properties not included in the request are not affected.
-     * 
+     *
      * @param string $seriesId the series identifier
      * @param string|array $properties List of properties to be assigned to the series
-     * 
+     *
      * @return array the response result ['code' => 200, 'body' => '{The added/updated series' properties}']
      */
-    public function addProperties($seriesId, $properties)
-    {
+    public function addProperties($seriesId, $properties) {
         return $this->updateProperties($seriesId, $properties);
     }
 
-    ## End of [Section 4]: Properties.
+    // End of [Section 4]: Properties.
 }
-?>

@@ -44,7 +44,6 @@ require_once($CFG->dirroot . '/admin/tool/opencast/vendor/autoload.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class api extends \curl {
-
     /** @var string the api username */
     private $username;
     /** @var string the api password */
@@ -96,7 +95,7 @@ class api extends \curl {
      * @return string the acl role
      */
     public static function get_course_acl_role($courseid) {
-        return  self::get_course_acl_role_prefix(). $courseid;
+        return  self::get_course_acl_role_prefix() . $courseid;
     }
 
     /**
@@ -149,10 +148,12 @@ class api extends \curl {
      * @throws \dml_exception
      * @throws \moodle_exception
      */
-    public static function get_instance($instanceid = null,
-                                        $settings = [],
-                                        $customconfigs = [],
-                                        $enableingest = false) {
+    public static function get_instance(
+        $instanceid = null,
+        $settings = [],
+        $customconfigs = [],
+        $enableingest = false
+    ) {
 
         if (self::use_test_api() === true) {
             $apitestable = new api_testable($instanceid, $enableingest);
@@ -205,10 +206,12 @@ class api extends \curl {
      * @throws \dml_exception
      * @throws \moodle_exception
      */
-    public function __construct($instanceid = null,
-                                $settings = [],
-                                $customconfigs = [],
-                                $enableingest = false) {
+    public function __construct(
+        $instanceid = null,
+        $settings = [],
+        $customconfigs = [],
+        $enableingest = false
+    ) {
         // Allow access to local ips.
         $settings['ignoresecurity'] = true;
         parent::__construct($settings);
@@ -219,8 +222,11 @@ class api extends \curl {
         if (empty($customconfigs)) {
             $defaultocinstance = settings_api::get_default_ocinstance();
             if ($defaultocinstance === null) {
-                throw new \dml_exception('dmlreadexception', null,
-                    'No default Opencast instance is defined.');
+                throw new \dml_exception(
+                    'dmlreadexception',
+                    null,
+                    'No default Opencast instance is defined.'
+                );
             }
 
             $storedconfigocinstanceid = !$instanceid ? $defaultocinstance->id : $instanceid;
@@ -264,7 +270,7 @@ class api extends \curl {
 
         // If the admin omitted the protocol part, add the HTTPS protocol on-the-fly.
         if (!preg_match('/^https?:\/\//', $this->baseurl)) {
-            $this->baseurl = 'https://'.$this->baseurl;
+            $this->baseurl = 'https://' . $this->baseurl;
         }
 
         // The base url is a must and cannot be empty, so we check its existence for both scenarios.
@@ -401,7 +407,8 @@ class api extends \curl {
         $header = [];
 
         $header[] = sprintf(
-            'Authorization: Basic %s', $basicauth
+            'Authorization: Basic %s',
+            $basicauth
         );
 
         return $header;
@@ -551,8 +558,10 @@ class api extends \curl {
                 if ($value instanceof \stored_file) {
                     $value->add_to_curl_request($this, $key);
                     $this->add_postname($value, $key);
-                } else if (class_exists('\local_chunkupload\local\chunkupload_file') &&
-                    $value instanceof \local_chunkupload\local\chunkupload_file) {
+                } else if (
+                    class_exists('\local_chunkupload\local\chunkupload_file') &&
+                    $value instanceof \local_chunkupload\local\chunkupload_file
+                ) {
                         $value->add_to_curl_request($this, $key);
                         $this->add_postname_chunkupload($value, $key);
                 } else {
@@ -666,7 +675,6 @@ class api extends \curl {
      */
     public function supports_api_level($level) {
         if (!self::$supportedapilevel) {
-
             $response = $this->opencastapi->baseApi->getVersion();
 
             if ($response['code'] != 200) {

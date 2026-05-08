@@ -83,9 +83,12 @@ $PAGE->navbar->add(get_string('batchupload', 'tool_opencast'), $baseurl);
 if ($courseid == $SITE->id) {
     // If upload initiated from overview page, check that capability is given in specific course or ownership.
     if (!$series) {
-        redirect(new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid, 'series' => null]),
-            get_string('addvideonotallowed', 'tool_opencast'), null,
-            notification::NOTIFY_ERROR);
+        redirect(
+            new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid, 'series' => null]),
+            get_string('addvideonotallowed', 'tool_opencast'),
+            null,
+            notification::NOTIFY_ERROR
+        );
     }
 
     $records = $DB->get_records('tool_opencast_series', ['series' => $series, 'ocinstanceid' => $ocinstanceid]);
@@ -103,17 +106,23 @@ if ($courseid == $SITE->id) {
         $apibridge = apibridge::get_instance($ocinstanceid);
         $ocseries = $apibridge->get_series_by_identifier($series);
         if (!$ocseries) {
-            redirect(new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid,
+            redirect(
+                new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid,
                 'series' => $series, ]),
-                get_string('connection_failure', 'tool_opencast'), null,
-                notification::NOTIFY_ERROR);
+                get_string('connection_failure', 'tool_opencast'),
+                null,
+                notification::NOTIFY_ERROR
+            );
         }
 
         if (!$apibridge->is_owner($ocseries->acl, $USER->id, $SITE->id)) {
-            redirect(new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid,
+            redirect(
+                new moodle_url('/admin/tool/opencast/overview_videos.php', ['ocinstanceid' => $ocinstanceid,
                 'series' => $series, ]),
-                get_string('addvideonotallowed', 'tool_opencast'), null,
-                notification::NOTIFY_ERROR);
+                get_string('addvideonotallowed', 'tool_opencast'),
+                null,
+                notification::NOTIFY_ERROR
+            );
         }
     }
 } else {

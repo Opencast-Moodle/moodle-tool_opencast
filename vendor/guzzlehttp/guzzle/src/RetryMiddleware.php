@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp;
 
@@ -40,11 +54,10 @@ class RetryMiddleware
      *                                                                         and returns the number of
      *                                                                         milliseconds to delay.
      */
-    public function __construct(callable $decider, callable $nextHandler, ?callable $delay = null)
-    {
+    public function __construct(callable $decider, callable $nextHandler, ?callable $delay = null) {
         $this->decider = $decider;
         $this->nextHandler = $nextHandler;
-        $this->delay = $delay ?: __CLASS__.'::exponentialDelay';
+        $this->delay = $delay ?: __CLASS__ . '::exponentialDelay';
     }
 
     /**
@@ -52,13 +65,11 @@ class RetryMiddleware
      *
      * @return int milliseconds.
      */
-    public static function exponentialDelay(int $retries): int
-    {
+    public static function exponentialDelay(int $retries): int {
         return (int) 2 ** ($retries - 1) * 1000;
     }
 
-    public function __invoke(RequestInterface $request, array $options): PromiseInterface
-    {
+    public function __invoke(RequestInterface $request, array $options): PromiseInterface {
         if (!isset($options['retries'])) {
             $options['retries'] = 0;
         }
@@ -75,15 +86,16 @@ class RetryMiddleware
     /**
      * Execute fulfilled closure
      */
-    private function onFulfilled(RequestInterface $request, array $options): callable
-    {
+    private function onFulfilled(RequestInterface $request, array $options): callable {
         return function ($value) use ($request, $options) {
-            if (!($this->decider)(
-                $options['retries'],
-                $request,
-                $value,
-                null
-            )) {
+            if (
+                !($this->decider)(
+                    $options['retries'],
+                    $request,
+                    $value,
+                    null
+                )
+            ) {
                 return $value;
             }
 
@@ -94,15 +106,16 @@ class RetryMiddleware
     /**
      * Execute rejected closure
      */
-    private function onRejected(RequestInterface $req, array $options): callable
-    {
+    private function onRejected(RequestInterface $req, array $options): callable {
         return function ($reason) use ($req, $options) {
-            if (!($this->decider)(
-                $options['retries'],
-                $req,
-                null,
-                $reason
-            )) {
+            if (
+                !($this->decider)(
+                    $options['retries'],
+                    $req,
+                    null,
+                    $reason
+                )
+            ) {
                 return P\Create::rejectionFor($reason);
             }
 
@@ -110,8 +123,7 @@ class RetryMiddleware
         };
     }
 
-    private function doRetry(RequestInterface $request, array $options, ?ResponseInterface $response = null): PromiseInterface
-    {
+    private function doRetry(RequestInterface $request, array $options, ?ResponseInterface $response = null): PromiseInterface {
         $options['delay'] = ($this->delay)(++$options['retries'], $response, $request);
 
         return $this($request, $options);

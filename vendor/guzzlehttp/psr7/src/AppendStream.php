@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -29,15 +43,13 @@ final class AppendStream implements StreamInterface
      * @param StreamInterface[] $streams Streams to decorate. Each stream must
      *                                   be readable.
      */
-    public function __construct(array $streams = [])
-    {
+    public function __construct(array $streams = []) {
         foreach ($streams as $stream) {
             $this->addStream($stream);
         }
     }
 
-    public function __toString(): string
-    {
+    public function __toString(): string {
         try {
             $this->rewind();
 
@@ -59,8 +71,7 @@ final class AppendStream implements StreamInterface
      *
      * @throws \InvalidArgumentException if the stream is not readable
      */
-    public function addStream(StreamInterface $stream): void
-    {
+    public function addStream(StreamInterface $stream): void {
         if (!$stream->isReadable()) {
             throw new \InvalidArgumentException('Each stream must be readable');
         }
@@ -73,16 +84,14 @@ final class AppendStream implements StreamInterface
         $this->streams[] = $stream;
     }
 
-    public function getContents(): string
-    {
+    public function getContents(): string {
         return Utils::copyToString($this);
     }
 
     /**
      * Closes each attached stream.
      */
-    public function close(): void
-    {
+    public function close(): void {
         $this->pos = $this->current = 0;
         $this->seekable = true;
 
@@ -98,8 +107,7 @@ final class AppendStream implements StreamInterface
      *
      * Returns null as it's not clear which underlying stream resource to return.
      */
-    public function detach()
-    {
+    public function detach() {
         $this->pos = $this->current = 0;
         $this->seekable = true;
 
@@ -112,8 +120,7 @@ final class AppendStream implements StreamInterface
         return null;
     }
 
-    public function tell(): int
-    {
+    public function tell(): int {
         return $this->pos;
     }
 
@@ -123,8 +130,7 @@ final class AppendStream implements StreamInterface
      * If any of the streams do not return a valid number, then the size of the
      * append stream cannot be determined and null is returned.
      */
-    public function getSize(): ?int
-    {
+    public function getSize(): ?int {
         $size = 0;
 
         foreach ($this->streams as $stream) {
@@ -138,26 +144,23 @@ final class AppendStream implements StreamInterface
         return $size;
     }
 
-    public function eof(): bool
-    {
+    public function eof(): bool {
         return !$this->streams
             || ($this->current >= count($this->streams) - 1
              && $this->streams[$this->current]->eof());
     }
 
-    public function rewind(): void
-    {
+    public function rewind(): void {
         $this->seek(0);
     }
 
     /**
      * Attempts to seek to the given position. Only supports SEEK_SET.
      */
-    public function seek($offset, $whence = SEEK_SET): void
-    {
+    public function seek($offset, $whence = SEEK_SET): void {
         if (!$this->seekable) {
             throw new \RuntimeException('This AppendStream is not seekable');
-        } elseif ($whence !== SEEK_SET) {
+        } else if ($whence !== SEEK_SET) {
             throw new \RuntimeException('The AppendStream can only seek with SEEK_SET');
         }
 
@@ -169,7 +172,7 @@ final class AppendStream implements StreamInterface
                 $stream->rewind();
             } catch (\Exception $e) {
                 throw new \RuntimeException('Unable to seek stream '
-                    .$i.' of the AppendStream', 0, $e);
+                    . $i . ' of the AppendStream', 0, $e);
             }
         }
 
@@ -185,8 +188,7 @@ final class AppendStream implements StreamInterface
     /**
      * Reads from all of the appended streams until the length is met or EOF.
      */
-    public function read($length): string
-    {
+    public function read($length): string {
         $buffer = '';
         $total = count($this->streams) - 1;
         $remaining = $length;
@@ -218,31 +220,26 @@ final class AppendStream implements StreamInterface
         return $buffer;
     }
 
-    public function isReadable(): bool
-    {
+    public function isReadable(): bool {
         return true;
     }
 
-    public function isWritable(): bool
-    {
+    public function isWritable(): bool {
         return false;
     }
 
-    public function isSeekable(): bool
-    {
+    public function isSeekable(): bool {
         return $this->seekable;
     }
 
-    public function write($string): int
-    {
+    public function write($string): int {
         throw new \RuntimeException('Cannot write to an AppendStream');
     }
 
     /**
      * @return mixed
      */
-    public function getMetadata($key = null)
-    {
+    public function getMetadata($key = null) {
         return $key ? null : [];
     }
 }

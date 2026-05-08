@@ -1,4 +1,19 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 namespace OpencastApi\Rest;
 
 class OcWorkflowsApi extends OcRest
@@ -6,13 +21,12 @@ class OcWorkflowsApi extends OcRest
     const URI = '/api/workflows';
     const URI_SECTION_2 = '/api/workflow-definitions';
 
-    public function __construct($restClient)
-    {
+    public function __construct($restClient) {
         // The Workflow API is available since API version 1.1.0.
         parent::__construct($restClient);
     }
 
-    ## [Section 1]: General API endpoints.
+    // [Section 1]: General API endpoints.
 
     /**
      * Returns a single workflow instance.
@@ -23,8 +37,7 @@ class OcWorkflowsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{ The workflow instance}']
      */
-    public function get($workflowInstanceId, $withoperations = false, $withconfiguration = false)
-    {
+    public function get($workflowInstanceId, $withoperations = false, $withconfiguration = false) {
         $uri = self::URI . "/{$workflowInstanceId}";
 
         $query = [];
@@ -50,8 +63,7 @@ class OcWorkflowsApi extends OcRest
      *
      * @return array the response result ['code' => 201, 'body' => '{A new workflow is created and its identifier as Object is returned}', 'location' => 'The url']
      */
-    public function run($eventIdentifier, $definitionIdentifier, $configuration = [], $withoperations = false, $withconfiguration = false)
-    {
+    public function run($eventIdentifier, $definitionIdentifier, $configuration = [], $withoperations = false, $withconfiguration = false) {
         $uri = self::URI;
 
         $formData = [
@@ -87,8 +99,7 @@ class OcWorkflowsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'reason' => 'OK'] (updated)
      */
-    public function update($workflowInstanceId, $state = '', $configuration = [], $withoperations = false, $withconfiguration = false)
-    {
+    public function update($workflowInstanceId, $state = '', $configuration = [], $withoperations = false, $withconfiguration = false) {
         $uri = self::URI . "/{$workflowInstanceId}";
 
         $formData = [];
@@ -120,15 +131,14 @@ class OcWorkflowsApi extends OcRest
      *
      * @return array the response result ['code' => 204, 'reason' => 'No Content'] (deleted)
      */
-    public function delete($workflowInstanceId)
-    {
+    public function delete($workflowInstanceId) {
         $uri = self::URI . "/{$workflowInstanceId}";
         return $this->restClient->performDelete($uri);
     }
 
-    ## End of [Section 1]: General API endpoints.
+    // End of [Section 1]: General API endpoints.
 
-    ## [Section 2]: Workflow definitions API endpoints.
+    // [Section 2]: Workflow definitions API endpoints.
 
     /**
      * Returns a list of workflow definitions.
@@ -146,8 +156,7 @@ class OcWorkflowsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{A (potentially empty) list of workflow definitions}']
      */
-    public function getAllDefinitions($params = [])
-    {
+    public function getAllDefinitions($params = []) {
         $uri = self::URI_SECTION_2;
 
         $query = [];
@@ -159,7 +168,7 @@ class OcWorkflowsApi extends OcRest
         }
 
         $acceptableParams = [
-            'sort', 'limit', 'offset', 'filter', 'withoperations', 'withconfigurationpanel', 'withconfigurationpaneljson'
+            'sort', 'limit', 'offset', 'filter', 'withoperations', 'withconfigurationpanel', 'withconfigurationpaneljson',
         ];
 
         foreach ($params as $param_name => $param_value) {
@@ -182,8 +191,7 @@ class OcWorkflowsApi extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{ The workflow definition is returned as JSON object}']
      */
-    public function getDefinition($workflowDefinitionId, $withoperations = false, $withconfigurationpanel = false, $withconfigurationpaneljson = false)
-    {
+    public function getDefinition($workflowDefinitionId, $withoperations = false, $withconfigurationpanel = false, $withconfigurationpaneljson = false) {
         $uri = self::URI_SECTION_2 . "/{$workflowDefinitionId}";
 
         $query = [];
@@ -201,6 +209,5 @@ class OcWorkflowsApi extends OcRest
         return $this->restClient->performGet($uri, $options);
     }
 
-    ## End of [Section 2]: Workflow definitions.
+    // End of [Section 2]: Workflow definitions.
 }
-?>

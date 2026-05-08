@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -31,17 +45,16 @@ final class StreamWrapper
      *
      * @throws \InvalidArgumentException if stream is not readable or writable
      */
-    public static function getResource(StreamInterface $stream)
-    {
+    public static function getResource(StreamInterface $stream) {
         self::register();
 
         if ($stream->isReadable()) {
             $mode = $stream->isWritable() ? 'r+' : 'r';
-        } elseif ($stream->isWritable()) {
+        } else if ($stream->isWritable()) {
             $mode = 'w';
         } else {
             throw new \InvalidArgumentException('The stream must be readable, '
-                .'writable, or both.');
+                . 'writable, or both.');
         }
 
         return fopen('guzzle://stream', $mode, false, self::createStreamContext($stream));
@@ -52,8 +65,7 @@ final class StreamWrapper
      *
      * @return resource
      */
-    public static function createStreamContext(StreamInterface $stream)
-    {
+    public static function createStreamContext(StreamInterface $stream) {
         return stream_context_create([
             'guzzle' => ['stream' => $stream],
         ]);
@@ -62,15 +74,13 @@ final class StreamWrapper
     /**
      * Registers the stream wrapper if needed
      */
-    public static function register(): void
-    {
+    public static function register(): void {
         if (!in_array('guzzle', stream_get_wrappers())) {
             stream_wrapper_register('guzzle', __CLASS__);
         }
     }
 
-    public function stream_open(string $path, string $mode, int $options, ?string &$opened_path = null): bool
-    {
+    public function stream_open(string $path, string $mode, int $options, ?string &$opened_path = null): bool {
         $options = stream_context_get_options($this->context);
 
         if (!isset($options['guzzle']['stream'])) {
@@ -83,28 +93,23 @@ final class StreamWrapper
         return true;
     }
 
-    public function stream_read(int $count): string
-    {
+    public function stream_read(int $count): string {
         return $this->stream->read($count);
     }
 
-    public function stream_write(string $data): int
-    {
+    public function stream_write(string $data): int {
         return $this->stream->write($data);
     }
 
-    public function stream_tell(): int
-    {
+    public function stream_tell(): int {
         return $this->stream->tell();
     }
 
-    public function stream_eof(): bool
-    {
+    public function stream_eof(): bool {
         return $this->stream->eof();
     }
 
-    public function stream_seek(int $offset, int $whence): bool
-    {
+    public function stream_seek(int $offset, int $whence): bool {
         $this->stream->seek($offset, $whence);
 
         return true;
@@ -113,8 +118,7 @@ final class StreamWrapper
     /**
      * @return resource|false
      */
-    public function stream_cast(int $cast_as)
-    {
+    public function stream_cast(int $cast_as) {
         $stream = clone $this->stream;
         $resource = $stream->detach();
 
@@ -138,8 +142,7 @@ final class StreamWrapper
      *   blocks: int
      * }|false
      */
-    public function stream_stat()
-    {
+    public function stream_stat() {
         if ($this->stream->getSize() === null) {
             return false;
         }
@@ -186,8 +189,7 @@ final class StreamWrapper
      *   blocks: int
      * }
      */
-    public function url_stat(string $path, int $flags): array
-    {
+    public function url_stat(string $path, int $flags): array {
         return [
             'dev' => 0,
             'ino' => 0,

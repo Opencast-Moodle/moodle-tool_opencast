@@ -35,22 +35,26 @@ $courseid = required_param('courseid', PARAM_INT);
 $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinstance()->id, PARAM_INT);
 $redirectto = optional_param('redirectto', '', PARAM_TEXT);
 
-$baseurl = new moodle_url('/admin/tool/opencast/managedefaults.php',
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/managedefaults.php',
     ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
 );
 $PAGE->set_url($baseurl);
 
-$redirecturl = new moodle_url('/admin/tool/opencast/index.php',
+$redirecturl = new moodle_url(
+    '/admin/tool/opencast/index.php',
     ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
 );
 
 if ($redirectto == 'addvideo') {
-    $redirecturl = new moodle_url('/admin/tool/opencast/addvideo.php',
+    $redirecturl = new moodle_url(
+        '/admin/tool/opencast/addvideo.php',
         ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
     );
 }
 if ($redirectto == 'manageseries') {
-    $redirecturl = new moodle_url('/admin/tool/opencast/manageseries.php',
+    $redirecturl = new moodle_url(
+        '/admin/tool/opencast/manageseries.php',
         ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid, 'createseries' => 1]
     );
 }
@@ -93,13 +97,15 @@ if ($userdefaultsrecord) {
     $userdefaults = json_decode($userdefaultsrecord->defaults, true);
 }
 
-$managedefaultsform = new managedefaults_form(null,
+$managedefaultsform = new managedefaults_form(
+    null,
     ['courseid' => $courseid,
         'ocinstanceid' => $ocinstanceid,
         'redirectto' => $redirectto,
         'defaultables' => $defaultables,
         'userdefaults' => $userdefaults,
-    ]);
+    ]
+);
 
 if ($managedefaultsform->is_cancelled()) {
     redirect($redirecturl);

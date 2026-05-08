@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -116,18 +130,15 @@ class Response implements ResponseInterface
         $this->protocol = $version;
     }
 
-    public function getStatusCode(): int
-    {
+    public function getStatusCode(): int {
         return $this->statusCode;
     }
 
-    public function getReasonPhrase(): string
-    {
+    public function getReasonPhrase(): string {
         return $this->reasonPhrase;
     }
 
-    public function withStatus($code, $reasonPhrase = ''): ResponseInterface
-    {
+    public function withStatus($code, $reasonPhrase = ''): ResponseInterface {
         $this->assertStatusCodeIsInteger($code);
         $code = (int) $code;
         $this->assertStatusCodeRange($code);
@@ -145,15 +156,13 @@ class Response implements ResponseInterface
     /**
      * @param mixed $statusCode
      */
-    private function assertStatusCodeIsInteger($statusCode): void
-    {
+    private function assertStatusCodeIsInteger($statusCode): void {
         if (filter_var($statusCode, FILTER_VALIDATE_INT) === false) {
             throw new \InvalidArgumentException('Status code must be an integer value.');
         }
     }
 
-    private function assertStatusCodeRange(int $statusCode): void
-    {
+    private function assertStatusCodeRange(int $statusCode): void {
         if ($statusCode < 100 || $statusCode >= 600) {
             throw new \InvalidArgumentException('Status code must be an integer value between 1xx and 5xx.');
         }

@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp;
 
@@ -39,8 +53,7 @@ trait ClientTrait
      *
      * @throws GuzzleException
      */
-    public function get($uri, array $options = []): ResponseInterface
-    {
+    public function get($uri, array $options = []): ResponseInterface {
         return $this->request('GET', $uri, $options);
     }
 
@@ -56,8 +69,7 @@ trait ClientTrait
      *
      * @throws GuzzleException
      */
-    public function head($uri, array $options = []): ResponseInterface
-    {
+    public function head($uri, array $options = []): ResponseInterface {
         return $this->request('HEAD', $uri, $options);
     }
 
@@ -73,8 +85,7 @@ trait ClientTrait
      *
      * @throws GuzzleException
      */
-    public function put($uri, array $options = []): ResponseInterface
-    {
+    public function put($uri, array $options = []): ResponseInterface {
         return $this->request('PUT', $uri, $options);
     }
 
@@ -90,8 +101,7 @@ trait ClientTrait
      *
      * @throws GuzzleException
      */
-    public function post($uri, array $options = []): ResponseInterface
-    {
+    public function post($uri, array $options = []): ResponseInterface {
         return $this->request('POST', $uri, $options);
     }
 
@@ -107,8 +117,7 @@ trait ClientTrait
      *
      * @throws GuzzleException
      */
-    public function patch($uri, array $options = []): ResponseInterface
-    {
+    public function patch($uri, array $options = []): ResponseInterface {
         return $this->request('PATCH', $uri, $options);
     }
 
@@ -124,8 +133,7 @@ trait ClientTrait
      *
      * @throws GuzzleException
      */
-    public function delete($uri, array $options = []): ResponseInterface
-    {
+    public function delete($uri, array $options = []): ResponseInterface {
         return $this->request('DELETE', $uri, $options);
     }
 
@@ -154,8 +162,7 @@ trait ClientTrait
      * @param string|UriInterface $uri     URI object or string.
      * @param array               $options Request options to apply.
      */
-    public function getAsync($uri, array $options = []): PromiseInterface
-    {
+    public function getAsync($uri, array $options = []): PromiseInterface {
         return $this->requestAsync('GET', $uri, $options);
     }
 
@@ -170,8 +177,7 @@ trait ClientTrait
      * @param string|UriInterface $uri     URI object or string.
      * @param array               $options Request options to apply.
      */
-    public function headAsync($uri, array $options = []): PromiseInterface
-    {
+    public function headAsync($uri, array $options = []): PromiseInterface {
         return $this->requestAsync('HEAD', $uri, $options);
     }
 
@@ -186,8 +192,7 @@ trait ClientTrait
      * @param string|UriInterface $uri     URI object or string.
      * @param array               $options Request options to apply.
      */
-    public function putAsync($uri, array $options = []): PromiseInterface
-    {
+    public function putAsync($uri, array $options = []): PromiseInterface {
         return $this->requestAsync('PUT', $uri, $options);
     }
 
@@ -202,8 +207,7 @@ trait ClientTrait
      * @param string|UriInterface $uri     URI object or string.
      * @param array               $options Request options to apply.
      */
-    public function postAsync($uri, array $options = []): PromiseInterface
-    {
+    public function postAsync($uri, array $options = []): PromiseInterface {
         return $this->requestAsync('POST', $uri, $options);
     }
 
@@ -218,8 +222,7 @@ trait ClientTrait
      * @param string|UriInterface $uri     URI object or string.
      * @param array               $options Request options to apply.
      */
-    public function patchAsync($uri, array $options = []): PromiseInterface
-    {
+    public function patchAsync($uri, array $options = []): PromiseInterface {
         return $this->requestAsync('PATCH', $uri, $options);
     }
 
@@ -234,8 +237,7 @@ trait ClientTrait
      * @param string|UriInterface $uri     URI object or string.
      * @param array               $options Request options to apply.
      */
-    public function deleteAsync($uri, array $options = []): PromiseInterface
-    {
+    public function deleteAsync($uri, array $options = []): PromiseInterface {
         return $this->requestAsync('DELETE', $uri, $options);
     }
 }

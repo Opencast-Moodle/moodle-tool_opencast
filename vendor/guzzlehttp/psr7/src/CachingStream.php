@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -39,8 +53,7 @@ final class CachingStream implements StreamInterface
         $this->stream = $target ?: new Stream(Utils::tryFopen('php://temp', 'r+'));
     }
 
-    public function getSize(): ?int
-    {
+    public function getSize(): ?int {
         $remoteSize = $this->remoteStream->getSize();
 
         if (null === $remoteSize) {
@@ -50,18 +63,16 @@ final class CachingStream implements StreamInterface
         return max($this->stream->getSize(), $remoteSize);
     }
 
-    public function rewind(): void
-    {
+    public function rewind(): void {
         $this->seek(0);
     }
 
-    public function seek($offset, $whence = SEEK_SET): void
-    {
+    public function seek($offset, $whence = SEEK_SET): void {
         if ($whence === SEEK_SET) {
             $byte = $offset;
-        } elseif ($whence === SEEK_CUR) {
+        } else if ($whence === SEEK_CUR) {
             $byte = $offset + $this->tell();
-        } elseif ($whence === SEEK_END) {
+        } else if ($whence === SEEK_END) {
             $size = $this->remoteStream->getSize();
             if ($size === null) {
                 $size = $this->cacheEntireStream();
@@ -86,8 +97,7 @@ final class CachingStream implements StreamInterface
         }
     }
 
-    public function read($length): string
-    {
+    public function read($length): string {
         // Perform a regular read on any previously read data from the buffer
         $data = $this->stream->read($length);
         $remaining = $length - strlen($data);
@@ -115,8 +125,7 @@ final class CachingStream implements StreamInterface
         return $data;
     }
 
-    public function write($string): int
-    {
+    public function write($string): int {
         // When appending to the end of the currently read stream, you'll want
         // to skip bytes from being read from the remote stream to emulate
         // other stream wrappers. Basically replacing bytes of data of a fixed
@@ -129,22 +138,19 @@ final class CachingStream implements StreamInterface
         return $this->stream->write($string);
     }
 
-    public function eof(): bool
-    {
+    public function eof(): bool {
         return $this->stream->eof() && $this->remoteStream->eof();
     }
 
     /**
      * Close both the remote stream and buffer stream
      */
-    public function close(): void
-    {
+    public function close(): void {
         $this->remoteStream->close();
         $this->stream->close();
     }
 
-    private function cacheEntireStream(): int
-    {
+    private function cacheEntireStream(): int {
         $target = new FnStream(['write' => 'strlen']);
         Utils::copyToStream($this, $target);
 

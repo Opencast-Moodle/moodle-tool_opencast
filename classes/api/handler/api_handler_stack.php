@@ -37,7 +37,6 @@ use tool_opencast\api\middleware\api_middlewares;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class api_handler_stack {
-
     /** @var HandlerStack $handlerstack */
     private HandlerStack $handlerstack;
 

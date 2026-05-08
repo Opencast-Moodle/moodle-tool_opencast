@@ -1,12 +1,26 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 namespace OpencastApi\Rest;
 
 class OcWorkflow extends OcRest
 {
     const URI = '/workflow';
 
-    public function __construct($restClient)
-    {
+    public function __construct($restClient) {
         $restClient->registerHeaderException('Accept', self::URI);
         parent::__construct($restClient);
     }
@@ -18,8 +32,7 @@ class OcWorkflow extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The HTML workflow configuration panel}']
      */
-    public function getConfigurationPanel($definitionId = '')
-    {
+    public function getConfigurationPanel($definitionId = '') {
         $uri = self::URI . "/configurationPanel";
 
         $query = [];
@@ -39,8 +52,7 @@ class OcWorkflow extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The number of workflow instances}']
      */
-    public function getCount($state = '', $operation = '')
-    {
+    public function getCount($state = '', $operation = '') {
         $uri = self::URI . "/count";
 
         $query = [];
@@ -56,15 +68,14 @@ class OcWorkflow extends OcRest
     }
 
     /**
-     *Returns a single workflow definition as JSON by default or XML on demand
+     * Returns a single workflow definition as JSON by default or XML on demand
      *
      * @param string $definitionId The workflow definition identifier
      * @param string $format (optional) The output format (json or xml) of the response body. (Default value = 'json')
      *
      * @return array the response result ['code' => 200, 'body' => '{The workflow definition (object JSON| text XML)}']
      */
-    public function getSingleDefinition($definitionId, $format = '')
-    {
+    public function getSingleDefinition($definitionId, $format = '') {
         $uri = self::URI . "/definition/{$definitionId}.json";
         if (!empty($format) && strtolower($format) == 'xml') {
             $uri = str_replace('.json', '.xml', $uri);
@@ -80,8 +91,7 @@ class OcWorkflow extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{The workflow definitions (object JSON| text XML)}']
      */
-    public function getDefinitions($format = '')
-    {
+    public function getDefinitions($format = '') {
         $uri = self::URI . "/definitions.json";
         if (!empty($format) && strtolower($format) == 'xml') {
             $uri = str_replace('.json', '.xml', $uri);
@@ -95,8 +105,7 @@ class OcWorkflow extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{A JSON (object) representation of the registered workflow operation handlers}']
      */
-    public function getHandlers()
-    {
+    public function getHandlers() {
         $uri = self::URI . "/handlers.json";
         return $this->restClient->performGet($uri);
     }
@@ -106,8 +115,7 @@ class OcWorkflow extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{A JSON (object) representation of the workflow state mappings }']
      */
-    public function getStateMappings()
-    {
+    public function getStateMappings() {
         $uri = self::URI . "/statemappings.json";
         return $this->restClient->performGet($uri);
     }
@@ -120,8 +128,7 @@ class OcWorkflow extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{A JSON (object) | XML (text) representation of the workflow instance }']
      */
-    public function getInstance($instanceId, $format = '')
-    {
+    public function getInstance($instanceId, $format = '') {
         $uri = self::URI . "/instance/{$instanceId}.json";
         if (!empty($format) && strtolower($format) == 'xml') {
             $uri = str_replace('.json', '.xml', $uri);
@@ -138,8 +145,7 @@ class OcWorkflow extends OcRest
      *
      * @return array the response result ['code' => 204, 'reason' => 'No Content'] (If workflow instance could be removed successfully, no content is returned)
      */
-    public function removeInstance($instanceId, $force = false)
-    {
+    public function removeInstance($instanceId, $force = false) {
         $uri = self::URI . "/remove/{$instanceId}";
 
         $query = [];
@@ -160,12 +166,11 @@ class OcWorkflow extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{An XML (as text) representation of the updated and resumed workflow instance}']
      */
-    public function replaceAndresume($instanceId, $mediapackage = '', $properties = '')
-    {
+    public function replaceAndresume($instanceId, $mediapackage = '', $properties = '') {
         $uri = self::URI . "/replaceAndresume";
 
         $formData = [
-            'id' => $instanceId
+            'id' => $instanceId,
         ];
         if (!empty($mediapackage)) {
             $formData['mediapackage'] = $mediapackage;
@@ -185,12 +190,11 @@ class OcWorkflow extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{An XML (as text) representation of the resumed workflow instance.}']
      */
-    public function resume($instanceId)
-    {
+    public function resume($instanceId) {
         $uri = self::URI . "/resume";
 
         $formData = [
-            'id' => $instanceId
+            'id' => $instanceId,
         ];
 
         $options = $this->restClient->getFormParams($formData);
@@ -207,13 +211,12 @@ class OcWorkflow extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{An XML (as text) representation of the new workflow instance.}']
      */
-    public function start($definition, $mediapackage, $parent = '', $properties = '')
-    {
+    public function start($definition, $mediapackage, $parent = '', $properties = '') {
         $uri = self::URI . "/start";
 
         $formData = [
             'definition' => $definition,
-            'mediapackage' => $mediapackage
+            'mediapackage' => $mediapackage,
         ];
         if (!empty($parent)) {
             $formData['parent'] = $parent;
@@ -233,12 +236,11 @@ class OcWorkflow extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{An XML (as text) representation of the stopped workflow instance.}']
      */
-    public function stop($instanceId)
-    {
+    public function stop($instanceId) {
         $uri = self::URI . "/stop";
 
         $formData = [
-            'id' => $instanceId
+            'id' => $instanceId,
         ];
 
         $options = $this->restClient->getFormParams($formData);
@@ -252,12 +254,11 @@ class OcWorkflow extends OcRest
      *
      * @return array the response result ['code' => 200, 'body' => '{An XML (as text) representation of the suspended workflow instance.}']
      */
-    public function suspend($instanceId)
-    {
+    public function suspend($instanceId) {
         $uri = self::URI . "/suspend";
 
         $formData = [
-            'id' => $instanceId
+            'id' => $instanceId,
         ];
 
         $options = $this->restClient->getFormParams($formData);
@@ -271,16 +272,14 @@ class OcWorkflow extends OcRest
      *
      * @return array the response result ['code' => 204, 'body' => '', 'reason' => 'No Content'] (Workflow instance updated)
      */
-    public function update($workflow)
-    {
+    public function update($workflow) {
         $uri = self::URI . "/update";
 
         $formData = [
-            'workflow' => $workflow
+            'workflow' => $workflow,
         ];
 
         $options = $this->restClient->getFormParams($formData);
         return $this->restClient->performPost($uri, $options);
     }
 }
-?>

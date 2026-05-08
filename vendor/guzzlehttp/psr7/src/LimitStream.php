@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -39,8 +53,7 @@ final class LimitStream implements StreamInterface
         $this->setOffset($offset);
     }
 
-    public function eof(): bool
-    {
+    public function eof(): bool {
         // Always return true if the underlying stream is EOF
         if ($this->stream->eof()) {
             return true;
@@ -57,11 +70,10 @@ final class LimitStream implements StreamInterface
     /**
      * Returns the size of the limited subset of data
      */
-    public function getSize(): ?int
-    {
+    public function getSize(): ?int {
         if (null === ($length = $this->stream->getSize())) {
             return null;
-        } elseif ($this->limit === -1) {
+        } else if ($this->limit === -1) {
             return $length - $this->offset;
         } else {
             return min($this->limit, $length - $this->offset);
@@ -71,8 +83,7 @@ final class LimitStream implements StreamInterface
     /**
      * Allow for a bounded seek on the read limited stream
      */
-    public function seek($offset, $whence = SEEK_SET): void
-    {
+    public function seek($offset, $whence = SEEK_SET): void {
         if ($whence !== SEEK_SET || $offset < 0) {
             throw new \RuntimeException(sprintf(
                 'Cannot seek to offset %s with whence %s',
@@ -95,8 +106,7 @@ final class LimitStream implements StreamInterface
     /**
      * Give a relative tell()
      */
-    public function tell(): int
-    {
+    public function tell(): int {
         return $this->stream->tell() - $this->offset;
     }
 
@@ -107,15 +117,14 @@ final class LimitStream implements StreamInterface
      *
      * @throws \RuntimeException if the stream cannot be seeked.
      */
-    public function setOffset(int $offset): void
-    {
+    public function setOffset(int $offset): void {
         $current = $this->stream->tell();
 
         if ($current !== $offset) {
             // If the stream cannot seek to the offset position, then read to it
             if ($this->stream->isSeekable()) {
                 $this->stream->seek($offset);
-            } elseif ($current > $offset) {
+            } else if ($current > $offset) {
                 throw new \RuntimeException("Could not seek to stream offset $offset");
             } else {
                 $this->stream->read($offset - $current);
@@ -132,13 +141,11 @@ final class LimitStream implements StreamInterface
      * @param int $limit Number of bytes to allow to be read from the stream.
      *                   Use -1 for no limit.
      */
-    public function setLimit(int $limit): void
-    {
+    public function setLimit(int $limit): void {
         $this->limit = $limit;
     }
 
-    public function read($length): string
-    {
+    public function read($length): string {
         if ($this->limit === -1) {
             return $this->stream->read($length);
         }

@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -24,13 +38,11 @@ trait MessageTrait
     /** @var StreamInterface|null */
     private $stream;
 
-    public function getProtocolVersion(): string
-    {
+    public function getProtocolVersion(): string {
         return $this->protocol;
     }
 
-    public function withProtocolVersion($version): MessageInterface
-    {
+    public function withProtocolVersion($version): MessageInterface {
         if ($this->protocol === $version) {
             return $this;
         }
@@ -41,18 +53,15 @@ trait MessageTrait
         return $new;
     }
 
-    public function getHeaders(): array
-    {
+    public function getHeaders(): array {
         return $this->headers;
     }
 
-    public function hasHeader($header): bool
-    {
+    public function hasHeader($header): bool {
         return isset($this->headerNames[strtolower($header)]);
     }
 
-    public function getHeader($header): array
-    {
+    public function getHeader($header): array {
         $header = strtolower($header);
 
         if (!isset($this->headerNames[$header])) {
@@ -64,13 +73,11 @@ trait MessageTrait
         return $this->headers[$header];
     }
 
-    public function getHeaderLine($header): string
-    {
+    public function getHeaderLine($header): string {
         return implode(', ', $this->getHeader($header));
     }
 
-    public function withHeader($header, $value): MessageInterface
-    {
+    public function withHeader($header, $value): MessageInterface {
         $this->assertHeader($header);
         $value = $this->normalizeHeaderValue($value);
         $normalized = strtolower($header);
@@ -85,8 +92,7 @@ trait MessageTrait
         return $new;
     }
 
-    public function withAddedHeader($header, $value): MessageInterface
-    {
+    public function withAddedHeader($header, $value): MessageInterface {
         $this->assertHeader($header);
         $value = $this->normalizeHeaderValue($value);
         $normalized = strtolower($header);
@@ -103,8 +109,7 @@ trait MessageTrait
         return $new;
     }
 
-    public function withoutHeader($header): MessageInterface
-    {
+    public function withoutHeader($header): MessageInterface {
         $normalized = strtolower($header);
 
         if (!isset($this->headerNames[$normalized])) {
@@ -119,8 +124,7 @@ trait MessageTrait
         return $new;
     }
 
-    public function getBody(): StreamInterface
-    {
+    public function getBody(): StreamInterface {
         if (!$this->stream) {
             $this->stream = Utils::streamFor('');
         }
@@ -128,8 +132,7 @@ trait MessageTrait
         return $this->stream;
     }
 
-    public function withBody(StreamInterface $body): MessageInterface
-    {
+    public function withBody(StreamInterface $body): MessageInterface {
         if ($body === $this->stream) {
             return $this;
         }
@@ -143,8 +146,7 @@ trait MessageTrait
     /**
      * @param (string|string[])[] $headers
      */
-    private function setHeaders(array $headers): void
-    {
+    private function setHeaders(array $headers): void {
         $this->headerNames = $this->headers = [];
         foreach ($headers as $header => $value) {
             // Numeric array keys are converted to int by PHP.
@@ -168,8 +170,7 @@ trait MessageTrait
      *
      * @return string[]
      */
-    private function normalizeHeaderValue($value): array
-    {
+    private function normalizeHeaderValue($value): array {
         if (!is_array($value)) {
             return $this->trimAndValidateHeaderValues([$value]);
         }
@@ -195,8 +196,7 @@ trait MessageTrait
      *
      * @see https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.4
      */
-    private function trimAndValidateHeaderValues(array $values): array
-    {
+    private function trimAndValidateHeaderValues(array $values): array {
         return array_map(function ($value) {
             if (!is_scalar($value) && null !== $value) {
                 throw new \InvalidArgumentException(sprintf(
@@ -217,8 +217,7 @@ trait MessageTrait
      *
      * @param mixed $header
      */
-    private function assertHeader($header): void
-    {
+    private function assertHeader($header): void {
         if (!is_string($header)) {
             throw new \InvalidArgumentException(sprintf(
                 'Header name must be a string but %s provided.',
@@ -243,8 +242,7 @@ trait MessageTrait
      * obs-text       = %x80-FF
      * obs-fold       = CRLF 1*( SP / HTAB )
      */
-    private function assertValue(string $value): void
-    {
+    private function assertValue(string $value): void {
         // The regular expression intentionally does not support the obs-fold production, because as
         // per RFC 7230#3.2.4:
         //

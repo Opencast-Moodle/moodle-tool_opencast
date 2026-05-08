@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -47,8 +61,7 @@ class Stream implements StreamInterface
      *
      * @throws \InvalidArgumentException if the stream is not a stream resource
      */
-    public function __construct($stream, array $options = [])
-    {
+    public function __construct($stream, array $options = []) {
         if (!is_resource($stream)) {
             throw new \InvalidArgumentException('Stream must be a resource');
         }
@@ -69,13 +82,11 @@ class Stream implements StreamInterface
     /**
      * Closes the stream when the destructed
      */
-    public function __destruct()
-    {
+    public function __destruct() {
         $this->close();
     }
 
-    public function __toString(): string
-    {
+    public function __toString(): string {
         try {
             if ($this->isSeekable()) {
                 $this->seek(0);
@@ -92,8 +103,7 @@ class Stream implements StreamInterface
         }
     }
 
-    public function getContents(): string
-    {
+    public function getContents(): string {
         if (!isset($this->stream)) {
             throw new \RuntimeException('Stream is detached');
         }
@@ -105,8 +115,7 @@ class Stream implements StreamInterface
         return Utils::tryGetContents($this->stream);
     }
 
-    public function close(): void
-    {
+    public function close(): void {
         if (isset($this->stream)) {
             if (is_resource($this->stream)) {
                 fclose($this->stream);
@@ -115,8 +124,7 @@ class Stream implements StreamInterface
         }
     }
 
-    public function detach()
-    {
+    public function detach() {
         if (!isset($this->stream)) {
             return null;
         }
@@ -129,8 +137,7 @@ class Stream implements StreamInterface
         return $result;
     }
 
-    public function getSize(): ?int
-    {
+    public function getSize(): ?int {
         if ($this->size !== null) {
             return $this->size;
         }
@@ -154,23 +161,19 @@ class Stream implements StreamInterface
         return null;
     }
 
-    public function isReadable(): bool
-    {
+    public function isReadable(): bool {
         return $this->readable;
     }
 
-    public function isWritable(): bool
-    {
+    public function isWritable(): bool {
         return $this->writable;
     }
 
-    public function isSeekable(): bool
-    {
+    public function isSeekable(): bool {
         return $this->seekable;
     }
 
-    public function eof(): bool
-    {
+    public function eof(): bool {
         if (!isset($this->stream)) {
             throw new \RuntimeException('Stream is detached');
         }
@@ -178,8 +181,7 @@ class Stream implements StreamInterface
         return feof($this->stream);
     }
 
-    public function tell(): int
-    {
+    public function tell(): int {
         if (!isset($this->stream)) {
             throw new \RuntimeException('Stream is detached');
         }
@@ -193,13 +195,11 @@ class Stream implements StreamInterface
         return $result;
     }
 
-    public function rewind(): void
-    {
+    public function rewind(): void {
         $this->seek(0);
     }
 
-    public function seek($offset, $whence = SEEK_SET): void
-    {
+    public function seek($offset, $whence = SEEK_SET): void {
         $whence = (int) $whence;
 
         if (!isset($this->stream)) {
@@ -210,12 +210,11 @@ class Stream implements StreamInterface
         }
         if (fseek($this->stream, $offset, $whence) === -1) {
             throw new \RuntimeException('Unable to seek to stream position '
-                .$offset.' with whence '.var_export($whence, true));
+                . $offset . ' with whence ' . var_export($whence, true));
         }
     }
 
-    public function read($length): string
-    {
+    public function read($length): string {
         if (!isset($this->stream)) {
             throw new \RuntimeException('Stream is detached');
         }
@@ -243,8 +242,7 @@ class Stream implements StreamInterface
         return $string;
     }
 
-    public function write($string): int
-    {
+    public function write($string): int {
         if (!isset($this->stream)) {
             throw new \RuntimeException('Stream is detached');
         }
@@ -266,13 +264,12 @@ class Stream implements StreamInterface
     /**
      * @return mixed
      */
-    public function getMetadata($key = null)
-    {
+    public function getMetadata($key = null) {
         if (!isset($this->stream)) {
             return $key ? null : [];
-        } elseif (!$key) {
+        } else if (!$key) {
             return $this->customMetadata + stream_get_meta_data($this->stream);
-        } elseif (isset($this->customMetadata[$key])) {
+        } else if (isset($this->customMetadata[$key])) {
             return $this->customMetadata[$key];
         }
 

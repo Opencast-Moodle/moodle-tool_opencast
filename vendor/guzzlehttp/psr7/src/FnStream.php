@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -27,13 +41,12 @@ final class FnStream implements StreamInterface
     /**
      * @param array<string, callable> $methods Hash of method name to a callable.
      */
-    public function __construct(array $methods)
-    {
+    public function __construct(array $methods) {
         $this->methods = $methods;
 
         // Create the functions on the class
         foreach ($methods as $name => $fn) {
-            $this->{'_fn_'.$name} = $fn;
+            $this->{'_fn_' . $name} = $fn;
         }
     }
 
@@ -42,17 +55,15 @@ final class FnStream implements StreamInterface
      *
      * @throws \BadMethodCallException
      */
-    public function __get(string $name): void
-    {
+    public function __get(string $name): void {
         throw new \BadMethodCallException(str_replace('_fn_', '', $name)
-            .'() is not implemented in the FnStream');
+            . '() is not implemented in the FnStream');
     }
 
     /**
      * The close method is called on the underlying stream only if possible.
      */
-    public function __destruct()
-    {
+    public function __destruct() {
         if (isset($this->_fn_close)) {
             ($this->_fn_close)();
         }
@@ -63,8 +74,7 @@ final class FnStream implements StreamInterface
      *
      * @throws \LogicException
      */
-    public function __wakeup(): void
-    {
+    public function __wakeup(): void {
         throw new \LogicException('FnStream should never be unserialized');
     }
 
@@ -77,8 +87,7 @@ final class FnStream implements StreamInterface
      *
      * @return FnStream
      */
-    public static function decorate(StreamInterface $stream, array $methods)
-    {
+    public static function decorate(StreamInterface $stream, array $methods) {
         // If any of the required methods were not provided, then simply
         // proxy to the decorated stream.
         foreach (array_diff(self::SLOTS, array_keys($methods)) as $diff) {
@@ -90,8 +99,7 @@ final class FnStream implements StreamInterface
         return new self($methods);
     }
 
-    public function __toString(): string
-    {
+    public function __toString(): string {
         try {
             /** @var string */
             return ($this->_fn___toString)();
@@ -105,76 +113,62 @@ final class FnStream implements StreamInterface
         }
     }
 
-    public function close(): void
-    {
+    public function close(): void {
         ($this->_fn_close)();
     }
 
-    public function detach()
-    {
+    public function detach() {
         return ($this->_fn_detach)();
     }
 
-    public function getSize(): ?int
-    {
+    public function getSize(): ?int {
         return ($this->_fn_getSize)();
     }
 
-    public function tell(): int
-    {
+    public function tell(): int {
         return ($this->_fn_tell)();
     }
 
-    public function eof(): bool
-    {
+    public function eof(): bool {
         return ($this->_fn_eof)();
     }
 
-    public function isSeekable(): bool
-    {
+    public function isSeekable(): bool {
         return ($this->_fn_isSeekable)();
     }
 
-    public function rewind(): void
-    {
+    public function rewind(): void {
         ($this->_fn_rewind)();
     }
 
-    public function seek($offset, $whence = SEEK_SET): void
-    {
+    public function seek($offset, $whence = SEEK_SET): void {
         ($this->_fn_seek)($offset, $whence);
     }
 
-    public function isWritable(): bool
-    {
+    public function isWritable(): bool {
         return ($this->_fn_isWritable)();
     }
 
-    public function write($string): int
-    {
+    public function write($string): int {
         return ($this->_fn_write)($string);
     }
 
-    public function isReadable(): bool
-    {
+    public function isReadable(): bool {
         return ($this->_fn_isReadable)();
     }
 
-    public function read($length): string
-    {
+    public function read($length): string {
         return ($this->_fn_read)($length);
     }
 
-    public function getContents(): string
-    {
+    public function getContents(): string {
         return ($this->_fn_getContents)();
     }
 
     /**
      * @return mixed
      */
-    public function getMetadata($key = null)
-    {
+    public function getMetadata($key = null) {
         return ($this->_fn_getMetadata)($key);
     }
 }

@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp;
 
@@ -58,24 +72,21 @@ final class TransferStats
         $this->handlerStats = $handlerStats;
     }
 
-    public function getRequest(): RequestInterface
-    {
+    public function getRequest(): RequestInterface {
         return $this->request;
     }
 
     /**
      * Returns the response that was received (if any).
      */
-    public function getResponse(): ?ResponseInterface
-    {
+    public function getResponse(): ?ResponseInterface {
         return $this->response;
     }
 
     /**
      * Returns true if a response was received.
      */
-    public function hasResponse(): bool
-    {
+    public function hasResponse(): bool {
         return $this->response !== null;
     }
 
@@ -88,16 +99,14 @@ final class TransferStats
      *
      * @return mixed
      */
-    public function getHandlerErrorData()
-    {
+    public function getHandlerErrorData() {
         return $this->handlerErrorData;
     }
 
     /**
      * Get the effective URI the request was sent to.
      */
-    public function getEffectiveUri(): UriInterface
-    {
+    public function getEffectiveUri(): UriInterface {
         return $this->request->getUri();
     }
 
@@ -106,16 +115,14 @@ final class TransferStats
      *
      * @return float|null Time in seconds.
      */
-    public function getTransferTime(): ?float
-    {
+    public function getTransferTime(): ?float {
         return $this->transferTime;
     }
 
     /**
      * Gets an array of all of the handler specific transfer data.
      */
-    public function getHandlerStats(): array
-    {
+    public function getHandlerStats(): array {
         return $this->handlerStats;
     }
 
@@ -126,8 +133,7 @@ final class TransferStats
      *
      * @return mixed|null
      */
-    public function getHandlerStat(string $stat)
-    {
+    public function getHandlerStat(string $stat) {
         return $this->handlerStats[$stat] ?? null;
     }
 }

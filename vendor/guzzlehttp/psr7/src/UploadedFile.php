@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -84,13 +98,12 @@ class UploadedFile implements UploadedFileInterface
      *
      * @throws InvalidArgumentException
      */
-    private function setStreamOrFile($streamOrFile): void
-    {
+    private function setStreamOrFile($streamOrFile): void {
         if (is_string($streamOrFile)) {
             $this->file = $streamOrFile;
-        } elseif (is_resource($streamOrFile)) {
+        } else if (is_resource($streamOrFile)) {
             $this->stream = new Stream($streamOrFile);
-        } elseif ($streamOrFile instanceof StreamInterface) {
+        } else if ($streamOrFile instanceof StreamInterface) {
             $this->stream = $streamOrFile;
         } else {
             throw new InvalidArgumentException(
@@ -102,9 +115,8 @@ class UploadedFile implements UploadedFileInterface
     /**
      * @throws InvalidArgumentException
      */
-    private function setError(int $error): void
-    {
-        if (!isset(UploadedFile::ERROR_MAP[$error])) {
+    private function setError(int $error): void {
+        if (!isset(self::ERROR_MAP[$error])) {
             throw new InvalidArgumentException(
                 'Invalid error status for UploadedFile'
             );
@@ -113,29 +125,25 @@ class UploadedFile implements UploadedFileInterface
         $this->error = $error;
     }
 
-    private static function isStringNotEmpty($param): bool
-    {
+    private static function isStringNotEmpty($param): bool {
         return is_string($param) && false === empty($param);
     }
 
     /**
      * Return true if there is no upload error
      */
-    private function isOk(): bool
-    {
+    private function isOk(): bool {
         return $this->error === UPLOAD_ERR_OK;
     }
 
-    public function isMoved(): bool
-    {
+    public function isMoved(): bool {
         return $this->moved;
     }
 
     /**
      * @throws RuntimeException if is moved or not ok
      */
-    private function validateActive(): void
-    {
+    private function validateActive(): void {
         if (false === $this->isOk()) {
             throw new RuntimeException(\sprintf('Cannot retrieve stream due to upload error (%s)', self::ERROR_MAP[$this->error]));
         }
@@ -145,8 +153,7 @@ class UploadedFile implements UploadedFileInterface
         }
     }
 
-    public function getStream(): StreamInterface
-    {
+    public function getStream(): StreamInterface {
         $this->validateActive();
 
         if ($this->stream instanceof StreamInterface) {
@@ -159,8 +166,7 @@ class UploadedFile implements UploadedFileInterface
         return new LazyOpenStream($file, 'r+');
     }
 
-    public function moveTo($targetPath): void
-    {
+    public function moveTo($targetPath): void {
         $this->validateActive();
 
         if (false === self::isStringNotEmpty($targetPath)) {
@@ -189,23 +195,19 @@ class UploadedFile implements UploadedFileInterface
         }
     }
 
-    public function getSize(): ?int
-    {
+    public function getSize(): ?int {
         return $this->size;
     }
 
-    public function getError(): int
-    {
+    public function getError(): int {
         return $this->error;
     }
 
-    public function getClientFilename(): ?string
-    {
+    public function getClientFilename(): ?string {
         return $this->clientFilename;
     }
 
-    public function getClientMediaType(): ?string
-    {
+    public function getClientMediaType(): ?string {
         return $this->clientMediaType;
     }
 }

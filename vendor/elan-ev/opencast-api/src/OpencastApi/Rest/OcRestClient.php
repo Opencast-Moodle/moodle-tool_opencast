@@ -1,4 +1,19 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 namespace OpencastApi\Rest;
 
 use GuzzleHttp\Client;
@@ -33,8 +48,7 @@ class OcRestClient extends Client
             'guzzle' => null,                                // Additional Guzzle Request Options. These options can overwrite some default options (Default null). (optional)
         ]
     */
-    public function __construct($config)
-    {
+    public function __construct($config) {
         $this->baseUri = $config['url'];
         $this->username = $config['username'];
         $this->password = $config['password'];
@@ -50,7 +64,7 @@ class OcRestClient extends Client
         }
 
         $parentConstructorConfig = [
-            'base_uri' => $this->baseUri
+            'base_uri' => $this->baseUri,
         ];
 
         if (isset($config['handler']) && is_callable($config['handler'])) {
@@ -86,28 +100,23 @@ class OcRestClient extends Client
         }
     }
 
-    public function registerAdditionalHeader($header, $value)
-    {
+    public function registerAdditionalHeader($header, $value) {
         $this->additionalHeaders[$header] = $value;
     }
 
-    public function enableNoHeader()
-    {
+    public function enableNoHeader() {
         $this->noHeader = true;
     }
 
-    public function setRequestTimeout($timeout)
-    {
+    public function setRequestTimeout($timeout) {
         $this->disposableTimeout = $timeout;
     }
 
-    public function setRequestConnectionTimeout($connectionTimeout)
-    {
+    public function setRequestConnectionTimeout($connectionTimeout) {
         $this->disposableConnectTimeout = $connectionTimeout;
     }
 
-    private function addRequestOptions($uri, $options)
-    {
+    private function addRequestOptions($uri, $options) {
         $globalOptions = $this->globalOptions;
 
         // Perform a temp no header request.
@@ -152,7 +161,7 @@ class OcRestClient extends Client
             $this->additionalHeaders = [];
             foreach ($generalOptions['headers'] as $header => $value) {
                 $path = explode('/', ltrim($uri, '/'))[0];
-                if (isset($this->headerExceptions[$header]) && in_array($path, $this->headerExceptions[$header]) ) {
+                if (isset($this->headerExceptions[$header]) && in_array($path, $this->headerExceptions[$header])) {
                     unset($generalOptions['headers'][$header]);
                 }
             }
@@ -162,8 +171,7 @@ class OcRestClient extends Client
         return $requestOptions;
     }
 
-    public function hasVersion($version)
-    {
+    public function hasVersion($version) {
         if (empty($this->version)) {
             try {
                 // We have to use an aux object, in order to prevent overwriting arguments of current object.
@@ -184,11 +192,9 @@ class OcRestClient extends Client
             }
         }
         return version_compare($this->version, $version, '>=');
-
     }
 
-    private function setVersion($version)
-    {
+    private function setVersion($version) {
         $version = str_replace(['application/', 'v', '+json'], ['', '', ''], $version);
         $this->version = $version;
     }
@@ -197,8 +203,7 @@ class OcRestClient extends Client
         return $this->version;
     }
 
-    private function resolveResponseBody(string $body)
-    {
+    private function resolveResponseBody(string $body) {
         $result = json_decode($body);
         if ($result !== null) {
             return $result;
@@ -212,8 +217,7 @@ class OcRestClient extends Client
         return null;
     }
 
-    private function returnResult($response)
-    {
+    private function returnResult($response) {
         $result = [];
         $result['code'] = $response->getStatusCode();
         $result['reason'] = $response->getReasonPhrase();
@@ -234,8 +238,7 @@ class OcRestClient extends Client
         return $result;
     }
 
-    public function performGet($uri, $options = [])
-    {
+    public function performGet($uri, $options = []) {
         $this->prepareOrigin($uri, $options, 'GET');
         try {
             $response = $this->get($uri, $this->addRequestOptions($uri, $options));
@@ -245,8 +248,7 @@ class OcRestClient extends Client
         }
     }
 
-    public function performPost($uri, $options = [])
-    {
+    public function performPost($uri, $options = []) {
         $this->prepareOrigin($uri, $options, 'POST');
         try {
             $response = $this->post($uri, $this->addRequestOptions($uri, $options));
@@ -257,8 +259,7 @@ class OcRestClient extends Client
     }
 
 
-    public function performPut($uri, $options = [])
-    {
+    public function performPut($uri, $options = []) {
         $this->prepareOrigin($uri, $options, 'PUT');
         try {
             $response = $this->put($uri, $this->addRequestOptions($uri, $options));
@@ -268,8 +269,7 @@ class OcRestClient extends Client
         }
     }
 
-    public function performDelete($uri, $options = [])
-    {
+    public function performDelete($uri, $options = []) {
         $this->prepareOrigin($uri, $options, 'DELETE');
         try {
             $response = $this->delete($uri, $this->addRequestOptions($uri, $options));
@@ -279,8 +279,7 @@ class OcRestClient extends Client
         }
     }
 
-    private function resolveException(\Throwable $th)
-    {
+    private function resolveException(\Throwable $th) {
         $error = [];
         $error['code'] = $th->getCode();
         $error['reason'] = $th->getMessage();
@@ -306,8 +305,7 @@ class OcRestClient extends Client
         return $error;
     }
 
-    public function getFormParams($params)
-    {
+    public function getFormParams($params) {
         $options = [];
         $formParams = [];
         foreach ($params as $field_name => $field_value) {
@@ -319,14 +317,13 @@ class OcRestClient extends Client
         return $options;
     }
 
-    public function getMultiPartFormParams($params)
-    {
+    public function getMultiPartFormParams($params) {
         $options = [];
         $multiParams = [];
         foreach ($params as $field_name => $field_value) {
             $multiParams[] = [
                 'name' => $field_name,
-                'contents' => $field_value
+                'contents' => $field_value,
             ];
         }
         if (!empty($multiParams)) {
@@ -335,8 +332,7 @@ class OcRestClient extends Client
         return $options;
     }
 
-    public function getQueryParams($params)
-    {
+    public function getQueryParams($params) {
         $options = [];
         $queryParams = [];
         foreach ($params as $field_name => $field_value) {
@@ -349,8 +345,7 @@ class OcRestClient extends Client
         return $options;
     }
 
-    private function prepareOrigin($uri, $options, $method)
-    {
+    private function prepareOrigin($uri, $options, $method) {
         $this->origin = [
             'base' => $this->baseUri,
             'path' => $uri,
@@ -361,8 +356,7 @@ class OcRestClient extends Client
                 'form_multipart_params' => isset($options['multipart']) ? $options['multipart'] : [],
                 'json' => isset($options['json']) ? $options['json'] : [],
                 'body' => isset($options['body']) ? $options['body'] : null,
-            ]
+            ],
         ];
     }
 }
-?>

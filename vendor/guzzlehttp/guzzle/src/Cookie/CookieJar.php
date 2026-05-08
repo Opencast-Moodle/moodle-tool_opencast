@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp\Cookie;
 
@@ -27,8 +41,7 @@ class CookieJar implements CookieJarInterface
      *                           arrays that can be used with the SetCookie
      *                           constructor
      */
-    public function __construct(bool $strictMode = false, array $cookieArray = [])
-    {
+    public function __construct(bool $strictMode = false, array $cookieArray = []) {
         $this->strictMode = $strictMode;
 
         foreach ($cookieArray as $cookie) {
@@ -45,8 +58,7 @@ class CookieJar implements CookieJarInterface
      * @param array  $cookies Cookies to create the jar from
      * @param string $domain  Domain to set the cookies to
      */
-    public static function fromArray(array $cookies, string $domain): self
-    {
+    public static function fromArray(array $cookies, string $domain): self {
         $cookieJar = new self();
         foreach ($cookies as $name => $value) {
             $cookieJar->setCookie(new SetCookie([
@@ -67,8 +79,7 @@ class CookieJar implements CookieJarInterface
      * @param SetCookie $cookie              Being evaluated.
      * @param bool      $allowSessionCookies If we should persist session cookies
      */
-    public static function shouldPersist(SetCookie $cookie, bool $allowSessionCookies = false): bool
-    {
+    public static function shouldPersist(SetCookie $cookie, bool $allowSessionCookies = false): bool {
         if ($cookie->getExpires() || $allowSessionCookies) {
             if (!$cookie->getDiscard()) {
                 return true;
@@ -85,8 +96,7 @@ class CookieJar implements CookieJarInterface
      *
      * @return SetCookie|null cookie that was found or null if not found
      */
-    public function getCookieByName(string $name): ?SetCookie
-    {
+    public function getCookieByName(string $name): ?SetCookie {
         foreach ($this->cookies as $cookie) {
             if ($cookie->getName() !== null && \strcasecmp($cookie->getName(), $name) === 0) {
                 return $cookie;
@@ -96,27 +106,25 @@ class CookieJar implements CookieJarInterface
         return null;
     }
 
-    public function toArray(): array
-    {
+    public function toArray(): array {
         return \array_map(static function (SetCookie $cookie): array {
             return $cookie->toArray();
         }, $this->getIterator()->getArrayCopy());
     }
 
-    public function clear(?string $domain = null, ?string $path = null, ?string $name = null): void
-    {
+    public function clear(?string $domain = null, ?string $path = null, ?string $name = null): void {
         if (!$domain) {
             $this->cookies = [];
 
             return;
-        } elseif (!$path) {
+        } else if (!$path) {
             $this->cookies = \array_filter(
                 $this->cookies,
                 static function (SetCookie $cookie) use ($domain): bool {
                     return !$cookie->matchesDomain($domain);
                 }
             );
-        } elseif (!$name) {
+        } else if (!$name) {
             $this->cookies = \array_filter(
                 $this->cookies,
                 static function (SetCookie $cookie) use ($path, $domain): bool {
@@ -136,8 +144,7 @@ class CookieJar implements CookieJarInterface
         }
     }
 
-    public function clearSessionCookies(): void
-    {
+    public function clearSessionCookies(): void {
         $this->cookies = \array_filter(
             $this->cookies,
             static function (SetCookie $cookie): bool {
@@ -146,8 +153,7 @@ class CookieJar implements CookieJarInterface
         );
     }
 
-    public function setCookie(SetCookie $cookie): bool
-    {
+    public function setCookie(SetCookie $cookie): bool {
         // If the name string is empty (but not 0), ignore the set-cookie
         // string entirely.
         $name = $cookie->getName();
@@ -159,7 +165,7 @@ class CookieJar implements CookieJarInterface
         $result = $cookie->validate();
         if ($result !== true) {
             if ($this->strictMode) {
-                throw new \RuntimeException('Invalid cookie: '.$result);
+                throw new \RuntimeException('Invalid cookie: ' . $result);
             }
             $this->removeCookieIfEmpty($cookie);
 
@@ -170,7 +176,8 @@ class CookieJar implements CookieJarInterface
         foreach ($this->cookies as $i => $c) {
             // Two cookies are identical, when their path, and domain are
             // identical.
-            if ($c->getPath() != $cookie->getPath()
+            if (
+                $c->getPath() != $cookie->getPath()
                 || $c->getDomain() != $cookie->getDomain()
                 || $c->getName() != $cookie->getName()
             ) {
@@ -206,21 +213,18 @@ class CookieJar implements CookieJarInterface
         return true;
     }
 
-    public function count(): int
-    {
+    public function count(): int {
         return \count($this->cookies);
     }
 
     /**
      * @return \ArrayIterator<int, SetCookie>
      */
-    public function getIterator(): \ArrayIterator
-    {
+    public function getIterator(): \ArrayIterator {
         return new \ArrayIterator(\array_values($this->cookies));
     }
 
-    public function extractCookies(RequestInterface $request, ResponseInterface $response): void
-    {
+    public function extractCookies(RequestInterface $request, ResponseInterface $response): void {
         if ($cookieHeader = $response->getHeader('Set-Cookie')) {
             foreach ($cookieHeader as $cookie) {
                 $sc = SetCookie::fromString($cookie);
@@ -245,8 +249,7 @@ class CookieJar implements CookieJarInterface
      *
      * @see https://datatracker.ietf.org/doc/html/rfc6265#section-5.1.4
      */
-    private function getCookiePathFromRequest(RequestInterface $request): string
-    {
+    private function getCookiePathFromRequest(RequestInterface $request): string {
         $uriPath = $request->getUri()->getPath();
         if ('' === $uriPath) {
             return '/';
@@ -265,8 +268,7 @@ class CookieJar implements CookieJarInterface
         return \substr($uriPath, 0, $lastSlashPos);
     }
 
-    public function withCookieHeader(RequestInterface $request): RequestInterface
-    {
+    public function withCookieHeader(RequestInterface $request): RequestInterface {
         $values = [];
         $uri = $request->getUri();
         $scheme = $uri->getScheme();
@@ -274,13 +276,14 @@ class CookieJar implements CookieJarInterface
         $path = $uri->getPath() ?: '/';
 
         foreach ($this->cookies as $cookie) {
-            if ($cookie->matchesPath($path)
+            if (
+                $cookie->matchesPath($path)
                 && $cookie->matchesDomain($host)
                 && !$cookie->isExpired()
                 && (!$cookie->getSecure() || $scheme === 'https')
             ) {
-                $values[] = $cookie->getName().'='
-                    .$cookie->getValue();
+                $values[] = $cookie->getName() . '='
+                    . $cookie->getValue();
             }
         }
 
@@ -293,8 +296,7 @@ class CookieJar implements CookieJarInterface
      * If a cookie already exists and the server asks to set it again with a
      * null value, the cookie must be deleted.
      */
-    private function removeCookieIfEmpty(SetCookie $cookie): void
-    {
+    private function removeCookieIfEmpty(SetCookie $cookie): void {
         $cookieValue = $cookie->getValue();
         if ($cookieValue === null || $cookieValue === '') {
             $this->clear(

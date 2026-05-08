@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -19,8 +33,7 @@ class FulfilledPromise implements PromiseInterface
     /**
      * @param mixed $value
      */
-    public function __construct($value)
-    {
+    public function __construct($value) {
         if (is_object($value) && method_exists($value, 'then')) {
             throw new \InvalidArgumentException(
                 'You cannot create a FulfilledPromise with a promise.'
@@ -55,35 +68,29 @@ class FulfilledPromise implements PromiseInterface
         return $p;
     }
 
-    public function otherwise(callable $onRejected): PromiseInterface
-    {
+    public function otherwise(callable $onRejected): PromiseInterface {
         return $this->then(null, $onRejected);
     }
 
-    public function wait(bool $unwrap = true)
-    {
+    public function wait(bool $unwrap = true) {
         return $unwrap ? $this->value : null;
     }
 
-    public function getState(): string
-    {
+    public function getState(): string {
         return self::FULFILLED;
     }
 
-    public function resolve($value): void
-    {
+    public function resolve($value): void {
         if ($value !== $this->value) {
             throw new \LogicException('Cannot resolve a fulfilled promise');
         }
     }
 
-    public function reject($reason): void
-    {
+    public function reject($reason): void {
         throw new \LogicException('Cannot reject a fulfilled promise');
     }
 
-    public function cancel(): void
-    {
+    public function cancel(): void {
         // pass
     }
 }

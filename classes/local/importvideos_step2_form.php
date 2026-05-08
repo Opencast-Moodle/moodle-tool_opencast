@@ -38,8 +38,6 @@ require_once($CFG->dirroot . '/lib/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class importvideos_step2_form extends moodleform {
-
-
     /**
      * Form definition.
      */
@@ -63,14 +61,17 @@ class importvideos_step2_form extends moodleform {
         $mform->setType('ocinstanceid', PARAM_INT);
 
         // Get list of course series with videos.
-        $courseseries = importvideosmanager::get_import_source_course_series_and_videos_menu($this->_customdata['ocinstanceid'],
-            $this->_customdata['sourcecourseid']);
+        $courseseries = importvideosmanager::get_import_source_course_series_and_videos_menu(
+            $this->_customdata['ocinstanceid'],
+            $this->_customdata['sourcecourseid']
+        );
 
         // If there isn't any course video in the course.
         if (count($courseseries) < 1) {
             // We are in a dead end situation, no chance to add anything.
             $notification = $renderer->wizard_error_notification(
-                get_string('importvideos_wizardstep2coursevideosnone', 'tool_opencast'));
+                get_string('importvideos_wizardstep2coursevideosnone', 'tool_opencast')
+            );
             $mform->addElement('html', $notification);
             $mform->addElement('cancel');
 
@@ -79,7 +80,8 @@ class importvideos_step2_form extends moodleform {
 
         // Add intro.
         $notification = $renderer->wizard_intro_notification(
-            get_string('importvideos_wizardstep2intro', 'tool_opencast'));
+            get_string('importvideos_wizardstep2intro', 'tool_opencast')
+        );
         $mform->addElement('html', $notification);
 
         // Add one single empty static element.
@@ -90,8 +92,13 @@ class importvideos_step2_form extends moodleform {
         foreach ($courseseries as $identifier => $info) {
             $mform->addElement('html', '<p>' . $info['title'] . '</p>');
             foreach ($info['videos'] as $videoid => $label) {
-                $mform->addElement('advcheckbox', 'coursevideos[' . $videoid . ']', $label, null,
-                    ['group' => 'coursevideocheckboxes']);
+                $mform->addElement(
+                    'advcheckbox',
+                    'coursevideos[' . $videoid . ']',
+                    $label,
+                    null,
+                    ['group' => 'coursevideocheckboxes']
+                );
             }
         }
         $this->add_checkbox_controller('coursevideocheckboxes', null, null, 1);

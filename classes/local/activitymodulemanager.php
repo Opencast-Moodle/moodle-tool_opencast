@@ -38,8 +38,6 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class activitymodulemanager {
-
-
     /**
      * Helperfunction to get the status of the Opencast series feature.
      * This consists of a check if the feature is enabled by the admin.
@@ -79,8 +77,17 @@ class activitymodulemanager {
      *
      * @return boolean
      */
-    public static function create_module_for_series($courseid, $ocinstanceid, $title, $seriesid, $sectionid = 0, $introtext = '',
-                                                    $introformat = FORMAT_HTML, $availability = null, $allowdownload = false) {
+    public static function create_module_for_series(
+        $courseid,
+        $ocinstanceid,
+        $title,
+        $seriesid,
+        $sectionid = 0,
+        $introtext = '',
+        $introformat = FORMAT_HTML,
+        $availability = null,
+        $allowdownload = false
+    ) {
         global $CFG, $DB;
 
         // Require mod library.
@@ -108,8 +115,19 @@ class activitymodulemanager {
         }
 
         // Create an LTI modinfo object.
-        $moduleinfo = self::build_activity_modinfo($pluginid, $course, $ocinstanceid, $title, $sectionid, $seriesid,
-            opencasttype::SERIES, $introtext, $introformat, $availability, $allowdownload);
+        $moduleinfo = self::build_activity_modinfo(
+            $pluginid,
+            $course,
+            $ocinstanceid,
+            $title,
+            $sectionid,
+            $seriesid,
+            opencasttype::SERIES,
+            $introtext,
+            $introformat,
+            $availability,
+            $allowdownload
+        );
 
         // Add the Opencast Activity series module to the given course.
         // This does not check any capabilities to add modules to courses by purpose.
@@ -133,9 +151,17 @@ class activitymodulemanager {
      *
      * @return boolean
      */
-    public static function create_module_for_episode($courseid, $ocinstanceid, $title, $episodeuuid, $sectionid = 0,
-                                                     $introtext = '', $introformat = FORMAT_HTML, $availability = null,
-                                                     $allowdownload = false) {
+    public static function create_module_for_episode(
+        $courseid,
+        $ocinstanceid,
+        $title,
+        $episodeuuid,
+        $sectionid = 0,
+        $introtext = '',
+        $introformat = FORMAT_HTML,
+        $availability = null,
+        $allowdownload = false
+    ) {
         global $CFG, $DB;
 
         // Require mod library.
@@ -163,8 +189,19 @@ class activitymodulemanager {
         }
 
         // Create an Opencast Activity modinfo object.
-        $moduleinfo = self::build_activity_modinfo($pluginid, $course, $ocinstanceid, $title, $sectionid, $episodeuuid,
-            opencasttype::EPISODE, $introtext, $introformat, $availability, $allowdownload);
+        $moduleinfo = self::build_activity_modinfo(
+            $pluginid,
+            $course,
+            $ocinstanceid,
+            $title,
+            $sectionid,
+            $episodeuuid,
+            opencasttype::EPISODE,
+            $introtext,
+            $introformat,
+            $availability,
+            $allowdownload
+        );
 
         // Add the Opencast Activity episode module to the given course.
         // This does not check any capabilities to add modules to courses by purpose.
@@ -190,9 +227,19 @@ class activitymodulemanager {
      *
      * @return object
      */
-    public static function build_activity_modinfo($pluginid, $course, $ocinstanceid, $title, $sectionid, $opencastid, $type,
-                                                  $introtext = '', $introformat = FORMAT_HTML, $availability = null,
-                                                  $allowdownload = false) {
+    public static function build_activity_modinfo(
+        $pluginid,
+        $course,
+        $ocinstanceid,
+        $title,
+        $sectionid,
+        $opencastid,
+        $type,
+        $introtext = '',
+        $introformat = FORMAT_HTML,
+        $availability = null,
+        $allowdownload = false
+    ) {
         global $DB;
 
         // Create standard class object.
@@ -267,7 +314,6 @@ class activitymodulemanager {
             // But this plugin would then have to check _every_ deleted module if it's an Opencast Opencast Activity module.
             // This a big overhead over checking the existence only here when it is really needed.
             if ($cm == false || $cm->deletioninprogress == 1) {
-
                 // Inform the caller.
                 return false;
             }
@@ -307,7 +353,6 @@ class activitymodulemanager {
             // But this plugin would then have to check _every_ deleted module if it's an Opencast Opencast Activity module.
             // This a big overhead over checking the existence only here when it is really needed.
             if ($cm == false || $cm->deletioninprogress == 1) {
-
                 // Inform the caller.
                 return false;
             }
@@ -496,8 +541,12 @@ class activitymodulemanager {
      *
      * @return array
      */
-    public static function get_modules_for_episodes_linking_to_other_course($ocinstanceid, $modulecourseid, $referencedcourseid,
-                                                                            $onlytheseepisodes = null) {
+    public static function get_modules_for_episodes_linking_to_other_course(
+        $ocinstanceid,
+        $modulecourseid,
+        $referencedcourseid,
+        $onlytheseepisodes = null
+    ) {
         // Get an APIbridge instance.
         $apibridge = apibridge::get_instance($ocinstanceid);
 
@@ -517,8 +566,11 @@ class activitymodulemanager {
                 }
 
                 // Check each episode individually.
-                $episodemodules = self::get_modules_for_episode_linking_to_other_course($ocinstanceid,
-                    $modulecourseid, $video->identifier);
+                $episodemodules = self::get_modules_for_episode_linking_to_other_course(
+                    $ocinstanceid,
+                    $modulecourseid,
+                    $video->identifier
+                );
 
                 // And add the result to the array of modules.
                 $modules += $episodemodules;
@@ -588,8 +640,12 @@ class activitymodulemanager {
         $success = true;
         foreach ($episodemodules as $module) {
             $cm = get_fast_modinfo($courseid)->get_cm($module);
-            $success = $success && $DB->set_field('opencast', 'opencastid', $episodeid,
-                    ['id' => $cm->instance]);
+            $success = $success && $DB->set_field(
+                'opencast',
+                'opencastid',
+                $episodeid,
+                ['id' => $cm->instance]
+            );
         }
 
         return $success;
@@ -636,7 +692,11 @@ class activitymodulemanager {
      * @return void
      */
     public static function fix_imported_series_modules_in_new_course(
-        $ocinstanceid, $courseid, $sourceseriesid, $newseriesid) {
+        $ocinstanceid,
+        $courseid,
+        $sourceseriesid,
+        $newseriesid
+    ) {
         global $DB, $CFG;
 
         // Check if mod_opencast is installed.
@@ -659,8 +719,12 @@ class activitymodulemanager {
                 $cm = get_coursemodule_from_instance('opencast', $instance->id, $courseid);
                 if (!empty($cm)) {
                     // We replace the old with new series id.
-                    $DB->set_field('opencast', 'opencastid', $newseriesid,
-                        ['id' => $instance->id]);
+                    $DB->set_field(
+                        'opencast',
+                        'opencastid',
+                        $newseriesid,
+                        ['id' => $instance->id]
+                    );
                 }
             }
         }
@@ -679,7 +743,10 @@ class activitymodulemanager {
      * @return void
      */
     public static function fix_imported_episode_modules_in_new_course(
-        $ocinstanceid, $targetcourseid, $sourceeventid, $duplicatedeventid
+        $ocinstanceid,
+        $targetcourseid,
+        $sourceeventid,
+        $duplicatedeventid
     ) {
         global $DB, $CFG;
 
@@ -701,8 +768,12 @@ class activitymodulemanager {
                 // We also check the existance of the course moulde.
                 $cm = get_coursemodule_from_instance('opencast', $instance->id, $targetcourseid);
                 if (!empty($cm)) {
-                    $DB->set_field('opencast', 'opencastid', $duplicatedeventid,
-                        ['id' => $instance->id]);
+                    $DB->set_field(
+                        'opencast',
+                        'opencastid',
+                        $duplicatedeventid,
+                        ['id' => $instance->id]
+                    );
                 }
             }
         }

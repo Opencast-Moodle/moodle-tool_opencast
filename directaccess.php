@@ -38,9 +38,13 @@ $videoid = required_param('video_identifier', PARAM_ALPHANUMEXT);
 $mediaid = required_param('mediaid', PARAM_ALPHANUMEXT);
 $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinstance()->id, PARAM_INT);
 
-$baseurl = new moodle_url('/admin/tool/opencast/directaccess.php',
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/directaccess.php',
     ['courseid' => $courseid, 'video_identifier' => $videoid,
-        'mediaid' => $mediaid, 'ocinstanceid' => $ocinstanceid, ]);
+    'mediaid' => $mediaid,
+    'ocinstanceid' => $ocinstanceid,
+    ]
+);
 $PAGE->set_url($baseurl);
 
 $redirecturl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
@@ -60,10 +64,12 @@ try {
 } catch (required_capability_exception $e) {
     // We gently redirect to the course main view page in case of capability exception, to handle the behat more sufficiently.
     $redirecttocourse = new moodle_url('/course/view.php', ['id' => $courseid]);
-    redirect($redirecttocourse,
+    redirect(
+        $redirecttocourse,
         get_string('nopermissions', 'error', get_string('opencast:directaccessvideolink', 'tool_opencast')),
         null,
-        notification::NOTIFY_ERROR);
+        notification::NOTIFY_ERROR
+    );
 }
 
 $apibridge = apibridge::get_instance($ocinstanceid);
@@ -84,10 +90,12 @@ if (!$result->error) {
         }
 
         if (empty($directaccessurl)) {
-            redirect($redirecturl,
+            redirect(
+                $redirecturl,
                 get_string('video_not_accessible', 'tool_opencast'),
                 null,
-                notification::NOTIFY_ERROR);
+                notification::NOTIFY_ERROR
+            );
         }
 
         $endpoint = settings_api::get_apiurl($ocinstanceid);
@@ -109,8 +117,12 @@ if (!$result->error) {
         $ltiendpoint = rtrim($endpoint, '/') . '/lti';
 
         // Create parameters.
-        $params = lti_helper::create_lti_parameters($consumerkey, $consumersecret,
-            $ltiendpoint, $directaccessurl);
+        $params = lti_helper::create_lti_parameters(
+            $consumerkey,
+            $consumersecret,
+            $ltiendpoint,
+            $directaccessurl
+        );
 
         $renderer = $PAGE->get_renderer('tool_opencast');
 
@@ -125,16 +137,19 @@ if (!$result->error) {
 
         $PAGE->requires->js_call_amd('tool_opencast/block_lti_form_handler', 'init', [$waitingtime]);
         echo $OUTPUT->footer();
-
     } else {
-        redirect($redirecturl,
+        redirect(
+            $redirecturl,
             get_string('video_not_accessible', 'tool_opencast'),
             null,
-            notification::NOTIFY_ERROR);
+            notification::NOTIFY_ERROR
+        );
     }
 } else {
-    redirect($redirecturl,
+    redirect(
+        $redirecturl,
         get_string('video_retrieval_failed', 'tool_opencast'),
         null,
-        notification::NOTIFY_ERROR);
+        notification::NOTIFY_ERROR
+    );
 }

@@ -1,4 +1,19 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 namespace OpencastApi;
 
 use OpencastApi\Rest\OcRestClient;
@@ -103,17 +118,14 @@ class Opencast
      * @param array $engageConfig Enage node Configuration
      * @param boolean $enableingest whether to load ingest or not (Default true)
      */
-    public function __construct($config, $engageConfig = [], $enableingest = true)
-    {
+    public function __construct($config, $engageConfig = [], $enableingest = true) {
         $this->restClient = new OcRestClient($config);
         $this->setEngageRestClient($config, $engageConfig);
         $this->setEndpointProperties($config, $enableingest);
     }
 
-    private function setEndpointProperties($config, $enableingest)
-    {
-        foreach(glob(__DIR__   . '/Rest/*.php') as $classPath) {
-
+    private function setEndpointProperties($config, $enableingest) {
+        foreach (glob(__DIR__   . '/Rest/*.php') as $classPath) {
             $className = basename($classPath, '.php');
             $fullClassName = "\\OpencastApi\\Rest\\{$className}";
             $propertyName = lcfirst(str_replace('Oc', '', $className));
@@ -139,24 +151,21 @@ class Opencast
         }
     }
 
-    private function excludeFilters()
-    {
+    private function excludeFilters() {
         return [
             'OcRest',
             'OcRestClient',
-            'OcIngest'
+            'OcIngest',
         ];
     }
 
-    private function engageFilters()
-    {
+    private function engageFilters() {
         return [
-            'OcSearch'
+            'OcSearch',
         ];
     }
 
-    private function setEngageRestClient($config, $engageConfig)
-    {
+    private function setEngageRestClient($config, $engageConfig) {
         if (!isset($engageConfig['url'])) {
             $engageConfig['url'] = $config['url'];
         }
@@ -184,8 +193,7 @@ class Opencast
         $this->engageRestClient = new OcRestClient($engageConfig);
     }
 
-    private function setIngestProperty($config)
-    {
+    private function setIngestProperty($config) {
         if (!property_exists($this, 'services')) {
             return;
         }
@@ -213,9 +221,7 @@ class Opencast
         }
     }
 
-    public function __debugInfo()
-    {
+    public function __debugInfo() {
         return [];
     }
 }
-?>

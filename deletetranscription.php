@@ -39,11 +39,17 @@ $action = optional_param('action', '', PARAM_ALPHA);
 $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinstance()->id, PARAM_INT);
 
 $indexurl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
-$redirecturl = new moodle_url('/admin/tool/opencast/managetranscriptions.php',
-    ['video_identifier' => $videoidentifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
-$baseurl = new moodle_url('/admin/tool/opencast/deletetranscription.php',
+$redirecturl = new moodle_url(
+    '/admin/tool/opencast/managetranscriptions.php',
+    ['video_identifier' => $videoidentifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/deletetranscription.php',
     ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid,
-        'video_identifier' => $videoidentifier, 'transcription_identifier' => $identifier, ]);
+    'video_identifier' => $videoidentifier,
+    'transcription_identifier' => $identifier,
+    ]
+);
 $PAGE->set_url($baseurl);
 
 require_login($courseid, false);
@@ -64,13 +70,21 @@ $video = $apibridge->get_opencast_video($videoidentifier, true);
 
 $transcriptionmanagementenabled = (bool) get_config('tool_opencast', 'enablemanagetranscription_' . $ocinstanceid);
 if (!$transcriptionmanagementenabled) {
-    redirect($redirecturl,
-        get_string('transcriptionmanagementdisabled', 'tool_opencast'), null, notification::NOTIFY_ERROR);
+    redirect(
+        $redirecturl,
+        get_string('transcriptionmanagementdisabled', 'tool_opencast'),
+        null,
+        notification::NOTIFY_ERROR
+    );
 }
 
 if ($video->error || $video->video->processing_state != 'SUCCEEDED') {
-    redirect($redirecturl,
-        get_string('unabletodeletetranscription', 'tool_opencast'), null, notification::NOTIFY_ERROR);
+    redirect(
+        $redirecturl,
+        get_string('unabletodeletetranscription', 'tool_opencast'),
+        null,
+        notification::NOTIFY_ERROR
+    );
 }
 
 if (($action == 'delete') && confirm_sesskey()) {

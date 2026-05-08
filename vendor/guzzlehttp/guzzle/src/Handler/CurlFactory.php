@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp\Handler;
 
@@ -40,20 +54,18 @@ class CurlFactory implements CurlFactoryInterface
     /**
      * @param int $maxHandles Maximum number of idle handles.
      */
-    public function __construct(int $maxHandles)
-    {
+    public function __construct(int $maxHandles) {
         $this->maxHandles = $maxHandles;
     }
 
-    public function create(RequestInterface $request, array $options): EasyHandle
-    {
+    public function create(RequestInterface $request, array $options): EasyHandle {
         $protocolVersion = $request->getProtocolVersion();
 
         if ('2' === $protocolVersion || '2.0' === $protocolVersion) {
             if (!self::supportsHttp2()) {
                 throw new ConnectException('HTTP/2 is supported by the cURL handler, however libcurl is built without HTTP/2 support.', $request);
             }
-        } elseif ('1.0' !== $protocolVersion && '1.1' !== $protocolVersion) {
+        } else if ('1.0' !== $protocolVersion && '1.1' !== $protocolVersion) {
             throw new ConnectException(sprintf('HTTP/%s is not supported by the cURL handler.', $protocolVersion), $request);
         }
 
@@ -83,8 +95,7 @@ class CurlFactory implements CurlFactoryInterface
         return $easy;
     }
 
-    private static function supportsHttp2(): bool
-    {
+    private static function supportsHttp2(): bool {
         static $supportsHttp2 = null;
 
         if (null === $supportsHttp2) {
@@ -96,8 +107,7 @@ class CurlFactory implements CurlFactoryInterface
         return $supportsHttp2;
     }
 
-    private static function supportsTls12(): bool
-    {
+    private static function supportsTls12(): bool {
         static $supportsTls12 = null;
 
         if (null === $supportsTls12) {
@@ -107,8 +117,7 @@ class CurlFactory implements CurlFactoryInterface
         return $supportsTls12;
     }
 
-    private static function supportsTls13(): bool
-    {
+    private static function supportsTls13(): bool {
         static $supportsTls13 = null;
 
         if (null === $supportsTls13) {
@@ -119,8 +128,7 @@ class CurlFactory implements CurlFactoryInterface
         return $supportsTls13;
     }
 
-    public function release(EasyHandle $easy): void
-    {
+    public function release(EasyHandle $easy): void {
         $resource = $easy->handle;
         unset($easy->handle);
 
@@ -147,8 +155,7 @@ class CurlFactory implements CurlFactoryInterface
      * @param callable(RequestInterface, array): PromiseInterface $handler
      * @param CurlFactoryInterface                                $factory Dictates how the handle is released
      */
-    public static function finish(callable $handler, EasyHandle $easy, CurlFactoryInterface $factory): PromiseInterface
-    {
+    public static function finish(callable $handler, EasyHandle $easy, CurlFactoryInterface $factory): PromiseInterface {
         if (isset($easy->options['on_stats'])) {
             self::invokeStats($easy);
         }
@@ -169,8 +176,7 @@ class CurlFactory implements CurlFactoryInterface
         return new FulfilledPromise($easy->response);
     }
 
-    private static function invokeStats(EasyHandle $easy): void
-    {
+    private static function invokeStats(EasyHandle $easy): void {
         $curlStats = \curl_getinfo($easy->handle);
         $curlStats['appconnect_time'] = \curl_getinfo($easy->handle, \CURLINFO_APPCONNECT_TIME);
         $stats = new TransferStats(
@@ -186,8 +192,7 @@ class CurlFactory implements CurlFactoryInterface
     /**
      * @param callable(RequestInterface, array): PromiseInterface $handler
      */
-    private static function finishError(callable $handler, EasyHandle $easy, CurlFactoryInterface $factory): PromiseInterface
-    {
+    private static function finishError(callable $handler, EasyHandle $easy, CurlFactoryInterface $factory): PromiseInterface {
         // Get error information and release the handle to the factory.
         $ctx = [
             'errno' => $easy->errno,
@@ -205,8 +210,7 @@ class CurlFactory implements CurlFactoryInterface
         return self::createRejection($easy, $ctx);
     }
 
-    private static function getCurlVersion(): string
-    {
+    private static function getCurlVersion(): string {
         static $curlVersion = null;
 
         if (null === $curlVersion) {
@@ -216,8 +220,7 @@ class CurlFactory implements CurlFactoryInterface
         return $curlVersion;
     }
 
-    private static function createRejection(EasyHandle $easy, array $ctx): PromiseInterface
-    {
+    private static function createRejection(EasyHandle $easy, array $ctx): PromiseInterface {
         static $connectionErrors = [
             \CURLE_OPERATION_TIMEOUTED => true,
             \CURLE_COULDNT_RESOLVE_HOST => true,
@@ -278,8 +281,7 @@ class CurlFactory implements CurlFactoryInterface
         return P\Create::rejectionFor($error);
     }
 
-    private static function sanitizeCurlError(string $error, UriInterface $uri): string
-    {
+    private static function sanitizeCurlError(string $error, UriInterface $uri): string {
         if ('' === $error) {
             return $error;
         }
@@ -299,8 +301,7 @@ class CurlFactory implements CurlFactoryInterface
     /**
      * @return array<int|string, mixed>
      */
-    private function getDefaultConf(EasyHandle $easy): array
-    {
+    private function getDefaultConf(EasyHandle $easy): array {
         $conf = [
             '_headers' => $easy->request->getHeaders(),
             \CURLOPT_CUSTOMREQUEST => $easy->request->getMethod(),
@@ -318,7 +319,7 @@ class CurlFactory implements CurlFactoryInterface
 
         if ('2' === $version || '2.0' === $version) {
             $conf[\CURLOPT_HTTP_VERSION] = \CURL_HTTP_VERSION_2_0;
-        } elseif ('1.1' === $version) {
+        } else if ('1.1' === $version) {
             $conf[\CURLOPT_HTTP_VERSION] = \CURL_HTTP_VERSION_1_1;
         } else {
             $conf[\CURLOPT_HTTP_VERSION] = \CURL_HTTP_VERSION_1_0;
@@ -327,8 +328,7 @@ class CurlFactory implements CurlFactoryInterface
         return $conf;
     }
 
-    private function applyMethod(EasyHandle $easy, array &$conf): void
-    {
+    private function applyMethod(EasyHandle $easy, array &$conf): void {
         $body = $easy->request->getBody();
         $size = $body->getSize();
 
@@ -344,7 +344,7 @@ class CurlFactory implements CurlFactoryInterface
             if (!$easy->request->hasHeader('Content-Length')) {
                 $conf[\CURLOPT_HTTPHEADER][] = 'Content-Length: 0';
             }
-        } elseif ($method === 'HEAD') {
+        } else if ($method === 'HEAD') {
             $conf[\CURLOPT_NOBODY] = true;
             unset(
                 $conf[\CURLOPT_WRITEFUNCTION],
@@ -355,8 +355,7 @@ class CurlFactory implements CurlFactoryInterface
         }
     }
 
-    private function applyBody(RequestInterface $request, array $options, array &$conf): void
-    {
+    private function applyBody(RequestInterface $request, array $options, array &$conf): void {
         $size = $request->hasHeader('Content-Length')
             ? (int) $request->getHeaderLine('Content-Length')
             : null;
@@ -394,8 +393,7 @@ class CurlFactory implements CurlFactoryInterface
         }
     }
 
-    private function applyHeaders(EasyHandle $easy, array &$conf): void
-    {
+    private function applyHeaders(EasyHandle $easy, array &$conf): void {
         foreach ($conf['_headers'] as $name => $values) {
             foreach ($values as $value) {
                 $value = (string) $value;
@@ -421,8 +419,7 @@ class CurlFactory implements CurlFactoryInterface
      * @param string $name    Case-insensitive header to remove
      * @param array  $options Array of options to modify
      */
-    private function removeHeader(string $name, array &$options): void
-    {
+    private function removeHeader(string $name, array &$options): void {
         foreach (\array_keys($options['_headers']) as $key) {
             if (!\strcasecmp($key, $name)) {
                 unset($options['_headers'][$key]);
@@ -432,8 +429,7 @@ class CurlFactory implements CurlFactoryInterface
         }
     }
 
-    private function applyHandlerOptions(EasyHandle $easy, array &$conf): void
-    {
+    private function applyHandlerOptions(EasyHandle $easy, array &$conf): void {
         $options = $easy->options;
         if (isset($options['verify'])) {
             if ($options['verify'] === false) {
@@ -489,7 +485,7 @@ class CurlFactory implements CurlFactoryInterface
         $sink = $options['sink'];
         if (!\is_string($sink)) {
             $sink = \GuzzleHttp\Psr7\Utils::streamFor($sink);
-        } elseif (!\is_dir(\dirname($sink))) {
+        } else if (!\is_dir(\dirname($sink))) {
             // Ensure that the directory exists before failing in curl.
             throw new \RuntimeException(\sprintf('Directory %s does not exist for sink value of %s', \dirname($sink), $sink));
         } else {
@@ -510,7 +506,7 @@ class CurlFactory implements CurlFactoryInterface
         if (isset($options['force_ip_resolve'])) {
             if ('v4' === $options['force_ip_resolve']) {
                 $conf[\CURLOPT_IPRESOLVE] = \CURL_IPRESOLVE_V4;
-            } elseif ('v6' === $options['force_ip_resolve']) {
+            } else if ('v6' === $options['force_ip_resolve']) {
                 $conf[\CURLOPT_IPRESOLVE] = \CURL_IPRESOLVE_V6;
             }
         }
@@ -551,7 +547,7 @@ class CurlFactory implements CurlFactoryInterface
                     || \STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT === $options['crypto_method']
                 ) {
                     $conf[\CURLOPT_SSLVERSION] = \CURL_SSLVERSION_TLSv1_2;
-                } elseif (defined('STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT') && \STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT === $options['crypto_method']) {
+                } else if (defined('STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT') && \STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT === $options['crypto_method']) {
                     if (!self::supportsTls13()) {
                         throw new \InvalidArgumentException('Invalid crypto_method request option: TLS 1.3 not supported by your version of cURL');
                     }
@@ -559,16 +555,16 @@ class CurlFactory implements CurlFactoryInterface
                 } else {
                     throw new \InvalidArgumentException('Invalid crypto_method request option: unknown version provided');
                 }
-            } elseif (\STREAM_CRYPTO_METHOD_TLSv1_0_CLIENT === $options['crypto_method']) {
+            } else if (\STREAM_CRYPTO_METHOD_TLSv1_0_CLIENT === $options['crypto_method']) {
                 $conf[\CURLOPT_SSLVERSION] = \CURL_SSLVERSION_TLSv1_0;
-            } elseif (\STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT === $options['crypto_method']) {
+            } else if (\STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT === $options['crypto_method']) {
                 $conf[\CURLOPT_SSLVERSION] = \CURL_SSLVERSION_TLSv1_1;
-            } elseif (\STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT === $options['crypto_method']) {
+            } else if (\STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT === $options['crypto_method']) {
                 if (!self::supportsTls12()) {
                     throw new \InvalidArgumentException('Invalid crypto_method request option: TLS 1.2 not supported by your version of cURL');
                 }
                 $conf[\CURLOPT_SSLVERSION] = \CURL_SSLVERSION_TLSv1_2;
-            } elseif (defined('STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT') && \STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT === $options['crypto_method']) {
+            } else if (defined('STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT') && \STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT === $options['crypto_method']) {
                 if (!self::supportsTls13()) {
                     throw new \InvalidArgumentException('Invalid crypto_method request option: TLS 1.3 not supported by your version of cURL');
                 }
@@ -641,8 +637,7 @@ class CurlFactory implements CurlFactoryInterface
      *
      * @param callable(RequestInterface, array): PromiseInterface $handler
      */
-    private static function retryFailedRewind(callable $handler, EasyHandle $easy, array $ctx): PromiseInterface
-    {
+    private static function retryFailedRewind(callable $handler, EasyHandle $easy, array $ctx): PromiseInterface {
         try {
             // Only rewind if the body has been read from.
             $body = $easy->request->getBody();
@@ -651,9 +646,9 @@ class CurlFactory implements CurlFactoryInterface
             }
         } catch (\RuntimeException $e) {
             $ctx['error'] = 'The connection unexpectedly failed without '
-                .'providing an error. The request would have been retried, '
-                .'but attempting to rewind the request body failed. '
-                .'Exception: '.$e;
+                . 'providing an error. The request would have been retried, '
+                . 'but attempting to rewind the request body failed. '
+                . 'Exception: ' . $e;
 
             return self::createRejection($easy, $ctx);
         }
@@ -661,13 +656,13 @@ class CurlFactory implements CurlFactoryInterface
         // Retry no more than 3 times before giving up.
         if (!isset($easy->options['_curl_retries'])) {
             $easy->options['_curl_retries'] = 1;
-        } elseif ($easy->options['_curl_retries'] == 2) {
+        } else if ($easy->options['_curl_retries'] == 2) {
             $ctx['error'] = 'The cURL request was retried 3 times '
-                .'and did not succeed. The most likely reason for the failure '
-                .'is that cURL was unable to rewind the body of the request '
-                .'and subsequent retries resulted in the same error. Turn on '
-                .'the debug option to see what went wrong. See '
-                .'https://bugs.php.net/bug.php?id=47204 for more information.';
+                . 'and did not succeed. The most likely reason for the failure '
+                . 'is that cURL was unable to rewind the body of the request '
+                . 'and subsequent retries resulted in the same error. Turn on '
+                . 'the debug option to see what went wrong. See '
+                . 'https://bugs.php.net/bug.php?id=47204 for more information.';
 
             return self::createRejection($easy, $ctx);
         } else {
@@ -677,8 +672,7 @@ class CurlFactory implements CurlFactoryInterface
         return $handler($easy->request, $easy->options);
     }
 
-    private function createHeaderFn(EasyHandle $easy): callable
-    {
+    private function createHeaderFn(EasyHandle $easy): callable {
         if (isset($easy->options['on_headers'])) {
             $onHeaders = $easy->options['on_headers'];
 
@@ -689,7 +683,10 @@ class CurlFactory implements CurlFactoryInterface
             $onHeaders = null;
         }
 
-        return static function ($ch, $h) use (
+        return static function (
+            $ch,
+            $h
+        ) use (
             $onHeaders,
             $easy,
             &$startingResponse
@@ -715,7 +712,7 @@ class CurlFactory implements CurlFactoryInterface
                         return -1;
                     }
                 }
-            } elseif ($startingResponse) {
+            } else if ($startingResponse) {
                 $startingResponse = false;
                 $easy->headers = [$value];
             } else {
@@ -726,8 +723,7 @@ class CurlFactory implements CurlFactoryInterface
         };
     }
 
-    public function __destruct()
-    {
+    public function __destruct() {
         foreach ($this->handles as $id => $handle) {
             \curl_close($handle);
             unset($this->handles[$id]);

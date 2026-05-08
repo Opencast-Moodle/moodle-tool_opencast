@@ -34,7 +34,6 @@ use tool_opencast\local\settings_api;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class seriesmapping extends \core\persistent {
-
     /** Table name for the persistent. */
     const TABLE = 'tool_opencast_series';
 

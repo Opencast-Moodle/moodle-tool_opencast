@@ -44,7 +44,6 @@ use tool_opencast\local\workflowconfiguration_helper;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_opencast_renderer extends plugin_renderer_base {
-
     /** @var int Video is visible for students */
     const VISIBLE = 1;
     /** @var int Video is visible for some students */
@@ -74,37 +73,64 @@ class tool_opencast_renderer extends plugin_renderer_base {
      */
     public function render_processing_state_icon($processingstate) {
         switch ($processingstate) {
-
-            case 'FAILED' :
+            case 'FAILED':
                 $tooltip = get_string('ocstatefailed', 'tool_opencast');
-                return $this->output->pix_icon('failed', $tooltip, 'tool_opencast',
-                    ['data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => $tooltip]);
-            case 'PLANNED' :
+                return $this->output->pix_icon(
+                    'failed',
+                    $tooltip,
+                    'tool_opencast',
+                    ['data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => $tooltip]
+                );
+            case 'PLANNED':
                 $tooltip = get_string('planned', 'tool_opencast');
-                return $this->output->pix_icon('c/event', get_string('planned', 'tool_opencast'), 'moodle',
-                    ['data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => $tooltip]);
-            case 'CAPTURING' :
+                return $this->output->pix_icon(
+                    'c/event',
+                    get_string('planned', 'tool_opencast'),
+                    'moodle',
+                    ['data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => $tooltip]
+                );
+            case 'CAPTURING':
                 $tooltip = get_string('ocstatecapturing', 'tool_opencast');
-                return $this->output->pix_icon('capturing', get_string('ocstatecapturing', 'tool_opencast'), 'tool_opencast',
-                    ['data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => $tooltip]);
-            case 'NEEDSCUTTING' :
+                return $this->output->pix_icon(
+                    'capturing',
+                    get_string('ocstatecapturing', 'tool_opencast'),
+                    'tool_opencast',
+                    ['data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => $tooltip]
+                );
+            case 'NEEDSCUTTING':
                 $tooltip = get_string('ocstateneedscutting', 'tool_opencast');
-                return $this->output->pix_icon('e/cut', get_string('ocstateneedscutting', 'tool_opencast'), 'moodle',
-                    ['data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => $tooltip]);
-            case 'DELETING' :
+                return $this->output->pix_icon(
+                    'e/cut',
+                    get_string('ocstateneedscutting', 'tool_opencast'),
+                    'moodle',
+                    ['data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => $tooltip]
+                );
+            case 'DELETING':
                 $tooltip = get_string('deleting', 'tool_opencast');
-                return $this->output->pix_icon('t/delete', get_string('deleting', 'tool_opencast'), 'moodle',
-                    ['data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => $tooltip]);
-            case 'RUNNING' :
-            case 'PAUSED' :
+                return $this->output->pix_icon(
+                    't/delete',
+                    get_string('deleting', 'tool_opencast'),
+                    'moodle',
+                    ['data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => $tooltip]
+                );
+            case 'RUNNING':
+            case 'PAUSED':
                 $tooltip = get_string('ocstateprocessing', 'tool_opencast');
-                return $this->output->pix_icon('i/loading_small', get_string('ocstateprocessing', 'tool_opencast'), 'moodle',
-                    ['data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => $tooltip]);
-            case 'SUCCEEDED' :
-            default :
+                return $this->output->pix_icon(
+                    'i/loading_small',
+                    get_string('ocstateprocessing', 'tool_opencast'),
+                    'moodle',
+                    ['data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => $tooltip]
+                );
+            case 'SUCCEEDED':
+            default:
                 $tooltip = get_string('ocstatesucceeded', 'tool_opencast');
-                return $this->output->pix_icon('succeeded', get_string('ocstatesucceeded', 'tool_opencast'), 'tool_opencast',
-                    ['data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => $tooltip]);
+                return $this->output->pix_icon(
+                    'succeeded',
+                    get_string('ocstatesucceeded', 'tool_opencast'),
+                    'tool_opencast',
+                    ['data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => $tooltip]
+                );
         }
     }
 
@@ -134,14 +160,19 @@ class tool_opencast_renderer extends plugin_renderer_base {
                 $text = get_string('addactivity_viewbuttontitle', 'tool_opencast');
                 $icon = $this->output->pix_icon('play', $text, 'tool_opencast');
             } else if (has_capability('tool/opencast:addactivity', $coursecontext)) {
-                $url = new moodle_url('/admin/tool/opencast/addactivity.php',
-                    ['ocinstanceid' => $ocinstanceid, 'courseid' => $courseid, 'seriesid' => $seriesid]);
+                $url = new moodle_url(
+                    '/admin/tool/opencast/addactivity.php',
+                    ['ocinstanceid' => $ocinstanceid, 'courseid' => $courseid, 'seriesid' => $seriesid]
+                );
                 $text = get_string('addactivity_addbuttontitle', 'tool_opencast');
                 $icon = $this->output->pix_icon('share', $text, 'tool_opencast');
             }
             if ($url) {
-                $addactivitylink = html_writer::link($url, $icon,
-                    ['title' => $text]);
+                $addactivitylink = html_writer::link(
+                    $url,
+                    $icon,
+                    ['title' => $text]
+                );
             }
         }
 
@@ -155,14 +186,19 @@ class tool_opencast_renderer extends plugin_renderer_base {
                 $text = get_string('addlti_viewbuttontitle', 'tool_opencast');
                 $icon = $this->output->pix_icon('play', $text, 'tool_opencast');
             } else if (has_capability('tool/opencast:addlti', $coursecontext)) {
-                $url = new moodle_url('/admin/tool/opencast/addlti.php',
-                    ['ocinstanceid' => $ocinstanceid, 'courseid' => $courseid, 'seriesid' => $seriesid]);
+                $url = new moodle_url(
+                    '/admin/tool/opencast/addlti.php',
+                    ['ocinstanceid' => $ocinstanceid, 'courseid' => $courseid, 'seriesid' => $seriesid]
+                );
                 $text = get_string('addlti_addbuttontitle', 'tool_opencast');
                 $icon = $this->output->pix_icon('share', $text, 'tool_opencast');
             }
             if ($url) {
-                $addltilink = html_writer::link($url, $icon,
-                    ['title' => $text]);
+                $addltilink = html_writer::link(
+                    $url,
+                    $icon,
+                    ['title' => $text]
+                );
             }
         }
 
@@ -182,9 +218,14 @@ class tool_opencast_renderer extends plugin_renderer_base {
                 }
             }
 
-            $usedin = html_writer::tag('span', get_string('series_used', 'tool_opencast', count($courses)),
+            $usedin = html_writer::tag(
+                'span',
+                get_string('series_used', 'tool_opencast', count($courses)),
                 ["class" => "badge badge-secondary mb-4", "data-toggle" => 'tooltip', 'data-placement' => 'top',
-                    'title' => $tooltip, 'data-html' => 'true', ]);
+                'title' => $tooltip,
+                'data-html' => 'true',
+                ]
+            );
             return $this->heading($seriesname, 4, ['mt-4 d-inline-block']) . ' ' .
                 $addactivitylink . ' ' . $addltilink . '<br>' . $usedin;
         }
@@ -214,8 +255,10 @@ class tool_opencast_renderer extends plugin_renderer_base {
                 $url = new moodle_url('/mod/opencast/view.php', ['id' => $moduleid]);
                 $text = get_string('addactivity_viewbuttontitle', 'tool_opencast');
             } else if (has_capability('tool/opencast:addactivity', $coursecontext)) {
-                $url = new moodle_url('/admin/tool/opencast/addactivity.php',
-                    ['ocinstanceid' => $ocinstanceid, 'courseid' => $courseid, 'seriesid' => $seriesid]);
+                $url = new moodle_url(
+                    '/admin/tool/opencast/addactivity.php',
+                    ['ocinstanceid' => $ocinstanceid, 'courseid' => $courseid, 'seriesid' => $seriesid]
+                );
                 $text = get_string('addactivity_addbuttontitle', 'tool_opencast');
             }
             $activitybutton = $this->single_button($url, $text, 'get');
@@ -229,8 +272,10 @@ class tool_opencast_renderer extends plugin_renderer_base {
                 $url = new moodle_url('/mod/lti/view.php', ['id' => $moduleid]);
                 $text = get_string('addlti_viewbuttontitle', 'tool_opencast');
             } else if (has_capability('tool/opencast:addlti', $coursecontext)) {
-                $url = new moodle_url('/admin/tool/opencast/addlti.php',
-                    ['ocinstanceid' => $ocinstanceid, 'courseid' => $courseid, 'seriesid' => $seriesid]);
+                $url = new moodle_url(
+                    '/admin/tool/opencast/addlti.php',
+                    ['ocinstanceid' => $ocinstanceid, 'courseid' => $courseid, 'seriesid' => $seriesid]
+                );
                 $text = get_string('addlti_addbuttontitle', 'tool_opencast');
             }
             $ltibutton = $this->single_button($url, $text, 'get');
@@ -299,7 +344,6 @@ class tool_opencast_renderer extends plugin_renderer_base {
 
         $table->setup();
         return $table;
-
     }
 
     /**
@@ -400,17 +444,25 @@ class tool_opencast_renderer extends plugin_renderer_base {
      * @throws dml_exception
      * @throws moodle_exception
      */
-    public function create_overview_videos_rows($videos, $apibridge, $ocinstanceid, $activityinstalled,
-                                                $showchangeownerlink, $isownerverified = false, $isseriesowner = false,
-                                                $hasaddvideopermissions = false, $hasdownloadpermission = false,
-                                                $hasdeletepermission = false,
-                                                $redirectpage = 'overviewvideos', $hasaccesspermission = false,
-                                                $massaction = null) {
+    public function create_overview_videos_rows(
+        $videos,
+        $apibridge,
+        $ocinstanceid,
+        $activityinstalled,
+        $showchangeownerlink,
+        $isownerverified = false,
+        $isseriesowner = false,
+        $hasaddvideopermissions = false,
+        $hasdownloadpermission = false,
+        $hasdeletepermission = false,
+        $redirectpage = 'overviewvideos',
+        $hasaccesspermission = false,
+        $massaction = null
+    ) {
         global $USER, $SITE, $DB;
         $rows = [];
 
         foreach ($videos as $video) {
-
             // This flag here works in false case, because here in overview page we only offer update and delete mass action.
             // We only offer them if the single action has been offered too.
             $isselectable = false;
@@ -423,12 +475,18 @@ class tool_opencast_renderer extends plugin_renderer_base {
 
             $row = [];
 
-            if ($isownerverified || $apibridge->is_owner($video->acl, $USER->id, $SITE->id) ||
-                ($isseriesowner && !$apibridge->has_owner($video->acl))) {
+            if (
+                $isownerverified || $apibridge->is_owner($video->acl, $USER->id, $SITE->id) ||
+                ($isseriesowner && !$apibridge->has_owner($video->acl))
+            ) {
                 if ($showchangeownerlink) {
-                    $row[] = html_writer::link(new moodle_url('/admin/tool/opencast/changeowner.php',
-                        ['ocinstanceid' => $ocinstanceid, 'identifier' => $video->identifier, 'isseries' => false]),
-                        $this->output->pix_icon('i/user', get_string('changeowner', 'tool_opencast')));
+                    $row[] = html_writer::link(
+                        new moodle_url(
+                            '/admin/tool/opencast/changeowner.php',
+                            ['ocinstanceid' => $ocinstanceid, 'identifier' => $video->identifier, 'isseries' => false]
+                        ),
+                        $this->output->pix_icon('i/user', get_string('changeowner', 'tool_opencast'))
+                    );
                 } else {
                     $row[] = $this->output->pix_icon('i/user', get_string('changeowner', 'tool_opencast'));
                 }
@@ -443,19 +501,31 @@ class tool_opencast_renderer extends plugin_renderer_base {
             foreach ($activitylinks as $accourse) {
                 try {
                     // Get activity.
-                    $moduleid = activitymodulemanager::get_module_for_episode($accourse->course,
-                        $video->identifier, $ocinstanceid);
+                    $moduleid = activitymodulemanager::get_module_for_episode(
+                        $accourse->course,
+                        $video->identifier,
+                        $ocinstanceid
+                    );
 
-                    if (seriesmapping::get_record(['ocinstanceid' => $ocinstanceid,
-                        'series' => $video->is_part_of, 'courseid' => $accourse->course, ])) {
-                        $courses[] = html_writer::link(new moodle_url('/mod/opencast/view.php', ['id' => $moduleid]),
-                            get_course($accourse->course)->fullname, ['target' => '_blank']);
+                    if (
+                        seriesmapping::get_record(['ocinstanceid' => $ocinstanceid,
+                        'series' => $video->is_part_of, 'courseid' => $accourse->course, ])
+                    ) {
+                        $courses[] = html_writer::link(
+                            new moodle_url('/mod/opencast/view.php', ['id' => $moduleid]),
+                            get_course($accourse->course)->fullname,
+                            ['target' => '_blank']
+                        );
                     } else {
-                        $courseswoblocklink[] = html_writer::link(new moodle_url('/mod/opencast/view.php',
-                            ['id' => $moduleid]),
-                            get_course($accourse->course)->fullname, ['target' => '_blank']);
+                        $courseswoblocklink[] = html_writer::link(
+                            new moodle_url(
+                                '/mod/opencast/view.php',
+                                ['id' => $moduleid]
+                            ),
+                            get_course($accourse->course)->fullname,
+                            ['target' => '_blank']
+                        );
                     }
-
                 } catch (dml_missing_record_exception $ex) {
                     continue;
                 }
@@ -471,8 +541,19 @@ class tool_opencast_renderer extends plugin_renderer_base {
                 if ($updatemetadata) {
                     $isselectable = true;
                 }
-                $actions .= $this->render_edit_functions($ocinstanceid, $SITE->id, $video->identifier, $updatemetadata,
-                    false, null, false, false, false, 'overview', $video->is_part_of);
+                $actions .= $this->render_edit_functions(
+                    $ocinstanceid,
+                    $SITE->id,
+                    $video->identifier,
+                    $updatemetadata,
+                    false,
+                    null,
+                    false,
+                    false,
+                    false,
+                    'overview',
+                    $video->is_part_of
+                );
             }
 
             if ($hasdownloadpermission && $apibridge->can_show_download_button($video, $SITE->id, false)) {
@@ -483,12 +564,18 @@ class tool_opencast_renderer extends plugin_renderer_base {
                 $actions .= $this->render_direct_link_event_icon($ocinstanceid, $SITE->id, $video);
             }
 
-            if ($hasdeletepermission && isset($video->processing_state) &&
-                ($video->processing_state !== 'RUNNING' && $video->processing_state !== 'PAUSED')) {
+            if (
+                $hasdeletepermission && isset($video->processing_state) &&
+                ($video->processing_state !== 'RUNNING' && $video->processing_state !== 'PAUSED')
+            ) {
                 $isselectable = true;
-                $url = new moodle_url('/admin/tool/opencast/deleteevent.php',
+                $url = new moodle_url(
+                    '/admin/tool/opencast/deleteevent.php',
                     ['identifier' => $video->identifier, 'courseid' => $SITE->id, 'ocinstanceid' => $ocinstanceid,
-                        'series' => $video->is_part_of, 'redirectpage' => $redirectpage, ]);
+                    'series' => $video->is_part_of,
+                    'redirectpage' => $redirectpage,
+                    ]
+                );
                 $text = get_string('deleteevent', 'tool_opencast');
                 $icon = $this->output->pix_icon('t/delete', $text);
                 $actions .= html_writer::link($url, $icon, ['aria-label' => $text]);
@@ -528,17 +615,24 @@ class tool_opencast_renderer extends plugin_renderer_base {
         }
 
         if (has_capability('tool/opencast:addvideo', $coursecontext) && $SITE->id != $courseid) {
-            $addvideourl = new moodle_url('/admin/tool/opencast/addvideo.php',
-                ['courseid' => $courseid, 'ocinstanceid' => $ocinstance->id]);
+            $addvideourl = new moodle_url(
+                '/admin/tool/opencast/addvideo.php',
+                ['courseid' => $courseid, 'ocinstanceid' => $ocinstance->id]
+            );
             $addvideobutton = $this->output->single_button($addvideourl, get_string('addvideo', 'tool_opencast'), 'get');
             $html .= html_writer::div($addvideobutton, 'opencast-addvideo-wrap overview');
 
             // Show "Add videos (batch)" button.
             if (get_config('tool_opencast', 'batchuploadenabled_' . $ocinstance->id)) {
-                $batchuploadurl = new moodle_url('/admin/tool/opencast/batchupload.php',
-                    ['courseid' => $courseid, 'ocinstanceid' => $ocinstance->id]);
-                $batchuploadbutton = $this->output->single_button($batchuploadurl,
-                    get_string('batchupload', 'tool_opencast'), 'get');
+                $batchuploadurl = new moodle_url(
+                    '/admin/tool/opencast/batchupload.php',
+                    ['courseid' => $courseid, 'ocinstanceid' => $ocinstance->id]
+                );
+                $batchuploadbutton = $this->output->single_button(
+                    $batchuploadurl,
+                    get_string('batchupload', 'tool_opencast'),
+                    'get'
+                );
                 $html .= html_writer::div($batchuploadbutton, 'opencast-batchupload-wrap overview');
             }
 
@@ -564,14 +658,24 @@ class tool_opencast_renderer extends plugin_renderer_base {
                     $seriesid = $apibridge->get_stored_seriesid($courseid, true, $USER->id);
                     $studiourlpath = $apibridge->generate_studio_url_path($courseid, $seriesid);
                     $url = $endpoint . $studiourlpath;
-                    $recordvideobutton = $this->output->action_link($url, get_string('recordvideo', 'tool_opencast'),
-                        null, ['class' => 'btn btn-secondary', 'target' => $target]);
+                    $recordvideobutton = $this->output->action_link(
+                        $url,
+                        get_string('recordvideo', 'tool_opencast'),
+                        null,
+                        ['class' => 'btn btn-secondary', 'target' => $target]
+                    );
                     $html .= html_writer::div($recordvideobutton, 'opencast-recordvideo-wrap overview');
                 } else {
-                    $recordvideo = new moodle_url('/admin/tool/opencast/recordvideo.php',
-                        ['courseid' => $courseid, 'ocinstanceid' => $ocinstance->id]);
-                    $recordvideobutton = $this->output->action_link($recordvideo, get_string('recordvideo', 'tool_opencast'),
-                        null, ['class' => 'btn btn-secondary', 'target' => $target]);
+                    $recordvideo = new moodle_url(
+                        '/admin/tool/opencast/recordvideo.php',
+                        ['courseid' => $courseid, 'ocinstanceid' => $ocinstance->id]
+                    );
+                    $recordvideobutton = $this->output->action_link(
+                        $recordvideo,
+                        get_string('recordvideo', 'tool_opencast'),
+                        null,
+                        ['class' => 'btn btn-secondary', 'target' => $target]
+                    );
                     $html .= html_writer::div($recordvideobutton, 'opencast-recordvideo-wrap overview');
                 }
             }
@@ -584,10 +688,8 @@ class tool_opencast_renderer extends plugin_renderer_base {
         }
 
         if ($videodata->count == 0) {
-
             $html .= html_writer::div(get_string('novideosavailable', 'tool_opencast'), 'opencast-bc-wrap');
         } else {
-
             // Videos available.
             $listitems = '';
             foreach ($videodata->videos as $video) {
@@ -675,12 +777,19 @@ class tool_opencast_renderer extends plugin_renderer_base {
      * @param string $seriesid
      * @return string
      */
-    public function render_upload_jobs($ocinstanceid, $uploadjobs, $showactionbuttons = true,
-                                       $redirectpage = null, $seriesid = null) {
+    public function render_upload_jobs(
+        $ocinstanceid,
+        $uploadjobs,
+        $showactionbuttons = true,
+        $redirectpage = null,
+        $seriesid = null
+    ) {
         // Set if visibility change is enabled.
         $canchangescheduledvisibility = false;
-        if (get_config('tool_opencast', 'aclcontrolafter_' . $ocinstanceid) &&
-            !empty(get_config('tool_opencast', 'workflow_roles_' . $ocinstanceid))) {
+        if (
+            get_config('tool_opencast', 'aclcontrolafter_' . $ocinstanceid) &&
+            !empty(get_config('tool_opencast', 'workflow_roles_' . $ocinstanceid))
+        ) {
             $canchangescheduledvisibility = true;
         }
         $table = new html_table();
@@ -700,7 +809,6 @@ class tool_opencast_renderer extends plugin_renderer_base {
         }
 
         foreach ($uploadjobs as $uploadjob) {
-
             $uploadjob->metadata ? $metadata = json_decode($uploadjob->metadata) : $metadata = '';
             $title = '';
             $series = '';
@@ -725,8 +833,11 @@ class tool_opencast_renderer extends plugin_renderer_base {
                 }
 
                 if ($startdate && $starttime) {
-                    $startdatetime = date_create_from_format('Y-m-d H:i:s\Z', $startdate . ' ' . $starttime,
-                        new DateTimeZone("UTC"));
+                    $startdatetime = date_create_from_format(
+                        'Y-m-d H:i:s\Z',
+                        $startdate . ' ' . $starttime,
+                        new DateTimeZone("UTC")
+                    );
                 }
             }
 
@@ -774,8 +885,10 @@ class tool_opencast_renderer extends plugin_renderer_base {
             }
             $status = $this->render_status($uploadjob->status, $uploadjob->countfailed);
             // Add live update flag item (hidden input) to the upload status column, if it is enabled.
-            if (boolval(get_config('tool_opencast', 'liveupdateenabled_' . $ocinstanceid)) &&
-                $uploadjob->status != upload_helper::STATUS_ARCHIVED_FAILED_UPLOAD) {
+            if (
+                boolval(get_config('tool_opencast', 'liveupdateenabled_' . $ocinstanceid)) &&
+                $uploadjob->status != upload_helper::STATUS_ARCHIVED_FAILED_UPLOAD
+            ) {
                 $status .= liveupdate_helper::get_liveupdate_uploading_hidden_input($uploadjob->id, $title);
             }
             $row[] = $status;
@@ -796,8 +909,10 @@ class tool_opencast_renderer extends plugin_renderer_base {
                         );
                     }
                     // The one who is allowed to add the video is also allowed to delete the video before it is uploaded.
-                    if ($uploadjob->status == upload_helper::STATUS_READY_TO_UPLOAD ||
-                        $uploadjob->status == upload_helper::STATUS_ARCHIVED_FAILED_UPLOAD) {
+                    if (
+                        $uploadjob->status == upload_helper::STATUS_READY_TO_UPLOAD ||
+                        $uploadjob->status == upload_helper::STATUS_ARCHIVED_FAILED_UPLOAD
+                    ) {
                         $actionbuttonshtml .= $this->render_delete_draft_icon(
                             $uploadjob->ocinstanceid,
                             $uploadjob->courseid,
@@ -827,9 +942,12 @@ class tool_opencast_renderer extends plugin_renderer_base {
         $scheduledvisibility = visibility_helper::get_uploadjob_scheduled_visibility($uploadjob->id);
         $coursecontext = context_course::instance($uploadjob->courseid);
         if (!empty($scheduledvisibility) && has_capability('tool/opencast:addvideo', $coursecontext)) {
-            $url = new moodle_url('/admin/tool/opencast/changescheduledvisibility.php',
+            $url = new moodle_url(
+                '/admin/tool/opencast/changescheduledvisibility.php',
                 ['uploadjobid' => $uploadjob->id, 'courseid' => $uploadjob->courseid,
-                    'ocinstanceid' => $uploadjob->ocinstanceid, ]);
+                'ocinstanceid' => $uploadjob->ocinstanceid,
+                ]
+            );
             $text = get_string('scheduledvisibilityicontitle', 'tool_opencast');
             $icon = $this->output->pix_icon('i/scheduled', $text);
             return html_writer::link($url, $icon);
@@ -846,8 +964,10 @@ class tool_opencast_renderer extends plugin_renderer_base {
      */
     public function render_delete_acl_group_assignment_icon($ocinstanceid, $courseid, $videoidentifier) {
 
-        $url = new moodle_url('/admin/tool/opencast/deleteaclgroup.php',
-            ['identifier' => $videoidentifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+        $url = new moodle_url(
+            '/admin/tool/opencast/deleteaclgroup.php',
+            ['identifier' => $videoidentifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+        );
         $text = get_string('deleteaclgroup', 'tool_opencast');
 
         $icon = $this->output->pix_icon('t/delete', $text);
@@ -865,9 +985,14 @@ class tool_opencast_renderer extends plugin_renderer_base {
      */
     public function render_change_visibility_icon($ocinstanceid, $courseid, $videoidentifier, $visible) {
         global $USER;
-        $url = new moodle_url('/admin/tool/opencast/changevisibility.php',
+        $url = new moodle_url(
+            '/admin/tool/opencast/changevisibility.php',
             ['identifier' => $videoidentifier, 'courseid' => $courseid,
-                'visibility' => $visible, 'sesskey' => $USER->sesskey, 'ocinstanceid' => $ocinstanceid, ]);
+            'visibility' => $visible,
+            'sesskey' => $USER->sesskey,
+            'ocinstanceid' => $ocinstanceid,
+            ]
+        );
 
         switch ($visible) {
             case self::VISIBLE:
@@ -949,8 +1074,10 @@ class tool_opencast_renderer extends plugin_renderer_base {
      */
     public function render_delete_event_icon($ocinstanceid, $courseid, $videoidentifier) {
 
-        $url = new moodle_url('/admin/tool/opencast/deleteevent.php',
-            ['identifier' => $videoidentifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+        $url = new moodle_url(
+            '/admin/tool/opencast/deleteevent.php',
+            ['identifier' => $videoidentifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+        );
         $text = get_string('deleteevent', 'tool_opencast');
 
         $icon = $this->output->pix_icon('t/delete', $text);
@@ -968,8 +1095,10 @@ class tool_opencast_renderer extends plugin_renderer_base {
      * @return string
      */
     public function render_add_lti_episode_icon($ocinstanceid, $courseid, $episodeuuid) {
-        $url = new moodle_url('/admin/tool/opencast/addltiepisode.php',
-            ['episodeuuid' => $episodeuuid, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+        $url = new moodle_url(
+            '/admin/tool/opencast/addltiepisode.php',
+            ['episodeuuid' => $episodeuuid, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+        );
         $text = get_string('addltiepisode_addicontitle', 'tool_opencast');
 
         $icon = $this->output->pix_icon('share', $text, 'tool_opencast');
@@ -1004,8 +1133,10 @@ class tool_opencast_renderer extends plugin_renderer_base {
      * @return string
      */
     public function render_add_activity_episode_icon($ocinstanceid, $courseid, $episodeuuid) {
-        $url = new moodle_url('/admin/tool/opencast/addactivityepisode.php',
-            ['episodeuuid' => $episodeuuid, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+        $url = new moodle_url(
+            '/admin/tool/opencast/addactivityepisode.php',
+            ['episodeuuid' => $episodeuuid, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+        );
         $text = get_string('addactivityepisode_addicontitle', 'tool_opencast');
 
         $icon = $this->output->pix_icon('share', $text, 'tool_opencast');
@@ -1044,9 +1175,13 @@ class tool_opencast_renderer extends plugin_renderer_base {
      */
     private function render_delete_draft_icon($ocinstanceid, $courseid, $videoidentifier, $redirectpage = null, $series = null) {
 
-        $url = new moodle_url('/admin/tool/opencast/deletedraft.php',
+        $url = new moodle_url(
+            '/admin/tool/opencast/deletedraft.php',
             ['identifier' => $videoidentifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid,
-                'redirectpage' => $redirectpage, 'series' => $series, ]);
+            'redirectpage' => $redirectpage,
+            'series' => $series,
+            ]
+        );
         $text = get_string('dodeleteevent', 'tool_opencast');
 
         $icon = $this->output->pix_icon('t/delete', $text);
@@ -1093,9 +1228,19 @@ class tool_opencast_renderer extends plugin_renderer_base {
      * @throws coding_exception
      * @throws moodle_exception
      */
-    public function render_edit_functions($ocinstanceid, $courseid, $videoidentifier, $updatemetadata,
-                                          $startworkflows, $coursecontext, $useeditor, $canchangeowner,
-                                          $canmanagetranscriptions, $redirectpage = null, $series = null) {
+    public function render_edit_functions(
+        $ocinstanceid,
+        $courseid,
+        $videoidentifier,
+        $updatemetadata,
+        $startworkflows,
+        $coursecontext,
+        $useeditor,
+        $canchangeowner,
+        $canmanagetranscriptions,
+        $redirectpage = null,
+        $series = null
+    ) {
         global $CFG;
 
         // Get the action menu options.
@@ -1117,9 +1262,13 @@ class tool_opencast_renderer extends plugin_renderer_base {
         if ($updatemetadata) {
             // Update metadata event.
             $actionmenu->add(new action_menu_link_secondary(
-                new moodle_url('/admin/tool/opencast/updatemetadata.php',
+                new moodle_url(
+                    '/admin/tool/opencast/updatemetadata.php',
                     ['video_identifier' => $videoidentifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid,
-                        'redirectpage' => $redirectpage, 'series' => $series, ]),
+                    'redirectpage' => $redirectpage,
+                    'series' => $series,
+                    ]
+                ),
                 new pix_icon('t/editstring', get_string('updatemetadata_short', 'tool_opencast')),
                 get_string('updatemetadata_short', 'tool_opencast')
             ));
@@ -1128,8 +1277,10 @@ class tool_opencast_renderer extends plugin_renderer_base {
         if ($canmanagetranscriptions) {
             // Event's transcriptions menu.
             $actionmenu->add(new action_menu_link_secondary(
-                new moodle_url('/admin/tool/opencast/managetranscriptions.php',
-                    ['video_identifier' => $videoidentifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]),
+                new moodle_url(
+                    '/admin/tool/opencast/managetranscriptions.php',
+                    ['video_identifier' => $videoidentifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+                ),
                 new pix_icon('caption', get_string('managetranscriptions', 'tool_opencast'), 'tool_opencast'),
                 get_string('managetranscriptions', 'tool_opencast')
             ));
@@ -1137,8 +1288,10 @@ class tool_opencast_renderer extends plugin_renderer_base {
 
         if ($useeditor) {
             $actionmenu->add(new action_menu_link_secondary(
-                new moodle_url('/admin/tool/opencast/videoeditor.php',
-                    ['video_identifier' => $videoidentifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]),
+                new moodle_url(
+                    '/admin/tool/opencast/videoeditor.php',
+                    ['video_identifier' => $videoidentifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+                ),
                 new pix_icon('e/cut', get_string('ocstateneedscutting', 'tool_opencast')),
                 get_string('videoeditor_short', 'tool_opencast'),
                 ['target' => '_blank']
@@ -1156,9 +1309,12 @@ class tool_opencast_renderer extends plugin_renderer_base {
 
         if ($canchangeowner) {
             $actionmenu->add(new action_menu_link_secondary(
-                new moodle_url('/admin/tool/opencast/changeowner.php',
+                new moodle_url(
+                    '/admin/tool/opencast/changeowner.php',
                     ['identifier' => $videoidentifier, 'ocinstanceid' => $ocinstanceid, 'courseid' => $courseid,
-                        'isseries' => false, ]),
+                    'isseries' => false,
+                    ]
+                ),
                 new pix_icon('t/user', get_string('changeowner', 'tool_opencast')),
                 get_string('changeowner', 'tool_opencast')
             ));
@@ -1266,8 +1422,10 @@ class tool_opencast_renderer extends plugin_renderer_base {
     public function render_defaults_settings_actions(int $ocinstanceid, int $courseid): string {
         $context = new stdClass();
         $context->hasanyactions = true;
-        $url = new moodle_url('/admin/tool/opencast/managedefaults.php',
-            ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+        $url = new moodle_url(
+            '/admin/tool/opencast/managedefaults.php',
+            ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+        );
         $context->managedefaultsurl = $url->out();
         return $this->render_from_template('tool_opencast/defaults_settings_actions', $context);
     }
@@ -1335,9 +1493,13 @@ class tool_opencast_renderer extends plugin_renderer_base {
                     $height = property_exists($media, 'height') ? $media->height : 0;
                     $name = ucwords(explode('/', $media->flavor)[0]) . ' (' . $width . 'x' . $height . ')';
                     $actionmenu->add(new action_menu_link_secondary(
-                        new moodle_url('/admin/tool/opencast/downloadvideo.php',
+                        new moodle_url(
+                            '/admin/tool/opencast/downloadvideo.php',
                             ['video_identifier' => $video->identifier, 'courseid' => $courseid,
-                                'mediaid' => $media->id, 'ocinstanceid' => $ocinstanceid, ]),
+                            'mediaid' => $media->id,
+                            'ocinstanceid' => $ocinstanceid,
+                            ]
+                        ),
                         null,
                         $name
                     ));
@@ -1385,14 +1547,20 @@ class tool_opencast_renderer extends plugin_renderer_base {
                     $width = property_exists($media, 'width') ? $media->width : 0;
                     $height = property_exists($media, 'height') ? $media->height : 0;
                     $name = ucwords(explode('/', $media->flavor)[0]) . ' (' . $width . 'x' . $height . ')';
-                    $url = new moodle_url('/admin/tool/opencast/directaccess.php',
+                    $url = new moodle_url(
+                        '/admin/tool/opencast/directaccess.php',
                         ['video_identifier' => $video->identifier, 'courseid' => $courseid,
-                            'mediaid' => $media->id, 'ocinstanceid' => $ocinstanceid, ]);
+                        'mediaid' => $media->id,
+                        'ocinstanceid' => $ocinstanceid,
+                        ]
+                    );
 
-                    $accesslink = new action_menu_link_secondary($url,
+                    $accesslink = new action_menu_link_secondary(
+                        $url,
                         new pix_icon('t/copy', get_string('directaccesscopylink', 'tool_opencast')),
                         $name,
-                        ['title' => get_string('directaccesscopylink', 'tool_opencast')]);
+                        ['title' => get_string('directaccesscopylink', 'tool_opencast')]
+                    );
                     $accesslink->attributes['class'] .= ' access-link-copytoclipboard';
                     $actionmenu->add($accesslink);
                 }
@@ -1515,8 +1683,14 @@ class tool_opencast_renderer extends plugin_renderer_base {
      *
      * @return stdClass the list item object.
      */
-    public function prepare_transcription_item_for_the_menu($transcriptionitem, $courseid, $ocinstanceid,
-                                                            $identifier, $domain, $languages) {
+    public function prepare_transcription_item_for_the_menu(
+        $transcriptionitem,
+        $courseid,
+        $ocinstanceid,
+        $identifier,
+        $domain,
+        $languages
+    ) {
         $lang = '';
         $itemtitle = '';
         $flavorsplitted = explode('/', $transcriptionitem->flavor, 2);
@@ -1569,15 +1743,23 @@ class tool_opencast_renderer extends plugin_renderer_base {
                     get_string('transcriptionunknownlanguage', 'tool_opencast', $lang);
 
         // Preparing delete url.
-        $deleteurl = new moodle_url('/admin/tool/opencast/deletetranscription.php',
+        $deleteurl = new moodle_url(
+            '/admin/tool/opencast/deletetranscription.php',
             ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid,
-                'video_identifier' => $identifier, 'transcription_identifier' => $item->id, ]);
+            'video_identifier' => $identifier,
+            'transcription_identifier' => $item->id,
+            ]
+        );
         $item->deleteurl = $deleteurl->out(false);
 
         // Preparing download url.
-        $downloadurl = new moodle_url('/admin/tool/opencast/downloadtranscription.php',
+        $downloadurl = new moodle_url(
+            '/admin/tool/opencast/downloadtranscription.php',
             ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid, 'domain' => $domain,
-                'video_identifier' => $identifier, 'transcription_identifier' => $item->id, ]);
+            'video_identifier' => $identifier,
+            'transcription_identifier' => $item->id,
+            ]
+        );
         $item->downloadurl = $downloadurl->out(false);
 
         return $item;
@@ -1703,7 +1885,6 @@ class tool_opencast_renderer extends plugin_renderer_base {
                         $default = $value;
                     }
                 }
-
             } else if ($nodetype === 'select') { // Conver select to moodle form element.
                 // Extract options.
                 $options = [];
@@ -1749,7 +1930,8 @@ class tool_opencast_renderer extends plugin_renderer_base {
         }
 
         if (!empty($configpanelelementmapping)) {
-            $mform->addElement('hidden',
+            $mform->addElement(
+                'hidden',
                 workflowconfiguration_helper::MAPPING_INPUT_HIDDEN_ID,
                 json_encode($configpanelelementmapping)
             );

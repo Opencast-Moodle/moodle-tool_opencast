@@ -1,4 +1,19 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -8,8 +23,7 @@ use OpencastApi\Opencast;
 
 class OcEventsApiTest extends TestCase
 {
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
         $ocRestApi = new Opencast($config, [], false);
@@ -20,9 +34,8 @@ class OcEventsApiTest extends TestCase
      * @test
      * @dataProvider \Tests\DataProvider\EventsDataProvider::getAllCases()
      */
-    public function get_all_events($params): void
-    {
-        $response =  $this->ocEventsApi->getAll($params);
+    public function get_all_events($params): void {
+        $response = $this->ocEventsApi->getAll($params);
 
         $this->assertSame(200, $response['code'], 'Failure to get event list');
     }
@@ -31,8 +44,7 @@ class OcEventsApiTest extends TestCase
      * @test
      * @dataProvider \Tests\DataProvider\EventsDataProvider::getBySeriesCases()
      */
-    public function get_event_by_series($seriesIdentifier): void
-    {
+    public function get_event_by_series($seriesIdentifier): void {
         $response = $this->ocEventsApi->getBySeries($seriesIdentifier);
         $this->assertSame(200, $response['code'], 'Failure to get event list by series id');
     }
@@ -40,8 +52,7 @@ class OcEventsApiTest extends TestCase
     /**
      * @test
      */
-    public function empty_random_event_id(): string
-    {
+    public function empty_random_event_id(): string {
         $identifier = '';
         $this->assertEmpty($identifier);
 
@@ -52,8 +63,7 @@ class OcEventsApiTest extends TestCase
      * @test
      * @depends empty_random_event_id
      */
-    public function get_single_event(string $identifier): string
-    {
+    public function get_single_event(string $identifier): string {
         $responseAll = $this->ocEventsApi->getAll(['withacl' => true, 'includeInternalPublication' => true]);
         $this->assertSame(200, $responseAll['code'], 'Failure to get event list');
         $events = $responseAll['body'];
@@ -74,8 +84,7 @@ class OcEventsApiTest extends TestCase
     /**
      * @test
      */
-    public function empty_created_id(): string
-    {
+    public function empty_created_id(): string {
         $createdEventIdentifier = '';
         $this->assertEmpty($createdEventIdentifier);
 
@@ -86,8 +95,7 @@ class OcEventsApiTest extends TestCase
      * @test
      * @depends empty_created_id
      */
-    public function create_and_update_event(string $createdEventIdentifier): string
-    {
+    public function create_and_update_event(string $createdEventIdentifier): string {
         $responseCreate = $this->ocEventsApi->create(
             \Tests\DataProvider\EventsDataProvider::getAcls(),
             \Tests\DataProvider\EventsDataProvider::getMetadata('presenter'),
@@ -96,7 +104,7 @@ class OcEventsApiTest extends TestCase
             \Tests\DataProvider\EventsDataProvider::getPresenterFile(),
             \Tests\DataProvider\EventsDataProvider::getPresentationFile(),
             \Tests\DataProvider\EventsDataProvider::getAudioFile(),
-            array($this, 'progressCallback')
+            [$this, 'progressCallback']
         );
         $this->assertContains($responseCreate['code'], [200, 201], 'Failure to create an event');
         $createdEventIdentifier = $responseCreate['body']->identifier;
@@ -114,26 +122,24 @@ class OcEventsApiTest extends TestCase
         return $createdEventIdentifier;
     }
 
-    public function progressCallback($downloadSize, $downloaded, $uploadSize, $uploaded)
-	{
+    public function progressCallback($downloadSize, $downloaded, $uploadSize, $uploaded) {
         set_time_limit(0);// Reset time limit for big files
         static $previous_progress = 0;
-		$progress = 0;
-        if($uploadSize > 0) {
-			$progress = round(($uploaded / $uploadSize)  * 100);
-		}
+        $progress = 0;
+        if ($uploadSize > 0) {
+            $progress = round(($uploaded / $uploadSize) * 100);
+        }
         if ($progress > $previous_progress) {
-			$previous_progress = $progress;
+            $previous_progress = $progress;
             file_put_contents(__DIR__ . '/../Results/progress.txt', $progress);
-		}
+        }
     }
 
     /**
      * @test
      * @depends create_and_update_event
      */
-    public function delete_events(string $createdEventIdentifier): void
-    {
+    public function delete_events(string $createdEventIdentifier): void {
         $response = $this->ocEventsApi->delete($createdEventIdentifier);
         $this->assertContains($response['code'], [202, 204], 'Failure to delete an event');
     }
@@ -142,8 +148,7 @@ class OcEventsApiTest extends TestCase
      * @test
      * @depends get_single_event
      */
-    public function add_tracks(string $identifier)
-    {
+    public function add_tracks(string $identifier) {
         $flavor = 'captions/source';
         $tags = [
             'archive',
@@ -203,8 +208,7 @@ class OcEventsApiTest extends TestCase
      * @test
      * @depends add_tracks
      */
-    public function get_update_delete_acls(string $identifier): string
-    {
+    public function get_update_delete_acls(string $identifier): string {
         // Get ACL.
         $response1 = $this->ocEventsApi->getAcl($identifier);
         $this->assertSame(200, $response1['code'], 'Failure to get ACLs of an event');
@@ -223,7 +227,7 @@ class OcEventsApiTest extends TestCase
         $this->assertNotEmpty($acls);
 
         // Delete all acls.
-        $response2 =  $this->ocEventsApi->emptyAcl($identifier);
+        $response2 = $this->ocEventsApi->emptyAcl($identifier);
         $this->assertSame(204, $response2['code'], 'Failure to delete ACLs of an event');
 
         // Prepare to update acls.
@@ -246,8 +250,7 @@ class OcEventsApiTest extends TestCase
      * @test
      * @depends get_update_delete_acls
      */
-    public function get_media(string $identifier): string
-    {
+    public function get_media(string $identifier): string {
         $response = $this->ocEventsApi->getMedia($identifier);
         $this->assertSame(200, $response['code'], 'Failure to get media of an event');
 
@@ -259,8 +262,7 @@ class OcEventsApiTest extends TestCase
      * @test
      * @depends get_media
      */
-    public function get_update_delete_metadata(string $identifier): string
-    {
+    public function get_update_delete_metadata(string $identifier): string {
         $response1 = $this->ocEventsApi->getMetadata($identifier);
         $this->assertSame(200, $response1['code'], 'Failure to get metadata of an event');
 
@@ -275,7 +277,6 @@ class OcEventsApiTest extends TestCase
         $response3 = $this->ocEventsApi->updateMetadata($identifier, $type, $metadata);
         $this->assertSame(204, $response3['code'], 'Failure to update type metadata of an event');
 
-
         $response4 = $this->ocEventsApi->deleteMetadata($identifier, $type);
         $this->assertSame(403, $response4['code'], 'Failure to delete type metadata of an event');
 
@@ -287,8 +288,7 @@ class OcEventsApiTest extends TestCase
      * @test
      * @depends get_update_delete_metadata
      */
-    public function get_publications(string $identifier): string
-    {
+    public function get_publications(string $identifier): string {
         $response1 = $this->ocEventsApi->getPublications($identifier, true, true);
         $this->assertSame(200, $response1['code'], 'Failure to get publications of an event');
 
@@ -312,8 +312,7 @@ class OcEventsApiTest extends TestCase
      * @test
      * @depends get_publications
      */
-    public function get_update_scheduling(string $identifier): void
-    {
+    public function get_update_scheduling(string $identifier): void {
         $response1 = $this->ocEventsApi->getScheduling($identifier);
         $this->assertContains($response1['code'], [200, 204], 'Failure to get scheduling of an event');
 
@@ -326,4 +325,3 @@ class OcEventsApiTest extends TestCase
         }
     }
 }
-?>

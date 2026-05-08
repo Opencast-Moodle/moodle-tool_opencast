@@ -1,4 +1,19 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -8,8 +23,7 @@ use OpencastApi\Opencast;
 
 class OcSeriesApiTest extends TestCase
 {
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
         $ocRestApi = new Opencast($config, [], false);
@@ -20,8 +34,7 @@ class OcSeriesApiTest extends TestCase
      * @test
      * @dataProvider \Tests\DataProvider\SeriesDataProvider::getAllCases()
      */
-    public function get_all_series($params): void
-    {
+    public function get_all_series($params): void {
         $response = $this->ocSeriesApi->getAll($params);
 
         $this->assertSame(200, $response['code'], 'Failure to get series list');
@@ -31,8 +44,7 @@ class OcSeriesApiTest extends TestCase
     /**
      * @test
      */
-    public function get_series_with_full_text_search(): void
-    {
+    public function get_series_with_full_text_search(): void {
         $response = $this->ocSeriesApi->getAll();
         $this->assertSame(200, $response['code'], 'Failure to get series list');
 
@@ -46,10 +58,9 @@ class OcSeriesApiTest extends TestCase
     /**
      * @test
      */
-    public function get_all_series_with_roles(): void
-    {
+    public function get_all_series_with_roles(): void {
         $params = [
-            'onlyWithWriteAccess' => true
+            'onlyWithWriteAccess' => true,
         ];
         $response = $this->ocSeriesApi->runWithRoles(['ROLE_ADMIN'])->getAll($params);
 
@@ -59,10 +70,9 @@ class OcSeriesApiTest extends TestCase
     /**
      * @test
      */
-    public function get_all_series_with_user(): void
-    {
+    public function get_all_series_with_user(): void {
         $params = [
-            'onlyWithWriteAccess' => true
+            'onlyWithWriteAccess' => true,
         ];
         $user = '   admin   ';
         $response = $this->ocSeriesApi->runAsUser($user)->getAll($params);
@@ -73,8 +83,7 @@ class OcSeriesApiTest extends TestCase
     /**
      * @test
      */
-    public function empty_created_id(): string
-    {
+    public function empty_created_id(): string {
         $createdSeriesIdentifier = '';
         $this->assertEmpty($createdSeriesIdentifier);
 
@@ -85,8 +94,7 @@ class OcSeriesApiTest extends TestCase
      * @test
      * @depends empty_created_id
      */
-    public function create_get_series(string $identifier): string
-    {
+    public function create_get_series(string $identifier): string {
         // Create Series.
         $response1 = $this->ocSeriesApi->create(
             \Tests\DataProvider\SeriesDataProvider::getMetadata(),
@@ -109,8 +117,7 @@ class OcSeriesApiTest extends TestCase
      * @test
      * @depends create_get_series
      */
-    public function get_update_delete_series_metadata(string $identifier): string
-    {
+    public function get_update_delete_series_metadata(string $identifier): string {
         // Get metadata.
         $response1 = $this->ocSeriesApi->getMetadata($identifier);
         $this->assertSame(200, $response1['code'], 'Failure to get series metadata');
@@ -155,8 +162,7 @@ class OcSeriesApiTest extends TestCase
      * @test
      * @depends get_update_delete_series_metadata
      */
-    public function get_update_delete_acls(string $identifier): string
-    {
+    public function get_update_delete_acls(string $identifier): string {
         // Get ACL.
         $response1 = $this->ocSeriesApi->getAcl($identifier);
         $this->assertSame(200, $response1['code'], 'Failure to get ACLs of a series');
@@ -165,7 +171,7 @@ class OcSeriesApiTest extends TestCase
         $this->assertNotEmpty($acls);
 
         // Delete all acls.
-        $response2 =  $this->ocSeriesApi->emptyAcl($identifier);
+        $response2 = $this->ocSeriesApi->emptyAcl($identifier);
         $this->assertSame(200, $response2['code'], 'Failure to delete ACLs of a series');
 
         // Prepare to update acls.
@@ -180,8 +186,7 @@ class OcSeriesApiTest extends TestCase
      * @test
      * @depends get_update_delete_acls
      */
-    public function add_get_update_properties(string $identifier): string
-    {
+    public function add_get_update_properties(string $identifier): string {
         // Add Properties.
         $response1 = $this->ocSeriesApi->addProperties(
             $identifier,
@@ -192,7 +197,7 @@ class OcSeriesApiTest extends TestCase
         $this->assertNotEmpty($properties);
 
         // Get Properties.
-        $response2 =  $this->ocSeriesApi->getProperties($identifier);
+        $response2 = $this->ocSeriesApi->getProperties($identifier);
         $this->assertSame(200, $response2['code'], 'Failure to get Properties of a series');
         $property = $response2['body'];
         $this->assertNotEmpty($property);
@@ -212,10 +217,8 @@ class OcSeriesApiTest extends TestCase
      * @test
      * @depends add_get_update_properties
      */
-    public function delete_series(string $identifier): void
-    {
+    public function delete_series(string $identifier): void {
         $response = $this->ocSeriesApi->delete($identifier);
         $this->assertSame(204, $response['code'], 'Failure to delete a series');
     }
 }
-?>

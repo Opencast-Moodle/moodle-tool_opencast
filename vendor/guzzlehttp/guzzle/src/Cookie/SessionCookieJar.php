@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp\Cookie;
 
@@ -25,8 +39,7 @@ class SessionCookieJar extends CookieJar
      * @param bool   $storeSessionCookies Set to true to store session cookies
      *                                    in the cookie jar.
      */
-    public function __construct(string $sessionKey, bool $storeSessionCookies = false)
-    {
+    public function __construct(string $sessionKey, bool $storeSessionCookies = false) {
         parent::__construct();
         $this->sessionKey = $sessionKey;
         $this->storeSessionCookies = $storeSessionCookies;
@@ -36,16 +49,14 @@ class SessionCookieJar extends CookieJar
     /**
      * Saves cookies to session when shutting down
      */
-    public function __destruct()
-    {
+    public function __destruct() {
         $this->save();
     }
 
     /**
      * Save cookies to the client session
      */
-    public function save(): void
-    {
+    public function save(): void {
         $json = [];
         /** @var SetCookie $cookie */
         foreach ($this as $cookie) {
@@ -60,8 +71,7 @@ class SessionCookieJar extends CookieJar
     /**
      * Load the contents of the client session into the data array
      */
-    protected function load(): void
-    {
+    protected function load(): void {
         if (!isset($_SESSION[$this->sessionKey])) {
             return;
         }
@@ -70,7 +80,7 @@ class SessionCookieJar extends CookieJar
             foreach ($data as $cookie) {
                 $this->setCookie(new SetCookie($cookie));
             }
-        } elseif (\strlen($data)) {
+        } else if (\strlen($data)) {
             throw new \RuntimeException('Invalid cookie data');
         }
     }

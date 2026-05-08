@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace GuzzleHttp;
 
@@ -23,13 +37,12 @@ final class Middleware
      *
      * @return callable Returns a function that accepts the next handler.
      */
-    public static function cookies(): callable
-    {
+    public static function cookies(): callable {
         return static function (callable $handler): callable {
             return static function ($request, array $options) use ($handler) {
                 if (empty($options['cookies'])) {
                     return $handler($request, $options);
-                } elseif (!($options['cookies'] instanceof CookieJarInterface)) {
+                } else if (!($options['cookies'] instanceof CookieJarInterface)) {
                     throw new \InvalidArgumentException('cookies must be an instance of GuzzleHttp\Cookie\CookieJarInterface');
                 }
                 $cookieJar = $options['cookies'];
@@ -55,8 +68,7 @@ final class Middleware
      *
      * @return callable(callable): callable Returns a function that accepts the next handler.
      */
-    public static function httpErrors(?BodySummarizerInterface $bodySummarizer = null): callable
-    {
+    public static function httpErrors(?BodySummarizerInterface $bodySummarizer = null): callable {
         return static function (callable $handler) use ($bodySummarizer): callable {
             return static function ($request, array $options) use ($handler, $bodySummarizer) {
                 if (empty($options['http_errors'])) {
@@ -85,8 +97,7 @@ final class Middleware
      *
      * @throws \InvalidArgumentException if container is not an array or ArrayAccess.
      */
-    public static function history(&$container): callable
-    {
+    public static function history(&$container): callable {
         if (!\is_array($container) && !$container instanceof \ArrayAccess) {
             throw new \InvalidArgumentException('history container must be an array or object implementing ArrayAccess');
         }
@@ -132,8 +143,7 @@ final class Middleware
      *
      * @return callable Returns a function that accepts the next handler.
      */
-    public static function tap(?callable $before = null, ?callable $after = null): callable
-    {
+    public static function tap(?callable $before = null, ?callable $after = null): callable {
         return static function (callable $handler) use ($before, $after): callable {
             return static function (RequestInterface $request, array $options) use ($handler, $before, $after) {
                 if ($before) {
@@ -154,8 +164,7 @@ final class Middleware
      *
      * @return callable Returns a function that accepts the next handler.
      */
-    public static function redirect(): callable
-    {
+    public static function redirect(): callable {
         return static function (callable $handler): RedirectMiddleware {
             return new RedirectMiddleware($handler);
         };
@@ -176,8 +185,7 @@ final class Middleware
      *
      * @return callable Returns a function that accepts the next handler.
      */
-    public static function retry(callable $decider, ?callable $delay = null): callable
-    {
+    public static function retry(callable $decider, ?callable $delay = null): callable {
         return static function (callable $handler) use ($decider, $delay): RetryMiddleware {
             return new RetryMiddleware($decider, $handler, $delay);
         };
@@ -195,8 +203,7 @@ final class Middleware
      *
      * @return callable Returns a function that accepts the next handler.
      */
-    public static function log(LoggerInterface $logger, $formatter, string $logLevel = 'info'): callable
-    {
+    public static function log(LoggerInterface $logger, $formatter, string $logLevel = 'info'): callable {
         // To be compatible with Guzzle 7.1.x we need to allow users to pass a MessageFormatter
         if (!$formatter instanceof MessageFormatter && !$formatter instanceof MessageFormatterInterface) {
             throw new \LogicException(sprintf('Argument 2 to %s::log() must be of type %s', self::class, MessageFormatterInterface::class));
@@ -227,8 +234,7 @@ final class Middleware
      * This middleware adds a default content-type if possible, a default
      * content-length or transfer-encoding header, and the expect header.
      */
-    public static function prepareBody(): callable
-    {
+    public static function prepareBody(): callable {
         return static function (callable $handler): PrepareBodyMiddleware {
             return new PrepareBodyMiddleware($handler);
         };
@@ -241,8 +247,7 @@ final class Middleware
      * @param callable $fn Function that accepts a RequestInterface and returns
      *                     a RequestInterface.
      */
-    public static function mapRequest(callable $fn): callable
-    {
+    public static function mapRequest(callable $fn): callable {
         return static function (callable $handler) use ($fn): callable {
             return static function (RequestInterface $request, array $options) use ($handler, $fn) {
                 return $handler($fn($request), $options);
@@ -257,8 +262,7 @@ final class Middleware
      * @param callable $fn Function that accepts a ResponseInterface and
      *                     returns a ResponseInterface.
      */
-    public static function mapResponse(callable $fn): callable
-    {
+    public static function mapResponse(callable $fn): callable {
         return static function (callable $handler) use ($fn): callable {
             return static function (RequestInterface $request, array $options) use ($handler, $fn) {
                 return $handler($request, $options)->then($fn);

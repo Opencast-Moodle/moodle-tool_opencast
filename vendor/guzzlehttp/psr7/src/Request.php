@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -58,8 +72,7 @@ class Request implements RequestInterface
         }
     }
 
-    public function getRequestTarget(): string
-    {
+    public function getRequestTarget(): string {
         if ($this->requestTarget !== null) {
             return $this->requestTarget;
         }
@@ -69,14 +82,13 @@ class Request implements RequestInterface
             $target = '/';
         }
         if ($this->uri->getQuery() != '') {
-            $target .= '?'.$this->uri->getQuery();
+            $target .= '?' . $this->uri->getQuery();
         }
 
         return $target;
     }
 
-    public function withRequestTarget($requestTarget): RequestInterface
-    {
+    public function withRequestTarget($requestTarget): RequestInterface {
         if (preg_match('#\s#', $requestTarget)) {
             throw new InvalidArgumentException(
                 'Invalid request target provided; cannot contain whitespace'
@@ -89,13 +101,11 @@ class Request implements RequestInterface
         return $new;
     }
 
-    public function getMethod(): string
-    {
+    public function getMethod(): string {
         return $this->method;
     }
 
-    public function withMethod($method): RequestInterface
-    {
+    public function withMethod($method): RequestInterface {
         $this->assertMethod($method);
         $new = clone $this;
         $new->method = strtoupper($method);
@@ -103,13 +113,11 @@ class Request implements RequestInterface
         return $new;
     }
 
-    public function getUri(): UriInterface
-    {
+    public function getUri(): UriInterface {
         return $this->uri;
     }
 
-    public function withUri(UriInterface $uri, $preserveHost = false): RequestInterface
-    {
+    public function withUri(UriInterface $uri, $preserveHost = false): RequestInterface {
         if ($uri === $this->uri) {
             return $this;
         }
@@ -124,8 +132,7 @@ class Request implements RequestInterface
         return $new;
     }
 
-    private function updateHostFromUri(): void
-    {
+    private function updateHostFromUri(): void {
         $host = $this->uri->getHost();
 
         if ($host == '') {
@@ -133,7 +140,7 @@ class Request implements RequestInterface
         }
 
         if (($port = $this->uri->getPort()) !== null) {
-            $host .= ':'.$port;
+            $host .= ':' . $port;
         }
 
         if (isset($this->headerNames['host'])) {
@@ -150,8 +157,7 @@ class Request implements RequestInterface
     /**
      * @param mixed $method
      */
-    private function assertMethod($method): void
-    {
+    private function assertMethod($method): void {
         if (!is_string($method) || $method === '') {
             throw new InvalidArgumentException('Method must be a non-empty string.');
         }

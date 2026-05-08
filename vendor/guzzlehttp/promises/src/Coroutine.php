@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -60,8 +74,7 @@ final class Coroutine implements PromiseInterface
      */
     private $result;
 
-    public function __construct(callable $generatorFn)
-    {
+    public function __construct(callable $generatorFn) {
         $this->generator = $generatorFn();
         $this->result = new Promise(function (): void {
             while (isset($this->currentPromise)) {
@@ -78,8 +91,7 @@ final class Coroutine implements PromiseInterface
     /**
      * Create a new coroutine.
      */
-    public static function of(callable $generatorFn): self
-    {
+    public static function of(callable $generatorFn): self {
         return new self($generatorFn);
     }
 
@@ -90,39 +102,32 @@ final class Coroutine implements PromiseInterface
         return $this->result->then($onFulfilled, $onRejected);
     }
 
-    public function otherwise(callable $onRejected): PromiseInterface
-    {
+    public function otherwise(callable $onRejected): PromiseInterface {
         return $this->result->otherwise($onRejected);
     }
 
-    public function wait(bool $unwrap = true)
-    {
+    public function wait(bool $unwrap = true) {
         return $this->result->wait($unwrap);
     }
 
-    public function getState(): string
-    {
+    public function getState(): string {
         return $this->result->getState();
     }
 
-    public function resolve($value): void
-    {
+    public function resolve($value): void {
         $this->result->resolve($value);
     }
 
-    public function reject($reason): void
-    {
+    public function reject($reason): void {
         $this->result->reject($reason);
     }
 
-    public function cancel(): void
-    {
+    public function cancel(): void {
         $this->currentPromise->cancel();
         $this->result->cancel();
     }
 
-    private function nextCoroutine($yielded): void
-    {
+    private function nextCoroutine($yielded): void {
         $this->currentPromise = Create::promiseFor($yielded)
             ->then([$this, '_handleSuccess'], [$this, '_handleFailure']);
     }
@@ -130,8 +135,7 @@ final class Coroutine implements PromiseInterface
     /**
      * @internal
      */
-    public function _handleSuccess($value): void
-    {
+    public function _handleSuccess($value): void {
         unset($this->currentPromise);
         try {
             $next = $this->generator->send($value);
@@ -148,8 +152,7 @@ final class Coroutine implements PromiseInterface
     /**
      * @internal
      */
-    public function _handleFailure($reason): void
-    {
+    public function _handleFailure($reason): void {
         unset($this->currentPromise);
         try {
             $nextYield = $this->generator->throw(Create::exceptionFor($reason));

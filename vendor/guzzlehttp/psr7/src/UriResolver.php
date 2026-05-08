@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -20,8 +34,7 @@ final class UriResolver
      *
      * @see https://datatracker.ietf.org/doc/html/rfc3986#section-5.2.4
      */
-    public static function removeDotSegments(string $path): string
-    {
+    public static function removeDotSegments(string $path): string {
         if ($path === '' || $path === '/') {
             return $path;
         }
@@ -31,7 +44,7 @@ final class UriResolver
         foreach ($segments as $segment) {
             if ($segment === '..') {
                 array_pop($results);
-            } elseif ($segment !== '.') {
+            } else if ($segment !== '.') {
                 $results[] = $segment;
             }
         }
@@ -40,8 +53,8 @@ final class UriResolver
 
         if ($path[0] === '/' && (!isset($newPath[0]) || $newPath[0] !== '/')) {
             // Re-add the leading slash if necessary for cases like "/.."
-            $newPath = '/'.$newPath;
-        } elseif ($newPath !== '' && ($segment === '.' || $segment === '..')) {
+            $newPath = '/' . $newPath;
+        } else if ($newPath !== '' && ($segment === '.' || $segment === '..')) {
             // Add the trailing slash if necessary
             // If newPath is not empty, then $segment must be set and is the last segment from the foreach
             $newPath .= '/';
@@ -55,8 +68,7 @@ final class UriResolver
      *
      * @see https://datatracker.ietf.org/doc/html/rfc3986#section-5.2
      */
-    public static function resolve(UriInterface $base, UriInterface $rel): UriInterface
-    {
+    public static function resolve(UriInterface $base, UriInterface $rel): UriInterface {
         if ((string) $rel === '') {
             // we can simply return the same base URI instance for this same-document reference
             return $base;
@@ -80,13 +92,13 @@ final class UriResolver
                     $targetPath = $rel->getPath();
                 } else {
                     if ($targetAuthority != '' && $base->getPath() === '') {
-                        $targetPath = '/'.$rel->getPath();
+                        $targetPath = '/' . $rel->getPath();
                     } else {
                         $lastSlashPos = strrpos($base->getPath(), '/');
                         if ($lastSlashPos === false) {
                             $targetPath = $rel->getPath();
                         } else {
-                            $targetPath = substr($base->getPath(), 0, $lastSlashPos + 1).$rel->getPath();
+                            $targetPath = substr($base->getPath(), 0, $lastSlashPos + 1) . $rel->getPath();
                         }
                     }
                 }
@@ -125,9 +137,9 @@ final class UriResolver
      *
      *    echo UriResolver::relativize($base, new Uri('/a/b/c'));  // prints 'c' as well
      */
-    public static function relativize(UriInterface $base, UriInterface $target): UriInterface
-    {
-        if ($target->getScheme() !== ''
+    public static function relativize(UriInterface $base, UriInterface $target): UriInterface {
+        if (
+            $target->getScheme() !== ''
             && ($base->getScheme() !== $target->getScheme() || $target->getAuthority() === '' && $base->getAuthority() !== '')
         ) {
             return $target;
@@ -171,8 +183,7 @@ final class UriResolver
         return $emptyPathUri;
     }
 
-    private static function getRelativePath(UriInterface $base, UriInterface $target): string
-    {
+    private static function getRelativePath(UriInterface $base, UriInterface $target): string {
         $sourceSegments = explode('/', $base->getPath());
         $targetSegments = explode('/', $target->getPath());
         array_pop($sourceSegments);
@@ -185,14 +196,14 @@ final class UriResolver
             }
         }
         $targetSegments[] = $targetLastSegment;
-        $relativePath = str_repeat('../', count($sourceSegments)).implode('/', $targetSegments);
+        $relativePath = str_repeat('../', count($sourceSegments)) . implode('/', $targetSegments);
 
         // A reference to am empty last segment or an empty first sub-segment must be prefixed with "./".
         // This also applies to a segment with a colon character (e.g., "file:colon") that cannot be used
         // as the first segment of a relative-path reference, as it would be mistaken for a scheme name.
         if ('' === $relativePath || false !== strpos(explode('/', $relativePath, 2)[0], ':')) {
             $relativePath = "./$relativePath";
-        } elseif ('/' === $relativePath[0]) {
+        } else if ('/' === $relativePath[0]) {
             if ($base->getAuthority() != '' && $base->getPath() === '') {
                 // In this case an extra slash is added by resolve() automatically. So we must not add one here.
                 $relativePath = ".$relativePath";
@@ -204,8 +215,7 @@ final class UriResolver
         return $relativePath;
     }
 
-    private function __construct()
-    {
+    private function __construct() {
         // cannot be instantiated
     }
 }
