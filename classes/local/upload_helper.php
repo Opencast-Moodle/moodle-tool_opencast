@@ -552,10 +552,10 @@ class upload_helper {
         $apibridge = apibridge::get_instance($job->ocinstanceid);
 
         switch ($job->status) {
-            case self::STATUS_READY_TO_UPLOAD:
+            case self::STATUS_READY_TO_UPLOAD: // Intentional fallthrough to next case.
                 $this->update_status($job, self::STATUS_CREATING_GROUP, true, true);
-                // Intentional fallthrough to next case.
-            case self::STATUS_CREATING_GROUP:
+
+            case self::STATUS_CREATING_GROUP: // Intentional fallthrough to next case in else branch.
                 if (boolval(get_config('tool_opencast', 'group_creation_' . $job->ocinstanceid))) {
                     try {
                         // Check if group exists.
@@ -573,7 +573,6 @@ class upload_helper {
                 } else {
                     // Move on to next status.
                     $this->update_status($job, self::STATUS_CREATING_SERIES);
-                    // Intentional fallthrough to next case.
                 }
 
             case self::STATUS_CREATING_SERIES:
