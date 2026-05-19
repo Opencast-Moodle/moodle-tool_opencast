@@ -72,5 +72,9 @@ class EventsDataProvider {
         $filename = "/test_files/video_test{$overwitestr}_{$lang}.vtt";
         return Psr7\Utils::tryFopen(__DIR__   . $filename, 'r');
     }
+    public static function getScheduling($captureId, $startdata, $enddata)
+    {
+        return '{"agent_id": "' . $captureId . '","start": "' . $startdata . '","end": "' . $enddata . '", "inputs": ["default"]}';
+    }
 }
 ?>

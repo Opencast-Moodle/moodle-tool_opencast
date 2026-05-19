@@ -3,10 +3,12 @@ This PHP composer package is meant to provide a unified easy-to-use Opencast RES
 Please refer to the [Change Log](https://github.com/elan-ev/opencast-php-library/blob/master/CHANGELOG.md) for more info.
 
 ## Note
-As of version 1.2.0 the main class name has been changed from `OpenCast` to `OpenCast`. Please refer to [Upgrade Log](https://github.com/elan-ev/opencast-php-library/blob/master/UPGRADING.md) for more info.
+As of version 1.2.0 the main class name has been changed from `OpenCast` to `Opencast`. Please refer to [Upgrade Log](https://github.com/elan-ev/opencast-php-library/blob/master/UPGRADING.md) for more info.
 
 # Requisitions
 <b>PHP Version 7.2.5 or above</b> as well as <b>cURL</b> are required. Additionaly, the [requirements](https://docs.guzzlephp.org/en/stable/overview.html#requirements) of [guzzlehttp/guzzle](https://packagist.org/packages/guzzlehttp/guzzle#7.0.0) must be fullfiled.
+
+<b>Note:</b> Starting from version 2.x, the minimum required PHP version is <b>8.1</b>.
 
 # Installation
 `composer require elan-ev/opencast-api`
@@ -28,6 +30,11 @@ $config = [
       'handler' => null,                               // The callable Handler or HandlerStack. (Default null). (optional)
       'features' => null,                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
       'guzzle' => null,                                // Additional Guzzle Request Options. These options can overwrite some default options (Default null). (optional)
+      'jwt' => [                                      // JWT Configuration. When exists, the JWT auth is activated.
+            'private_key' => '...',                   // Private Key in full text.
+            'algorithm' => 'ES256',                   // Algorithm with which the public/private key has been created
+            'expiration' => 3600,                     // The expiration duration of the token
+      ],
 ];
 
 $engageConfig = [
@@ -40,6 +47,11 @@ $engageConfig = [
       'handler' => null,                               // The callable Handler or HandlerStack. (Default null). (optional)
       'features' => null,                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
       'guzzle' => null,                                // Additional Guzzle Request Options. These options can overwrite some default options (Default null). (optional)
+      'jwt' => [                                      // JWT Configuration. When exists, the JWT auth is activated.
+            'private_key' => '...',                   // Private Key in full text.
+            'algorithm' => 'ES256',                   // Algorithm with which the public/private key has been created
+            'expiration' => 3600,                     // The expiration duration of the token
+      ],
 ];
 
 use OpencastApi\Opencast;
@@ -79,6 +91,11 @@ $config = [
       'handler' => null,                               // The callable Handler or HandlerStack. (Default null). (optional)
       'features' => null,                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
       'guzzle' => null,                                // Additional Guzzle Request Options. These options can overwrite some default options (Default null). (optional)
+      'jwt' => [                                      // JWT Configuration. When exists, the JWT auth is activated.
+            'private_key' => '...',                   // Private Key in full text.
+            'algorithm' => 'ES256',                   // Algorithm with which the public/private key has been created
+            'expiration' => 3600,                     // The expiration duration of the token
+      ],
 ];
 
 
@@ -120,12 +137,20 @@ $config = [
       'handler' => null,                               // The callable Handler or HandlerStack. (Default null). (optional)
       'features' => null,                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
       'guzzle' => null,                                // Additional Guzzle Request Options. These options can overwrite some default options (Default null). (optional)
+      'jwt' => [                                      // JWT Configuration. When exists, the JWT auth is activated.
+            'private_key' => '...',                   // Private Key in full text.
+            'algorithm' => 'ES256',                   // Algorithm with which the public/private key has been created
+            'expiration' => 3600,                     // The expiration duration of the token
+      ],
 ];
 ```
-**UPDATE (v1.9.0):** a new config parameter called "guzzle" is introduced, which is intended to pass additional guzzle request options to the call. These options will take precedence over the default configs like uri, auth and timeouts, but some other options like query, fome_params and json will be overwritten by the function if present.
-**UPDATE (v1.7.0):** the new items called `features` is added to the configuration array. As of now, it is meant to hanlde the toggle behavior to enable/disable Lucene search endpoint simply by adding `'features' => ['lucene' => true]`. Just keep in mind that this endpoint id off by default and won't work in Opencast 16 onwards. Therefore, developer must be very careful to use this feature and to toggle it!
+> **Update (v2.0.0):** A new configuration parameter has been introduced to enable **JWT authentication**, allowing the JWT component to issue and validate tokens. For more details, see the [JWT Authentication Mechanism](#jwt-authentication-mechanism).
 
-NOTE: the configuration for presentation (`engage` node) responsible for search has to follow the same definition as normal config. But in case any parameter is missing, the value will be taken from the main config param.
+> **UPDATE (v1.9.0):** a new config parameter called "guzzle" is introduced, which is intended to pass additional guzzle request options to the call. These options will take precedence over the default configs like uri, auth and timeouts, but some other options like query, fome_params and json will be overwritten by the function if present.
+
+> **UPDATE (v1.7.0):** the new items called `features` is added to the configuration array. As of now, it is meant to hanlde the toggle behavior to enable/disable Lucene search endpoint simply by adding `'features' => ['lucene' => true]`. Just keep in mind that this endpoint id off by default and won't work in Opencast 16 onwards. Therefore, developer must be very careful to use this feature and to toggle it!
+
+> NOTE: the configuration for presentation (`engage` node) responsible for search has to follow the same definition as normal config. But in case any parameter is missing, the value will be taken from the main config param.
 
 #### Extra: Dynamically loading the ingest endpoint class into Opencast instance.
 As of v1.3 it is possible to enable (Default) or disable  the ingest endpoint to be loaded into `OpencastApi\Opencast` by passing a boolean value as the last argument of the class as follows:
@@ -136,6 +161,172 @@ $opencastApiWithIngest = new Opencast($config, $engageConfig);
 $opencastApiWithoutIngest = new Opencast($config, $engageConfig, false);
 // ...
 ```
+# JWT Authentication Mechanism
+
+Starting from **version 2.0.0**, the Opencast PHP library introduces a **JWT-based authentication mechanism**.
+This feature handles issuing and verifying access tokens, creating Opencast-specific claims, and validating these claims.
+
+For details about Opencast's JWT configuration and claim standards, see the official documentation:
+👉 [Opencast Configuration for JWT-based Authentication and Authorization](https://docs.opencast.org/r/18.x/admin/#configuration/security.jwt/#configuration-for-jwt-based-authentication-and-authorization)
+
+---
+
+### Requirements
+
+To support this feature, some version requirements apply:
+
+* **PHP:** 8.1 or higher
+* **Opencast:** 18.0 or higher (JWT and ACL support required)
+
+---
+
+### Configuration
+
+To enable JWT authentication in this library, add the `jwt` configuration array to your existing setup:
+
+```php
+$config = [
+    ...,
+    'jwt' => [                                     // JWT configuration. When present, JWT auth is enabled.
+        'private_key' => '...',                    // Private key in full text.
+        'algorithm'   => 'ES256',                  // Algorithm used for key generation.
+        'expiration'  => 3600,                     // Token expiration time in seconds.
+    ],
+];
+```
+
+---
+
+### How to Use
+
+Before performing authenticated requests, you need to create an Opencast-specific claim using `OcJwtClaim`.
+
+```php
+use OpencastApi\Auth\JWT\OcJwtClaim;
+...
+
+// Example: Claim with event ACLs
+$ocClaim = new OcJwtClaim();
+$eventAcl = [
+    "{event id}" => ['read'],
+];
+$ocClaim->setEventAcls($eventAcl);
+// Also for series.
+$seriesAcl = [
+    "{series id}" => ['read', 'write'],
+];
+$ocClaim->setSeriesAcls($seriesAcl);
+// Also for playlists.
+$playlistAcl = [
+    "{playlist id}" => ['read', 'write'],
+];
+$ocClaim->setPlaylistAcls($playlistAcl);
+
+// Example: Claim with user info and roles
+$ocClaim = new OcJwtClaim();
+$name = 'JWT TEST USER 1';
+$username = 'jwt_test_user_1';
+$email = 'jwt_test_user_1@test.test';
+
+// User Info.
+$ocClaim->setUserInfoClaims($username, $name, $email);
+// Roles.
+$ocClaim->setRoles(['ROLE_USER_1', 'ROLE_JWT_USER_1']);
+
+
+// Creating from array is also there:
+$userInfoArray = [
+    'sub'   => 'jwt_test_user_2',
+    'name'  => 'JWT TEST USER 2',
+    'email' => 'jwt_test_user_2@test.test',
+    'roles' => ['ROLE_USER_2', 'ROLE_JWT_USER_2'],
+];
+
+$ocClaim = OcJwtClaim::createFromArray($userInfoArray);
+...
+```
+
+---
+
+#### Calling Endpoints with JWT
+
+You can call API endpoints using JWT simply by chaining the `withClaims()` method before the desired service:
+
+```php
+use OpencastApi\Opencast;
+use OpencastApi\Auth\JWT\OcJwtClaim;
+...
+
+$config = [
+    ...,
+    'jwt' => [
+        'private_key' => '...',
+        'algorithm'   => 'ES256',
+        'expiration'  => 3600,
+    ],
+];
+
+$api = new Opencast($config);
+
+$userInfoArray = [
+    'sub'   => 'jwt_test_user_2',
+    'name'  => 'JWT TEST USER 2',
+    'email' => 'jwt_test_user_2@test.test',
+    'roles' => ['ROLE_USER_2', 'ROLE_JWT_USER_2'],
+];
+
+$ocClaim = OcJwtClaim::createFromArray($userInfoArray);
+
+// Example endpoint call using JWT
+$response = $api->info->withClaims($ocClaim)->getInfoMeJson();
+...
+```
+
+---
+
+#### Token Generation and Validation
+
+This approach is typically used when you only need to generate or validate JWT access tokens. You first need to call `getJwtHandler()` from the Opencast class to obtain an instance of `OcJwtHandler` - the library's core JWT component - which provides access to the `validateToken()` and `issueToken()` methods.
+
+```php
+use OpencastApi\Opencast;
+use OpencastApi\Auth\JWT\OcJwtClaim;
+...
+
+$config = [
+    ...,
+    'jwt' => [
+        'private_key' => '...',
+        'algorithm'   => 'ES256',
+        'expiration'  => 3600,
+    ],
+];
+
+$api = new Opencast($config);
+
+$eventId = '1234...';
+
+$ocClaim = new OcJwtClaim();
+$eventAcl = [
+    "$eventId" => ['read'], // Allowed actions
+];
+$ocClaim->setEventAcls($eventAcl);
+
+// Issue a new token
+$accessToken = $api->getJwtHandler()->issueToken($ocClaim);
+
+// Attach token to a URL or include it in the Authorization header
+$staticFileUrl = '.../static/.../test.mp4' . '?jwt=' . $accessToken;
+
+// Validate the token
+$isValid = $api->getJwtHandler()->validateToken($accessToken);
+
+// Extract and compare claims
+$extractedOcClaim = $api->getJwtHandler()->getOcJwtClaimFromTokenString($accessToken);
+$comparingAclAction = ['read', 'write'];
+$matchedActions = $extractedOcClaim->actionsMatchFor(OcJwtClaim::OC_EVENT, $eventId, $comparingAclAction);
+```
+
 
 # Response
 The return result of each call is an `Array` containing the following information:
