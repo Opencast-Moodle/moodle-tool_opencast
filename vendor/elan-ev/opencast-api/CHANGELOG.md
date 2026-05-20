@@ -52,18 +52,27 @@
 - Fix for unauthorized access when extracting the Opencast API Version.
 
 # 1.9.0
-- Allow passing additional options to Guzzle [#30]
+- Allow passing additional options to Guzzle [#30](https://github.com/elan-ev/opencast-php-library/issues/30)
 - Added `OcUtils` class, a utility class providing additional functionality to simplify the integration and consumption of this library.
-  - Initially includes the `findValueByKey` function, which is meant to retrieve a specific value from the response body. [#33]
+  - Initially includes the `findValueByKey` function, which is meant to retrieve a specific value from the response body. [#33](https://github.com/elan-ev/opencast-php-library/issues/33)
 - WorkflowApi endpoint methods got updated
-  - `withconfigurationpaneljson` parameter has been added to `/api/workflow-definitions` endpoints. [#34]
+  - `withconfigurationpaneljson` parameter has been added to `/api/workflow-definitions` endpoints. [#34](https://github.com/elan-ev/opencast-php-library/issues/34)
   - `@deprecated` removal of OcWorkflowsApi::geAll() method!
-- Repair and enhance Event API `addTrack`under `/api/events/{eventId}/track` [#36]
+- Repair and enhance Event API `addTrack`under `/api/events/{eventId}/track` [#36](https://github.com/elan-ev/opencast-php-library/issues/36)
   - Tags are now added, therefore it can be replaced by ingest method.
   - overwriteExisting flag has been fixed and works as expected now!
-- Introduce `includeInternalPublication` in Events API `getAll`, `get` and `getPublications` methods [#37]
-- Deprecated methods cleanup! [#39]
+- Introduce `includeInternalPublication` in Events API `getAll`, `get` and `getPublications` methods [#37](https://github.com/elan-ev/opencast-php-library/issues/37)
+- Deprecated methods cleanup! [#39](https://github.com/elan-ev/opencast-php-library/issues/39)
   - `OcWorkflow->getStatistics()`
   - `OcWorkflow->getInstances()`
   - `OcSeries->getTitles()`
   - `OcSeries->getAll()`
+
+# 1.9.1
+- Make sure ingest service is selected only when it is online and active [#47](https://github.com/elan-ev/opencast-php-library/issues/47)
+
+# 2.0.0
+* Introduced **JWT Authentication Mechanism** [#50](https://github.com/elan-ev/opencast-php-library/issues/50)
+* Updated PHPUnit tests and configurations
+* Extended GitHub CI supported PHP versions to **8.1 – 8.4**
+* Return response body on HTTP errors (e.g. 409 Conflict) [#52](https://github.com/elan-ev/opencast-php-library/issues/52)

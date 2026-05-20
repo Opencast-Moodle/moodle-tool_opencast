@@ -14,19 +14,24 @@ class ComposerStaticInit8ba2ca4e105ea351f7cb241590a7de7e
     );
 
     public static $prefixLengthsPsr4 = array (
-        'P' => 
+        'P' =>
         array (
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
+            'Psr\\Clock\\' => 10,
         ),
-        'O' => 
+        'O' =>
         array (
             'OpencastApi\\Util\\' => 17,
             'OpencastApi\\Rest\\' => 17,
             'OpencastApi\\Mock\\' => 17,
             'OpencastApi\\' => 12,
         ),
-        'G' => 
+        'L' =>
+        array (
+            'Lcobucci\\JWT\\' => 13,
+        ),
+        'G' =>
         array (
             'GuzzleHttp\\Psr7\\' => 16,
             'GuzzleHttp\\Promise\\' => 19,
@@ -35,40 +40,48 @@ class ComposerStaticInit8ba2ca4e105ea351f7cb241590a7de7e
     );
 
     public static $prefixDirsPsr4 = array (
-        'Psr\\Http\\Message\\' => 
+        'Psr\\Http\\Message\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/http-factory/src',
             1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
-        'Psr\\Http\\Client\\' => 
+        'Psr\\Http\\Client\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/http-client/src',
         ),
-        'OpencastApi\\Util\\' => 
+        'Psr\\Clock\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/psr/clock/src',
+        ),
+        'OpencastApi\\Util\\' =>
         array (
             0 => __DIR__ . '/..' . '/elan-ev/opencast-api/src/OpencastApi/Util',
         ),
-        'OpencastApi\\Rest\\' => 
+        'OpencastApi\\Rest\\' =>
         array (
             0 => __DIR__ . '/..' . '/elan-ev/opencast-api/src/OpencastApi/Rest',
         ),
-        'OpencastApi\\Mock\\' => 
+        'OpencastApi\\Mock\\' =>
         array (
             0 => __DIR__ . '/..' . '/elan-ev/opencast-api/src/OpencastApi/Mock',
         ),
-        'OpencastApi\\' => 
+        'OpencastApi\\' =>
         array (
             0 => __DIR__ . '/..' . '/elan-ev/opencast-api/src/OpencastApi',
         ),
-        'GuzzleHttp\\Psr7\\' => 
+        'Lcobucci\\JWT\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/lcobucci/jwt/src',
+        ),
+        'GuzzleHttp\\Psr7\\' =>
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
         ),
-        'GuzzleHttp\\Promise\\' => 
+        'GuzzleHttp\\Promise\\' =>
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
         ),
-        'GuzzleHttp\\' => 
+        'GuzzleHttp\\' =>
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
