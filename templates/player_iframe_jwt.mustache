@@ -1,0 +1,42 @@
+{{!
+  This file is part of Moodle - http://moodle.org/
+
+  Moodle is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Moodle is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+  @template tool_opencast/player_iframe_jwt
+
+  Opencast iframe player for JWT template
+  The purpose of this template is to render a opencast video with JWT refresh token within an iframe
+
+  Example context (json):
+  {
+      "resolution": "500/300",
+      "width": "400",
+      "height": "250",
+      "wrapperclasses": "",
+      "iframeclasses": "",
+      "src": "http://localhost/play/1234",
+      "iframeid": "123",
+  }
+}}
+
+{{#resolution}}
+<div class="jwt-iframe-player-wrapper {{wrapperclasses}}" style="--aspect-ratio: {{resolution}}; {{#width}}width: {{width}};{{/width}}  {{#height}}height: {{height}}{{/height}}">
+{{/resolution}}
+{{^resolution}}
+<div class="jwt-iframe-player-wrapper {{wrapperclasses}}">
+{{/resolution}}
+    <iframe src="{{src}}" class="jwt-iframe {{iframeclasses}}" id="{{iframeid}}" allowfullscreen></iframe>
+</div>

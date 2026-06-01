@@ -39,8 +39,10 @@ $courseid = required_param('courseid', PARAM_INT);
 $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinstance()->id, PARAM_INT);
 
 $redirecturl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
-$baseurl = new moodle_url('/admin/tool/opencast/videoeditor.php',
-    ['video_identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/videoeditor.php',
+    ['video_identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
 $PAGE->set_url($baseurl);
 
 require_login($courseid, false);
@@ -54,6 +56,9 @@ $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_title(get_string('videoeditor_short', 'tool_opencast'));
 $PAGE->set_heading(get_string('servicename', 'tool_opencast'));
+
+echo $OUTPUT->header();
+echo $OUTPUT->heading(get_string('videoeditor_short', 'tool_opencast'));
 
 $endpoint = settings_api::get_apiurl($ocinstanceid);
 
@@ -75,31 +80,38 @@ if (strpos($editorbaseurl, 'http') !== 0) {
 
 $opencast = apibridge::get_instance($ocinstanceid);
 
-$consumerkey = $opencast->get_lti_consumerkey();
-$consumersecret = $opencast->get_lti_consumersecret();
-
-if (empty($consumerkey)) {
-    redirect($editorbaseurl . $editorendpoint);
-}
-
-$ltiendpoint = rtrim($editorbaseurl, '/') . '/lti';
-
 $video = $opencast->get_opencast_video($identifier);
 
 // Validate the video and make sure the video can be edited by the editor (double check).
-if ((empty($editorbaseurl) || empty($editorendpoint) ||
-    !$video || $video->error == true || !$opencast->can_edit_event_in_editor($video->video, $courseid))) {
+if (
+    (empty($editorbaseurl) || empty($editorendpoint) ||
+    !$video || $video->error == true || !$opencast->can_edit_event_in_editor($video->video, $courseid))
+) {
     redirect($redirecturl, get_string('videoeditorinvalidconfig', 'tool_opencast'), null, notification::NOTIFY_ERROR);
 }
 
-// Create parameters.
-$params = lti_helper::create_lti_parameters($consumerkey, $consumersecret, $ltiendpoint, $editorendpoint);
+if ($opencast->api->jwtservice->is_enabled()) {
+    $jwt = $opencast->api->jwtservice->issue_jwt_for_ext_service_editor();
+    $targeturl = $editorbaseurl . $editorendpoint;
+    echo $opencast->api->jwtservice->get_jwt_redirect_form($jwt, $targeturl);
+} else {
+    $consumerkey = $opencast->get_lti_consumerkey();
+    $consumersecret = $opencast->get_lti_consumersecret();
 
-$renderer = $PAGE->get_renderer('tool_opencast');
+    if (empty($consumerkey)) {
+        redirect($editorbaseurl . $editorendpoint);
+    }
 
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('videoeditor_short', 'tool_opencast'));
-echo $renderer->render_lti_form($ltiendpoint, $params);
+    $ltiendpoint = rtrim($editorbaseurl, '/') . '/lti';
 
-$PAGE->requires->js_call_amd('tool_opencast/block_lti_form_handler', 'init');
+    // Create parameters.
+    $params = lti_helper::create_lti_parameters($consumerkey, $consumersecret, $ltiendpoint, $editorendpoint);
+
+    $renderer = $PAGE->get_renderer('tool_opencast');
+
+    echo $renderer->render_lti_form($ltiendpoint, $params);
+
+    $PAGE->requires->js_call_amd('tool_opencast/block_lti_form_handler', 'init');
+}
+
 echo $OUTPUT->footer();
