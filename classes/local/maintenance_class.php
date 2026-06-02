@@ -388,8 +388,12 @@ class maintenance_class {
             $targetblacklisted = $this->is_path_blacklisted($tagetpath, $blacklist);
 
             // Exception: Calls going up to course from blacklist, or nothing to do with blacklist, we do nothing!
-            if ((!$fromblacklisted && !$targetblacklisted) || // Outside reaching or loading opencast.
-                (in_array($tagetpath, $whitelist) && $fromblacklisted)) { // Going back from plugin to course or somewhere else
+            if (
+                // Outside reaching or loading opencast.
+                (!$fromblacklisted && !$targetblacklisted) ||
+                // Going back from plugin to course or somewhere else.
+                (in_array($tagetpath, $whitelist) && $fromblacklisted)
+            ) {
                 return ['code' => 404];
             }
 
@@ -450,9 +454,8 @@ class maintenance_class {
      * to load the 'tool_opencast/maintenance' JavaScript module and passes the necessary
      * parameters to display the notification.
      *
-     * @global moodle_page $PAGE The global Moodle page object.
      * @return void
-     * @throws moodle_exception
+     * @throws \moodle_exception
      */
     public function handle_notification_message_display() {
         global $PAGE;
