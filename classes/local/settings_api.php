@@ -249,6 +249,138 @@ class settings_api {
     }
 
     /**
+     * Get the jwt activation config value for a specific Opencast instance.
+     *
+     * @param int $ocinstanceid The ID of the Opencast instance to retrieve the config value for.
+     *
+     * @return bool the activation value (either enabled:true or disabled/not-define: false)
+     *
+     * @throws \dml_exception If there's an error retrieving the configuration.
+     */
+    public static function get_jwt_activation(int $ocinstanceid) {
+        return (bool) get_config('tool_opencast', jwt_service::get_activation_config_id($ocinstanceid));
+    }
+
+    /**
+     * Get the jwt private key config value for a specific Opencast instance.
+     *
+     * @param int $ocinstanceid The ID of the Opencast instance to retrieve the config value for.
+     *
+     * @return mixed the jwt private key (full-text) string or false if not found.
+     *
+     * @throws \dml_exception If there's an error retrieving the configuration.
+     */
+    public static function get_jwt_private_key(int $ocinstanceid) {
+        return get_config('tool_opencast', jwt_service::get_private_key_config_id($ocinstanceid));
+    }
+
+    /**
+     * Get the jwt token lifetime duration config value for a specific Opencast instance.
+     *
+     * @param int $ocinstanceid The ID of the Opencast instance to retrieve the config value for.
+     *
+     * @return mixed the jwt token lifetime duration in seconds as number or false if not found.
+     *
+     * @throws \dml_exception If there's an error retrieving the configuration.
+     */
+    public static function get_jwt_token_duration(int $ocinstanceid) {
+        return get_config('tool_opencast', jwt_service::get_token_duration_config_id($ocinstanceid));
+    }
+
+    /**
+     * Get the video proxy specific jwt token lifetime duration config value for a specific Opencast instance.
+     *
+     * @param int $ocinstanceid The ID of the Opencast instance to retrieve the config value for.
+     *
+     * @return mixed the video proxy jwt token lifetime duration in seconds as number or false if not found.
+     *
+     * @throws \dml_exception If there's an error retrieving the configuration.
+     */
+    public static function get_jwt_video_proxy_token_duration(int $ocinstanceid) {
+        return get_config('tool_opencast', jwt_service::get_video_proxy_token_duration_config_id($ocinstanceid));
+    }
+
+    /**
+     * Get the jwt algorithm config value for a specific Opencast instance.
+     *
+     * @param int $ocinstanceid The ID of the Opencast instance to retrieve the config value for.
+     *
+     * @return mixed the jwt algorithm or false if not found.
+     *
+     * @throws \dml_exception If there's an error retrieving the configuration.
+     */
+    public static function get_jwt_algorithm(int $ocinstanceid) {
+        return get_config('tool_opencast', jwt_service::get_algorithm_config_id($ocinstanceid));
+    }
+
+    /**
+     * Get the jwt algorithm config value for a specific Opencast instance.
+     *
+     * @param int $ocinstanceid The ID of the Opencast instance to retrieve the config value for.
+     *
+     * @return mixed the jwt algorithm or false if not found.
+     *
+     * @throws \dml_exception If there's an error retrieving the configuration.
+     */
+    public static function get_jwt_player_iframe_url_path(int $ocinstanceid) {
+        return get_config('tool_opencast', jwt_service::get_player_iframe_url_path_config_id($ocinstanceid));
+    }
+
+    /**
+     * Get the list of jwt user roles to access Opencast Studio for a specific Opencast instance.
+     *
+     * @param int $ocinstanceid The ID of the Opencast instance to retrieve the config value for.
+     *
+     * @return array the Studio specific jwt user roles.
+     *
+     * @throws \dml_exception If there's an error retrieving the configuration.
+     */
+    public static function get_jwt_studio_roles(int $ocinstanceid): array {
+        $roleslist = [];
+        $configvalue = get_config('tool_opencast', jwt_service::get_studio_roles_config_id($ocinstanceid));
+        if (!empty($configvalue)) {
+            $roleslist = array_unique(array_map('trim', explode(',', $configvalue)));
+        }
+        return $roleslist;
+    }
+
+    /**
+     * Get the list of jwt user roles to access Opencast Editor for a specific Opencast instance.
+     *
+     * @param int $ocinstanceid The ID of the Opencast instance to retrieve the config value for.
+     *
+     * @return array the Editor specific jwt user roles.
+     *
+     * @throws \dml_exception If there's an error retrieving the configuration.
+     */
+    public static function get_jwt_editor_roles(int $ocinstanceid): array {
+        $roleslist = [];
+        $configvalue = get_config('tool_opencast', jwt_service::get_editor_roles_config_id($ocinstanceid));
+        if (!empty($configvalue)) {
+            $roleslist = array_unique(array_map('trim', explode(',', $configvalue)));
+        }
+        return $roleslist;
+    }
+
+    /**
+     * Get the list of jwt user roles to access Opencast Annotation-Tool for a specific Opencast instance.
+     *
+     * @param int $ocinstanceid The ID of the Opencast instance to retrieve the config value for.
+     *
+     * @return array the Annotation-tool specific jwt user roles.
+     *
+     * @throws \dml_exception If there's an error retrieving the configuration.
+     */
+    public static function get_jwt_annotation_roles(int $ocinstanceid): array {
+        $roleslist = [];
+        $configvalue = get_config('tool_opencast', jwt_service::get_annotation_roles_config_id($ocinstanceid));
+        if (!empty($configvalue)) {
+            $roleslist = array_unique(array_map('trim', explode(',', $configvalue)));
+        }
+        return $roleslist;
+    }
+
+    /**
      * Return the Opencast instance for the passed Opencast instance id, if any.
      * If no Opencast instance with this id is configured, null is returned.
      *

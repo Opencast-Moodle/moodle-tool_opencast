@@ -1,4 +1,3 @@
-<?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,19 +14,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Javascript to handle maintenance mode in tool opencast.
  *
- * @package     tool_opencast
- * @copyright   2024 Thomas Niedermaier <thomas.niedermaier@uni-muenster.de>
- * @copyright   2018 Tobias Reischmann <tobias.reischmann@wi.uni-muenster.de>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @module     tool_opencast/repository
+ * @copyright  2026 Farbod Zamani Boroujeni (zamani@elan-ev.de)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+import {call as fetchMany} from 'core/ajax';
 
-$plugin->component = 'tool_opencast';
-$plugin->release = 'v4.5-r7';
-$plugin->version = 2024111107;
-$plugin->requires = 2024100700; // Requires Moodle 4.5+.
-$plugin->supported = [405, 405];
-$plugin->maturity = MATURITY_STABLE;
+export const jwtRefreshToken = (
+    contextid,
+    ocinstanceid,
+    accesstoken,
+) => fetchMany([{
+    methodname: 'tool_opencast_jwt_refresh_token',
+    args: {
+        contextid,
+        ocinstanceid,
+        accesstoken,
+    },
+}])[0];

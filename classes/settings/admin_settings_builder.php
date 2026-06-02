@@ -18,6 +18,7 @@ namespace tool_opencast\settings;
 
 use tool_opencast\local\settings_api;
 use tool_opencast\local\maintenance_class;
+use tool_opencast\local\jwt_service;
 
 /**
  * Static admin setting builder class, which is used, to create and to add admin settings for tool_opencast.
@@ -112,6 +113,7 @@ class admin_settings_builder {
 
             self::add_notification_banner_for_demo_instance($settings, $instanceid);
             self::add_config_settings_fulltree($settings, $instanceid);
+            self::add_jwt_config_settings($settings, $instanceid);
             self::add_maintenance_mode_block($settings, $instanceid);
             self::add_connection_test_tool($settings, $instanceid);
 
@@ -347,6 +349,130 @@ class admin_settings_builder {
     }
 
     /**
+     * Adds the JWT configuration settings to the passed admin settingpage.
+     *
+     * @param \admin_settingpage $settings The admin settingpage to add the JWT settings to.
+     * @param int $instanceid The Opencast instance id for which the JWT settings are added.
+     * @return void
+     */
+    private static function add_jwt_config_settings(\admin_settingpage $settings, int $instanceid): void {
+        // The header.
+        $settings->add(
+            new \admin_setting_heading(
+                'tool_opencast/jwt_settingsheader_' . $instanceid,
+                get_string('jwt_settingsheader', 'tool_opencast'),
+                get_string('jwt_settingsheader_desc', 'tool_opencast')
+            )
+        );
+
+        // The main activation toggle.
+        $mainactivationid = jwt_service::get_activation_config_id($instanceid, true);
+        self::add_admin_setting_configcheckbox(
+            $settings,
+            $mainactivationid,
+            'jwt_enabled',
+            'jwt_enabled_desc',
+            false
+        );
+
+        // Private key.
+        $privatekeyid = jwt_service::get_private_key_config_id($instanceid, true);
+        self::add_admin_setting_configtextarea(
+            $settings,
+            $privatekeyid,
+            'jwt_privatekey',
+            'jwt_privatekey_desc',
+            '',
+            true
+        );
+        $settings->hide_if($privatekeyid, $mainactivationid, 'notchecked');
+
+        // Token long-time duration.
+        $durationkeyid = jwt_service::get_token_duration_config_id($instanceid, true);
+        self::add_admin_setting_configtext(
+            $settings,
+            $durationkeyid,
+            'jwt_tokenduration',
+            'jwt_tokenduration_desc',
+            jwt_service::CONFIGS_DEFAULT_TOKEN_DURATION,
+            PARAM_INT
+        );
+        $settings->hide_if($durationkeyid, $mainactivationid, 'notchecked');
+
+        // Token long-time duration.
+        $videoproxydurationkeyid = jwt_service::get_video_proxy_token_duration_config_id($instanceid, true);
+        self::add_admin_setting_configtext(
+            $settings,
+            $videoproxydurationkeyid,
+            'jwt_videoproxytokenduration',
+            'jwt_videoproxytokenduration_desc',
+            jwt_service::get_suggested_video_proxy_token_duration(),
+            PARAM_INT
+        );
+        $settings->hide_if($videoproxydurationkeyid, $mainactivationid, 'notchecked');
+
+        // Signing algorithm.
+        $algorithmid = jwt_service::get_algorithm_config_id($instanceid, true);
+        self::add_admin_setting_configselect(
+            $settings,
+            $algorithmid,
+            'jwt_algorithm',
+            'jwt_algorithm_desc',
+            jwt_service::CONFIGS_DEFAULT_ALGORITHM,
+            jwt_service::get_supported_algorithms()
+        );
+        $settings->hide_if($algorithmid, $mainactivationid, 'notchecked');
+
+        // Player iframe url path.
+        $playerurlpathkeyid = jwt_service::get_player_iframe_url_path_config_id($instanceid, true);
+        self::add_admin_setting_configtext(
+            $settings,
+            $playerurlpathkeyid,
+            'jwt_playeriframeurlpath',
+            'jwt_playeriframeurlpath_desc',
+            jwt_service::CONFIGS_DEFAULT_IFRAME_SRC_PATH,
+            PARAM_PATH
+        );
+        $settings->hide_if($playerurlpathkeyid, $mainactivationid, 'notchecked');
+
+        // Studio Roles.
+        $studioroleskeyid = jwt_service::get_studio_roles_config_id($instanceid, true);
+        self::add_admin_setting_configtext(
+            $settings,
+            $studioroleskeyid,
+            'jwt_studioroles',
+            'jwt_studioroles_desc',
+            jwt_service::CONFIGS_DEFAULT_STUDIO_ROLE,
+            PARAM_TAGLIST
+        );
+        $settings->hide_if($studioroleskeyid, $mainactivationid, 'notchecked');
+
+        // Editor roles.
+        $editorroleskeyid = jwt_service::get_editor_roles_config_id($instanceid, true);
+        self::add_admin_setting_configtext(
+            $settings,
+            $editorroleskeyid,
+            'jwt_editorroles',
+            'jwt_editorroles_desc',
+            jwt_service::CONFIGS_DEFAULT_EDITOR_ROLE,
+            PARAM_TAGLIST
+        );
+        $settings->hide_if($editorroleskeyid, $mainactivationid, 'notchecked');
+
+        // Annotation-tool roles.
+        $annotationtoolroleskeyid = jwt_service::get_annotation_roles_config_id($instanceid, true);
+        self::add_admin_setting_configtext(
+            $settings,
+            $annotationtoolroleskeyid,
+            'jwt_annotationroles',
+            'jwt_annotationroles_desc',
+            jwt_service::CONFIGS_DEFAULT_ANNOTATION_ROLE,
+            PARAM_TAGLIST
+        );
+        $settings->hide_if($annotationtoolroleskeyid, $mainactivationid, 'notchecked');
+    }
+
+    /**
      * Adds an admin setting configtext to the passed admin settingpage.
      *
      * @param \admin_settingpage $settings
@@ -476,6 +602,9 @@ class admin_settings_builder {
      * @param string $defaultsetting
      * The default setting for the configtextarea.
      *
+     * @param bool $blurable
+     * The flag to render a blurable version of the instance to mask out the content.
+     *
      * @param mixed $paramtype
      * The parameter type of the configtext.
      *
@@ -492,15 +621,30 @@ class admin_settings_builder {
                                                             string $visiblenameidentifier,
                                                             string $descriptionidentifier,
                                                             string $defaultsetting,
+                                                            bool $blurable = false,
                                                             $paramtype = PARAM_RAW,
                                                             string $cols='60',
                                                             string $rows='8'): void {
-        $settingconfigtextarea = new admin_setting_configtextarea(
+        $settingconfigtextarea = new \admin_setting_configtextarea(
             $name,
             get_string($visiblenameidentifier, self::PLUGINNAME),
             get_string($descriptionidentifier, self::PLUGINNAME),
-            $defaultsetting, $paramtype, $cols, $rows
+            $defaultsetting,
+            $paramtype,
+            $cols,
+            $rows
         );
+        if ($blurable) {
+            $settingconfigtextarea = new admin_setting_configtextareablured(
+                $name,
+                get_string($visiblenameidentifier, self::PLUGINNAME),
+                get_string($descriptionidentifier, self::PLUGINNAME),
+                $defaultsetting,
+                $paramtype,
+                $cols,
+                $rows
+            );
+        }
         $settings->add($settingconfigtextarea);
     }
 
@@ -591,6 +735,32 @@ class admin_settings_builder {
         );
         $settingconfigdatetimeselector->set_validate_function($validatefunction);
         $settings->add($settingconfigdatetimeselector);
+    }
+
+    /**
+     * Adds an admin setting configcheckbox to the passed admin settingpage.
+     *
+     * @param \admin_settingpage $settings The admin settingpage the configcheckbox is added to.
+     * @param string $name The internal name for the configcheckbox.
+     * @param string $visiblenameidentifier The identifier for the string used as the visible name.
+     * @param string $descriptionidentifier The identifier for the string used as the visible description.
+     * @param bool $defaultsetting The default checkbox state.
+     * @return void
+     */
+    private static function add_admin_setting_configcheckbox(
+        \admin_settingpage $settings,
+        string $name,
+        string $visiblenameidentifier,
+        string $descriptionidentifier,
+        bool $defaultsetting = false
+    ): void {
+        $settingconfigcheckbox = new \admin_setting_configcheckbox(
+            $name,
+            get_string($visiblenameidentifier, self::PLUGINNAME),
+            get_string($descriptionidentifier, self::PLUGINNAME),
+            $defaultsetting ? 1 : 0
+        );
+        $settings->add($settingconfigcheckbox);
     }
 
     /**

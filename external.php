@@ -38,7 +38,6 @@ require_once($CFG->libdir . '/authlib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_opencast_external extends external_api {
-
     /**
      * Describes the parameters for getting courses for a opencast instructor.
      *
@@ -79,6 +78,19 @@ class tool_opencast_external extends external_api {
                 'username' => new external_value(core_user::get_property_type('username'), 'User Name'),
             ]
         );
+    }
+
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_function_parameters
+     */
+    public static function jwt_refresh_token_parameters() {
+        return new external_function_parameters([
+            'contextid' => new external_value(PARAM_INT, 'The context id for the course'),
+            'ocinstanceid' => new external_value(PARAM_INT, 'The Opencast instance id'),
+            'accesstoken' => new external_value(PARAM_RAW, 'The old access token to generate a newer one from'),
+        ]);
     }
 
     /**
@@ -168,6 +180,42 @@ class tool_opencast_external extends external_api {
     }
 
     /**
+     * Gets a new access token for an event when needed.
+     *
+     * @param int $contextid The context id for the course.
+     * @param int $ocinstanceid Opencast instance id
+     * @param string $accesstoken Old access token.
+     *
+     * @return string New Access Token
+     */
+    public static function jwt_refresh_token(int $contextid, int $ocinstanceid, string $accesstoken) {
+        $params = self::validate_parameters(self::jwt_refresh_token_parameters(), [
+            'contextid' => $contextid,
+            'ocinstanceid' => $ocinstanceid,
+            'accesstoken' => $accesstoken,
+        ]);
+
+        $context = context::instance_by_id($params['contextid']);
+        self::validate_context($context);
+        require_capability('tool/opencast:learner', $context);
+
+        try {
+            $basicapi = \tool_opencast\local\api::get_instance(
+                $params['ocinstanceid'],
+                [],
+                [],
+                false,
+                false
+            );
+            $newaccestoken = $basicapi->jwtservice->refresh_access_token($params['ocinstanceid'], $params['accesstoken']);
+        } catch (\Throwable $th) {
+            throw new moodle_exception('jwt_error_refreshtokenfailed', 'tool_opencast', '', $th->getMessage());
+        }
+
+        return json_encode(['accesstoken' => $newaccestoken]);
+    }
+
+    /**
      * Describes the confirm_user return value.
      *
      * @return external_multiple_structure array of course ids
@@ -236,6 +284,15 @@ class tool_opencast_external extends external_api {
                 'status' => new external_value(PARAM_BOOL, 'Maintenance Synchronization result status'),
             ]
         );
+    }
+
+    /**
+     * Returns description of method result value
+     *
+     * @return external_description
+     */
+    public static function jwt_refresh_token_returns() {
+        return new external_value(PARAM_RAW, 'json array containing refresh access token');
     }
 
     /**

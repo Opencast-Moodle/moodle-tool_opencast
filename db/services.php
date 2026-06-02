@@ -69,6 +69,15 @@ $functions = [
         'ajax'          => true,
         'loginrequired' => true,
     ],
+    'tool_opencast_jwt_refresh_token' => [
+        'classname' => 'tool_opencast_external',
+        'methodname' => 'jwt_refresh_token',
+        'classpath' => 'admin/tool/opencast/external.php',
+        'description' => 'Gets a new access token for an event when needed.',
+        'type' => 'read',
+        'ajax' => true,
+        'capabilities' => 'tool/opencast:learner',
+    ],
 ];
 
 $services = [
