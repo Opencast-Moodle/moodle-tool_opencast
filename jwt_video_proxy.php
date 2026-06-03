@@ -62,13 +62,12 @@ $extendedduration = (int) settings_api::get_jwt_video_proxy_token_duration($ocin
 if ($duration && $duration > $extendedduration) {
     $extendedduration = $duration * 3;
 }
-
-$finalvideourl = $basicapi->jwtservice->attach_jwt_url_param_event(
+$finalvideourl = $basicapi?->jwtservice?->attach_jwt_url_param_event(
     $videoencodedurl,
     $identifier,
     [],
     $extendedduration
-);
+) ?? $videoencodedurl;
 
 header('Cache-Control: no-store, no-cache, must-revalidate');
 header('Pragma: no-cache');
