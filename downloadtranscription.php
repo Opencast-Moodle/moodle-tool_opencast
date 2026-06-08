@@ -134,7 +134,7 @@ if (
     $domain === 'media' &&
     !empty($result->video->media) &&
     !empty($publicationmedia) &&
-    !$apibridge->api->jwtservice->is_enabled()
+    !($apibridge->api?->jwtservice?->is_enabled() ?? false)
 ) {
     foreach ($result->video->media as $track) {
         if (
@@ -167,7 +167,7 @@ $consumersecret = $apibridge->get_lti_consumersecret();
 $performlti = true;
 // If no key is provided, we proceed with no LTI authentication.
 // We also forcefully turn off the LTI when JWT is activated.
-if (empty($consumerkey) || $apibridge->api->jwtservice->is_enabled()) {
+if (empty($consumerkey) || ($apibridge->api?->jwtservice?->is_enabled() ?? false)) {
     $performlti = false;
 }
 
