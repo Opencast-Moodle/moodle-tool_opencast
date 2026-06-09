@@ -283,7 +283,7 @@ class admin_setting_configdatetimeselector extends \admin_setting {
                         [
                             'name' => $this->get_element_name('calendar'),
                             'id' => $this->get_element_id('calendar'),
-                            'class' => 'btn btn-link'
+                            'class' => 'btn btn-link',
                         ]
                     );
                 }
