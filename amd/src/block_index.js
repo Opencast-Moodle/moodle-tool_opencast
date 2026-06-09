@@ -21,9 +21,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery', 'core/modal_factory', 'core/modal_events',
+define(['jquery', 'core/modal_save_cancel', 'core/modal_events',
     'core/str', 'core/url', 'core/notification', 'core/toast', 'core/ajax'],
-    function($, ModalFactory, ModalEvents, str, url, Notification, Toast, Ajax) {
+    function($, ModalSaveCancel, ModalEvents, str, url, Notification, Toast, Ajax) {
         /**
          * Instantiate the window variable in order to work with Intervals
          *
@@ -139,8 +139,7 @@ define(['jquery', 'core/modal_factory', 'core/modal_events',
                         '</div>' +
                         '</form>';
 
-                    ModalFactory.create({
-                        type: ModalFactory.types.SAVE_CANCEL,
+                    ModalSaveCancel.create({
                         title: ismassaction ? langstrings[13] : langstrings[5],
                         body: body
                     }, undefined)
@@ -250,8 +249,7 @@ define(['jquery', 'core/modal_factory', 'core/modal_events',
             $('.report-problem').on('click', function(e) {
                 e.preventDefault();
                 var clickedVideo = $(e.currentTarget);
-                ModalFactory.create({
-                    type: ModalFactory.types.SAVE_CANCEL,
+                ModalSaveCancel.create({
                     title: langstrings[0],
                     body: '<form id="reportProblemForm" method="post" action="' +
                         url.relativeUrl('admin/tool/opencast/reportproblem.php', {
@@ -497,8 +495,7 @@ define(['jquery', 'core/modal_factory', 'core/modal_events',
                 e.preventDefault();
                 var targetBtn = $(e.currentTarget);
                 var uploadjobid = targetBtn.data('id');
-                ModalFactory.create({
-                    type: ModalFactory.types.SAVE_CANCEL,
+                ModalSaveCancel.create({
                     title: langstrings[9],
                     body: langstrings[10]
                 })

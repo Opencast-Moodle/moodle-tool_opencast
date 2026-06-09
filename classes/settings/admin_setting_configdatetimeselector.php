@@ -279,10 +279,11 @@ class admin_setting_configdatetimeselector extends \admin_setting {
                 // code from form to ensure consistency.
                 if ($calendartype->get_name() === 'gregorian') {
                     $image = $OUTPUT->pix_icon('i/calendar', get_string('calendar', 'calendar'), 'moodle');
-                    $html .= ' ' . \html_writer::link('#', $image,
+                    $html .= ' ' . \html_writer::tag('button', $image,
                         [
                             'name' => $this->get_element_name('calendar'),
                             'id' => $this->get_element_id('calendar'),
+                            'class' => 'btn btn-link'
                         ]
                     );
                 }
