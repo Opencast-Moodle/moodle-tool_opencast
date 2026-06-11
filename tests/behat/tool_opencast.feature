@@ -5,7 +5,7 @@ Feature: Setup Opencast instances
   I need to be able to add, edit and delete instances
 
   Background:
-  Given the following config values are set as admin:
+    Given the following config values are set as admin:
       | config                      | value                                                         | plugin         |
       | apiurl_1                    | http://127.0.0.1:8080                                         | tool_opencast  |
       | apipassword_1               | opencast                                                      | tool_opencast  |
