@@ -24,7 +24,7 @@
 import Tabulator from 'tool_opencast/tabulator';
 import $ from 'jquery';
 import * as str from 'core/str';
-import ModalFactory from 'core/modal_factory';
+import ModalSaveCancel from 'core/modal_save_cancel';
 import ModalEvents from 'core/modal_events';
 import Fragment from 'core/fragment';
 import Ajax from 'core/ajax';
@@ -233,8 +233,7 @@ export const init = (contextid, ocinstanceid, createseries, series, numseriesall
                         input.checked = cell.getValue();
                         input.classList.add('ignoredirty');
                         input.addEventListener('change', function() {
-                            ModalFactory.create({
-                                type: ModalFactory.types.SAVE_CANCEL,
+                            ModalSaveCancel.create({
                                 title: jsstrings[13],
                                 body: jsstrings[14]
                             })
@@ -282,8 +281,7 @@ export const init = (contextid, ocinstanceid, createseries, series, numseriesall
                             return '<i class="icon fa fa-edit fa-fw"></i>';
                         },
                     cellClick: function(_, cell) {
-                        ModalFactory.create({
-                            type: ModalFactory.types.SAVE_CANCEL,
+                        ModalSaveCancel.create({
                             title: jsstrings[7],
                             body: getBody(contextid, ocinstanceid, cell.getRow().getCell("series").getValue())
                         })
@@ -330,8 +328,7 @@ export const init = (contextid, ocinstanceid, createseries, series, numseriesall
                             Notification.alert(jsstrings[16], jsstrings[17]);
                             return;
                         }
-                        ModalFactory.create({
-                            type: ModalFactory.types.SAVE_CANCEL,
+                        ModalSaveCancel.create({
                             title: jsstrings[5],
                             body: jsstrings[6]
                         })
@@ -381,8 +378,7 @@ export const init = (contextid, ocinstanceid, createseries, series, numseriesall
         // Create new series in modal
         // Button for connection a new series
         $('#createseries')?.click(function() {
-            ModalFactory.create({
-                type: ModalFactory.types.SAVE_CANCEL,
+            ModalSaveCancel.create({
                 title: jsstrings[4],
                 body: getBody(contextid, ocinstanceid, '', undefined)
             })
@@ -434,8 +430,7 @@ export const init = (contextid, ocinstanceid, createseries, series, numseriesall
                 }
             };
 
-            ModalFactory.create({
-                type: ModalFactory.types.SAVE_CANCEL,
+            ModalSaveCancel.create({
                 title: jsstrings[10],
                 body: Templates.render("core_form/element-text", context)
             })

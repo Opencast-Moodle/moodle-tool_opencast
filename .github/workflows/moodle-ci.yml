@@ -12,3 +12,4 @@ jobs:
     with:
       requires-block-plugin: true
       branch-block-plugin: main
+      perform-jwt-tests: true

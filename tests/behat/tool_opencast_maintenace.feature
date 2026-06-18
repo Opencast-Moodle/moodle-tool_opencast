@@ -17,7 +17,7 @@ Feature: Configure and check maintenance
       | teacher1 | C1     | editingteacher |
     And the following config values are set as admin:
       | config                      | value                                                         | plugin         |
-      | apiurl_1                    | https://stable.opencast.org                                   | tool_opencast  |
+      | apiurl_1                    | http://localhost:8080                                         | tool_opencast  |
       | apipassword_1               | opencast                                                      | tool_opencast  |
       | apiusername_1               | admin                                                         | tool_opencast  |
       | ocinstances                 | [{"id":1,"name":"Default","isvisible":true,"isdefault":true}] | tool_opencast  |
@@ -32,7 +32,7 @@ Feature: Configure and check maintenance
 
   @javascript
   Scenario: As an admin I should be able to configure the maintenance for an instance
-    Given I log in as "admin"
+    Given I am logged in as "admin"
     When I navigate to "Plugins > Admin tools > Opencast API > Configuration" in site administration
     Then "Enable" "option" should exist in the "#id_s_tool_opencast_maintenancemode_1" "css_element"
     And "Read Only" "option" should exist in the "#id_s_tool_opencast_maintenancemode_1" "css_element"
@@ -56,7 +56,7 @@ Feature: Configure and check maintenance
 
   @javascript
   Scenario: As an admin I should not be able to configure the maintenance in the past
-    Given I log in as "admin"
+    Given I am logged in as "admin"
     When I navigate to "Plugins > Admin tools > Opencast API > Configuration" in site administration
     Then I set the field "Maintenance mode" to "Enable"
     And I click on "#id_s_tool_opencast_maintenancemode_enddate_1_enabled" "css_element"
@@ -68,7 +68,7 @@ Feature: Configure and check maintenance
 
   @javascript
   Scenario: As an admin I should not be able to configure the false maintenance start date and end date
-    Given I log in as "admin"
+    Given I am logged in as "admin"
     When I navigate to "Plugins > Admin tools > Opencast API > Configuration" in site administration
     Then I set the field "Maintenance mode" to "Enable"
     And I click on "#id_s_tool_opencast_maintenancemode_enddate_1_enabled" "css_element"
@@ -86,7 +86,7 @@ Feature: Configure and check maintenance
   Scenario: Teachers should not be able to access the Opencast plugin during maintenance period
     # Although the scenario includes teachers, but the notifications in behat tests are remaining in the session only for admins,
     # therefore we need to use an admin user.
-    Given I log in as "admin"
+    Given I am logged in as "admin"
     And I setup block plugin
     And I make sure the block drawer keeps opened
     And I am on "Course 1" course homepage with editing mode on

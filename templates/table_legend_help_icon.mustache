@@ -32,15 +32,15 @@
     require([
     'jquery',
     'core/str',
-    'core/modal_factory',
+    'core/modal_cancel',
     'core/templates',
-    'core/notification'], function($, Str, ModalFactory, Templates, Notification) {
+    'core/notification'], function($, Str, ModalCancel, Templates, Notification) {
 
     $("#{{uniqid}}-legend-icon").click(function(e) {
     e.preventDefault();
 
     var titlePromise = Str.get_string('legendtitle', 'tool_opencast');
-    var modalPromise = ModalFactory.create({type: ModalFactory.types.CANCEL});
+    var modalPromise = ModalCancel.create();
     var bodyPromise = Templates.render('tool_opencast/table_legend_details', {
     {{#statushelpicon}}
         "showstatusdetails": "true"

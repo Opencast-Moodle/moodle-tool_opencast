@@ -3,17 +3,22 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Tests\OcTestCase;
 use OpencastApi\Opencast;
 
-class OcEventsApiTest extends TestCase
+#[\AllowDynamicProperties]
+class OcEventsApiTest extends OcTestCase
 {
+    private $ocEventsApi;
+    private $ocCaptureAdmin;
+
     protected function setUp(): void
     {
         parent::setUp();
         $config = \Tests\DataProvider\SetupDataProvider::getConfig();
         $ocRestApi = new Opencast($config, [], false);
         $this->ocEventsApi = $ocRestApi->eventsApi;
+        $this->ocCaptureAdmin = $ocRestApi->captureAdmin;
     }
 
     /**
@@ -324,6 +329,53 @@ class OcEventsApiTest extends TestCase
         } else {
             $this->markTestIncomplete('No scheduling to complete the test!');
         }
+    }
+
+    /**
+     * @test
+     */
+    public function scheduling_conflict(): void
+    {
+        $startdate = new \DateTime('now', new \DateTimeZone('UTC'));
+        $startdate->modify('+2 hours');
+        $startdateformated = $startdate->format('Y-m-d\TH:i:s.v\Z');
+
+        $enddate = new \DateTime('now', new \DateTimeZone('UTC'));
+        $enddate->modify('+3 hours');
+        $enddateformated = $enddate->format('Y-m-d\TH:i:s.v\Z');
+
+        $captureId = 'capture_' . time() . '_' . uniqid();
+        $response = $this->ocCaptureAdmin->setAgentState($captureId, 'idle');
+        $this->assertSame(200, $response['code'], 'Failed to create Capture Agent!');
+
+        $scheduling = \Tests\DataProvider\EventsDataProvider::getScheduling($captureId, $startdateformated, $enddateformated);
+
+        $responseScheduling = $this->ocEventsApi->create(
+            \Tests\DataProvider\EventsDataProvider::getAcls(),
+            \Tests\DataProvider\EventsDataProvider::getMetadata('presenter'),
+            \Tests\DataProvider\EventsDataProvider::getProcessing(),
+            $scheduling,
+            null,
+            null,
+            null,
+            null
+        );
+        $this->assertContains($responseScheduling['code'], [200, 201], 'Failure to schedule the event');
+
+        // Now we try to perform another scheudling, which should give us the 409 conflict.
+        $responseRepeatScheduling = $this->ocEventsApi->create(
+            \Tests\DataProvider\EventsDataProvider::getAcls(),
+            \Tests\DataProvider\EventsDataProvider::getMetadata('presenter'),
+            \Tests\DataProvider\EventsDataProvider::getProcessing(),
+            $scheduling,
+            null,
+            null,
+            null,
+            null
+        );
+        $this->assertSame(409, $responseRepeatScheduling['code'], 'Conflict not caught! Therefore something is wrong.');
+        $this->assertNotEmpty($responseRepeatScheduling['body']);
+        $this->assertNotEmpty($responseRepeatScheduling['body'][0]);
     }
 }
 ?>

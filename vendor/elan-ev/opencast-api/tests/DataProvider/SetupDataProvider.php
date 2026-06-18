@@ -27,6 +27,24 @@ class SetupDataProvider {
         return $config;
     }
 
+    public static function getConfigWithJwt($version = ''): array
+    {
+        $config = self::getConfig($version);
+        $config['url'] = 'https://oc-dev.elan-ev.de';
+        $config['username'] = 'unit_test_api_user';
+        $config['password'] = 'opencast';
+        $config['jwt'] = [
+            'private_key' => '-----BEGIN EC PRIVATE KEY-----
+MHcCAQEEIJyVBVwEP05kgIfOxLEjd7qWZPu1HYZ1lNEZrXDc0CWJoAoGCCqGSM49
+AwEHoUQDQgAENN9jCcHjZ8pCxPeM+rYSDlZm0OCLvTYdldHfs0zG4pks/NASlitO
+5N1sUX/zBEsYXdz11v5uGvQIZDivP30TDQ==
+-----END EC PRIVATE KEY-----',
+            'algorithm' => 'ES256',
+            'expiration' => 3600
+        ];
+        return $config;
+    }
+
     public static function getMockResponses($data): array
     {
         $responseNames = [];

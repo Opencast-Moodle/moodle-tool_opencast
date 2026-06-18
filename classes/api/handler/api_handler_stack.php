@@ -76,7 +76,7 @@ class api_handler_stack {
      *
      * @return bool Returns true if the handler was successfully added to the stack.
      *
-     * @throws moodle_exception If the handler stack is empty or the handler cannot be added.
+     * @throws \moodle_exception If the handler stack is empty or the handler cannot be added.
      */
     public function add_handler_to_stack(callable $middleware, string $name, bool $first = true): bool {
         if (!empty($this->handlerstack)) {
@@ -87,7 +87,7 @@ class api_handler_stack {
             }
             return true;
         }
-        throw new moodle_exception('exception_code_unabletoaddhandler', 'tool_opencast');
+        throw new \moodle_exception('exception_code_unabletoaddhandler', 'tool_opencast');
     }
 
     /**
