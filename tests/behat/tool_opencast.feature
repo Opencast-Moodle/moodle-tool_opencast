@@ -4,9 +4,17 @@ Feature: Setup Opencast instances
   As an admin
   I need to be able to add, edit and delete instances
 
+  Background:
+    Given the following config values are set as admin:
+      | config                      | value                                                         | plugin         |
+      | apiurl_1                    | http://127.0.0.1:8080                                         | tool_opencast  |
+      | apipassword_1               | opencast                                                      | tool_opencast  |
+      | apiusername_1               | admin                                                         | tool_opencast  |
+      | ocinstances                 | [{"id":1,"name":"Default","isvisible":true,"isdefault":true}] | tool_opencast  |
+
   @javascript
   Scenario: Users should be able to add a new OC instance
-    Given I log in as "admin"
+    Given I am logged in as "admin"
     And I navigate to "Plugins > Admin tools > Opencast API > Opencast Instances" in site administration
     And I click on "Add instance" "button"
     And I click on "//div[@id='instancestable']//div[@class='tabulator-table']/div[2]/div[@tabulator-field='name']" "xpath"
@@ -21,7 +29,7 @@ Feature: Setup Opencast instances
 
   @javascript
   Scenario: Users should not be able to delete the default OC instance
-    Given I log in as "admin"
+    Given I am logged in as "admin"
     And I navigate to "Plugins > Admin tools > Opencast API > Opencast Instances" in site administration
     And I click on "//div[@id='instancestable']//i[contains(@class, 'fa-trash')]" "xpath_element"
     And I click on "Delete" "button" in the "Delete instance" "dialogue"
@@ -31,7 +39,7 @@ Feature: Setup Opencast instances
 
   @javascript
   Scenario: Users should able to delete the old OC instance after selecting a new one
-    Given I log in as "admin"
+    Given I am logged in as "admin"
     And the following config values are set as admin:
       | config          | value                    | plugin         |
       | ocinstances          | [{"id":1,"name":"OC demo server","isvisible":true,"isdefault":true},{"id":2,"isvisible":1,"isdefault":false,"name":"Invalid server"}] | tool_opencast  |

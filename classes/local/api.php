@@ -44,7 +44,6 @@ require_once($CFG->dirroot . '/admin/tool/opencast/vendor/autoload.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class api extends \curl {
-
     /** @var string the api username */
     private $username;
     /** @var string the api password */
@@ -55,12 +54,16 @@ class api extends \curl {
     private $connecttimeout = 1000;
     /** @var string the api baseurl */
     private $baseurl;
+    /** @var ?array the jwt configuration */
+    private $jwt = null;
     /** @var \OpencastApi\Opencast the opencast endpoints instance */
     public $opencastapi;
     /** @var \OpencastApi\Rest\OcRestClient the opencast REST Client instance */
     public $opencastrestclient;
     /** @var \tool_opencast\local\maintenance_class the maintenance class instance */
     public $maintenance;
+    /** @var \tool_opencast\local\jwt_service the jwt service instance */
+    public $jwtservice;
 
     /** @var array array of supported api levels */
     private static $supportedapilevel;
@@ -143,23 +146,26 @@ class api extends \curl {
      * @param array $settings
      * @param array $customconfigs
      * @param boolean $enableingest whether to enable ingest upload.
+     * @param boolean $withmaintenance whether to enable maintenance feature for the instance.
      *
      * @return api|api_testable
      *
      * @throws \dml_exception
      * @throws \moodle_exception
      */
-    public static function get_instance($instanceid = null,
-                                        $settings = [],
-                                        $customconfigs = [],
-                                        $enableingest = false) {
-
+    public static function get_instance(
+        $instanceid = null,
+        $settings = [],
+        $customconfigs = [],
+        $enableingest = false,
+        $withmaintenance = true
+    ) {
         if (self::use_test_api() === true) {
             $apitestable = new api_testable($instanceid, $enableingest);
             return $apitestable;
         }
 
-        return new api($instanceid, $settings, $customconfigs, $enableingest);
+        return new api($instanceid, $settings, $customconfigs, $enableingest, $withmaintenance);
     }
 
     /**
@@ -202,13 +208,18 @@ class api extends \curl {
      *
      * @param boolean $enableingest whether to enable ingest upload.
      *
+     * @param boolean $withmaintenance whether to enable maintenance feature for the instance.
+     *
      * @throws \dml_exception
      * @throws \moodle_exception
      */
-    public function __construct($instanceid = null,
-                                $settings = [],
-                                $customconfigs = [],
-                                $enableingest = false) {
+    public function __construct(
+        $instanceid = null,
+        $settings = [],
+        $customconfigs = [],
+        $enableingest = false,
+        $withmaintenance = true
+    ) {
         // Allow access to local ips.
         $settings['ignoresecurity'] = true;
         parent::__construct($settings);
@@ -230,7 +241,12 @@ class api extends \curl {
             $this->timeout          = settings_api::get_apitimeout($storedconfigocinstanceid);
             $this->connecttimeout   = settings_api::get_apiconnecttimeout($storedconfigocinstanceid);
             $this->baseurl          = settings_api::get_apiurl($storedconfigocinstanceid);
-            $this->maintenance      = new maintenance_class($storedconfigocinstanceid);
+            $this->jwt              = jwt_service::get_jwt_api_config($storedconfigocinstanceid);
+            if ($withmaintenance) {
+                $this->maintenance = new maintenance_class($storedconfigocinstanceid);
+            } else {
+                $this->maintenance = null;
+            }
 
             if (empty($this->username)) {
                 throw new empty_configuration_exception('apiusernameempty', 'tool_opencast');
@@ -260,6 +276,10 @@ class api extends \curl {
             if (array_key_exists('apiconnecttimeout', $customconfigs)) {
                 $this->connecttimeout = $customconfigs['apiconnecttimeout'];
             }
+
+            if (array_key_exists('jwt', $customconfigs)) {
+                $this->jwt = $customconfigs['jwt'];
+            }
         }
 
         // If the admin omitted the protocol part, add the HTTPS protocol on-the-fly.
@@ -282,11 +302,16 @@ class api extends \curl {
             'password' => $this->password,
             'timeout' => (intval($this->timeout) / 1000),
             'connect_timeout' => (intval($this->connecttimeout) / 1000),
+            'jwt' => $this->jwt,
         ];
         $apihandlerstack = new api_handler_stack();
         $config['handler'] = $apihandlerstack->get_handler_stack();
         $this->opencastapi = $this->decorate_opencast_api_services($config, [], $enableingest);
         $this->opencastrestclient = new \tool_opencast\proxy\decorated_opencastapi_rest_client($config, $this->maintenance);
+
+        // JWT Service.
+        $ocisntanceid = isset($storedconfigocinstanceid) ? $storedconfigocinstanceid : $instanceid;
+        $this->jwtservice = new jwt_service($ocisntanceid, $this->opencastapi->getRestJwtHandler());
 
         // We notify the maintenance directly in constructor, to cover almost every external use of this class.
         $this->notify_maintenance();
@@ -421,7 +446,7 @@ class api extends \curl {
     public function oc_get($resource, $runwithroles = []) {
 
         throw new \coding_exception(__FUNCTION__ . '() has been marked as deprecated,' .
-            ' please use "Opencast PHP Library" via `opencastapi` property instead.');
+            ' please use "Opencast PHP Library" via "opencastapi" property instead.');
         // Check for maintenance first.
         if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
             return $this->maintenance->decide_access_bounce();
@@ -529,7 +554,7 @@ class api extends \curl {
     public function oc_post($resource, $params = [], $runwithroles = []) {
 
         throw new \coding_exception(__FUNCTION__ . '() has been marked as deprecated,' .
-            ' please use "Opencast PHP Library" via `opencastapi` property instead.');
+            ' please use "Opencast PHP Library" via "opencastapi" property instead.');
         // Check for maintenance first.
         if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
             return $this->maintenance->decide_access_bounce();
@@ -583,7 +608,7 @@ class api extends \curl {
     public function oc_put($resource, $params = [], $runwithroles = []) {
 
         throw new \coding_exception(__FUNCTION__ . '() has been marked as deprecated,' .
-            ' please use "Opencast PHP Library" via `opencastapi` property instead.');
+            ' please use "Opencast PHP Library" via "opencastapi" property instead.');
         // Check for maintenance first.
         if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {
             return $this->maintenance->decide_access_bounce();
@@ -627,7 +652,7 @@ class api extends \curl {
     public function oc_delete($resource, $params = [], $runwithroles = []) {
 
         throw new \coding_exception(__FUNCTION__ . '() has been marked as deprecated,' .
-            ' please use "Opencast PHP Library" via `opencastapi` property instead.');
+            ' please use "Opencast PHP Library" via "opencastapi" property instead.');
 
         // Check for maintenance first.
         if (!empty($this->maintenance) && !$this->maintenance->can_access(__FUNCTION__)) {

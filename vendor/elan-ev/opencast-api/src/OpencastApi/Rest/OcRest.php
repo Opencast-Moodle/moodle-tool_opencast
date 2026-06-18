@@ -1,6 +1,8 @@
 <?php
 namespace OpencastApi\Rest;
 
+use OpencastApi\Auth\JWT\OcJwtClaim;
+
 abstract class OcRest {
     /** @var OcRestClient */
     protected $restClient;
@@ -112,6 +114,19 @@ abstract class OcRest {
     public function setRequestConnectionTimeout($connectionTimeout = 0)
     {
         $this->restClient->setRequestConnectionTimeout($connectionTimeout);
+        return $this;
+    }
+
+    /**
+     * Sets the JWT claims of rest client class to be used for the request.
+     *
+     * @param OcJwtClaim $jwtClaims The JWT claims to set.
+     *
+     * @return object $this the class object where the call is requested from.
+     */
+    public function withClaims(OcJwtClaim $jwtClaims)
+    {
+        $this->restClient->setJwtClaims($jwtClaims);
         return $this;
     }
 }

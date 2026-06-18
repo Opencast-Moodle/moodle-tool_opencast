@@ -14,6 +14,7 @@ jobs:
           - "8.1"
           - "8.2"
           - "8.3"
+          - "8.4"
         dependency-versions:
           - "lowest"
           - "highest"
@@ -40,6 +41,16 @@ jobs:
     needs: compatibility
     name: PHPUnit Test
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - "8.1"
+          - "8.2"
+          - "8.3"
+          - "8.4"
+
     steps:
       - name: Repo checkout
         uses: actions/checkout@v4
@@ -47,13 +58,11 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: ${{ matrix.php-version }}
           coverage: none
 
       - name: Install composer dependencies
         uses: ramsey/composer-install@v3
-        with:
-          dependency-versions: 8.1
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit --display-incomplete --display-phpunit-deprecations  --display-deprecations --display-errors --display-warnings --display-skipped --display-notices

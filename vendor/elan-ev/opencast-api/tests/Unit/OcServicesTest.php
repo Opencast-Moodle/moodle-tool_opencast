@@ -3,11 +3,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Tests\OcTestCase;
 use OpencastApi\Opencast;
 
-class OcServicesTest extends TestCase
+#[\AllowDynamicProperties]
+class OcServicesTest extends OcTestCase
 {
+    private $ocServices;
+
     protected function setUp(): void
     {
         parent::setUp();

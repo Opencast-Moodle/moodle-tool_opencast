@@ -3,6 +3,7 @@ namespace OpencastApi;
 
 use OpencastApi\Rest\OcRestClient;
 use OpencastApi\Rest\OcIngest;
+use OpencastApi\Auth\JWT\OcJwtHandler;
 
 class Opencast
 {
@@ -72,6 +73,9 @@ class Opencast
     /** @var \OpencastApi\Rest\OcListProvidersApi $listProvidersApi */
     public $listProvidersApi;
 
+    /** @var \OpencastApi\Rest\OcInfo $info */
+    public $info;
+
     /*
         $config = [
             'url' => 'https://develop.opencast.org/',       // The API url of the opencast instance (required)
@@ -95,6 +99,11 @@ class Opencast
             'handler' => null,                               // The callable Handler or HandlerStack. (Default null). (optional)
             'features' => null,                              // A set of additional features [e.g. lucene search]. (Default null). (optional)
             'guzzle' => null,                                // Additional Guzzle Request Options. These options can overwrite some default options (Default null). (optional)
+            'jwt' => [                                      // JWT Configuration, null will deactivate the guard
+                'private_key' => 'your-private-key-content',    // Private Key string.
+                'algorithm' => 'ES256',                         // Selected algorithm. @see OpencastApi\Auth\JWT\OcJwtHandler::SUPPORTED_ALGORITHMS
+                'expiration' => 15                              // Expiration time in seconds. default to 15 seconds.
+            ],
         ]
     */
     /**
@@ -108,6 +117,16 @@ class Opencast
         $this->restClient = new OcRestClient($config);
         $this->setEngageRestClient($config, $engageConfig);
         $this->setEndpointProperties($config, $enableingest);
+    }
+
+    /**
+     * Get the JWT Handler from the Rest Client.
+     *
+     * @return OcJwtHandler|null
+     */
+    public function getRestJwtHandler(): ?OcJwtHandler
+    {
+        return $this->restClient->getJwtHandler();
     }
 
     private function setEndpointProperties($config, $enableingest)
@@ -181,6 +200,9 @@ class Opencast
         if (!isset($engageConfig['guzzle']) && isset($config['guzzle'])) {
             $engageConfig['guzzle'] = $config['guzzle'];
         }
+        if (!isset($engageConfig['jwt']) && isset($config['jwt'])) {
+            $engageConfig['jwt'] = $config['jwt'];
+        }
         $this->engageRestClient = new OcRestClient($engageConfig);
     }
 
@@ -193,10 +215,21 @@ class Opencast
         if (!empty($servicesJson['body']) && property_exists($servicesJson['body'], 'services')) {
             $service = $servicesJson['body']->services->service;
             if (is_array($service)) {
-                // Choose random ingest service.
-                $ingestService = $service[array_rand($service)];
+                // Filter running ingest services.
+                $running_services = array_filter($service, function ($s) {
+                    return $s->active && $s->online && !$s->maintenance;
+                });
+                // If no running services, return.
+                if (empty($running_services)) {
+                    return;
+                }
+                // Take the first running service.
+                $ingestService = reset($running_services);
             } else {
-                // There is only one.
+                // There is only one and is running.
+                if (!($service->active && $service->online && !$service->maintenance)) {
+                    return;
+                }
                 $ingestService = $service;
             }
 
