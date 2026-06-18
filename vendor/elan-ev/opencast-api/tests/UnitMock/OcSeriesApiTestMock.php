@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Tests\OcTestCase;
 use OpencastApi\Opencast;
 use \OpencastApi\Mock\OcMockHanlder;
 
-class OcSeriesApiTestMock extends TestCase
+#[\AllowDynamicProperties]
+class OcSeriesApiTestMock extends OcTestCase
 {
     protected function setUp(): void
     {

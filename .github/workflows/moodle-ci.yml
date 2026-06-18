@@ -12,3 +12,4 @@ jobs:
     with:
       requires-block-plugin: true
       branch-block-plugin: MOODLE_501_STABLE
+      perform-jwt-tests: true

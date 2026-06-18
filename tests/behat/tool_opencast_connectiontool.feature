@@ -4,9 +4,17 @@ Feature: Check the connection to Opencast instances
   As an admin
   I need to be able to check the connection
 
+  Background:
+    Given the following config values are set as admin:
+      | config                      | value                                                         | plugin         |
+      | apiurl_1                    | http://127.0.0.1:8080                                         | tool_opencast  |
+      | apipassword_1               | opencast                                                      | tool_opencast  |
+      | apiusername_1               | admin                                                         | tool_opencast  |
+      | ocinstances                 | [{"id":1,"name":"Default","isvisible":true,"isdefault":true}] | tool_opencast  |
+
   @javascript
   Scenario: When the admin is on a configuration section page and all connections configs are correct, the connection check should succeed
-    Given I log in as "admin"
+    Given I am logged in as "admin"
     And I navigate to "Plugins > Admin tools > Opencast API > Configuration" in site administration
     And I click on "Connection Test Tool" "button"
     And I wait "3" seconds
@@ -15,7 +23,7 @@ Feature: Check the connection to Opencast instances
 
   @javascript
   Scenario: When the admin is on a configuration section page and the apiurl is incorrect, the connection check should fail
-    Given I log in as "admin"
+    Given I am logged in as "admin"
     And I navigate to "Plugins > Admin tools > Opencast API > Configuration" in site administration
     And I set the following fields to these values:
       | Opencast API URL | http://notexistent.not |
@@ -26,7 +34,7 @@ Feature: Check the connection to Opencast instances
 
   @javascript
   Scenario: When the admin is on a configuration section page and the apiusername is incorrect, the connection check with credentials should fail
-    Given I log in as "admin"
+    Given I am logged in as "admin"
     And I navigate to "Plugins > Admin tools > Opencast API > Configuration" in site administration
     And I set the following fields to these values:
       | Username of Opencast API user | wrongapiuser |
@@ -37,7 +45,7 @@ Feature: Check the connection to Opencast instances
 
   @javascript
   Scenario: When two instances are given and the admin is on the second instance's configuration page, the connection check for the second instance with invalid data should fail
-    Given I log in as "admin"
+    Given I am logged in as "admin"
     And I navigate to "Plugins > Admin tools > Opencast API > Opencast Instances" in site administration
     And I click on "Add instance" "button"
     And I click on "//div[@id='instancestable']//div[@class='tabulator-table']/div[2]/div[@tabulator-field='name']" "xpath"

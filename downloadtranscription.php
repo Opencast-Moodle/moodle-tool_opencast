@@ -40,13 +40,19 @@ $domain = optional_param('domain', '', PARAM_ALPHA);
 $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinstance()->id, PARAM_INT);
 
 $indexurl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
-$baseurl = new moodle_url('/admin/tool/opencast/downloadtranscription.php',
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/downloadtranscription.php',
     ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid,
-        'video_identifier' => $identifier, 'transcription_identifier' => $transcriptionid, ]);
+    'video_identifier' => $identifier,
+    'transcription_identifier' => $transcriptionid,
+    ]
+);
 $PAGE->set_url($baseurl);
 
-$redirecturl = new moodle_url('/admin/tool/opencast/managetranscriptions.php',
-    ['video_identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$redirecturl = new moodle_url(
+    '/admin/tool/opencast/managetranscriptions.php',
+    ['video_identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
 
 require_login($courseid, false);
 
@@ -64,26 +70,34 @@ require_capability('tool/opencast:addvideo', $coursecontext);
 // Make sure transcription as well as the downlaod is enabled.
 $transcriptionmanagementenabled = (bool) get_config('tool_opencast', 'enablemanagetranscription_' . $ocinstanceid);
 if (!$transcriptionmanagementenabled) {
-    redirect($redirecturl,
-        get_string('transcriptionmanagementdisabled', 'tool_opencast'), null, notification::NOTIFY_ERROR);
+    redirect(
+        $redirecturl,
+        get_string('transcriptionmanagementdisabled', 'tool_opencast'),
+        null,
+        notification::NOTIFY_ERROR
+    );
 }
 
 $downloadenabled = get_config('tool_opencast', 'allowdownloadtranscription_' . $ocinstanceid);
 if (empty($downloadenabled)) {
-    redirect($redirecturl,
+    redirect(
+        $redirecturl,
         get_string('unabletodownloadtranscription', 'tool_opencast'),
         null,
-        notification::NOTIFY_ERROR);
+        notification::NOTIFY_ERROR
+    );
 }
 
 $apibridge = apibridge::get_instance($ocinstanceid);
 $result = $apibridge->get_opencast_video($identifier, true, false, true);
 // Make sure video is in good condition.
 if ($result->error || $result->video->processing_state != 'SUCCEEDED') {
-    redirect($redirecturl,
+    redirect(
+        $redirecturl,
         get_string('unabletodownloadtranscription', 'tool_opencast'),
         null,
-        notification::NOTIFY_ERROR);
+        notification::NOTIFY_ERROR
+    );
 }
 
 $downloadurl = '';
@@ -116,11 +130,18 @@ foreach ($result->video->publications as $publication) {
 
 // Here in order to have the right downloadable url for media, we need to find it from video media data.
 // This case happens when using LTI and redirecting to assets/assets, otherwise it displays the file.
-if ($domain === 'media' && !empty($result->video->media) && !empty($publicationmedia)) {
+if (
+    $domain === 'media' &&
+    !empty($result->video->media) &&
+    !empty($publicationmedia) &&
+    !($apibridge->api?->jwtservice?->is_enabled() ?? false)
+) {
     foreach ($result->video->media as $track) {
-        if ($track->mimetype == $publicationmedia->mediatype &&
+        if (
+            $track->mimetype == $publicationmedia->mediatype &&
             $track->flavor == $publicationmedia->flavor &&
-            $track->tags == $publicationmedia->tags) {
+            $track->tags == $publicationmedia->tags
+        ) {
             $downloadurl = $track->uri;
             $size = $track->size;
             $mimetype = $track->mimetype;
@@ -130,10 +151,12 @@ if ($domain === 'media' && !empty($result->video->media) && !empty($publicationm
 }
 
 if (empty($downloadurl)) {
-    redirect($redirecturl,
+    redirect(
+        $redirecturl,
         get_string('unabletodownloadtranscription', 'tool_opencast'),
         null,
-        notification::NOTIFY_ERROR);
+        notification::NOTIFY_ERROR
+    );
 }
 
 // Get the LTI required credentials.
@@ -143,7 +166,8 @@ $consumersecret = $apibridge->get_lti_consumersecret();
 // We set a flag to determine whether we should perform LTI authentication.
 $performlti = true;
 // If no key is provided, we proceed with no LTI authentication.
-if (empty($consumerkey)) {
+// We also forcefully turn off the LTI when JWT is activated.
+if (empty($consumerkey) || ($apibridge->api?->jwtservice?->is_enabled() ?? false)) {
     $performlti = false;
 }
 
@@ -158,8 +182,12 @@ if ($performlti) {
     $ltiendpoint = rtrim($endpoint, '/') . '/lti';
 
     // Create parameters.
-    $params = lti_helper::create_lti_parameters($consumerkey, $consumersecret,
-        $ltiendpoint, $downloadurl);
+    $params = lti_helper::create_lti_parameters(
+        $consumerkey,
+        $consumersecret,
+        $ltiendpoint,
+        $downloadurl
+    );
 
     $renderer = $PAGE->get_renderer('tool_opencast');
     echo $OUTPUT->header();
@@ -171,13 +199,14 @@ if ($performlti) {
     echo $OUTPUT->footer();
 } else {
     ob_clean();
-    $urlparts = explode('/', $downloadurl);
-    $filename = $urlparts[count($urlparts) - 1];
+    $filename = basename(parse_url($downloadurl, PHP_URL_PATH));
 
     header('Content-Description: Download Transcription File');
     header('Content-Type: ' . $mimetype);
     header('Content-Disposition: attachment; filename*=UTF-8\'\'' . rawurlencode($filename));
-    header('Content-Length: ' . $size);
+    if (is_numeric($size) && $size > 0) {
+        header('Content-Length: ' . $size);
+    }
 
     if (is_https()) { // HTTPS sites - watch out for IE! KB812935 and KB316431.
         header('Cache-Control: private, max-age=10, no-transform');

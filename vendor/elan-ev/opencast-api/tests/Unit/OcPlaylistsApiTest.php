@@ -3,11 +3,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Tests\OcTestCase;
 use OpencastApi\Opencast;
 
-class OcPlaylistsApiTest extends TestCase
+#[\AllowDynamicProperties]
+class OcPlaylistsApiTest extends OcTestCase
 {
+    private $ocPlaylistsApi;
+
     protected function setUp(): void
     {
         parent::setUp();

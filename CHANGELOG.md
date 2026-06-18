@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+5.1.1 (2026-07-22)
+------------------
+* [FEATURE] #114 Integrate JWT authentication core and tests
+
+
 5.1.0 (2026-01-17)
 ------------------
 * Moodle 5.1 compatible version
