@@ -263,14 +263,14 @@ function xmldb_tool_opencast_upgrade($oldversion) {
     }
 
     // In this upgrade, we need to switch the url of existing Opencast H5P and HVP records.
-    if ($oldversion < 2026042804) {
+    if ($oldversion < 2026060801) {
         // Up until now, both och5pcore and och5p only support default opencast instance!
         $defaultocinstanceid = settings_api::get_default_ocinstance()->id;
         $defaultapiurl = settings_api::get_apiurl($defaultocinstanceid);
         change_h5p_opencast_content_urls_with_proxy($defaultapiurl);
         change_hvp_opencast_content_urls_with_proxy($defaultapiurl);
 
-        upgrade_plugin_savepoint(true, 2026042804, 'tool', 'opencast');
+        upgrade_plugin_savepoint(true, 2026060801, 'tool', 'opencast');
     }
 
     return true;
@@ -456,6 +456,9 @@ function get_h5p_hvp_interactive_video_entries(
     string $mainlibidcolname
 ): ?array {
     global $DB;
+    if (!$DB->record_exists($libtablename, $libparams)) {
+        return null;
+    }
     $interactivevideolibs = $DB->get_records($libtablename, $libparams);
     if (!$interactivevideolibs) {
         return null;
@@ -469,6 +472,9 @@ function get_h5p_hvp_interactive_video_entries(
     );
 
     $sql = "SELECT * FROM {" . $maintablename . "} WHERE $mainlibidcolname $insql";
+    if (!$DB->record_exists_sql($sql, $params)) {
+        return null;
+    }
 
     return $DB->get_records_sql($sql, $params);
 }

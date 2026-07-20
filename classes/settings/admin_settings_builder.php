@@ -2240,17 +2240,17 @@ class admin_settings_builder {
         );
         $settings->hide_if($algorithmid, $mainactivationid, 'notchecked');
 
-        // Player iframe url path.
-        $playerurlpathkeyid = jwt_service::get_player_iframe_url_path_config_id($instanceid, true);
+        // Player iframe url.
+        $playerurlkeyid = jwt_service::get_player_iframe_url_config_id($instanceid, true);
         self::add_admin_setting_configtext(
             $settings,
-            $playerurlpathkeyid,
-            'jwt_playeriframeurlpath',
-            'jwt_playeriframeurlpath_desc',
-            jwt_service::CONFIGS_DEFAULT_IFRAME_SRC_PATH,
-            PARAM_PATH
+            $playerurlkeyid,
+            'jwt_playeriframeurl',
+            'jwt_playeriframeurl_desc',
+            '',
+            PARAM_URL
         );
-        $settings->hide_if($playerurlpathkeyid, $mainactivationid, 'notchecked');
+        $settings->hide_if($playerurlkeyid, $mainactivationid, 'notchecked');
 
         // Studio Roles.
         $studioroleskeyid = jwt_service::get_studio_roles_config_id($instanceid, true);
