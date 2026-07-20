@@ -463,7 +463,10 @@ function get_h5p_hvp_interactive_video_entries(
 ): ?array {
     global $DB;
     if (!$DB->get_manager()->table_exists($libtablename)) {
-            return null;
+        return null;
+    }
+    if (!$DB->record_exists($libtablename, $libparams)) {
+        return null;
     }
     $interactivevideolibs = $DB->get_records($libtablename, $libparams);
     if (!$interactivevideolibs) {
@@ -478,6 +481,9 @@ function get_h5p_hvp_interactive_video_entries(
     );
 
     $sql = "SELECT * FROM {" . $maintablename . "} WHERE $mainlibidcolname $insql";
+    if (!$DB->record_exists_sql($sql, $params)) {
+        return null;
+    }
 
     return $DB->get_records_sql($sql, $params);
 }
