@@ -103,9 +103,9 @@ class jwt_service {
     public const CONFIG_ID_ALGORITHM = 'jwt_algorithm';
 
     /**
-     * @var string The config id for player iframe url path.
+     * @var string The config id for player iframe url.
      */
-    public const CONFIG_ID_PLAYER_IFRAME_URL_PATH = 'jwt_playeriframeurlpath';
+    public const CONFIG_ID_PLAYER_IFRAME_URL = 'jwt_playeriframeurl';
 
     /**
      * @var string The config id for studio roles.
@@ -476,19 +476,16 @@ class jwt_service {
      *
      * @param int $ocinstanceid The Opencast instance id used to resolve the API URL.
      * @param string $identifier The event identifier to insert into the iframe path.
-     * @param string|null $baseurl Optional base URL override for the iframe source.
      * @return string The resolved iframe source URL.
      */
-    public function generate_iframe_source_url(int $ocinstanceid, string $identifier, ?string $baseurl = null): string {
-        if (empty($baseurl)) {
+    public function prepare_iframe_source_url(int $ocinstanceid, string $identifier): string {
+        if (!$configurl = settings_api::get_jwt_player_iframe_url($ocinstanceid)) {
+            // Fallback to a basic all-in-one player url.
             $baseurl = settings_api::get_apiurl($ocinstanceid);
+            $configurl = rtrim($baseurl, '/') . self::CONFIGS_DEFAULT_IFRAME_SRC_PATH;
         }
-        $parsedurl = parse_url($baseurl);
-
-        if (!$configpath = settings_api::get_jwt_player_iframe_url_path($ocinstanceid)) {
-            $configpath = self::CONFIGS_DEFAULT_IFRAME_SRC_PATH;
-        }
-        $configpath = '/' . ltrim($configpath, '/');
+        $parsedurl = parse_url($configurl);
+        $configpath = $parsedurl['path'];
         $path = str_replace('{id}', $identifier, $configpath);
         $parsedurl['path'] = $path;
         $query = !empty($parsedurl['query']) ? $parsedurl['query'] : '';
@@ -516,7 +513,6 @@ class jwt_service {
      * @param int $ocinstanceid The Opencast instance id used to resolve the iframe source.
      * @param string $identifier The event or media identifier for the iframe source.
      * @param array $classes Optional CSS classes to apply to the iframe element.
-     * @param string|null $baseurl Optional custom base URL for the iframe source.
      * @param string|null $resolution Optional resolution string for the iframe.
      * @param string|null $width Optional width attribute for the iframe.
      * @param string|null $height Optional height attribute for the iframe.
@@ -526,7 +522,6 @@ class jwt_service {
         int $ocinstanceid,
         string $identifier,
         array $classes = [],
-        ?string $baseurl = null,
         ?string $resolution = null,
         ?string $width = null,
         ?string $height = null
@@ -537,7 +532,7 @@ class jwt_service {
         }
         $coursecontext = \context_course::instance($COURSE->id, IGNORE_MISSING);
         $iframeid = uniqid("jwt-iframe-{$identifier}-");
-        $src = $this->generate_iframe_source_url($ocinstanceid, $identifier, $baseurl);
+        $src = $this->prepare_iframe_source_url($ocinstanceid, $identifier);
         $srcwithjwt = $this->attach_jwt_url_param_event($src, $identifier);
         $PAGE->requires->js_call_amd(
             'tool_opencast/tool_jwt_service',
@@ -1040,13 +1035,13 @@ class jwt_service {
     }
 
     /**
-     * Return the config id for player iframe url path setting of each instance.
+     * Return the config id for player iframe url setting of each instance.
      * @param int $ocintanceid Opencast instance id
      * @param bool $withpluginname A flag to add the plugin name prefix.
      * @return string config id
      */
-    public static function get_player_iframe_url_path_config_id(int $ocintanceid, bool $withpluginname = false): string {
-        return self::generate_config_id(self::CONFIG_ID_PLAYER_IFRAME_URL_PATH, $ocintanceid, $withpluginname);
+    public static function get_player_iframe_url_config_id(int $ocintanceid, bool $withpluginname = false): string {
+        return self::generate_config_id(self::CONFIG_ID_PLAYER_IFRAME_URL, $ocintanceid, $withpluginname);
     }
 
     /**

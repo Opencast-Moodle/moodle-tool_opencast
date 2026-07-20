@@ -88,8 +88,8 @@ $string['jwt_error_nomatchingurl'] = 'Unable to process the video proxy request 
 $string['jwt_error_notokenpresentforproxy'] = 'The access token is required!';
 $string['jwt_error_refreshtokenfailed'] = 'JWT: An error occured while trying to refresh access token!';
 $string['jwt_error_unabletofindiframeplayer'] = 'Opencast JWT service could not detect the player iframe.';
-$string['jwt_playeriframeurlpath'] = 'Player iframe URL path';
-$string['jwt_playeriframeurlpath_desc'] = 'The player path used to display the video iframe with JWT authentication support. If left empty, "/paella7/ui/watch.html" will be used by default.<br>NOTE: If the placeholder "{id}" is present, it will be replaced with the event ID within the path, for example "/play/{id}".<br>Do NOT add a query string such as "...?id={id}".';
+$string['jwt_playeriframeurl'] = 'Player iframe URL';
+$string['jwt_playeriframeurl_desc'] = 'The player URL used to display the video iframe with JWT authentication support. If left empty, "{Opencast API URL}/paella7/ui/watch.html" will be used by default.<br>Note: If the placeholder "{id}" is present, it will be replaced with the event ID in the path. For example: "https://stable.opencast.org/play/{id}".<br>Do not add a query string such as "...?id={id}".';
 $string['jwt_privatekey'] = 'Private Key (full text)';
 $string['jwt_privatekey_desc'] = 'The full private key as text, used to sign JWT tokens for Opencast authentication.';
 $string['jwt_redirect_info'] = 'The page is being redirected, please wait...';

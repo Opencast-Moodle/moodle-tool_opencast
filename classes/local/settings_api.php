@@ -314,16 +314,16 @@ class settings_api {
     }
 
     /**
-     * Get the jwt algorithm config value for a specific Opencast instance.
+     * Get the jwt player iframe url config value for a specific Opencast instance.
      *
      * @param int $ocinstanceid The ID of the Opencast instance to retrieve the config value for.
      *
-     * @return mixed the jwt algorithm or false if not found.
+     * @return mixed the jwt player iframe url or false if not found.
      *
      * @throws \dml_exception If there's an error retrieving the configuration.
      */
-    public static function get_jwt_player_iframe_url_path(int $ocinstanceid) {
-        return get_config('tool_opencast', jwt_service::get_player_iframe_url_path_config_id($ocinstanceid));
+    public static function get_jwt_player_iframe_url(int $ocinstanceid) {
+        return get_config('tool_opencast', jwt_service::get_player_iframe_url_config_id($ocinstanceid));
     }
 
     /**
