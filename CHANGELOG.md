@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+4.5.6 (2026-07-21)
+------------------
+* [FEATURE] #114 Integrate JWT authentication core and tests
+
+
 4.5.5 (2025-10-24)
 ------------------
 * [CHANGES] #102 Compatibility with new settings in mod opencast plugin
