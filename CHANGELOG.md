@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+5.0.4 (2026-07-22)
+------------------
+* [FEATURE] #114 Integrate JWT authentication core and tests
+* 
+
 5.0.3 (2025-10-24)
 ------------------
 * [CHANGE] Add opencast 18 coverage
