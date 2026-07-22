@@ -3,8 +3,7 @@ CHANGELOG
 
 5.0.4 (2026-07-22)
 ------------------
-* [FEATURE] #114 Integrate JWT authentication core and tests
-* 
+* [FEATURE] #113 Integrate JWT authentication core and tests (5.x)
 
 5.0.3 (2025-10-24)
 ------------------
