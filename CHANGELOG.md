@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+.1.2 (2026-07-23)
+------------------
+* [FIXED] upgrade.php: fix installation without h5p-error
+
+
 5.1.1 (2026-07-22)
 ------------------
 * [FEATURE] #114 Integrate JWT authentication core and tests
