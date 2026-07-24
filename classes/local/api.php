@@ -44,7 +44,6 @@ require_once($CFG->dirroot . '/admin/tool/opencast/vendor/autoload.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class api extends \curl {
-
     /** @var string the api username */
     private $username;
     /** @var string the api password */
@@ -55,12 +54,16 @@ class api extends \curl {
     private $connecttimeout = 1000;
     /** @var string the api baseurl */
     private $baseurl;
+    /** @var ?array the jwt configuration */
+    private $jwt = null;
     /** @var \OpencastApi\Opencast the opencast endpoints instance */
     public $opencastapi;
     /** @var \OpencastApi\Rest\OcRestClient the opencast REST Client instance */
     public $opencastrestclient;
     /** @var \tool_opencast\local\maintenance_class the maintenance class instance */
     public $maintenance;
+    /** @var \tool_opencast\local\jwt_service the jwt service instance */
+    public $jwtservice;
 
     /** @var array array of supported api levels */
     private static $supportedapilevel;
@@ -96,7 +99,7 @@ class api extends \curl {
      * @return string the acl role
      */
     public static function get_course_acl_role($courseid) {
-        return  self::get_course_acl_role_prefix(). $courseid;
+        return  self::get_course_acl_role_prefix() . $courseid;
     }
 
     /**
@@ -143,23 +146,27 @@ class api extends \curl {
      * @param array $settings
      * @param array $customconfigs
      * @param boolean $enableingest whether to enable ingest upload.
+     * @param boolean $withmaintenance whether to enable maintenance feature for the instance.
      *
      * @return api|api_testable
      *
      * @throws \dml_exception
      * @throws \moodle_exception
      */
-    public static function get_instance($instanceid = null,
-                                        $settings = [],
-                                        $customconfigs = [],
-                                        $enableingest = false) {
+    public static function get_instance(
+        $instanceid = null,
+        $settings = [],
+        $customconfigs = [],
+        $enableingest = false,
+        $withmaintenance = true
+    ) {
 
         if (self::use_test_api() === true) {
             $apitestable = new api_testable($instanceid, $enableingest);
             return $apitestable;
         }
 
-        return new api($instanceid, $settings, $customconfigs, $enableingest);
+        return new api($instanceid, $settings, $customconfigs, $enableingest, $withmaintenance);
     }
 
     /**
@@ -202,13 +209,18 @@ class api extends \curl {
      *
      * @param boolean $enableingest whether to enable ingest upload.
      *
+     * @param boolean $withmaintenance whether to enable maintenance feature for the instance.
+     *
      * @throws \dml_exception
      * @throws \moodle_exception
      */
-    public function __construct($instanceid = null,
-                                $settings = [],
-                                $customconfigs = [],
-                                $enableingest = false) {
+    public function __construct(
+        $instanceid = null,
+        $settings = [],
+        $customconfigs = [],
+        $enableingest = false,
+        $withmaintenance = true
+    ) {
         // Allow access to local ips.
         $settings['ignoresecurity'] = true;
         parent::__construct($settings);
@@ -219,8 +231,11 @@ class api extends \curl {
         if (empty($customconfigs)) {
             $defaultocinstance = settings_api::get_default_ocinstance();
             if ($defaultocinstance === null) {
-                throw new \dml_exception('dmlreadexception', null,
-                    'No default Opencast instance is defined.');
+                throw new \dml_exception(
+                    'dmlreadexception',
+                    null,
+                    'No default Opencast instance is defined.'
+                );
             }
 
             $storedconfigocinstanceid = !$instanceid ? $defaultocinstance->id : $instanceid;
@@ -230,7 +245,12 @@ class api extends \curl {
             $this->timeout          = settings_api::get_apitimeout($storedconfigocinstanceid);
             $this->connecttimeout   = settings_api::get_apiconnecttimeout($storedconfigocinstanceid);
             $this->baseurl          = settings_api::get_apiurl($storedconfigocinstanceid);
-            $this->maintenance      = new maintenance_class($storedconfigocinstanceid);
+            $this->jwt              = jwt_service::get_jwt_api_config($storedconfigocinstanceid);
+            if ($withmaintenance) {
+                $this->maintenance = new maintenance_class($storedconfigocinstanceid);
+            } else {
+                $this->maintenance = null;
+            }
 
             if (empty($this->username)) {
                 throw new empty_configuration_exception('apiusernameempty', 'tool_opencast');
@@ -260,11 +280,15 @@ class api extends \curl {
             if (array_key_exists('apiconnecttimeout', $customconfigs)) {
                 $this->connecttimeout = $customconfigs['apiconnecttimeout'];
             }
+
+            if (array_key_exists('jwt', $customconfigs)) {
+                $this->jwt = $customconfigs['jwt'];
+            }
         }
 
         // If the admin omitted the protocol part, add the HTTPS protocol on-the-fly.
         if (!preg_match('/^https?:\/\//', $this->baseurl)) {
-            $this->baseurl = 'https://'.$this->baseurl;
+            $this->baseurl = 'https://' . $this->baseurl;
         }
 
         // The base url is a must and cannot be empty, so we check its existence for both scenarios.
@@ -282,11 +306,16 @@ class api extends \curl {
             'password' => $this->password,
             'timeout' => (intval($this->timeout) / 1000),
             'connect_timeout' => (intval($this->connecttimeout) / 1000),
+            'jwt' => $this->jwt,
         ];
         $apihandlerstack = new api_handler_stack();
         $config['handler'] = $apihandlerstack->get_handler_stack();
         $this->opencastapi = $this->decorate_opencast_api_services($config, [], $enableingest);
         $this->opencastrestclient = new \tool_opencast\proxy\decorated_opencastapi_rest_client($config, $this->maintenance);
+
+        // JWT Service.
+        $ocisntanceid = isset($storedconfigocinstanceid) ? $storedconfigocinstanceid : $instanceid;
+        $this->jwtservice = new jwt_service($ocisntanceid, $this->opencastapi->getRestJwtHandler());
 
         // We notify the maintenance directly in constructor, to cover almost every external use of this class.
         $this->notify_maintenance();
@@ -401,7 +430,8 @@ class api extends \curl {
         $header = [];
 
         $header[] = sprintf(
-            'Authorization: Basic %s', $basicauth
+            'Authorization: Basic %s',
+            $basicauth
         );
 
         return $header;
@@ -551,8 +581,10 @@ class api extends \curl {
                 if ($value instanceof \stored_file) {
                     $value->add_to_curl_request($this, $key);
                     $this->add_postname($value, $key);
-                } else if (class_exists('\local_chunkupload\local\chunkupload_file') &&
-                    $value instanceof \local_chunkupload\local\chunkupload_file) {
+                } else if (
+                    class_exists('\local_chunkupload\local\chunkupload_file') &&
+                    $value instanceof \local_chunkupload\local\chunkupload_file
+                ) {
                         $value->add_to_curl_request($this, $key);
                         $this->add_postname_chunkupload($value, $key);
                 } else {
@@ -666,7 +698,6 @@ class api extends \curl {
      */
     public function supports_api_level($level) {
         if (!self::$supportedapilevel) {
-
             $response = $this->opencastapi->baseApi->getVersion();
 
             if ($response['code'] != 200) {

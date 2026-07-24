@@ -24,9 +24,9 @@ define([
         'jquery',
         'core/ajax',
         'core/str',
-        'core/modal_factory',
+        'core/modal_cancel',
         'core/notification'],
-    function($, Ajax, Str, ModalFactory, Notification) {
+    function($, Ajax, Str, ModalCancel, Notification) {
 
         /**
          * TestTool class.
@@ -78,7 +78,7 @@ define([
                 var promise = Ajax.call(request);
 
                 var titlePromise = Str.get_string('testtoolurl', 'tool_opencast');
-                var modalPromise = ModalFactory.create({type: ModalFactory.types.CANCEL});
+                var modalPromise = ModalCancel.create();
                 $.when(promise[0], titlePromise, modalPromise).then(function(connectionTestResponse, title, modal) {
                     modal.setTitle(title);
                     modal.setBody(connectionTestResponse.testresult);

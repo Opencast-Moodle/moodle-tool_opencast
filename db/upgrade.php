@@ -23,6 +23,7 @@
  */
 
 use tool_opencast\local\settings_api;
+use tool_opencast\local\jwt_service;
 
 /**
  * Execute opencast upgrade from the given old version
@@ -34,7 +35,6 @@ function xmldb_tool_opencast_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
     if ($oldversion < 2018013002) {
-
         // Define table tool_opencast_series to be created.
         $table = new xmldb_table('tool_opencast_series');
 
@@ -157,13 +157,14 @@ function xmldb_tool_opencast_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025080100) {
-
         // Changes for migrating most of the block admin setting to tool in version 5.
 
         // Migrate admin settings in config_plugin table.
         // Loop through records and rename the setting if not done yet.
-        $records = $DB->get_records_select('config_plugins',
-            "plugin = 'block_opencast' AND name != 'version'");
+        $records = $DB->get_records_select(
+            'config_plugins',
+            "plugin = 'block_opencast' AND name != 'version'"
+        );
         foreach ($records as $record) {
             if (!$existingrecord = $DB->get_record('config_plugins', ['name' => $record->name, 'plugin' => 'tool_opencast'])) {
                 $record->plugin = 'tool_opencast';
@@ -259,7 +260,17 @@ function xmldb_tool_opencast_upgrade($oldversion) {
         }
 
         upgrade_plugin_savepoint(true, 2025080100, 'tool', 'opencast');
+    }
 
+    // In this upgrade, we need to switch the url of existing Opencast H5P and HVP records.
+    if ($oldversion < 2026011701) {
+        // Up until now, both och5pcore and och5p only support default opencast instance!
+        $defaultocinstanceid = settings_api::get_default_ocinstance()->id;
+        $defaultapiurl = settings_api::get_apiurl($defaultocinstanceid);
+        change_h5p_opencast_content_urls_with_proxy($defaultapiurl);
+        change_hvp_opencast_content_urls_with_proxy($defaultapiurl);
+
+        upgrade_plugin_savepoint(true, 2026011701, 'tool', 'opencast');
     }
 
     return true;
@@ -319,8 +330,10 @@ function remove_default_opencast_instance_settings_without_id(): bool {
  *
  * @throws \dml_exception
  */
-function replace_default_opencast_instance_setting_without_id(int $defaultinstanceid,
-                                                              string $name): void {
+function replace_default_opencast_instance_setting_without_id(
+    int $defaultinstanceid,
+    string $name
+): void {
     $pluginname = 'tool_opencast';
 
     $value = get_config($pluginname, $name);
@@ -333,4 +346,219 @@ function replace_default_opencast_instance_setting_without_id(int $defaultinstan
     }
 
     set_config($name . '_' . $defaultinstanceid, $value, $pluginname);
+}
+
+/**
+ * Changes the path url of the Opencast H5P (Core) Interactive Video contents with proxy video serving.
+ * @param string $defaultapiurl The default Opencast API Url.
+ * @return void
+ * @throws coding_exception
+ */
+function change_h5p_opencast_content_urls_with_proxy(string $defaultapiurl): void {
+    global $DB;
+    if (!$DB->get_manager()->table_exists('h5p_libraries')) {
+        return;
+    }
+    $params = ['machinename' => 'H5P.InteractiveVideo'];
+    $records = get_h5p_hvp_interactive_video_entries('h5p_libraries', $params, 'h5p', 'mainlibraryid');
+    if ($records) {
+        foreach ($records as $record) {
+            // First we try to get the course id out of stored file.
+            $fs = get_file_storage();
+            $file = $fs->get_file_by_hash($record->pathnamehash);
+            if (!$file || !$file->get_contextid()) {
+                continue;
+            }
+            $context = context::instance_by_id($file->get_contextid());
+            $coursecontext = $context->get_course_context(false);
+            if (!$coursecontext) {
+                continue;
+            }
+            $courseid = (int) $coursecontext->instanceid;
+
+            // Second, we get the jsoncontent and filtered right.
+            $jsoncontent = null;
+            if ($record?->jsoncontent) {
+                $jsoncontent = json_decode($record->jsoncontent, true);
+            }
+            $filtered = null;
+            if ($record?->filtered) {
+                $filtered = json_decode($record->filtered, true);
+            }
+
+            if ($jsoncontent) {
+                replace_interactive_video_content_paths($jsoncontent, $courseid, $defaultapiurl);
+
+                $record->jsoncontent = json_encode($jsoncontent);
+            }
+
+            if ($filtered) {
+                replace_interactive_video_content_paths($filtered, $courseid, $defaultapiurl);
+
+                $record->filtered = json_encode($filtered);
+            }
+
+            $DB->update_record('h5p', $record);
+        }
+    }
+}
+
+/**
+ * Changes the path url of the Opencast HVP (Plugin) Interactive Video contents with proxy video serving.
+ * @param string $defaultapiurl The default Opencast API Url.
+ * @return void
+ * @throws coding_exception
+ */
+function change_hvp_opencast_content_urls_with_proxy(string $defaultapiurl): void {
+    global $DB;
+    if (!$DB->get_manager()->table_exists('hvp_libraries')) {
+        return;
+    }
+    $params = ['machine_name' => 'H5P.InteractiveVideo'];
+    $records = get_h5p_hvp_interactive_video_entries('hvp_libraries', $params, 'hvp', 'main_library_id');
+    if ($records) {
+        foreach ($records as $record) {
+            $courseid = (int) $record->course;
+
+            $jsoncontent = null;
+            if ($record?->json_content) {
+                $jsoncontent = json_decode($record->json_content, true);
+            }
+
+            $filtered = null;
+            if ($record?->filtered) {
+                $filtered = json_decode($record->filtered, true);
+            }
+
+            if ($jsoncontent) {
+                replace_interactive_video_content_paths($jsoncontent, $courseid, $defaultapiurl);
+
+                $record->json_content = json_encode($jsoncontent);
+            }
+
+            if ($filtered) {
+                replace_interactive_video_content_paths($filtered, $courseid, $defaultapiurl);
+
+                $record->filtered = json_encode($filtered);
+            }
+
+            $DB->update_record('hvp', $record);
+        }
+    }
+}
+
+/**
+ * Gets the H5P / HVP Interactive Video content records from database, based on Interactive Video libraray id.
+ * @param string $libtablename The H5P library table name.
+ * @param array $libparams The params to look for in the H5P library table.
+ * @param string $maintablename The main H5P/HVP table name.
+ * @param string $mainlibidcolname The library id column in the main table.
+ * @return null|array The records based on librarby id(s)
+ */
+function get_h5p_hvp_interactive_video_entries(
+    string $libtablename,
+    array $libparams,
+    string $maintablename,
+    string $mainlibidcolname
+): ?array {
+    global $DB;
+    if (!$DB->get_manager()->table_exists($libtablename)) {
+            return null;
+    }
+    $interactivevideolibs = $DB->get_records($libtablename, $libparams);
+    if (!$interactivevideolibs) {
+        return null;
+    }
+
+    $libraryids = array_column($interactivevideolibs, 'id');
+
+    [$insql, $params] = $DB->get_in_or_equal(
+        $libraryids,
+        SQL_PARAMS_NAMED
+    );
+
+    $sql = "SELECT * FROM {" . $maintablename . "} WHERE $mainlibidcolname $insql";
+
+    return $DB->get_records_sql($sql, $params);
+}
+
+/**
+ * Generates Opencast Proxy Video serving url.
+ * @param string $rawurl The already stored raw url (usaully the static opencast video url).
+ * @param int $courseid THe course id.
+ * @param string $defaultapiurl The default Opencast API Url.
+ * @return null|string The proxy url or null if the url is not an Opencast url.
+ */
+function generate_opencast_proxy_url(string $rawurl, int $courseid, string $defaultapiurl): ?string {
+    $parsedurl = parse_url($rawurl);
+    $baseurl = $parsedurl['scheme'] . '://' . $parsedurl['host'];
+    // It is not an Opencast!
+    if ($baseurl !== $defaultapiurl) {
+        return null;
+    }
+    $path = $parsedurl['path'];
+    $eventidregx = '/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/i';
+    $identifier = null;
+    if (preg_match_all($eventidregx, $path, $matches)) {
+        $identifier = $matches[0][0];
+    }
+    if (!empty($identifier) && !empty($courseid)) {
+        $params = [
+            'url' => $rawurl,
+            'identifier' => $identifier,
+            'courseid' => $courseid,
+        ];
+        $url = new \moodle_url(jwt_service::VIDEO_PROXY_URL_PATH, $params);
+        return $url->out(false);
+    }
+
+    return null;
+}
+
+
+/**
+ * Recursively replaces Opencast video file paths in interactive video content
+ * with proxy URLs when the path belongs to the default Opencast instance.
+ *
+ * @param array $data The Interactive Video content structure to update.
+ * @param int $courseid The Moodle course id associated with the content.
+ * @param string $defaultapiurl The default Opencast API base URL.
+ * @return void
+ */
+function replace_interactive_video_content_paths(array &$data, int $courseid, string $defaultapiurl): void {
+    array_walk_recursive_with_parent($data, function (&$item, $key, &$parent) use ($courseid, $defaultapiurl) {
+        // We only care about "path".
+        if ($key !== 'path') {
+            return;
+        }
+
+        // Check if sibling "mime" exists and is a video.
+        if (
+            isset($parent['mime']) &&
+            str_starts_with($parent['mime'], 'video/')
+        ) {
+            $proxyurl = generate_opencast_proxy_url($item, $courseid, $defaultapiurl);
+            if (!empty($proxyurl)) {
+                $item = $proxyurl;
+            }
+        }
+    });
+}
+
+
+/**
+ * Walks an array recursively while also exposing each item's parent array.
+ *
+ * @param array $array The array to traverse.
+ * @param callable $callback The callback to invoke for each value. It receives
+ *      the value by reference, the current key, and the parent array.
+ * @return void
+ */
+function array_walk_recursive_with_parent(array &$array, callable $callback): void {
+    foreach ($array as $key => &$value) {
+        if (is_array($value)) {
+            array_walk_recursive_with_parent($value, $callback);
+        }
+        $callback($value, $key, $array);
+    }
 }

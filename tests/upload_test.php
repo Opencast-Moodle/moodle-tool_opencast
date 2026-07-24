@@ -24,30 +24,31 @@
 
 namespace tool_opencast;
 
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once($CFG->dirroot . '/admin/tool/opencast/tests/helper/tool_opencast_test_type_helper.php');
+
 use advanced_testcase;
 use tool_opencast\local\apibridge;
 use tool_opencast\local\upload_helper;
 use tool_opencast\local\attachment_helper;
+use tool_opencast_test_type_helper;
 use coding_exception;
 use context_course;
 use dml_exception;
 use stdClass;
 
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-
 /**
  * Unit tests for the tool_opencast implementation of the video upload.
  *
  * @group tool_opencast
+ * @group tool_opencast_no_jwt
  * @package    tool_opencast
  * @copyright  2017 Andreas Wagner, SYNERGY LEARNING
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class upload_test extends advanced_testcase {
-
-
     /** @var string Test api url. */
     private $apiurl = 'http://127.0.0.1:8080';
     /** @var string Test api username. */
@@ -58,6 +59,16 @@ final class upload_test extends advanced_testcase {
     private $apitimeout = 2000;
     /** @var int the curl connecttimeout in milliseconds */
     private $apiconnecttimeout = 1000;
+
+    /**
+     * Overriding setUp() function to always check the test type.
+     */
+    public function setUp(): void {
+        parent::setUp();
+        if (!tool_opencast_test_type_helper::is_legacy_test()) {
+            $this->markTestSkipped('Skipping upload tests because of the targeted test type does not match!');
+        }
+    }
 
     /**
      * Test, whether the plugin is properly installed.

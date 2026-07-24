@@ -24,29 +24,32 @@
 
 namespace tool_opencast;
 
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once($CFG->dirroot . '/admin/tool/opencast/tests/helper/tool_opencast_test_type_helper.php');
+
 use advanced_testcase;
 use tool_opencast\local\apibridge;
 use tool_opencast\local\upload_helper;
 use tool_opencast\local\workflowconfiguration_helper;
+use tool_opencast_test_type_helper;
 use coding_exception;
 use context_course;
 use dml_exception;
 use stdClass;
 
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-
 /**
  * Test Upload video with ingest and user defined configuration panel.
+ *
+ * @group tool_opencast
+ * @group tool_opencast_no_jwt
  * @package    tool_opencast
  * @copyright  2024 Farbod Zamani Boroujeni, ELAN e.V.
  * @author     Farbod Zamani Boroujeni <zamani@elan-ev.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class upload_ingest_with_configpanel_test extends advanced_testcase {
-
-
     /** @var string Test api url. */
     private $apiurl = 'http://127.0.0.1:8080';
     /** @var string Test api username. */
@@ -57,6 +60,16 @@ final class upload_ingest_with_configpanel_test extends advanced_testcase {
     private $apitimeout = 2000;
     /** @var int the curl connecttimeout in milliseconds */
     private $apiconnecttimeout = 1000;
+
+    /**
+     * Overriding setUp() function to always check the test type.
+     */
+    public function setUp(): void {
+        parent::setUp();
+        if (!tool_opencast_test_type_helper::is_legacy_test()) {
+            $this->markTestSkipped('Skipping upload with ingest tests because of the targeted test type does not match!');
+        }
+    }
 
     /**
      * Uploads a file to the opencast server using ingest with user defined configration panel,
