@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+4.5.7 (2026-07-24)
+------------------
+* [FIX] Error with missing H5P-libraries in vanilla installation
+
+
 4.5.6 (2026-07-21)
 ------------------
 * [FEATURE] #114 Integrate JWT authentication core and tests
