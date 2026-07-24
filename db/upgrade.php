@@ -356,6 +356,9 @@ function replace_default_opencast_instance_setting_without_id(
  */
 function change_h5p_opencast_content_urls_with_proxy(string $defaultapiurl): void {
     global $DB;
+    if (!$DB->get_manager()->table_exists('h5p_libraries')) {
+        return;
+    }
     $params = ['machinename' => 'H5P.InteractiveVideo'];
     $records = get_h5p_hvp_interactive_video_entries('h5p_libraries', $params, 'h5p', 'mainlibraryid');
     if ($records) {
@@ -408,6 +411,9 @@ function change_h5p_opencast_content_urls_with_proxy(string $defaultapiurl): voi
  */
 function change_hvp_opencast_content_urls_with_proxy(string $defaultapiurl): void {
     global $DB;
+    if (!$DB->get_manager()->table_exists('hvp_libraries')) {
+        return;
+    }
     $params = ['machine_name' => 'H5P.InteractiveVideo'];
     $records = get_h5p_hvp_interactive_video_entries('hvp_libraries', $params, 'hvp', 'main_library_id');
     if ($records) {
@@ -456,6 +462,9 @@ function get_h5p_hvp_interactive_video_entries(
     string $mainlibidcolname
 ): ?array {
     global $DB;
+    if (!$DB->get_manager()->table_exists($libtablename)) {
+        return null;
+    }
     if (!$DB->record_exists($libtablename, $libparams)) {
         return null;
     }
