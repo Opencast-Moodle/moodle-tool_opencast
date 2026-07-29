@@ -444,6 +444,10 @@ foreach ($seriesvideodata as $series => $videodata) {
     }
 
     if ($videodata->error == 0) {
+        // Reset mass action state for this series iteration to ensure a previous
+        // empty series does not suppress checkboxes for subsequent series with videos.
+        $massaction->activate_massaction(true);
+
         $tableid = 'opencast-videos-table-' . $series;
         $table = $renderer->create_videos_tables($tableid, $headers, $columns, $baseurl);
         $deletedvideos = $DB->get_records("tool_opencast_deletejob", [], "", "opencasteventid");
@@ -643,7 +647,10 @@ foreach ($seriesvideodata as $series => $videodata) {
 
         // Last check to deactivate mass action, if there is nothing to display in the table.
         $activatedmassaction = !empty($rows);
-        $massaction->activate_massaction($activatedmassaction);
+        // Deactivate mass action only if there are no rows to display in this table.
+        if (!$activatedmassaction) {
+            $massaction->activate_massaction($activatedmassaction);
+        }
         $tablecontainerclasses = ['position-relative'];
         if ($activatedmassaction) {
             $tablecontainerclasses[] = massaction_helper::TABLE_CONTAINER_CLASSNAME;
