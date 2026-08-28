@@ -1,7 +1,7 @@
 {
   "main-moodle": "MOODLE_500_STABLE",
   "main-php": "8.4",
-  "main-oc": "17.8",
+  "main-oc": "18.1",
   "ocs": ["19.0", "18.1", "17.8", "16.7"],
   "main-db": "mariadb",
   "database": ["mariadb", "psql"],
