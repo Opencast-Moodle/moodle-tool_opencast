@@ -56,10 +56,12 @@ if (!empty($seriesid)) {
 }
 
 if (empty($series)) {
-    redirect($redirecturl,
+    redirect(
+        $redirecturl,
         get_string('noseriesfound', 'tool_opencast'),
         null,
-        notification::NOTIFY_ERROR);
+        notification::NOTIFY_ERROR
+    );
 }
 
 $apiworkflow = $apibridge->get_workflow_definition($workflow);
@@ -72,10 +74,12 @@ if (!empty($workflowtagsconfig)) {
     $workflowtags = array_map('trim', $workflowtags);
 }
 if (!$apiworkflow || empty(array_intersect($apiworkflow->tags, $workflowtags))) {
-    redirect($redirecturl,
+    redirect(
+        $redirecturl,
         get_string('workflow_opencast_invalid', 'tool_opencast'),
         null,
-        notification::NOTIFY_ERROR);
+        notification::NOTIFY_ERROR
+    );
 }
 
 $failed = [];

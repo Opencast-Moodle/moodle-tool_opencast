@@ -35,8 +35,6 @@ use core_user;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class autocomplete_suggestion_helper {
-
-
     /**
      * Get all available suggestions for contributor and creator (Presenter) metadata field.
      * @param int $ocinstanceid Opencast instance id.

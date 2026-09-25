@@ -43,7 +43,6 @@ require_once($CFG->dirroot . '/lib/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class addtranscription_form extends moodleform {
-
     /**
      * Form definition.
      */
@@ -80,8 +79,13 @@ class addtranscription_form extends moodleform {
             }
             $languagefieldname = !empty($language->value) ? format_string($language->value) :
                     get_string('transcriptionfilefield', 'tool_opencast', $language->key);
-            $mform->addElement('filepicker', 'transcription_file_' . $language->key,
-                $languagefieldname, null, ['accepted_types' => $transcriptiontypes]);
+            $mform->addElement(
+                'filepicker',
+                'transcription_file_' . $language->key,
+                $languagefieldname,
+                null,
+                ['accepted_types' => $transcriptiontypes]
+            );
         }
 
         $mform->addElement('hidden', 'ocinstanceid', $this->_customdata['ocinstanceid']);

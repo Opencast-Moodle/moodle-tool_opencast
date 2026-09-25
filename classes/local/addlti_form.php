@@ -39,7 +39,6 @@ require_once($CFG->dirroot . '/lib/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class addlti_form extends moodleform {
-
     /**
      * Form definition.
      */
@@ -55,14 +54,20 @@ class addlti_form extends moodleform {
         $mform->addElement('text', 'title', get_string('addlti_formltititle', 'tool_opencast'), ['size' => '40']);
         $mform->setType('title', PARAM_TEXT);
         $mform->setDefault('title', ltimodulemanager::get_default_title_for_series($ocinstanceid));
-        $mform->addRule('title',
+        $mform->addRule(
+            'title',
             get_string('addlti_noemptytitle', 'tool_opencast', get_string('addlti_defaulttitle', 'tool_opencast')),
-            'required');
+            'required'
+        );
 
         if (get_config('tool_opencast', 'addltiintro_' . $ocinstanceid) == true) {
-            $mform->addElement('editor', 'intro', get_string('addlti_formltiintro', 'tool_opencast'),
+            $mform->addElement(
+                'editor',
+                'intro',
+                get_string('addlti_formltiintro', 'tool_opencast'),
                 ['rows' => 5],
-                ['maxfiles' => 0, 'noclean' => true]);
+                ['maxfiles' => 0, 'noclean' => true]
+            );
             $mform->setType('intro', PARAM_RAW); // No XSS prevention here, users must be trusted.
         }
 
@@ -72,16 +77,23 @@ class addlti_form extends moodleform {
 
             // Add the widget only if we have more than one section.
             if (count($sectionmenu) > 1) {
-                $mform->addElement('select', 'section', get_string('addlti_formltisection', 'tool_opencast'),
-                    ltimodulemanager::get_course_sections($courseid));
+                $mform->addElement(
+                    'select',
+                    'section',
+                    get_string('addlti_formltisection', 'tool_opencast'),
+                    ltimodulemanager::get_course_sections($courseid)
+                );
                 $mform->setType('section', PARAM_INT);
                 $mform->setDefault('section', 0);
             }
         }
 
         if (get_config('tool_opencast', 'addltiavailability_' . $ocinstanceid) == true && !empty($CFG->enableavailability)) {
-            $mform->addElement('textarea', 'availabilityconditionsjson',
-                get_string('addlti_formltiavailability', 'tool_opencast'));
+            $mform->addElement(
+                'textarea',
+                'availabilityconditionsjson',
+                get_string('addlti_formltiavailability', 'tool_opencast')
+            );
             frontend::include_all_javascript(get_course($courseid));
         }
 

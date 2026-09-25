@@ -35,8 +35,6 @@ use lang_string;
  * @package tool_opencast
  */
 class process_visibility_cron extends scheduled_task {
-
-
     /**
      * Get the name of the task.
      * @return lang_string|string

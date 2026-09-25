@@ -44,8 +44,6 @@ require_once($CFG->dirroot . '/lib/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class visibility_form extends moodleform {
-
-
     /**
      * Form definition.
      */
@@ -90,20 +88,29 @@ class visibility_form extends moodleform {
         }
 
         $radioarray = [];
-        $radioarray[] = $mform->addElement('radio', 'visibility',
-            get_string('visibility', 'tool_opencast'), get_string('visibility_hide', 'tool_opencast'), 0);
+        $radioarray[] = $mform->addElement(
+            'radio',
+            'visibility',
+            get_string('visibility', 'tool_opencast'),
+            get_string('visibility_hide', 'tool_opencast'),
+            0
+        );
         $radioarray[] = $mform->addElement('radio', 'visibility', '', get_string('visibility_show', 'tool_opencast'), 1);
         // We need to remove the group visibility radio button, when there is no group in the course.
         if ($groupvisibilityallowed && !empty($groups)) {
-            $radioarray[] = $mform->addElement('radio', 'visibility', '',
-                get_string('visibility_group', 'tool_opencast'), 2);
+            $radioarray[] = $mform->addElement(
+                'radio',
+                'visibility',
+                '',
+                get_string('visibility_group', 'tool_opencast'),
+                2
+            );
         }
         $mform->setDefault('visibility', $visibility);
         $mform->setType('visibility', PARAM_INT);
 
         // Load existing groups.
         if ($groupvisibilityallowed && !empty($groups)) {
-
             $options = [];
 
             foreach ($groups as $group) {
@@ -122,9 +129,12 @@ class visibility_form extends moodleform {
         }
 
         // Provide a checkbox to enable changing the visibility for later.
-        $mform->addElement('checkbox', 'enableschedulingchangevisibility',
+        $mform->addElement(
+            'checkbox',
+            'enableschedulingchangevisibility',
             get_string('enableschedulingchangevisibility', 'tool_opencast'),
-            get_string('enableschedulingchangevisibilitydesc', 'tool_opencast'));
+            get_string('enableschedulingchangevisibilitydesc', 'tool_opencast')
+        );
         $mform->hideIf('scheduledvisibilitytime', 'enableschedulingchangevisibility', 'notchecked');
         $mform->hideIf('scheduledvisibilitystatus', 'enableschedulingchangevisibility', 'notchecked');
 
@@ -136,12 +146,16 @@ class visibility_form extends moodleform {
         $mform->setDefault('enableschedulingchangevisibility', $enabledscheduling);
 
         // Scheduled visibility.
-        list($waitingtime, $configuredtimespan) = visibility_helper::get_waiting_time($ocinstanceid);
-        $element = $mform->addElement('date_time_selector', 'scheduledvisibilitytime',
-            get_string('scheduledvisibilitytime', 'tool_opencast'));
+        [$waitingtime, $configuredtimespan] = visibility_helper::get_waiting_time($ocinstanceid);
+        $element = $mform->addElement(
+            'date_time_selector',
+            'scheduledvisibilitytime',
+            get_string('scheduledvisibilitytime', 'tool_opencast')
+        );
         $element->_helpbutton = $renderer->render_help_icon_with_custom_text(
             get_string('scheduledvisibilitytimehi', 'tool_opencast'),
-            get_string('scheduledvisibilitytimehi_help', 'tool_opencast', $configuredtimespan));
+            get_string('scheduledvisibilitytimehi_help', 'tool_opencast', $configuredtimespan)
+        );
 
         // Setting default scheduled visibility time if this event has already been scheduled.
         if (!empty($scheduledvisibility) && !empty($scheduledvisibility->scheduledvisibilitytime)) {
@@ -150,14 +164,29 @@ class visibility_form extends moodleform {
         $mform->setDefault('scheduledvisibilitytime', $waitingtime);
 
         $scheduleradioarray = [];
-        $scheduleradioarray[] = $mform->addElement('radio', 'scheduledvisibilitystatus',
-            get_string('scheduledvisibilitystatus', 'tool_opencast'), get_string('visibility_hide', 'tool_opencast'), 0);
-        $scheduleradioarray[] = $mform->addElement('radio', 'scheduledvisibilitystatus', '',
-            get_string('visibility_show', 'tool_opencast'), 1);
+        $scheduleradioarray[] = $mform->addElement(
+            'radio',
+            'scheduledvisibilitystatus',
+            get_string('scheduledvisibilitystatus', 'tool_opencast'),
+            get_string('visibility_hide', 'tool_opencast'),
+            0
+        );
+        $scheduleradioarray[] = $mform->addElement(
+            'radio',
+            'scheduledvisibilitystatus',
+            '',
+            get_string('visibility_show', 'tool_opencast'),
+            1
+        );
         // We need to remove the group visibility radio button, we there is no group in the course.
         if ($groupvisibilityallowed && !empty($groups)) {
-            $scheduleradioarray[] = $mform->addElement('radio', 'scheduledvisibilitystatus',
-                '', get_string('visibility_group', 'tool_opencast'), 2);
+            $scheduleradioarray[] = $mform->addElement(
+                'radio',
+                'scheduledvisibilitystatus',
+                '',
+                get_string('visibility_group', 'tool_opencast'),
+                2
+            );
         }
 
         // Setting default scheduled visibility status if this event has already been scheduled.
@@ -208,14 +237,21 @@ class visibility_form extends moodleform {
             ];
             // Get custom allowed scheduled visibility time.
             $waitingtimearray = visibility_helper::get_waiting_time(
-                $this->_customdata['ocinstanceid'], $customminutes);
+                $this->_customdata['ocinstanceid'],
+                $customminutes
+            );
             $allowedscheduledvisibilitytime = $waitingtimearray[0];
             if (intval($data['scheduledvisibilitytime']) < intval($allowedscheduledvisibilitytime)) {
-                $errors['scheduledvisibilitytime'] = get_string('scheduledvisibilitytimeerror',
-                    'tool_opencast', $waitingtimearray[1]);
+                $errors['scheduledvisibilitytime'] = get_string(
+                    'scheduledvisibilitytimeerror',
+                    'tool_opencast',
+                    $waitingtimearray[1]
+                );
             }
-            if ($data['scheduledvisibilitystatus'] == tool_opencast_renderer::GROUP &&
-                empty($data['scheduledvisibilitygroups'])) {
+            if (
+                $data['scheduledvisibilitystatus'] == tool_opencast_renderer::GROUP &&
+                empty($data['scheduledvisibilitygroups'])
+            ) {
                 $errors['enableschedulingchangevisibility'] = get_string('emptyvisibilitygroups', 'tool_opencast');
             }
             // Check whether the scheduled visibility is equal to initial visibility.

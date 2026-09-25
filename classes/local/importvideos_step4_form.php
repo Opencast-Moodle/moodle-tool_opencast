@@ -38,8 +38,6 @@ require_once($CFG->dirroot . '/lib/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class importvideos_step4_form extends moodleform {
-
-
     /**
      * Form definition.
      */
@@ -79,7 +77,8 @@ class importvideos_step4_form extends moodleform {
         if (!is_number($this->_customdata['sourcecourseid'])) {
             // We are in a dead end situation, no chance to add anything.
             $notification = $renderer->wizard_error_notification(
-                get_string('importvideos_wizardstep4sourcecoursenone', 'tool_opencast'));
+                get_string('importvideos_wizardstep4sourcecoursenone', 'tool_opencast')
+            );
             $mform->addElement('html', $notification);
             $mform->addElement('cancel');
             return;
@@ -90,7 +89,8 @@ class importvideos_step4_form extends moodleform {
         if (count($this->_customdata['coursevideos']) < 1) {
             // We are in a dead end situation, no chance to add anything.
             $notification = $renderer->wizard_error_notification(
-                get_string('importvideos_wizardstep4coursevideosnone', 'tool_opencast'));
+                get_string('importvideos_wizardstep4coursevideosnone', 'tool_opencast')
+            );
             $mform->addElement('html', $notification);
             $mform->addElement('cancel');
             return;
@@ -98,15 +98,19 @@ class importvideos_step4_form extends moodleform {
 
         // Add intro.
         $notification = $renderer->wizard_intro_notification(
-            get_string('importvideos_wizardstep4intro', 'tool_opencast'));
+            get_string('importvideos_wizardstep4intro', 'tool_opencast')
+        );
         $mform->addElement('html', $notification);
 
         // Summary item: Source course.
         $sourcecourse = get_course($this->_customdata['sourcecourseid']);
         $courseentry = $renderer->course_menu_entry($sourcecourse);
-        $mform->addElement('static', 'summarysourcecourse',
+        $mform->addElement(
+            'static',
+            'summarysourcecourse',
             get_string('importvideos_wizardstep1sourcecourse', 'tool_opencast'),
-            $courseentry);
+            $courseentry
+        );
 
         // Horizontal line.
         $mform->addElement('html', '<hr>');
@@ -114,31 +118,45 @@ class importvideos_step4_form extends moodleform {
         // Summary item: Course videos.
         $courseseriessummary = importvideosmanager::get_import_source_course_videos_summary(
             $this->_customdata['ocinstanceid'],
-            $this->_customdata['sourcecourseid'], $this->_customdata['coursevideos']);
-        $mform->addElement('static', 'summaryimportvideotitle',
-            get_string('importvideos_wizardstep2coursevideos', 'tool_opencast'), '');
+            $this->_customdata['sourcecourseid'],
+            $this->_customdata['coursevideos']
+        );
+        $mform->addElement(
+            'static',
+            'summaryimportvideotitle',
+            get_string('importvideos_wizardstep2coursevideos', 'tool_opencast'),
+            ''
+        );
         foreach ($courseseriessummary as $series => $info) {
             $importvideocounter = 1;
             foreach ($info['videos'] as $identifier => $label) {
-                $mform->addElement('static', 'summaryimportvideo' . $importvideocounter,
+                $mform->addElement(
+                    'static',
+                    'summaryimportvideo' . $importvideocounter,
                     ($importvideocounter == 1) ? $info['title'] : '',
-                    $label);
+                    $label
+                );
                 $importvideocounter++;
             }
         }
 
         // Summary item: Handle modules.
-        if ((isset($this->_customdata['fixseriesmodules']) && $this->_customdata['fixseriesmodules'] == true) ||
-            (isset($this->_customdata['fixepisodemodules']) && $this->_customdata['fixepisodemodules'] == true)) {
+        if (
+            (isset($this->_customdata['fixseriesmodules']) && $this->_customdata['fixseriesmodules'] == true) ||
+            (isset($this->_customdata['fixepisodemodules']) && $this->_customdata['fixepisodemodules'] == true)
+        ) {
             // Horizontal line.
             $mform->addElement('html', '<hr>');
 
             // Handle series modules.
             if (isset($this->_customdata['fixseriesmodules']) && $this->_customdata['fixseriesmodules'] == true) {
                 // Show summary item.
-                $mform->addElement('static', 'summaryfixseriesmodules',
+                $mform->addElement(
+                    'static',
+                    'summaryfixseriesmodules',
                     get_string('importvideos_wizardstep3heading', 'tool_opencast'),
-                    get_string('importvideos_wizardstep3seriesmodulesubheading', 'tool_opencast'));
+                    get_string('importvideos_wizardstep3seriesmodulesubheading', 'tool_opencast')
+                );
 
                 // Remember this fact for the next summary item.
                 $summaryfixseriesmodulesshown = true;
@@ -149,9 +167,12 @@ class importvideos_step4_form extends moodleform {
 
             // Handle episode modules.
             if (isset($this->_customdata['fixepisodemodules']) && $this->_customdata['fixepisodemodules'] == true) {
-                $mform->addElement('static', 'summaryfixepisodemodules',
+                $mform->addElement(
+                    'static',
+                    'summaryfixepisodemodules',
                     ($summaryfixseriesmodulesshown == false) ? get_string('importvideos_wizardstep3heading', 'tool_opencast') : '',
-                    get_string('importvideos_wizardstep3episodemodulesubheading', 'tool_opencast'));
+                    get_string('importvideos_wizardstep3episodemodulesubheading', 'tool_opencast')
+                );
             }
         }
 

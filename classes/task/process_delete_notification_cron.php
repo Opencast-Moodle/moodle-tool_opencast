@@ -41,8 +41,6 @@ use tool_opencast\local\settings_api;
  * @package tool_opencast
  */
 class process_delete_notification_cron extends scheduled_task {
-
-
     /**
      * Get the name of the task.
      * @return lang_string|string
@@ -61,7 +59,6 @@ class process_delete_notification_cron extends scheduled_task {
 
         $ocinstances = settings_api::get_ocinstances();
         foreach ($ocinstances as $ocinstance) {
-
             // Get admin setting for deleting notification jobs.
             $notificationdeletionconfig = get_config('tool_opencast', 'eventstatusnotificationdeletion_' . $ocinstance->id);
             $notificationdeletionconfig = intval($notificationdeletionconfig);
@@ -83,8 +80,11 @@ class process_delete_notification_cron extends scheduled_task {
             $timeformatstring = '+' . $deleteindays . ' day' . (($deleteindays > 1) ? 's' : '');
 
             // Get all waiting notification jobs.
-            $allnotificationjobs = $DB->get_records('tool_opencast_notifications',
-                ['ocinstanceid' => $ocinstance->id], 'timecreated DESC');
+            $allnotificationjobs = $DB->get_records(
+                'tool_opencast_notifications',
+                ['ocinstanceid' => $ocinstance->id],
+                'timecreated DESC'
+            );
 
             if (!$allnotificationjobs) {
                 mtrace('...no jobs to proceed');
@@ -104,8 +104,10 @@ class process_delete_notification_cron extends scheduled_task {
 
                     // Check if the job deadline time is up.
                     if (time() > $expirytime) {
-                        $DB->delete_records("tool_opencast_notifications",
-                            ['id' => $job->id, 'ocinstanceid' => $ocinstance->id]);
+                        $DB->delete_records(
+                            "tool_opencast_notifications",
+                            ['id' => $job->id, 'ocinstanceid' => $ocinstance->id]
+                        );
                         mtrace('job ' . $job->id . ' deleted.');
                     }
                 } catch (moodle_exception $e) {

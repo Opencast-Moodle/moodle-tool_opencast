@@ -36,4 +36,3 @@ function xmldb_tool_opencast_install() {
     $ocinstance->isdefault = true;
     settings_api::set_ocinstances_to_ocinstance($ocinstance);
 }
-

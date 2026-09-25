@@ -38,8 +38,6 @@ require_once($CFG->dirroot . '/lib/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class changeowner_form extends moodleform {
-
-
     /**
      * Form definition.
      */
@@ -67,18 +65,22 @@ class changeowner_form extends moodleform {
         if ($this->_customdata['isseries']) {
             if ($this->_customdata['noowner']) {
                 $notification = $renderer->wizard_intro_notification(
-                    get_string('claimownerseries_explanation', 'tool_opencast', $this->_customdata['title']));
+                    get_string('claimownerseries_explanation', 'tool_opencast', $this->_customdata['title'])
+                );
             } else {
                 $notification = $renderer->wizard_intro_notification(
-                    get_string('changeownerseries_explanation', 'tool_opencast', $this->_customdata['title']));
+                    get_string('changeownerseries_explanation', 'tool_opencast', $this->_customdata['title'])
+                );
             }
         } else {
             if ($this->_customdata['noowner']) {
                 $notification = $renderer->wizard_intro_notification(
-                    get_string('claimowner_explanation', 'tool_opencast', $this->_customdata['title']));
+                    get_string('claimowner_explanation', 'tool_opencast', $this->_customdata['title'])
+                );
             } else {
                 $notification = $renderer->wizard_intro_notification(
-                    get_string('changeowner_explanation', 'tool_opencast', $this->_customdata['title']));
+                    get_string('changeowner_explanation', 'tool_opencast', $this->_customdata['title'])
+                );
             }
         }
 

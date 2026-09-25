@@ -27,7 +27,6 @@ namespace tool_opencast\local;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class maintenance_class {
-
     /** @var int Disable mode flag id. */
     const MODE_DISABLE = 0;
 
@@ -248,8 +247,10 @@ class maintenance_class {
         $nowdtimestamp = $nowdatetime->getTimestamp();
 
         // Check if two sides of time range is enabled.
-        if ($this->startdate->enabled && $this->enddate->enabled &&
-            $nowdtimestamp >= $this->startdate->timestamp && $nowdtimestamp <= $this->enddate->timestamp) {
+        if (
+            $this->startdate->enabled && $this->enddate->enabled &&
+            $nowdtimestamp >= $this->startdate->timestamp && $nowdtimestamp <= $this->enddate->timestamp
+        ) {
             return true;
         }
 
@@ -388,14 +389,18 @@ class maintenance_class {
             $targetblacklisted = $this->is_path_blacklisted($tagetpath, $blacklist);
 
             // Exception: Calls going up to course from blacklist, or nothing to do with blacklist, we do nothing!
-            if ((!$fromblacklisted && !$targetblacklisted) || // Outside reaching or loading opencast.
-                (in_array($tagetpath, $whitelist) && $fromblacklisted)) { // Going back from plugin to course or somewhere else.
+            if (
+                (!$fromblacklisted && !$targetblacklisted) || // Outside reaching or loading opencast.
+                (in_array($tagetpath, $whitelist) && $fromblacklisted)
+            ) { // Going back from plugin to course or somewhere else.
                 return ['code' => 404];
             }
 
             // Is ajax or popup, we throw error to make sure the user gets the correct form of notification.
-            if (is_in_popup() || (defined('AJAX_SCRIPT') && AJAX_SCRIPT) ||
-                isset($initiator['path']) && strpos($requesttarget['path'], 'ajax') !== false) {
+            if (
+                is_in_popup() || (defined('AJAX_SCRIPT') && AJAX_SCRIPT) ||
+                isset($initiator['path']) && strpos($requesttarget['path'], 'ajax') !== false
+            ) {
                 throw new \core\exception\access_denied_exception('maintenance_exception_message', self::PLUGINNAME);
             }
 
@@ -605,9 +610,9 @@ class maintenance_class {
      * @return string the generated configuration id
      */
     private static function generate_config_id(string $configid, int $ocintanceid, bool $withpluginname) {
-        $id = $configid . '_'. $ocintanceid;
+        $id = $configid . '_' . $ocintanceid;
         if ($withpluginname) {
-            $id = self::PLUGINNAME. '/'. $id;
+            $id = self::PLUGINNAME . '/' . $id;
         }
         return $id;
     }
@@ -624,8 +629,12 @@ class maintenance_class {
      *
      * @return callable the validation callback function
      */
-    public static function maintenance_datetime_validation(string $currentid, string $compsettingid,
-                                                            string $compsettingstringname, string $compopr= '>=') {
+    public static function maintenance_datetime_validation(
+        string $currentid,
+        string $compsettingid,
+        string $compsettingstringname,
+        string $compopr = '>='
+    ) {
         // Preparing various parameters to be used in the validation callback function.
         $compsettinglabel = get_string($compsettingstringname, self::PLUGINNAME);
         $errorstrings = [

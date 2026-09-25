@@ -37,8 +37,10 @@ $courseid = required_param('courseid', PARAM_INT);
 $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinstance()->id, PARAM_INT);
 
 $redirecturl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
-$baseurl = new moodle_url('/admin/tool/opencast/managetranscriptions.php',
-    ['video_identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/managetranscriptions.php',
+    ['video_identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
 $PAGE->set_url($baseurl);
 
 require_login($courseid, false);
@@ -58,18 +60,28 @@ $video = $apibridge->get_opencast_video($identifier, true);
 
 $transcriptionmanagementenabled = (bool) get_config('tool_opencast', 'enablemanagetranscription_' . $ocinstanceid);
 if (!$transcriptionmanagementenabled) {
-    redirect($redirecturl,
-        get_string('transcriptionmanagementdisabled', 'tool_opencast'), null, notification::NOTIFY_ERROR);
+    redirect(
+        $redirecturl,
+        get_string('transcriptionmanagementdisabled', 'tool_opencast'),
+        null,
+        notification::NOTIFY_ERROR
+    );
 }
 
 if ($video->error || $video->video->processing_state != 'SUCCEEDED') {
-    redirect($redirecturl,
-        get_string('unabletomanagetranscriptions', 'tool_opencast'), null, notification::NOTIFY_WARNING);
+    redirect(
+        $redirecturl,
+        get_string('unabletomanagetranscriptions', 'tool_opencast'),
+        null,
+        notification::NOTIFY_WARNING
+    );
 }
 
 // Create new url.
-$addnewurl = new moodle_url('/admin/tool/opencast/addtranscription.php',
-    ['video_identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$addnewurl = new moodle_url(
+    '/admin/tool/opencast/addtranscription.php',
+    ['video_identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
 
 $languages = [];
 $transcriptionlanguagesconfig = get_config('tool_opencast', 'transcriptionlanguages_' . $ocinstanceid);
@@ -120,13 +132,25 @@ if ($video->video->publications) {
     }
     // We prepare the list items out of the caption attachments.
     foreach ($attachments as $attachment) {
-        $attachmentitems[] = $renderer->prepare_transcription_item_for_the_menu($attachment, $courseid, $ocinstanceid, $identifier,
-            'attachment', $languages);
+        $attachmentitems[] = $renderer->prepare_transcription_item_for_the_menu(
+            $attachment,
+            $courseid,
+            $ocinstanceid,
+            $identifier,
+            'attachment',
+            $languages
+        );
     }
     // We prepare the list items out of the caption media.
     foreach ($medias as $media) {
-        $mediaitems[] = $renderer->prepare_transcription_item_for_the_menu($media, $courseid, $ocinstanceid, $identifier,
-            'media', $languages);
+        $mediaitems[] = $renderer->prepare_transcription_item_for_the_menu(
+            $media,
+            $courseid,
+            $ocinstanceid,
+            $identifier,
+            'media',
+            $languages
+        );
     }
 }
 // Then we combine the items together to display them in the list.

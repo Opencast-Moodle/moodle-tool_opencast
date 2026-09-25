@@ -34,7 +34,6 @@ require_once($CFG->dirroot . '/user/selector/lib.php');
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_opencast_enrolled_user_selector extends user_selector_base {
-
     /** @var bool|context|context_system|mixed|null Moodle context, usually course */
     protected $context;
 
@@ -72,9 +71,9 @@ class tool_opencast_enrolled_user_selector extends user_selector_base {
     public function find_users($search) {
         global $DB;
 
-        list($enrolsql, $eparams) = get_enrolled_sql($this->context);
+        [$enrolsql, $eparams] = get_enrolled_sql($this->context);
 
-        list($wherecondition, $params) = $this->search_sql($search, 'u');
+        [$wherecondition, $params] = $this->search_sql($search, 'u');
         $params = array_merge($params, $eparams);
 
         $fields = 'SELECT ' . $this->required_fields_sql('u');
@@ -85,7 +84,7 @@ class tool_opencast_enrolled_user_selector extends user_selector_base {
                   WHERE $wherecondition";
         $params['contextid'] = $this->context->id;
 
-        list($sort, $sortparams) = users_order_by_sql('u', $search, $this->accesscontext);
+        [$sort, $sortparams] = users_order_by_sql('u', $search, $this->accesscontext);
         $order = ' ORDER BY ' . $sort;
 
         if (!$this->is_validating()) {

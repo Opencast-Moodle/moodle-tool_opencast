@@ -44,7 +44,6 @@ require_once($CFG->dirroot . '/lib/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class managedefaults_form extends moodleform {
-
     /**
      * Form definition.
      */
@@ -136,31 +135,46 @@ class managedefaults_form extends moodleform {
         if ($field->datatype == 'autocomplete') {
             $attributes = [
                 'multiple' => true,
-                'placeholder' => get_string('metadata_autocomplete_placeholder', 'tool_opencast',
-                    $this->try_get_string($field->name, 'tool_opencast')),
+                'placeholder' => get_string(
+                    'metadata_autocomplete_placeholder',
+                    'tool_opencast',
+                    $this->try_get_string($field->name, 'tool_opencast')
+                ),
                 'showsuggestions' => true, // If true, admin is able to add suggestion via admin page. Otherwise no suggestions!
-                'noselectionstring' => get_string('metadata_autocomplete_noselectionstring', 'tool_opencast',
-                    $this->try_get_string($field->name, 'tool_opencast')),
+                'noselectionstring' => get_string(
+                    'metadata_autocomplete_noselectionstring',
+                    'tool_opencast',
+                    $this->try_get_string($field->name, 'tool_opencast')
+                ),
                 'tags' => true,
             ];
 
             // Check if the metadata_catalog field is creator or contributor, to pass some suggestions.
             if ($field->name == 'creator' || $field->name == 'contributor') {
                 // We merge param values with the suggestions, because param is already initialized.
-                $param = array_merge($param,
-                    autocomplete_suggestion_helper::get_suggestions_for_creator_and_contributor($ocinstanceid));
+                $param = array_merge(
+                    $param,
+                    autocomplete_suggestion_helper::get_suggestions_for_creator_and_contributor($ocinstanceid)
+                );
             }
         }
 
         // Get the created element back from addElement function, in order to further use its attrs.
-        $element = $mform->addElement($field->datatype, $elementname, $this->try_get_string($field->name, 'tool_opencast'),
-            $param, $attributes);
+        $element = $mform->addElement(
+            $field->datatype,
+            $elementname,
+            $this->try_get_string($field->name, 'tool_opencast'),
+            $param,
+            $attributes
+        );
 
         // Check if the description is set for the field, to display it as help icon.
         if (isset($field->description) && !empty($field->description)) {
             // Use the renderer to generate a help icon with custom text.
             $element->_helpbutton = $this->renderer->render_help_icon_with_custom_text(
-                $this->try_get_string($field->name, 'tool_opencast'), $field->description);
+                $this->try_get_string($field->name, 'tool_opencast'),
+                $field->description
+            );
         }
 
         if ($field->datatype == 'text') {

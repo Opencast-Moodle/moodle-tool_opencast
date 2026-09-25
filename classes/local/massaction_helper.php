@@ -38,7 +38,6 @@ use html_writer;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class massaction_helper {
-
     /** @var string Toggle group name. */
     const TOGGLE_GROUP_NAME = 'opencast-videos-table';
 
@@ -339,8 +338,10 @@ class massaction_helper {
     private function validate_massactions() {
         $isvalid = true;
         foreach ($this->massactions as $action) {
-            if (!isset($action['enable']) || !isset($action['path']) ||
-                (isset($action['path']) && (!isset($action['path']['url']) || empty($action['path']['url'])))) {
+            if (
+                !isset($action['enable']) || !isset($action['path']) ||
+                (isset($action['path']) && (!isset($action['path']['url']) || empty($action['path']['url'])))
+            ) {
                 $isvalid = false;
                 break;
             }
@@ -398,8 +399,10 @@ class massaction_helper {
      *              If the provided actionname or paramkey is invalid, the function will return false.
      */
     public function remove_action_path_parameter(string $actionname, string $paramkey) {
-        if (isset($this->massactions[$actionname]) && !empty($paramkey) &&
-            isset($this->massactions[$actionname]['path']['params'][$paramkey])) {
+        if (
+            isset($this->massactions[$actionname]) && !empty($paramkey) &&
+            isset($this->massactions[$actionname]['path']['params'][$paramkey])
+        ) {
             unset($this->massactions[$actionname]['path']['params'][$paramkey]);
             return true;
         }
@@ -421,9 +424,9 @@ class massaction_helper {
      */
     public static function get_js_selectors() {
         return [
-            'dropdown' => '.'. self::SELECT_DROPDOWN_CLASSNAME,
-            'selectall' => 'input.'. self::CHECKBOX_SELECTALL_CLASSNAME,
-            'selectitem' => 'input.'. self::CHECKBOX_SELECTITEM_CLASSNAME,
+            'dropdown' => '.' . self::SELECT_DROPDOWN_CLASSNAME,
+            'selectall' => 'input.' . self::CHECKBOX_SELECTALL_CLASSNAME,
+            'selectitem' => 'input.' . self::CHECKBOX_SELECTITEM_CLASSNAME,
             'actionmapping' => self::HIDDEN_INPUT_ACTIONS_MAPPING_NAME,
             'container' => '.' . self::TABLE_CONTAINER_CLASSNAME,
         ];

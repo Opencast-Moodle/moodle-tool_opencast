@@ -38,7 +38,6 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class visibility_helper {
-
     /** @var int visibility change failed */
     const STATUS_FAILED = 0;
 
@@ -110,7 +109,7 @@ class visibility_helper {
         $status = self::STATUS_FAILED;
 
         // Extract all the required parameters to perform the change_visibility function.
-        list($ocinstanceid, $courseid, $eventidentifier) = $this->extract_job_params($job);
+        [$ocinstanceid, $courseid, $eventidentifier] = $this->extract_job_params($job);
         // We check if there is any empty param.
         if (empty($ocinstanceid) || empty($courseid)) {
             mtrace('job ' . $job->id . ':(ERROR) Invalid parameters to perfomr the job.');
@@ -132,8 +131,10 @@ class visibility_helper {
         }
 
         // Check if Workflow is set and the acl control is enabled.
-        if (get_config('tool_opencast', 'workflow_roles_' . $ocinstanceid) == "" ||
-            get_config('tool_opencast', 'aclcontrolafter_' . $ocinstanceid) != true) {
+        if (
+            get_config('tool_opencast', 'workflow_roles_' . $ocinstanceid) == "" ||
+            get_config('tool_opencast', 'aclcontrolafter_' . $ocinstanceid) != true
+        ) {
             mtrace('job ' . $job->id . ':(ERROR) Invalid configuration to change visibility.');
             self::change_job_status($job, $status);
             return;
@@ -359,8 +360,12 @@ class visibility_helper {
             case tool_opencast_renderer::HIDDEN:
                 foreach ($roles as $role) {
                     foreach ($role->actions as $action) {
-                        $rolenameformatted = $apibridge::replace_placeholders($role->rolename,
-                            $courseid, null, $uploadjob->userid)[0];
+                        $rolenameformatted = $apibridge::replace_placeholders(
+                            $role->rolename,
+                            $courseid,
+                            null,
+                            $uploadjob->userid
+                        )[0];
                         if ($rolenameformatted) {
                             $acls[] = (object)[
                                 'allow' => true,
@@ -374,8 +379,14 @@ class visibility_helper {
             case tool_opencast_renderer::GROUP:
                 foreach ($roles as $role) {
                     foreach ($role->actions as $action) {
-                        foreach ($apibridge::replace_placeholders($role->rolename,
-                            $courseid, $groups, $uploadjob->userid) as $rule) {
+                        foreach (
+                            $apibridge::replace_placeholders(
+                                $role->rolename,
+                                $courseid,
+                                $groups,
+                                $uploadjob->userid
+                            ) as $rule
+                        ) {
                             if ($rule) {
                                 $acls[] = (object)[
                                     'allow' => true,

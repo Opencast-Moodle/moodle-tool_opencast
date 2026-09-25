@@ -38,8 +38,6 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class importvideosmanager {
-
-
     /** @var int course wizard restore status is started */
     const RESTORE_STATUS_STARTED = 0;
 
@@ -370,7 +368,6 @@ class importvideosmanager {
                 $coursevideossummary[$video->is_part_of] = ['title' => $title, 'videos' => []];
             }
             $coursevideossummary[$video->is_part_of]['videos'][$identifier] = $renderer->course_video_menu_entry($video);
-
         }
 
         // Finally, return the list of course videos.
@@ -409,8 +406,13 @@ class importvideosmanager {
      *
      * @return stdClass
      */
-    public static function duplicate_videos($ocinstanceid, $sourcecourseid, $targetcourseid,
-                                            $coursevideos, $modulecleanup = false) {
+    public static function duplicate_videos(
+        $ocinstanceid,
+        $sourcecourseid,
+        $targetcourseid,
+        $coursevideos,
+        $modulecleanup = false
+    ) {
         global $USER;
         $result = new stdClass();
 
@@ -468,27 +470,47 @@ class importvideosmanager {
                 $episodemodules = [];
 
                 // For LTI check if capability is fulfilled.
-                if (ltimodulemanager::is_working_for_episodes($ocinstanceid) &&
-                    has_capability('tool/opencast:addltiepisode', context_course::instance($targetcourseid))) {
+                if (
+                    ltimodulemanager::is_working_for_episodes($ocinstanceid) &&
+                    has_capability('tool/opencast:addltiepisode', context_course::instance($targetcourseid))
+                ) {
                     $episodemodules = ltimodulemanager::get_modules_for_episode_linking_to_other_course(
-                        $ocinstanceid, $targetcourseid, $identifier);
+                        $ocinstanceid,
+                        $targetcourseid,
+                        $identifier
+                    );
                 }
 
                 if (core_plugin_manager::instance()->get_plugin_info('mod_opencast') != null) {
                     $episodemodules += activitymodulemanager::get_modules_for_episode_linking_to_other_course(
-                        $ocinstanceid, $targetcourseid, $identifier);
+                        $ocinstanceid,
+                        $targetcourseid,
+                        $identifier
+                    );
                 }
             }
 
             // If there are existing modules to be cleaned up.
             if ($modulecleanup == true && count($episodemodules) > 0) {
                 // Create duplication task for this event.
-                $ret = event::create_duplication_task($ocinstanceid, $targetcourseid, $targetseriesid, $identifier,
-                    true, $episodemodules);
+                $ret = event::create_duplication_task(
+                    $ocinstanceid,
+                    $targetcourseid,
+                    $targetseriesid,
+                    $identifier,
+                    true,
+                    $episodemodules
+                );
             } else {
                 // Create duplication task for this event.
-                $ret = event::create_duplication_task($ocinstanceid, $targetcourseid, $targetseriesid, $identifier,
-                    false, null);
+                $ret = event::create_duplication_task(
+                    $ocinstanceid,
+                    $targetcourseid,
+                    $targetseriesid,
+                    $identifier,
+                    false,
+                    null
+                );
             }
 
             // If there was any problem with creating this task.
@@ -538,7 +560,8 @@ class importvideosmanager {
         // If there aren't any videos, return only a warning message.
         if (count($videos) < 1) {
             return $renderer->wizard_warning_notification(
-                get_string('importvideos_wizardstep2coursevideosnone', 'tool_opencast'));
+                get_string('importvideos_wizardstep2coursevideosnone', 'tool_opencast')
+            );
         }
 
         // Initialize course videos entry strings as empty array.
@@ -641,12 +664,18 @@ class importvideosmanager {
         foreach ($seriesimportmapping as $mapping) {
             // LTI Modules.
             ltimodulemanager::fix_imported_series_modules_in_new_course(
-                $ocinstanceid, $courseid, $mapping->sourceseriesid, $newseriesid
+                $ocinstanceid,
+                $courseid,
+                $mapping->sourceseriesid,
+                $newseriesid
             );
 
             // Activity modules.
             activitymodulemanager::fix_imported_series_modules_in_new_course(
-                $ocinstanceid, $courseid, $mapping->sourceseriesid, $newseriesid
+                $ocinstanceid,
+                $courseid,
+                $mapping->sourceseriesid,
+                $newseriesid
             );
 
             // At this point, we have no use for the series import mapping record anymore,
@@ -693,8 +722,12 @@ class importvideosmanager {
      *
      * @return bool Whether the mapping record is inserted into db or not.
      */
-    public static function save_series_import_mapping_record($ocinstanceid, $targetcourseid,
-        $sourceseriesid, $restoreuniqueid) {
+    public static function save_series_import_mapping_record(
+        $ocinstanceid,
+        $targetcourseid,
+        $sourceseriesid,
+        $restoreuniqueid
+    ) {
         $mappingobj = new \stdClass();
         $mappingobj->type = self::MAPPING_TYPE_SERIES;
         $mappingobj->restoreuid  = $restoreuniqueid;
@@ -714,8 +747,12 @@ class importvideosmanager {
      *
      * @return bool Whether the mapping record is inserted into db or not.
      */
-    public static function save_episode_import_mapping_record($ocinstanceid, $targetcourseid,
-        $sourceeventid, $restoreuniqueid) {
+    public static function save_episode_import_mapping_record(
+        $ocinstanceid,
+        $targetcourseid,
+        $sourceeventid,
+        $restoreuniqueid
+    ) {
         $mappingobj = new \stdClass();
         $mappingobj->type = self::MAPPING_TYPE_EPISODE;
         $mappingobj->restoreuid  = $restoreuniqueid;
@@ -856,8 +893,10 @@ class importvideosmanager {
      */
     public static function validate_mapping_record($mapping) {
         $isvalid = true;
-        if (empty($mapping->restoreuid) || empty($mapping->ocinstanceid)
-            || empty($mapping->targetcourseid) || empty($mapping->type)) {
+        if (
+            empty($mapping->restoreuid) || empty($mapping->ocinstanceid)
+            || empty($mapping->targetcourseid) || empty($mapping->type)
+        ) {
             $isvalid = false;
         }
         return $isvalid;

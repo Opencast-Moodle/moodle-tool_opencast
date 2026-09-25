@@ -38,13 +38,17 @@ $submitbutton2 = optional_param('submitbutton2', '', PARAM_ALPHA);
 $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinstance()->id, PARAM_INT);
 
 // Set base URL.
-$baseurl = new moodle_url('/admin/tool/opencast/addltiepisode.php',
-    ['episodeuuid' => $episodeuuid, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/addltiepisode.php',
+    ['episodeuuid' => $episodeuuid, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
 $PAGE->set_url($baseurl);
 
 // Remember URLs for redirecting.
-$redirecturloverview = new moodle_url('/admin/tool/opencast/index.php',
-    ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$redirecturloverview = new moodle_url(
+    '/admin/tool/opencast/index.php',
+    ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
 $redirecturlcourse = new moodle_url('/course/view.php', ['id' => $courseid]);
 $redirecturlcancel = $redirecturloverview;
 
@@ -71,13 +75,19 @@ require_capability('tool/opencast:addltiepisode', $coursecontext);
 $moduleid = ltimodulemanager::get_module_for_episode($ocinstanceid, $courseid, $episodeuuid);
 if ($moduleid) {
     // Redirect to Opencast videos overview page.
-    redirect($redirecturloverview,
-        get_string('addltiepisode_moduleexists', 'tool_opencast'), null, notification::NOTIFY_WARNING);
+    redirect(
+        $redirecturloverview,
+        get_string('addltiepisode_moduleexists', 'tool_opencast'),
+        null,
+        notification::NOTIFY_WARNING
+    );
 }
 
 // Use Add LTI form.
-$addltiform = new addltiepisode_form(null,
-    ['episodeuuid' => $episodeuuid, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$addltiform = new addltiepisode_form(
+    null,
+    ['episodeuuid' => $episodeuuid, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
 
 // Redirect if the form was cancelled.
 if ($addltiform->is_cancelled()) {
@@ -103,8 +113,10 @@ if ($data = $addltiform->get_data()) {
     }
 
     // If the section feature is disabled or if we do not have an intro, use the default section.
-    if (get_config('tool_opencast', 'addltiepisodesection_' . $ocinstanceid) != true ||
-        !isset($data->section) || !$data->section) {
+    if (
+        get_config('tool_opencast', 'addltiepisodesection_' . $ocinstanceid) != true ||
+        !isset($data->section) || !$data->section
+    ) {
         $sectionid = 0;
 
         // Otherwise.
@@ -113,8 +125,10 @@ if ($data = $addltiform->get_data()) {
     }
 
     // If the availability feature is disabled or if we do not have an availability given, use null.
-    if (get_config('tool_opencast', 'addltiepisodeavailability_' . $ocinstanceid) != true || empty($CFG->enableavailability) ||
-        !isset($data->availabilityconditionsjson) || !$data->availabilityconditionsjson) {
+    if (
+        get_config('tool_opencast', 'addltiepisodeavailability_' . $ocinstanceid) != true || empty($CFG->enableavailability) ||
+        !isset($data->availabilityconditionsjson) || !$data->availabilityconditionsjson
+    ) {
         $availability = null;
 
         // Otherwise.
@@ -123,35 +137,49 @@ if ($data = $addltiform->get_data()) {
     }
 
     // Create the module.
-    $result = ltimodulemanager::create_module_for_episode($ocinstanceid, $courseid,
-        $data->title, $episodeuuid, $sectionid, $introtext, $introformat, $availability);
+    $result = ltimodulemanager::create_module_for_episode(
+        $ocinstanceid,
+        $courseid,
+        $data->title,
+        $episodeuuid,
+        $sectionid,
+        $introtext,
+        $introformat,
+        $availability
+    );
 
     // Check if the module was created successfully.
     if ($result == true) {
         // Form was submitted with second submit button.
         if ($submitbutton2) {
             // Redirect to course overview.
-            redirect($redirecturlcourse,
+            redirect(
+                $redirecturlcourse,
                 get_string('addltiepisode_modulecreated', 'tool_opencast', $data->title),
                 null,
-                notification::NOTIFY_SUCCESS);
+                notification::NOTIFY_SUCCESS
+            );
 
             // Form was submitted with first submit button.
         } else {
             // Redirect to Opencast videos overview page.
-            redirect($redirecturloverview,
+            redirect(
+                $redirecturloverview,
                 get_string('addltiepisode_modulecreated', 'tool_opencast', $data->title),
                 null,
-                notification::NOTIFY_SUCCESS);
+                notification::NOTIFY_SUCCESS
+            );
         }
 
         // Otherwise.
     } else {
         // Redirect to Opencast videos overview page.
-        redirect($redirecturloverview,
+        redirect(
+            $redirecturloverview,
             get_string('addltiepisode_modulenotcreated', 'tool_opencast', $data->title),
             null,
-            notification::NOTIFY_ERROR);
+            notification::NOTIFY_ERROR
+        );
     }
 }
 

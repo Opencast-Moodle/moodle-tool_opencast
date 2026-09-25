@@ -34,7 +34,6 @@ use admin_setting_configtext;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class admin_setting_configtextvalidate extends admin_setting_configtext {
-
     /** @var callable|null Validation function */
     protected $validatefunction = null;
 

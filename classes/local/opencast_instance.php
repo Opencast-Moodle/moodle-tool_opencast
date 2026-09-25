@@ -27,7 +27,6 @@ namespace tool_opencast\local;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class opencast_instance {
-
     /**
      * The id of the Opencast instance.
      *
@@ -81,5 +80,4 @@ class opencast_instance {
         $this->isvisible = $dynamicobject->isvisible;
         $this->isdefault = $dynamicobject->isdefault;
     }
-
 }

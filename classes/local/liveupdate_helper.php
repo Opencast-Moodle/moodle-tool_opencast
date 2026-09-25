@@ -34,7 +34,6 @@ use html_writer;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class liveupdate_helper {
-
     /**
      * Returns the processing state live update hidden input flag.
      *
@@ -128,8 +127,10 @@ class liveupdate_helper {
         $info['replace'] = $status;
         // We pass remove param, to decide whether to continue checking that item or not.
         $remove = false;
-        if ($uploadjob->status == upload_helper::STATUS_TRANSFERRED ||
-            $uploadjob->status == upload_helper::STATUS_ARCHIVED_FAILED_UPLOAD) {
+        if (
+            $uploadjob->status == upload_helper::STATUS_TRANSFERRED ||
+            $uploadjob->status == upload_helper::STATUS_ARCHIVED_FAILED_UPLOAD
+        ) {
             // We remove the item from live update when the upload is transferred.
             $remove = true;
         }

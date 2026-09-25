@@ -31,7 +31,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class behat_tool_opencast_generator extends behat_generator_base {
-
     /**
      * Get a list of the entities that can be created for this component.
      * This generator supports the creation of series.

@@ -39,7 +39,6 @@ require_once($CFG->dirroot . '/backup/moodle2/restore_tool_plugin.class.php');
  * Class restore_tool_opencast_plugin
  */
 class restore_tool_opencast_plugin extends restore_tool_plugin {
-
     /**
      * @var array Series list.
      */
@@ -164,7 +163,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
             // If ACL Change is the mode.
             if ($importmode == 'acl') {
-
                 // Collect sourcecourseid for further processing.
                 $this->sourcecourseid = $data->import[0]["sourcecourseid"];
 
@@ -194,9 +192,7 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                         $this->aclchanged[] = $apibridge->import_series_to_course_with_acl_change($courseid, $seriesid, $USER->id);
                     }
                 }
-
             } else if ($importmode == 'duplication') {
-
                 // Get series id.
                 $seriesid = $apibridge->get_stored_seriesid($courseid, true, $USER->id);
 
@@ -208,8 +204,10 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                 $this->series[$ocinstanceid] = $seriesid;
 
                 // Check if all required information is available.
-                if (empty($this->series) || !isset($data->import) || !isset($data->events) ||
-                    empty($data->import[0]['series']) || empty($data->events['event'])) {
+                if (
+                    empty($this->series) || !isset($data->import) || !isset($data->events) ||
+                    empty($data->import[0]['series']) || empty($data->events['event'])
+                ) {
                     // Nothing to do here, as the data is not enough.
                     return;
                 }
@@ -239,7 +237,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                 }
 
                 foreach ($data->events['event'] as $event) {
-
                     // Skip when the event is not from the current instance.
                     if ($event['instanceid'] != $ocinstanceid) {
                         continue;
@@ -274,11 +271,8 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                         );
                     }
                 }
-
             }
-
         }
-
     }
 
     /**
@@ -299,7 +293,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
             $this->instanceidskip[] = $ocinstanceid;
             echo('Wrong apiurl found for instanceid: ' . $ocinstanceid . ' Skipping this instance while restoring.' . PHP_EOL);
         }
-
     }
 
     /**
@@ -353,7 +346,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
 
             // Handle each Opencast instance.
             foreach ($ocinstances as $ocinstance) {
-
                 $ocinstanceid = $ocinstance->id;
 
                 // Check against skip list.
@@ -365,7 +357,6 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                 $importmode = get_config('tool_opencast', 'importmode_' . $ocinstanceid);
 
                 if ($importmode == 'duplication') {
-
                     // After all, we proceed to fix the series modules,
                     // because they should not wait for the duplicate workflow to finish!
                     importvideosmanager::fix_imported_series_modules_in_new_course(
@@ -396,8 +387,11 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                     }
 
                     if (!$aclchange->eventsaclchange && count($aclchange->eventsaclchange->failed) > 0) {
-                        notifications::notify_failed_events_acl_change($courseid, $this->sourcecourseid,
-                            $aclchange->eventsaclchange->failed);
+                        notifications::notify_failed_events_acl_change(
+                            $courseid,
+                            $this->sourcecourseid,
+                            $aclchange->eventsaclchange->failed
+                        );
                         return;
                     }
 
@@ -407,7 +401,5 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                 }
             }
         }
-
     }
-
 }

@@ -41,9 +41,15 @@ $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinsta
 $redirectpage = optional_param('redirectpage', null, PARAM_ALPHA);
 $series = optional_param('series', null, PARAM_ALPHANUMEXT);
 
-$baseurl = new moodle_url('/admin/tool/opencast/updatemetadata_massaction.php',
-    ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid,
-        'redirectpage' => $redirectpage, 'series' => $series, ]);
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/updatemetadata_massaction.php',
+    [
+        'courseid' => $courseid,
+        'ocinstanceid' => $ocinstanceid,
+        'redirectpage' => $redirectpage,
+        'series' => $series,
+    ]
+);
 $PAGE->set_url($baseurl);
 
 if ($redirectpage == 'overviewvideos') {
@@ -73,7 +79,6 @@ $massactionmetadatacatalog = upload_helper::get_opencast_metadata_catalog_massac
 $videosdatalist = [];
 
 foreach ($videoids as $videoid) {
-
     // Record the video data for later use.
     $videodata = new stdClass();
     $videodata->identifier = $videoid;
@@ -103,10 +108,17 @@ foreach ($videoids as $videoid) {
     array_unshift($videosdatalist, $videodata);
 }
 
-$massactionupdatemetadataform = new updatemetadata_form_massaction(null,
-    ['metadata_catalog' => $massactionmetadatacatalog, 'courseid' => $courseid,
-        'ocinstanceid' => $ocinstanceid, 'redirectpage' => $redirectpage,
-        'videosdatalist' => $videosdatalist, 'series' => $series, ]);
+$massactionupdatemetadataform = new updatemetadata_form_massaction(
+    null,
+    [
+        'metadata_catalog' => $massactionmetadatacatalog,
+        'courseid' => $courseid,
+        'ocinstanceid' => $ocinstanceid,
+        'redirectpage' => $redirectpage,
+        'videosdatalist' => $videosdatalist,
+        'series' => $series,
+    ]
+);
 
 if ($massactionupdatemetadataform->is_cancelled()) {
     redirect($redirecturl);

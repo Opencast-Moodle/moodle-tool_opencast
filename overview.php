@@ -69,7 +69,7 @@ $myseries = [];
 
 if (count($courses) > 0) {
     $courseids = array_column($courses, 'id');
-    list($insql, $inparams) = $DB->get_in_or_equal($courseids);
+    [$insql, $inparams] = $DB->get_in_or_equal($courseids);
     $sql = "SELECT id, series FROM {tool_opencast_series} WHERE courseid $insql AND ocinstanceid = ?";
     $inparams[] = $ocinstanceid;
     $myseries = array_column($DB->get_records_sql($sql, $inparams), 'series');
@@ -103,13 +103,16 @@ for ($i = $page * $perpage; $i < min(($page + 1) * $perpage, count($myseries)); 
     // Check if current user is owner of the series.
     if (in_array($myseries[$i], $ownedseries) || ($ocseries && !$apibridge->has_owner($ocseries->acl))) {
         if ($showchangeownerlink) {
-            $row[] = html_writer::link(new moodle_url('/admin/tool/opencast/changeowner.php',
-                ['ocinstanceid' => $ocinstanceid, 'identifier' => $myseries[$i], 'isseries' => true]),
-                $OUTPUT->pix_icon('i/user', get_string('changeowner', 'tool_opencast')));
+            $row[] = html_writer::link(
+                new moodle_url(
+                    '/admin/tool/opencast/changeowner.php',
+                    ['ocinstanceid' => $ocinstanceid, 'identifier' => $myseries[$i], 'isseries' => true]
+                ),
+                $OUTPUT->pix_icon('i/user', get_string('changeowner', 'tool_opencast'))
+            );
         } else {
             $row[] = $OUTPUT->pix_icon('i/user', get_string('changeowner', 'tool_opencast'));
         }
-
     } else {
         $row[] = '';
     }
@@ -144,25 +147,35 @@ for ($i = $page * $perpage; $i < min(($page + 1) * $perpage, count($myseries)); 
         }
 
         if (in_array($course, $blocklinks)) {
-            $rowblocks[] = html_writer::link(new moodle_url('/admin/tool/opencast/index.php',
-                ['ocinstanceid' => $ocinstanceid, 'courseid' => $mc->id]),
-                $mc->fullname);
+            $rowblocks[] = html_writer::link(
+                new moodle_url(
+                    '/admin/tool/opencast/index.php',
+                    ['ocinstanceid' => $ocinstanceid, 'courseid' => $mc->id]
+                ),
+                $mc->fullname
+            );
         }
 
         if (in_array($course, $activitylinks)) {
             // Get activity.
             $moduleid = activitymodulemanager::get_module_for_series($ocinstanceid, $mc->id, $myseries[$i]);
 
-            $rowactivities[] = html_writer::link(new moodle_url('/mod/opencast/view.php', ['id' => $moduleid]),
-                $mc->fullname);
+            $rowactivities[] = html_writer::link(
+                new moodle_url('/mod/opencast/view.php', ['id' => $moduleid]),
+                $mc->fullname
+            );
         }
     }
 
     $row[] = join("<br>", $rowblocks);
     $row[] = join("<br>", $rowactivities);
-    $row[] = html_writer::link(new moodle_url('/admin/tool/opencast/overview_videos.php',
-        ['ocinstanceid' => $ocinstanceid, 'series' => $myseries[$i]]),
-        $OUTPUT->pix_icon('i/messagecontentvideo', get_string('showvideos', 'tool_opencast')));
+    $row[] = html_writer::link(
+        new moodle_url(
+            '/admin/tool/opencast/overview_videos.php',
+            ['ocinstanceid' => $ocinstanceid, 'series' => $myseries[$i]]
+        ),
+        $OUTPUT->pix_icon('i/messagecontentvideo', get_string('showvideos', 'tool_opencast'))
+    );
 
     $table->add_data($row);
 }
@@ -192,9 +205,22 @@ if (count($ownedvideos) > 0) {
     $activityinstalled = core_plugin_manager::instance()->get_plugin_info('mod_opencast') != null;
     $showchangeownerlink = course_can_view_participants(context_system::instance());
 
-    foreach ($renderer->create_overview_videos_rows($ownedvideos, $apibridge, $ocinstanceid,
-        $activityinstalled, $showchangeownerlink, true, false,
-        true, true, true, 'overview', true) as $row) {
+    foreach (
+        $renderer->create_overview_videos_rows(
+            $ownedvideos,
+            $apibridge,
+            $ocinstanceid,
+            $activityinstalled,
+            $showchangeownerlink,
+            true,
+            false,
+            true,
+            true,
+            true,
+            'overview',
+            true
+        ) as $row
+    ) {
         $table->add_data($row);
     }
 

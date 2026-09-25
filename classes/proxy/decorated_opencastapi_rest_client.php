@@ -31,7 +31,6 @@ use tool_opencast\local\maintenance_class;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class decorated_opencastapi_rest_client {
-
     /** @var OcRestClient The Opencast API Rest Client */
     private OcRestClient $restclient;
 

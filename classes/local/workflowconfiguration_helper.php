@@ -34,7 +34,6 @@ use html_writer;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class workflowconfiguration_helper {
-
     /** @var string The upload workflow mapping hidden input id. */
     const MAPPING_INPUT_HIDDEN_ID = 'configpanelmapping';
 

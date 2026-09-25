@@ -40,10 +40,14 @@ $courseid = required_param('courseid', PARAM_INT);
 $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinstance()->id, PARAM_INT);
 
 $indexurl = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
-$redirecturl = new moodle_url('/admin/tool/opencast/managetranscriptions.php',
-    ['video_identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
-$baseurl = new moodle_url('/admin/tool/opencast/addtranscriptions.php',
-    ['video_identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$redirecturl = new moodle_url(
+    '/admin/tool/opencast/managetranscriptions.php',
+    ['video_identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/addtranscriptions.php',
+    ['video_identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
 $PAGE->set_url($baseurl);
 
 require_login($courseid, false);
@@ -66,17 +70,27 @@ $transcriptionmanagementenabled = (bool) get_config('tool_opencast', 'enablemana
 $transcriptionlanguagesconfig = get_config('tool_opencast', 'transcriptionlanguages_' . $ocinstanceid);
 
 if (!$transcriptionmanagementenabled || empty($transcriptionlanguagesconfig)) {
-    redirect($redirecturl,
-        get_string('transcriptionmanagementdisabled', 'tool_opencast'), null, notification::NOTIFY_ERROR);
+    redirect(
+        $redirecturl,
+        get_string('transcriptionmanagementdisabled', 'tool_opencast'),
+        null,
+        notification::NOTIFY_ERROR
+    );
 }
 
 if ($video->error || $video->video->processing_state != 'SUCCEEDED') {
-    redirect($redirecturl,
-        get_string('unabletoaddnewtranscription', 'tool_opencast'), null, notification::NOTIFY_ERROR);
+    redirect(
+        $redirecturl,
+        get_string('unabletoaddnewtranscription', 'tool_opencast'),
+        null,
+        notification::NOTIFY_ERROR
+    );
 }
 
-$addtranscriptionform = new addtranscription_form(null,
-    ['courseid' => $courseid, 'identifier' => $identifier, 'ocinstanceid' => $ocinstanceid]);
+$addtranscriptionform = new addtranscription_form(
+    null,
+    ['courseid' => $courseid, 'identifier' => $identifier, 'ocinstanceid' => $ocinstanceid]
+);
 
 if ($addtranscriptionform->is_cancelled()) {
     redirect($redirecturl);
@@ -93,8 +107,13 @@ if ($data = $addtranscriptionform->get_data()) {
 
         $fileelm = "transcription_file_{$language->key}";
         if (property_exists($data, $fileelm)) {
-            $storedfile = $addtranscriptionform->save_stored_file($fileelm, $coursecontext->id,
-                'tool_opencast', attachment_helper::OC_FILEAREA_ATTACHMENT, $data->{$fileelm});
+            $storedfile = $addtranscriptionform->save_stored_file(
+                $fileelm,
+                $coursecontext->id,
+                'tool_opencast',
+                attachment_helper::OC_FILEAREA_ATTACHMENT,
+                $data->{$fileelm}
+            );
             if (isset($storedfile) && $storedfile) {
                 $storedlanguagefiles[$language->key] = $storedfile;
             }
