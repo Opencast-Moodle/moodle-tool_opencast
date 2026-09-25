@@ -329,7 +329,10 @@ class maintenance_class {
         // To avoid system level processing interruption,
         // we check if it is a system is in installation or upgrade process.
         // We simply return 404 in this case.
-        $issystemprocessing = during_initial_install() || !upgrade_ensure_not_running(true);
+        $upgradenotrunning = $CFG->branch < 502 ?
+            upgrade_ensure_not_running(true) :
+            !\core\setup::warn_if_upgrade_is_running();
+        $issystemprocessing = during_initial_install() || !$upgradenotrunning;
         if ($issystemprocessing) {
             debugging('An attempt was made to access Opencast during a maintenance period ' .
                 'while the system was undergoing installation or an upgrade.');
