@@ -94,6 +94,7 @@ class ingest_uploader {
                     mtrace($e->getMessage());
                     break;
                 }
+                // No break.
             case self::STATUS_INGEST_ADDING_EPISODE_CATALOG:
                 try {
                     upload_helper::ensure_series_metadata($job, $apibridge);
@@ -117,7 +118,7 @@ class ingest_uploader {
                     mtrace($e->getMessage());
                     break;
                 }
-
+                // No break.
             case self::STATUS_INGEST_ADDING_FIRST_TRACK:
                 $validstoredfile = true;
                 $presenter = null;
@@ -171,7 +172,7 @@ class ingest_uploader {
                         break;
                     }
                 }
-
+                // No break.
             case self::STATUS_INGEST_ADDING_SECOND_TRACK:
                 $validstoredfile = true;
                 $presentation = null;
@@ -225,7 +226,7 @@ class ingest_uploader {
                         break;
                     }
                 }
-
+                // No break.
             case self::STATUS_INGEST_ADDING_ACL_ATTACHMENT:
                 try {
                     $initialvisibility = visibility_helper::get_initial_visibility($job);
@@ -249,6 +250,7 @@ class ingest_uploader {
                     mtrace($e->getMessage());
                     break;
                 }
+                // No break.
             case self::STATUS_INGEST_INGESTING:
                 try {
                     // Prepare workflow configuration beforehand.

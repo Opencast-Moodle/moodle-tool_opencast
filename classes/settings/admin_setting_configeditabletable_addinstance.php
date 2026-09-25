@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Admin setting class which is used to create an editable table.
- * @package    tool_opencast
- * @author     Tamara Gunkel <bbusskamp@ssystems.de>
- * @copyright  2021 Tamara Gunkel, University of Münster
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_opencast\settings;
 
 /**
@@ -31,22 +23,18 @@ namespace tool_opencast\settings;
  * @copyright  2021 Tamara Gunkel, University of Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class admin_setting_configeditabletable extends \admin_setting {
+class admin_setting_configeditabletable_addinstance extends \admin_setting {
     /** @var string Id of the div tag */
     private $divid;
-    /** @var string Text for add button */
-    private $buttontext;
 
     /**
      * Not a setting, just an editable table.
      * @param string $name Setting name
      * @param string $divid Id of the div tag
-     * @param string $buttontext Text of "Add row" button
      */
-    public function __construct($name, $divid, $buttontext) {
+    public function __construct($name, $divid) {
         $this->nosave = true;
         $this->divid = $divid;
-        $this->buttontext = $buttontext;
         parent::__construct($name, '', '', '');
     }
 
@@ -87,8 +75,8 @@ class admin_setting_configeditabletable extends \admin_setting {
      * @return string Returns an HTML string
      */
     public function output_html($data, $query = '') {
-        return '<div class="mt-3" id="' . $this->divid .
-            '"></div><div class="d-flex"><button class="btn btn-primary mt-3 ml-auto mb-3" type="button" id="addrow-' .
-            $this->divid . '">' . $this->buttontext . '</button></div>';
+        return '<div class="row justify-content-end"><div class="mt-3 col-sm-9 p-0" id="' . $this->divid .
+            '"></div></div><button class="btn btn-primary mt-3 float-right" type="button" id="addrow-' . $this->divid . '">' .
+            get_string('addinstance', 'tool_opencast') . '</button>';
     }
 }

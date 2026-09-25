@@ -73,7 +73,7 @@ class seriesmapping extends \core\persistent {
      * @return false|seriesmapping
      */
     public static function get_record($filters = [], $skipdefault = false) {
-        // TODO later deprecate skipdefault and remove this compatibility stuff.
+        // Opencast-TODO later deprecate skipdefault and remove this compatibility stuff.
         // Keep it compatible with old versions.
         if (!$skipdefault && !array_key_exists('isdefault', $filters)) {
             $filters['isdefault'] = '1';

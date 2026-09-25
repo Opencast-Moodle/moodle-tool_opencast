@@ -554,6 +554,7 @@ class upload_helper {
         switch ($job->status) {
             case self::STATUS_READY_TO_UPLOAD:
                 $this->update_status($job, self::STATUS_CREATING_GROUP, true, true);
+                // No break.
             case self::STATUS_CREATING_GROUP:
                 if (boolval(get_config('tool_opencast', 'group_creation_' . $job->ocinstanceid))) {
                     try {
@@ -573,7 +574,7 @@ class upload_helper {
                     // Move on to next status.
                     $this->update_status($job, self::STATUS_CREATING_SERIES);
                 }
-
+                // No break.
             case self::STATUS_CREATING_SERIES:
                 try {
                     // Check if series exists.

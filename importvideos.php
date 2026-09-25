@@ -178,6 +178,8 @@ switch ($step) {
         if (!$nextstep) {
             break;
         }
+        // A source course was selected, so continue into step 2 in this same request.
+        // No break.
     case 2:
         $nextstep = false;
         $step = 2;
@@ -252,7 +254,8 @@ switch ($step) {
         if (!$nextstep) {
             break;
         }
-
+        // The step 2 form was submitted successfully, so continue into step 3.
+        // No break.
     case 3:
         $nextstep = false;
         $step = 3;
@@ -310,6 +313,8 @@ switch ($step) {
                 break;
             }
         }
+        // Reached either by completing step 3, or via $jumpto4 when step 3 is skipped.
+        // No break.
     case 4:
         $step = 4;
         // Use step 4 form.
