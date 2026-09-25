@@ -352,8 +352,8 @@ class attachment_helper {
                 $subtitletags
             );
         } else {
-            // This is Opencast 15 related.
-            // TODO: As soon we have dropped the Opencast 15 support we can remove the following scenario of using mediapackage.
+            // This is a Opencast 15 related-TODO:
+            // As soon we have dropped the Opencast 15 support we can remove the following scenario of using mediapackage.
             $mediapackagestr = $apibridge->get_event_media_package($eventidentifier);
 
             $transcriptionidentifier = self::extract_transcription_id_from_mediapackage($mediapackagestr, $transcriptionobj);
@@ -367,8 +367,8 @@ class attachment_helper {
             $transcriptionuploadworkflow = 'publish';
         }
 
-        // In case of Opencast 15, that we use $mediapackagestr, we should perform the ingest.
-        // TODO: As soon as we dropped the support of Opencast 15 we should remove this scenario with mediapackage.
+        // In case of Opencast 15, that we use $mediapackagestr, we should perform the ingest. Opencast-TODO: As soon as we
+        // Dropped the support of Opencast 15 we should remove this scenario with mediapackage.
         if (isset($mediapackagestr)) {
             // Ingest the mediapackage.
             $workflow = $apibridge->ingest($mediapackagestr, $deletetranscriptionworkflow);
@@ -416,8 +416,8 @@ class attachment_helper {
                 );
             }
         } else {
-            // This is Opencast 15 related.
-            // TODO: As soon we have dropped the Opencast 15 support we can remove the following scenario of using mediapackage.
+            // This is a Opencast 15 related-TODO: As soon we have dropped the Opencast 15 support we can remove
+            // The following scenario of using mediapackage.
             $mediapackagestr = $apibridge->get_event_media_package($eventidentifier);
             foreach ($storedlanguagefiles as $lang => $file) {
                 $subtitletags = $basesubtitletags;
@@ -439,8 +439,8 @@ class attachment_helper {
             $transcriptionuploadworkflow = 'publish';
         }
 
-        // In case of Opencast 15, that we use $mediapackagestr, we should perform the ingest.
-        // TODO: As soon as we dropped the support of Opencast 15 we should remove this scenario with mediapackage.
+        // In case of Opencast 15, that we use $mediapackagestr, we should perform the ingest. Opencast-TODO: As soon as we dropped
+        // The support of Opencast 15 we should remove this scenario with mediapackage.
         if (isset($mediapackagestr)) {
             // Ingest the mediapackage.
             $workflow = $apibridge->ingest($mediapackagestr, $transcriptionuploadworkflow);
@@ -463,7 +463,7 @@ class attachment_helper {
      * @param array $tags An array of tags to match against the transcription track.
      * @return string The updated mediapackage XML string with the matching transcription removed, if found.
      *
-     * @todo This method should be removed once support for Opencast 15 is dropped.
+     * Opencast-TODO: This method should be removed once support for Opencast 15 is dropped.
      */
     private static function removing_existing_transcription_in_mediapackage($mediapackagestr, $flavor, $tags) {
         $dummymediaobj = new \stdClass();
