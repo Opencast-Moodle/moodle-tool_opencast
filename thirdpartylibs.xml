@@ -18,21 +18,21 @@
     <library>
         <location>vendor/guzzlehttp/guzzle</location>
         <name>Guzzle is a PHP HTTP client library</name>
-        <version>7.9.3</version>
+        <version>7.15.5</version>
         <license>MIT</license>
         <repository>https://github.com/guzzle/guzzle</repository>
     </library>
     <library>
         <location>vendor/guzzlehttp/promises</location>
         <name>Guzzle promises library</name>
-        <version>2.2.0</version>
+        <version>2.5.3</version>
         <license>MIT</license>
         <repository>https://github.com/guzzle/promises</repository>
     </library>
     <library>
         <location>vendor/guzzlehttp/psr7</location>
         <name>PSR-7 message implementation that also provides common utility methods</name>
-        <version>2.7.1</version>
+        <version>2.13.1</version>
         <license>MIT</license>
         <repository>https://github.com/guzzle/psr7</repository>
     </library>
@@ -82,9 +82,16 @@
     <library>
         <location>vendor/symfony/deprecation-contracts</location>
         <name>A generic function and convention to trigger deprecation notices</name>
-        <version>3.6.0</version>
+        <version>3.7.1</version>
         <license>MIT</license>
         <repository>https://github.com/symfony/deprecation-contracts</repository>
+    </library>
+    <library>
+        <location>vendor/symfony/polyfill-php80</location>
+        <name>Symfony polyfill backporting some PHP 8.0+ features to lower PHP versions</name>
+        <version>1.37.0</version>
+        <license>MIT</license>
+        <repository>https://github.com/symfony/polyfill-php80</repository>
     </library>
     <library>
         <location>vendor/composer</location>
