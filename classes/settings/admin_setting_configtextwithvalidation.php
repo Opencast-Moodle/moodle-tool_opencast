@@ -28,7 +28,6 @@ use core_plugin_manager;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class admin_setting_configtextwithvalidation extends \admin_setting_configtext {
-
     /** @var string the old value of the this setting. */
     private $oldvalue;
 
@@ -63,7 +62,6 @@ class admin_setting_configtextwithvalidation extends \admin_setting_configtext {
 
         $failed = parent::write_setting($data);
         if (!$failed) {
-
             // Record newly saved settings that pass the validation, to work with later on.
             $this->newlysavedvalue = $this->get_setting();
 
@@ -278,7 +276,6 @@ class admin_setting_configtextwithvalidation extends \admin_setting_configtext {
 
         // First level of looping is to go through the deleted instances.
         foreach ($deletedocinstanceids as $id) {
-
             // In here we need to set the params value and determine the config name based on the ocinstance id.
             $params = [
                 'confignamelike' => '%_' . $id,
@@ -286,7 +283,6 @@ class admin_setting_configtextwithvalidation extends \admin_setting_configtext {
 
             // Second level of looping is to go through the plugins.
             foreach ($plugins as $plugin) {
-
                 // In here we can determine the plugin name.
                 $params['plugin'] = $plugin;
 

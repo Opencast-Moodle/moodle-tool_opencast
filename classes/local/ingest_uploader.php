@@ -45,7 +45,6 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class ingest_uploader {
-
     /** @var int Media package is created */
     const STATUS_INGEST_CREATING_MEDIA_PACKAGE = 221;
 
@@ -82,8 +81,14 @@ class ingest_uploader {
                     $mediapackage = $apibridge->ingest_create_media_package();
                     mtrace('... media package created');
                     // Move on to next status.
-                    self::update_status_with_mediapackage($job, self::STATUS_INGEST_ADDING_EPISODE_CATALOG,
-                        true, false, false, $mediapackage);
+                    self::update_status_with_mediapackage(
+                        $job,
+                        self::STATUS_INGEST_ADDING_EPISODE_CATALOG,
+                        true,
+                        false,
+                        false,
+                        $mediapackage
+                    );
                 } catch (opencast_api_response_exception $e) {
                     mtrace('... failed to create media package');
                     mtrace($e->getMessage());
@@ -99,9 +104,14 @@ class ingest_uploader {
                     $mediapackage = $apibridge->ingest_add_catalog($job->mediapackage, 'dublincore/episode', $file);
                     mtrace('... added episode metadata');
                     // Move on to next status.
-                    self::update_status_with_mediapackage($job, self::STATUS_INGEST_ADDING_FIRST_TRACK,
-                        true, false, false, $mediapackage);
-
+                    self::update_status_with_mediapackage(
+                        $job,
+                        self::STATUS_INGEST_ADDING_FIRST_TRACK,
+                        true,
+                        false,
+                        false,
+                        $mediapackage
+                    );
                 } catch (opencast_api_response_exception $e) {
                     mtrace('... failed to add episode metadata');
                     mtrace($e->getMessage());
@@ -109,7 +119,6 @@ class ingest_uploader {
                 }
 
             case self::STATUS_INGEST_ADDING_FIRST_TRACK:
-
                 $validstoredfile = true;
                 $presenter = null;
                 if ($job->presenter_fileid) {
@@ -133,8 +142,14 @@ class ingest_uploader {
                 if ($validstoredfile && !$presenter) {
                     // No file to upload.
                     mtrace('... no presenter to upload');
-                    self::update_status_with_mediapackage($job, self::STATUS_INGEST_ADDING_SECOND_TRACK,
-                        true, false, false, $job->mediapackage);
+                    self::update_status_with_mediapackage(
+                        $job,
+                        self::STATUS_INGEST_ADDING_SECOND_TRACK,
+                        true,
+                        false,
+                        false,
+                        $job->mediapackage
+                    );
                 } else if (!$validstoredfile) {
                     $DB->delete_records('tool_opencast_uploadjob', ['id' => $job->id]);
                     throw new moodle_exception('invalidfiletoupload', 'tool_opencast');
@@ -142,9 +157,14 @@ class ingest_uploader {
                     try {
                         $mediapackage = $apibridge->ingest_add_track($job->mediapackage, 'presenter/source', $presenter);
                         mtrace('... presenter uploaded');
-                        self::update_status_with_mediapackage($job, self::STATUS_INGEST_ADDING_SECOND_TRACK,
-                            true, false, false, $mediapackage);
-
+                        self::update_status_with_mediapackage(
+                            $job,
+                            self::STATUS_INGEST_ADDING_SECOND_TRACK,
+                            true,
+                            false,
+                            false,
+                            $mediapackage
+                        );
                     } catch (opencast_api_response_exception $e) {
                         mtrace('... failed upload presenter');
                         mtrace($e->getMessage());
@@ -153,7 +173,6 @@ class ingest_uploader {
                 }
 
             case self::STATUS_INGEST_ADDING_SECOND_TRACK:
-
                 $validstoredfile = true;
                 $presentation = null;
                 if ($job->presentation_fileid) {
@@ -177,8 +196,14 @@ class ingest_uploader {
                 if ($validstoredfile && !$presentation) {
                     // No file to upload.
                     mtrace('... no presentation to upload');
-                    self::update_status_with_mediapackage($job, self::STATUS_INGEST_ADDING_ACL_ATTACHMENT,
-                        true, false, false, $job->mediapackage);
+                    self::update_status_with_mediapackage(
+                        $job,
+                        self::STATUS_INGEST_ADDING_ACL_ATTACHMENT,
+                        true,
+                        false,
+                        false,
+                        $job->mediapackage
+                    );
                 } else if (!$validstoredfile) {
                     $DB->delete_records('tool_opencast_uploadjob', ['id' => $job->id]);
                     throw new moodle_exception('invalidfiletoupload', 'tool_opencast');
@@ -186,9 +211,14 @@ class ingest_uploader {
                     try {
                         $mediapackage = $apibridge->ingest_add_track($job->mediapackage, 'presentation/source', $presentation);
                         mtrace('... presentation uploaded');
-                        self::update_status_with_mediapackage($job, self::STATUS_INGEST_ADDING_ACL_ATTACHMENT,
-                            true, false, false, $mediapackage);
-
+                        self::update_status_with_mediapackage(
+                            $job,
+                            self::STATUS_INGEST_ADDING_ACL_ATTACHMENT,
+                            true,
+                            false,
+                            false,
+                            $mediapackage
+                        );
                     } catch (opencast_api_response_exception $e) {
                         mtrace('... failed upload presentation');
                         mtrace($e->getMessage());
@@ -198,7 +228,6 @@ class ingest_uploader {
 
             case self::STATUS_INGEST_ADDING_ACL_ATTACHMENT:
                 try {
-
                     $initialvisibility = visibility_helper::get_initial_visibility($job);
                     $aclxml = self::create_acl_xml($initialvisibility->roles, $job);
 
@@ -207,9 +236,14 @@ class ingest_uploader {
                     $mediapackage = $apibridge->ingest_add_attachment($job->mediapackage, 'security/xacml+episode', $file);
                     mtrace('... added acl');
                     // Move on to next status.
-                    self::update_status_with_mediapackage($job, self::STATUS_INGEST_INGESTING,
-                        true, false, false, $mediapackage);
-
+                    self::update_status_with_mediapackage(
+                        $job,
+                        self::STATUS_INGEST_INGESTING,
+                        true,
+                        false,
+                        false,
+                        $mediapackage
+                    );
                 } catch (opencast_api_response_exception $e) {
                     mtrace('... failed to add acl');
                     mtrace($e->getMessage());
@@ -230,10 +264,14 @@ class ingest_uploader {
                     xml_parser_free($parser);
 
                     $event = new stdClass();
-                    $event->identifier = $values[array_search('MP:MEDIAPACKAGE',
-                        array_column($values, 'tag'))]['attributes']['ID'];
-                    $event->workflowid = $values[array_search('MP:WORKFLOW',
-                        array_column($values, 'tag'))]['attributes']['ID'];
+                    $event->identifier = $values[array_search(
+                        'MP:MEDIAPACKAGE',
+                        array_column($values, 'tag')
+                    )]['attributes']['ID'];
+                    $event->workflowid = $values[array_search(
+                        'MP:WORKFLOW',
+                        array_column($values, 'tag')
+                    )]['attributes']['ID'];
 
                     return $event;
                 } catch (opencast_api_response_exception $e) {
@@ -296,8 +334,10 @@ class ingest_uploader {
             $root->appendChild($el);
         }
 
-        $el = $dom->createElement('dcterms:created', (new DateTime('now',
-            new DateTimeZone('UTC')))->format('Y-m-d\TH:i:s.u\Z'));
+        $el = $dom->createElement('dcterms:created', (new DateTime(
+            'now',
+            new DateTimeZone('UTC')
+        ))->format('Y-m-d\TH:i:s.u\Z'));
         $root->appendChild($el);
 
         return $dom->saveXml();
@@ -321,8 +361,10 @@ class ingest_uploader {
         $root = $dom->createElement('Policy');
         $root->setAttributeNode(new DOMAttr('PolicyId', $mediapackageid));
         $root->setAttributeNode(new DOMAttr('Version', '2.0'));
-        $root->setAttributeNode(new DOMAttr('RuleCombiningAlgId',
-            'urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:permit-overrides'));
+        $root->setAttributeNode(new DOMAttr(
+            'RuleCombiningAlgId',
+            'urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:permit-overrides'
+        ));
         $root->setAttributeNode(new DOMAttr('xmlns', 'urn:oasis:names:tc:xacml:2.0:policy:schema:os'));
         $dom->appendChild($root);
 
@@ -353,18 +395,24 @@ class ingest_uploader {
             $actionmatch->appendChild($attributevalue);
 
             $actionattributedesignator = $dom->createElement('ActionAttributeDesignator');
-            $actionattributedesignator->setAttributeNode(new DOMAttr('AttributeId',
-                'urn:oasis:names:tc:xacml:1.0:action:action-id'));
-            $actionattributedesignator->setAttributeNode(new DOMAttr('DataType',
-                'http://www.w3.org/2001/XMLSchema#string'));
+            $actionattributedesignator->setAttributeNode(new DOMAttr(
+                'AttributeId',
+                'urn:oasis:names:tc:xacml:1.0:action:action-id'
+            ));
+            $actionattributedesignator->setAttributeNode(new DOMAttr(
+                'DataType',
+                'http://www.w3.org/2001/XMLSchema#string'
+            ));
             $actionmatch->appendChild($actionattributedesignator);
 
             $condition = $dom->createElement('Condition');
             $el->appendChild($condition);
 
             $apply = $dom->createElement('Apply');
-            $apply->setAttributeNode(new DOMAttr('FunctionId',
-                'urn:oasis:names:tc:xacml:1.0:function:string-is-in'));
+            $apply->setAttributeNode(new DOMAttr(
+                'FunctionId',
+                'urn:oasis:names:tc:xacml:1.0:function:string-is-in'
+            ));
             $condition->appendChild($apply);
 
             $attributevalue = $dom->createElement('AttributeValue', $rolename);
@@ -372,10 +420,14 @@ class ingest_uploader {
             $apply->appendChild($attributevalue);
 
             $subjectattributedesignator = $dom->createElement('SubjectAttributeDesignator');
-            $subjectattributedesignator->setAttributeNode(new DOMAttr('AttributeId',
-                'urn:oasis:names:tc:xacml:2.0:subject:role'));
-            $subjectattributedesignator->setAttributeNode(new DOMAttr('DataType',
-                'http://www.w3.org/2001/XMLSchema#string'));
+            $subjectattributedesignator->setAttributeNode(new DOMAttr(
+                'AttributeId',
+                'urn:oasis:names:tc:xacml:2.0:subject:role'
+            ));
+            $subjectattributedesignator->setAttributeNode(new DOMAttr(
+                'DataType',
+                'http://www.w3.org/2001/XMLSchema#string'
+            ));
             $apply->appendChild($subjectattributedesignator);
         }
 
@@ -398,8 +450,14 @@ class ingest_uploader {
      * @param null $mediapackage
      * @throws dml_exception
      */
-    public static function update_status_with_mediapackage(&$job, $status, $setmodified = true, $setstarted = false,
-                                                           $setsucceeded = false, $mediapackage = null) {
+    public static function update_status_with_mediapackage(
+        &$job,
+        $status,
+        $setmodified = true,
+        $setstarted = false,
+        $setsucceeded = false,
+        $mediapackage = null
+    ) {
         global $DB;
         $time = time();
         if ($setstarted) {
@@ -427,19 +485,19 @@ class ingest_uploader {
      */
     public static function get_status_string($statuscode) {
         switch ($statuscode) {
-            case self::STATUS_INGEST_CREATING_MEDIA_PACKAGE :
+            case self::STATUS_INGEST_CREATING_MEDIA_PACKAGE:
                 return get_string('ingeststatecreatingmedispackage', 'tool_opencast');
-            case self::STATUS_INGEST_ADDING_EPISODE_CATALOG :
+            case self::STATUS_INGEST_ADDING_EPISODE_CATALOG:
                 return get_string('ingeststateaddingcatalog', 'tool_opencast');
-            case self::STATUS_INGEST_ADDING_FIRST_TRACK :
+            case self::STATUS_INGEST_ADDING_FIRST_TRACK:
                 return get_string('ingeststateaddingfirsttrack', 'tool_opencast');
-            case self::STATUS_INGEST_ADDING_SECOND_TRACK :
+            case self::STATUS_INGEST_ADDING_SECOND_TRACK:
                 return get_string('ingeststateaddingsecondtrack', 'tool_opencast');
-            case self::STATUS_INGEST_ADDING_ACL_ATTACHMENT :
+            case self::STATUS_INGEST_ADDING_ACL_ATTACHMENT:
                 return get_string('ingeststateaddingacls', 'tool_opencast');
-            case self::STATUS_INGEST_INGESTING :
+            case self::STATUS_INGEST_INGESTING:
                 return get_string('ingeststateingesting', 'tool_opencast');
-            default :
+            default:
                 '';
         }
     }

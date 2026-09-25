@@ -39,7 +39,6 @@ require_once($CFG->dirroot . '/lib/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class addltiepisode_form extends moodleform {
-
     /**
      * Form definition.
      */
@@ -53,22 +52,36 @@ class addltiepisode_form extends moodleform {
 
         $mform->addElement('text', 'title', get_string('addltiepisode_formltititle', 'tool_opencast'), ['size' => '40']);
         $mform->setType('title', PARAM_TEXT);
-        $mform->setDefault('title',
-            ltimodulemanager::get_default_title_for_episode($ocinstanceid, $this->_customdata['episodeuuid']));
-        $mform->addRule('title',
-            get_string('addltiepisode_noemptytitle', 'tool_opencast',
-                get_string('addltiepisode_defaulttitle', 'tool_opencast')),
-            'required');
+        $mform->setDefault(
+            'title',
+            ltimodulemanager::get_default_title_for_episode($ocinstanceid, $this->_customdata['episodeuuid'])
+        );
+        $mform->addRule(
+            'title',
+            get_string(
+                'addltiepisode_noemptytitle',
+                'tool_opencast',
+                get_string('addltiepisode_defaulttitle', 'tool_opencast')
+            ),
+            'required'
+        );
 
         if (get_config('tool_opencast', 'addltiepisodeintro_' . $ocinstanceid) == true) {
-            $mform->addElement('editor', 'intro', get_string('addltiepisode_formltiintro', 'tool_opencast'),
+            $mform->addElement(
+                'editor',
+                'intro',
+                get_string('addltiepisode_formltiintro', 'tool_opencast'),
                 ['rows' => 5],
-                ['maxfiles' => 0, 'noclean' => true]);
+                ['maxfiles' => 0, 'noclean' => true]
+            );
             $mform->setType('intro', PARAM_RAW); // No XSS prevention here, users must be trusted.
-            $mform->setDefault('intro',
+            $mform->setDefault(
+                'intro',
                 ['text' =>
                     ltimodulemanager::get_default_intro_for_episode($ocinstanceid, $this->_customdata['episodeuuid']),
-                    'format' => FORMAT_HTML, ]);
+                'format' => FORMAT_HTML,
+                ]
+            );
         }
 
         if (get_config('tool_opencast', 'addltiepisodesection_' . $ocinstanceid) == true) {
@@ -77,17 +90,26 @@ class addltiepisode_form extends moodleform {
 
             // Add the widget only if we have more than one section.
             if (count($sectionmenu) > 1) {
-                $mform->addElement('select', 'section', get_string('addltiepisode_formltisection', 'tool_opencast'),
-                    ltimodulemanager::get_course_sections($courseid));
+                $mform->addElement(
+                    'select',
+                    'section',
+                    get_string('addltiepisode_formltisection', 'tool_opencast'),
+                    ltimodulemanager::get_course_sections($courseid)
+                );
                 $mform->setType('section', PARAM_INT);
                 $mform->setDefault('section', 0);
             }
         }
 
-        if (get_config('tool_opencast', 'addltiepisodeavailability_' . $ocinstanceid) == true &&
-            !empty($CFG->enableavailability)) {
-            $mform->addElement('textarea', 'availabilityconditionsjson',
-                get_string('addltiepisode_formltiavailability', 'tool_opencast'));
+        if (
+            get_config('tool_opencast', 'addltiepisodeavailability_' . $ocinstanceid) == true &&
+            !empty($CFG->enableavailability)
+        ) {
+            $mform->addElement(
+                'textarea',
+                'availabilityconditionsjson',
+                get_string('addltiepisode_formltiavailability', 'tool_opencast')
+            );
             frontend::include_all_javascript(get_course($courseid));
         }
 

@@ -45,9 +45,12 @@ require_capability('tool/opencast:viewunpublishedvideos', $coursecontext);
 
 // Check if support email is set.
 if (empty(get_config('tool_opencast', 'support_email_' . $ocinstanceid))) {
-    redirect($redirecturl,
+    redirect(
+        $redirecturl,
         get_string('support_setting_notset', 'tool_opencast'),
-        null, notification::NOTIFY_ERROR);
+        null,
+        notification::NOTIFY_ERROR
+    );
 }
 
 // Create email.
@@ -63,17 +66,21 @@ if (!$result->error) {
     // Check that series is associated with block.
     $seriesid = $apibridge->get_default_course_series($courseid);
     if ($seriesid->identifier != $result->video->is_part_of) {
-        redirect($redirecturl,
+        redirect(
+            $redirecturl,
             get_string('video_notallowed', 'tool_opencast'),
             null,
-            notification::NOTIFY_ERROR);
+            notification::NOTIFY_ERROR
+        );
     }
 
     $mailinfo = new stdClass();
     $mailinfo->username = $USER->username;
     $mailinfo->useremail = $USER->email;
-    $mailinfo->courselink = (new moodle_url('/admin/tool/opencast/index.php',
-        ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]))->out();
+    $mailinfo->courselink = (new moodle_url(
+        '/admin/tool/opencast/index.php',
+        ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+    ))->out();
     $mailinfo->course = $COURSE->fullname;
     $mailinfo->series = $result->video->series;
     $mailinfo->seriesid = $result->video->is_part_of;
@@ -99,24 +106,31 @@ if (!$result->error) {
     if ($success) {
         // Send copy to user.
         notifications::notify_problem_reported(
-            get_string('reportproblem_notification', 'tool_opencast') . $message);
+            get_string('reportproblem_notification', 'tool_opencast') . $message
+        );
 
         // Redirect with success message.
-        redirect($redirecturl,
+        redirect(
+            $redirecturl,
             get_string('reportproblem_success', 'tool_opencast'),
             null,
-            notification::NOTIFY_SUCCESS);
+            notification::NOTIFY_SUCCESS
+        );
     }
 
     // Redirect with failure message.
-    redirect($redirecturl,
+    redirect(
+        $redirecturl,
         get_string('reportproblem_failure', 'tool_opencast'),
         null,
-        notification::NOTIFY_ERROR);
+        notification::NOTIFY_ERROR
+    );
 } else {
     // Redirect with failure message.
-    redirect($redirecturl,
+    redirect(
+        $redirecturl,
         get_string('video_retrieval_failed', 'tool_opencast'),
         null,
-        notification::NOTIFY_ERROR);
+        notification::NOTIFY_ERROR
+    );
 }

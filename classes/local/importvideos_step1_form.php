@@ -38,8 +38,6 @@ require_once($CFG->dirroot . '/lib/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class importvideos_step1_form extends moodleform {
-
-
     /**
      * Form definition.
      */
@@ -60,7 +58,8 @@ class importvideos_step1_form extends moodleform {
 
         // We are in a dead end situation, no chance to add anything.
         $notification = $renderer->wizard_error_notification(
-            get_string('importvideos_wizardstep1sourcecoursenone', 'tool_opencast'));
+            get_string('importvideos_wizardstep1sourcecoursenone', 'tool_opencast')
+        );
         $mform->addElement('html', $notification);
         $mform->addElement('cancel');
     }

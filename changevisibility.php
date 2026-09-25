@@ -38,8 +38,10 @@ $identifier = required_param('identifier', PARAM_ALPHANUMEXT);
 $courseid = required_param('courseid', PARAM_INT);
 $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinstance()->id, PARAM_INT);
 
-$baseurl = new moodle_url('/admin/tool/opencast/changevisibility.php',
-    ['identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/changevisibility.php',
+    ['identifier' => $identifier, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
 $PAGE->set_url($baseurl);
 
 require_login($courseid, false);
@@ -115,7 +117,6 @@ if ($changevisibilityform->is_cancelled()) {
 
 if ($data = $changevisibilityform->get_data()) {
     if (confirm_sesskey()) {
-
         $visibilitycode = '';
         $requestscheduling = false;
         if (isset($data->enableschedulingchangevisibility) && boolval($data->enableschedulingchangevisibility)) {
@@ -143,13 +144,17 @@ if ($data = $changevisibilityform->get_data()) {
         // Check if the scheduled visibility is set, we update the record.
         if ($requestscheduling) {
             $initialvisibilitygroups = null;
-            if ($data->visibility == tool_opencast_renderer::GROUP
-                && !empty($data->groups)) {
+            if (
+                $data->visibility == tool_opencast_renderer::GROUP
+                && !empty($data->groups)
+            ) {
                 $initialvisibilitygroups = json_encode($data->groups);
             }
             $scheduledvisibilitygroups = null;
-            if ($data->scheduledvisibilitystatus == tool_opencast_renderer::GROUP
-                && !empty($data->scheduledvisibilitygroups)) {
+            if (
+                $data->scheduledvisibilitystatus == tool_opencast_renderer::GROUP
+                && !empty($data->scheduledvisibilitygroups)
+            ) {
                 $scheduledvisibilitygroups = json_encode($data->scheduledvisibilitygroups);
             }
 

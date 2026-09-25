@@ -40,8 +40,6 @@ use moodle_exception;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class process_duplicated_event_visibility_change extends adhoc_task {
-
-
     /** @var int max number of failed retries for one task */
     const MAX_COUNT_FAILS = 10;
     /** @var int max number of pending retries for one task */
@@ -111,9 +109,11 @@ class process_duplicated_event_visibility_change extends adhoc_task {
 
             // Ensure video processing is finished and no other workflow is running.
             $event = $apibridge->get_already_existing_event([$data->duplicatedeventid]);
-            if (!$event || !in_array($event->status, ['EVENTS.EVENTS.STATUS.PROCESSED', 'EVENTS.EVENTS.STATUS.PROCESSING_FAILURE'])
+            if (
+                !$event || !in_array($event->status, ['EVENTS.EVENTS.STATUS.PROCESSED', 'EVENTS.EVENTS.STATUS.PROCESSING_FAILURE'])
                 || count($event->publication_status) == 0
-                || (count($event->publication_status) == 1 && $event->publication_status[0] === 'internal')) {
+                || (count($event->publication_status) == 1 && $event->publication_status[0] === 'internal')
+            ) {
                 throw new moodle_exception('error_duplicated_event_id_not_ready', 'tool_opencast', '', $a);
             }
 
@@ -126,7 +126,6 @@ class process_duplicated_event_visibility_change extends adhoc_task {
             if ($visiblitychangestatus !== self::TASK_COMPLETED) {
                 throw new moodle_exception('error_duplicated_event_visibility_change', 'tool_opencast', '', $a);
             }
-
         } catch (Exception $e) {
             $retry = true;
             if ($visiblitychangestatus === self::TASK_PENDING) {

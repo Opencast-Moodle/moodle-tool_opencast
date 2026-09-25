@@ -39,7 +39,6 @@ use Throwable;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class attachment_helper {
-
     /** @var string File area id where attachments files are uploaded */
     const OC_FILEAREA_ATTACHMENT = 'attachmenttoupload';
 
@@ -113,7 +112,7 @@ class attachment_helper {
         }
 
         // Cleanup the completed/failed jobs.
-        list($insql, $inparams) = $DB->get_in_or_equal([self::STATUS_FAILED, self::STATUS_DONE], SQL_PARAMS_NAMED);
+        [$insql, $inparams] = $DB->get_in_or_equal([self::STATUS_FAILED, self::STATUS_DONE], SQL_PARAMS_NAMED);
         $sql = "SELECT * FROM {tool_opencast_attachments}" .
             " WHERE status {$insql}";
         $finishedjobs = $DB->get_records_sql($sql, $inparams);

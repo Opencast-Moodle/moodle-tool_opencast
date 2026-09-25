@@ -32,8 +32,6 @@ use oauth_helper;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class lti_helper {
-
-
     /**
      * Create necessary lti parameters.
      * @param string $consumerkey LTI consumer key.

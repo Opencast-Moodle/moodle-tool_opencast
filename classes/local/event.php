@@ -38,8 +38,6 @@ use tool_opencast\local\api;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class event {
-
-
     /** @var array Access control list. */
     private array $acl = [];
     /** @var array Meta data */
@@ -297,8 +295,15 @@ class event {
      * @param string $restoreuniqueid (optional) The restore unique id to keep track of restore session.
      * @return mixed false if task could not be created, id of inserted task otherwise.
      */
-    public static function create_duplication_task($ocinstanceid, $courseid, $seriesid,
-                                            $eventid, $modulecleanup = false, $episodemodules = null, $restoreuniqueid = null) {
+    public static function create_duplication_task(
+        $ocinstanceid,
+        $courseid,
+        $seriesid,
+        $eventid,
+        $modulecleanup = false,
+        $episodemodules = null,
+        $restoreuniqueid = null
+    ) {
 
         $task = new process_duplicate_event();
 

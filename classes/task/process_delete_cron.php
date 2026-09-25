@@ -37,8 +37,6 @@ use moodle_exception;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class process_delete_cron extends scheduled_task {
-
-
     /**
      * Get the name of the task.
      * @return lang_string|string
@@ -75,9 +73,11 @@ class process_delete_cron extends scheduled_task {
                     mtrace('failed job ' . $job->id . ' removed');
                 }
                 // If deletion workflow finished, remove the video.
-                if ($event->error == 0 &&
+                if (
+                    $event->error == 0 &&
                     ($event->video->processing_state === "SUCCEEDED" ||
-                        $event->video->processing_state === "PLANNED")) {
+                        $event->video->processing_state === "PLANNED")
+                ) {
                     $apibridge->delete_event($job->opencasteventid);
                     $DB->delete_records("tool_opencast_deletejob", ['id' => $job->id]);
                     mtrace('event ' . $job->opencasteventid . ' removed');

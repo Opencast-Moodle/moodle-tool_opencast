@@ -35,7 +35,6 @@ require_once($CFG->dirroot . '/admin/tool/opencast/vendor/autoload.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class api_testable extends api {
-
     /** @var array array of json responses per endpoint */
     private $jsonresponses;
 
@@ -74,8 +73,11 @@ class api_testable extends api {
         $instanceid = intval($instanceid);
         $defaultocinstance = settings_api::get_default_ocinstance();
         if ($defaultocinstance === null) {
-            throw new \dml_exception('dmlreadexception', null,
-                'No default Opencast instance is defined.');
+            throw new \dml_exception(
+                'dmlreadexception',
+                null,
+                'No default Opencast instance is defined.'
+            );
         }
 
         $storedconfigocinstanceid = !$instanceid ? $defaultocinstance->id : $instanceid;
@@ -132,8 +134,16 @@ class api_testable extends api {
      * @param string $version The response protocol version to be returned
      * @param string $reason The response Reason phrase (when empty a default will be used based on the status code)
      */
-    public static function add_json_response($resource, $method, $status = 200, $body = null, $params = '', $headers = [],
-        $version = '', $reason = null) {
+    public static function add_json_response(
+        $resource,
+        $method,
+        $status = 200,
+        $body = null,
+        $params = '',
+        $headers = [],
+        $version = '',
+        $reason = null
+    ) {
         $jsonresponses = json_decode(get_config('tool_opencast', 'api_testable_responses'), true);
         if (!is_array($jsonresponses)) {
             $jsonresponses = [];

@@ -49,8 +49,6 @@ use tool_opencast\seriesmapping;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class upload_helper {
-
-
     /** @var string File area id where videos are uploaded */
     const OC_FILEAREA = 'videotoupload';
 
@@ -83,21 +81,21 @@ class upload_helper {
     public static function get_status_string($statuscode) {
 
         switch ($statuscode) {
-            case self::STATUS_READY_TO_UPLOAD :
+            case self::STATUS_READY_TO_UPLOAD:
                 return get_string('mstatereadytoupload', 'tool_opencast');
-            case self::STATUS_CREATING_GROUP :
+            case self::STATUS_CREATING_GROUP:
                 return get_string('mstatecreatinggroup', 'tool_opencast');
-            case self::STATUS_CREATING_SERIES :
+            case self::STATUS_CREATING_SERIES:
                 return get_string('mstatecreatingseries', 'tool_opencast');
-            case self::STATUS_CREATING_EVENT :
+            case self::STATUS_CREATING_EVENT:
                 return get_string('mstatecreatingevent', 'tool_opencast');
-            case self::STATUS_UPLOADED :
+            case self::STATUS_UPLOADED:
                 return get_string('mstateuploaded', 'tool_opencast');
-            case self::STATUS_TRANSFERRED :
+            case self::STATUS_TRANSFERRED:
                 return get_string('mstatetransferred', 'tool_opencast');
-            case self::STATUS_ARCHIVED_FAILED_UPLOAD :
+            case self::STATUS_ARCHIVED_FAILED_UPLOAD:
                 return get_string('mstatearchived', 'tool_opencast');
-            default :
+            default:
                 return '';
         }
     }
@@ -160,8 +158,13 @@ class upload_helper {
      * @param object $visibility Visibility object
      * @param string $workflowconfiguration Workflow configuration
      */
-    public static function save_upload_jobs($ocinstanceid, $courseid, $options, $visibility = null,
-                                            $workflowconfiguration = null) {
+    public static function save_upload_jobs(
+        $ocinstanceid,
+        $courseid,
+        $options,
+        $visibility = null,
+        $workflowconfiguration = null
+    ) {
         global $DB, $USER;
 
         // Find the current files for the jobs.
@@ -182,7 +185,7 @@ class upload_helper {
             $items[] = 0;
         }
 
-        list($insql, $inparams) = $DB->get_in_or_equal($items, SQL_PARAMS_NAMED);
+        [$insql, $inparams] = $DB->get_in_or_equal($items, SQL_PARAMS_NAMED);
         $params += $inparams;
         $sql = "SELECT f.id, f.contenthash, f.itemid, f.filename, f.filesize FROM {files} f " .
             "WHERE f.component = :component " .
@@ -206,15 +209,23 @@ class upload_helper {
         // Add chunkupload references.
         if (class_exists('\local_chunkupload\chunkupload_form_element')) {
             if (isset($options->chunkupload_presenter) && $options->chunkupload_presenter) {
-                $record = $DB->get_record('local_chunkupload_files', ['id' => $options->chunkupload_presenter],
-                    '*', IGNORE_MISSING);
+                $record = $DB->get_record(
+                    'local_chunkupload_files',
+                    ['id' => $options->chunkupload_presenter],
+                    '*',
+                    IGNORE_MISSING
+                );
                 if ($record && $record->state == 2) {
                     $job->chunkupload_presenter = $options->chunkupload_presenter;
                 }
             }
             if (isset($options->chunkupload_presentation) && $options->chunkupload_presentation) {
-                $record = $DB->get_record('local_chunkupload_files', ['id' => $options->chunkupload_presentation],
-                    '*', IGNORE_MISSING);
+                $record = $DB->get_record(
+                    'local_chunkupload_files',
+                    ['id' => $options->chunkupload_presentation],
+                    '*',
+                    IGNORE_MISSING
+                );
                 if ($record && $record->state == 2) {
                     $job->chunkupload_presentation = $options->chunkupload_presentation;
                 }
@@ -405,8 +416,12 @@ class upload_helper {
         $notificationenabled = get_config('tool_opencast', 'eventstatusnotificationenabled_' . $job->ocinstanceid);
         if ($notificationenabled) {
             // Add the uploaded video for the event status notification job.
-            eventstatus_notification_helper::save_notification_jobs($job->ocinstanceid,
-                $eventidentifier, $job->courseid, $job->userid);
+            eventstatus_notification_helper::save_notification_jobs(
+                $job->ocinstanceid,
+                $eventidentifier,
+                $job->courseid,
+                $job->userid
+            );
         }
 
         // Change visibility record status to done and perform the post upload visibility stuff.
@@ -652,7 +667,6 @@ class upload_helper {
                 break;
 
             case self::STATUS_UPLOADED:
-
                 // Continue with post-upload tasks.
 
                 // Verify the upload.
@@ -685,11 +699,15 @@ class upload_helper {
 
                 // Ensure the assignment of a course series.
                 $assignedseries = $event->is_part_of;
-                $courseseries = $DB->get_records('tool_opencast_series',
-                    ['courseid' => $job->courseid, 'ocinstanceid' => $job->ocinstanceid]);
+                $courseseries = $DB->get_records(
+                    'tool_opencast_series',
+                    ['courseid' => $job->courseid, 'ocinstanceid' => $job->ocinstanceid]
+                );
 
-                if (array_search($assignedseries, array_column($courseseries, 'series')) === false &&
-                    $job->courseid !== $SITE->id) {
+                if (
+                    array_search($assignedseries, array_column($courseseries, 'series')) === false &&
+                    $job->courseid !== $SITE->id
+                ) {
                     // Try to assign series again.
                     $mtseries = array_search('isPartOf', array_column(json_decode($job->metadata), 'id'));
 
@@ -752,8 +770,12 @@ class upload_helper {
             foreach ($jobs as $job) {
                 mtrace('proceed: ' . $job->id);
                 try {
-                    $joboptions = $DB->get_record('tool_opencast_metadata', ['uploadjobid' => $job->id],
-                        $fields = 'metadata', $strictness = IGNORE_MISSING);
+                    $joboptions = $DB->get_record(
+                        'tool_opencast_metadata',
+                        ['uploadjobid' => $job->id],
+                        $fields = 'metadata',
+                        $strictness = IGNORE_MISSING
+                    );
                     if ($joboptions) {
                         $job = (object)array_merge((array)$job, (array)$joboptions);
                     }

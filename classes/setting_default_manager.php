@@ -35,8 +35,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class setting_default_manager {
-
-
     /**
      * Initializes the set default settings provided in this class.
      * Methods starting with set_default will be called to set configs.

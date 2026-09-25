@@ -40,8 +40,6 @@ use tool_opencast\local\settings_api;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class cleanup_lti_module_cron extends scheduled_task {
-
-
     /**
      * Get the task name.
      * @return string description.
@@ -76,7 +74,6 @@ class cleanup_lti_module_cron extends scheduled_task {
             mtrace('Step 4: Final cleanup for the added LTI modules...');
             $deletemodulesnum = ltimodulemanager::cleanup_lti_module_entries();
             mtrace("... ($deletemodulesnum) modules deleted during final cleanup.");
-
         } catch (moodle_exception $e) {
             mtrace('... cleanup process failed:');
             mtrace($e->getMessage());
