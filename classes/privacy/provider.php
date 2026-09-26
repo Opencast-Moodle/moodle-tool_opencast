@@ -41,8 +41,6 @@ use core_privacy\local\request\helper;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements \core_privacy\local\metadata\provider, \core_privacy\local\request\plugin\provider {
-
-
     /**
      *  Return the fields which contain personal data.
      * @param collection $collection a reference to the collection to use to store the metadata.
@@ -108,7 +106,6 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
         $user = $contextlist->get_user();
 
         foreach ($contexts as $context) {
-
             // Sanity check that context is at the Course context level, then get the userid.
             if ($context->contextlevel !== CONTEXT_COURSE) {
                 return;
@@ -154,7 +151,8 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
                 $subcontext,
                 'tool_opencast',
                 'videotoupload',
-                0);
+                0
+            );
         }
     }
 
@@ -177,7 +175,6 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
         // Delete all uploaded but not processed files.
         get_file_storage()->delete_area_files_select($context->id, 'tool_opencast', 'videotoupload', " = 0");
         get_file_storage()->delete_area_files_select($context->id, 'block_opencast', 'videotoupload', " = 0");
-
     }
 
     /**
@@ -194,7 +191,6 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
         $user = $contextlist->get_user();
 
         foreach ($contexts as $context) {
-
             // Sanity check that context is at the Course context level.
             if ($context->contextlevel !== CONTEXT_COURSE) {
                 return;
@@ -202,17 +198,29 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
 
             $courseid = $context->instanceid;
 
-            $DB->delete_records('tool_opencast_uploadjob',
+            $DB->delete_records(
+                'tool_opencast_uploadjob',
                 [
                     'userid' => $user->id,
                     'courseid' => $courseid,
-                ]);
+                ]
+            );
 
             // Delete all uploaded but not processed files.
             get_file_storage()->delete_area_files_select(
-                $context->id, 'block_opencast', 'videotoupload', " = 0 AND userid = :userid", ['userid' => $user->id]);
+                $context->id,
+                'block_opencast',
+                'videotoupload',
+                " = 0 AND userid = :userid",
+                ['userid' => $user->id]
+            );
             get_file_storage()->delete_area_files_select(
-                $context->id, 'tool_opencast', 'videotoupload', " = 0 AND userid = :userid", ['userid' => $user->id]);
+                $context->id,
+                'tool_opencast',
+                'videotoupload',
+                " = 0 AND userid = :userid",
+                ['userid' => $user->id]
+            );
         }
     }
 
@@ -239,7 +247,6 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
             "GROUP BY bo.userid";
 
         $userlist->add_from_sql('userid', $sql, $params);
-
     }
 
     /**
@@ -255,17 +262,30 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
             return;
         }
 
-        list($userinsql, $userinparams) = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
+        [$userinsql, $userinparams] = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
         $params = array_merge(['courseid' => $context->instanceid], $userinparams);
 
         // Delete Upload jobs.
-        $DB->delete_records_select('tool_opencast_uploadjob',
-            "courseid = :courseid AND userid {$userinsql}", $params);
+        $DB->delete_records_select(
+            'tool_opencast_uploadjob',
+            "courseid = :courseid AND userid {$userinsql}",
+            $params
+        );
 
         // Delete all uploaded but not processed files.
         get_file_storage()->delete_area_files_select(
-            $context->id, 'block_opencast', 'videotoupload', " = 0 AND userid {$userinsql}", $userinparams);
+            $context->id,
+            'block_opencast',
+            'videotoupload',
+            " = 0 AND userid {$userinsql}",
+            $userinparams
+        );
         get_file_storage()->delete_area_files_select(
-            $context->id, 'tool_opencast', 'videotoupload', " = 0 AND userid {$userinsql}", $userinparams);
+            $context->id,
+            'tool_opencast',
+            'videotoupload',
+            " = 0 AND userid {$userinsql}",
+            $userinparams
+        );
     }
 }

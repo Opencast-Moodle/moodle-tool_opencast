@@ -43,8 +43,10 @@ $baseurl = new moodle_url('/admin/tool/opencast/addlti.php', ['courseid' => $cou
 $PAGE->set_url($baseurl);
 
 // Remember URLs for redirecting.
-$redirecturloverview = new moodle_url('/admin/tool/opencast/index.php',
-    ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$redirecturloverview = new moodle_url(
+    '/admin/tool/opencast/index.php',
+    ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
 $redirecturlcourse = new moodle_url('/course/view.php', ['id' => $courseid]);
 $redirecturlcancel = $redirecturloverview;
 
@@ -71,13 +73,19 @@ require_capability('tool/opencast:addlti', $coursecontext);
 $moduleid = ltimodulemanager::get_module_for_series($ocinstanceid, $courseid, $seriesid);
 if ($moduleid) {
     // Redirect to Opencast videos overview page.
-    redirect($redirecturloverview,
-        get_string('addlti_moduleexists', 'tool_opencast'), null, notification::NOTIFY_WARNING);
+    redirect(
+        $redirecturloverview,
+        get_string('addlti_moduleexists', 'tool_opencast'),
+        null,
+        notification::NOTIFY_WARNING
+    );
 }
 
 // Use Add LTI form.
-$addltiform = new addlti_form(null,
-    ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid, 'seriesid' => $seriesid]);
+$addltiform = new addlti_form(
+    null,
+    ['courseid' => $courseid, 'ocinstanceid' => $ocinstanceid, 'seriesid' => $seriesid]
+);
 
 // Get API bridge instance.
 $apibridge = apibridge::get_instance($ocinstanceid);
@@ -115,8 +123,10 @@ if ($data = $addltiform->get_data()) {
     }
 
     // If the availability feature is disabled or if we do not have an availability given, use null.
-    if (get_config('tool_opencast', 'addltiavailability_' . $ocinstanceid) != true || empty($CFG->enableavailability) ||
-        !isset($data->availabilityconditionsjson) || !$data->availabilityconditionsjson) {
+    if (
+        get_config('tool_opencast', 'addltiavailability_' . $ocinstanceid) != true || empty($CFG->enableavailability) ||
+        !isset($data->availabilityconditionsjson) || !$data->availabilityconditionsjson
+    ) {
         $availability = null;
 
         // Otherwise.
@@ -125,35 +135,49 @@ if ($data = $addltiform->get_data()) {
     }
 
     // Create the module.
-    $result = ltimodulemanager::create_module_for_series($ocinstanceid, $courseid,
-        $data->title, $data->seriesid, $sectionid, $introtext, $introformat, $availability);
+    $result = ltimodulemanager::create_module_for_series(
+        $ocinstanceid,
+        $courseid,
+        $data->title,
+        $data->seriesid,
+        $sectionid,
+        $introtext,
+        $introformat,
+        $availability
+    );
 
     // Check if the module was created successfully.
     if ($result == true) {
         // Form was submitted with second submit button.
         if ($submitbutton2) {
             // Redirect to course overview.
-            redirect($redirecturlcourse,
+            redirect(
+                $redirecturlcourse,
                 get_string('addlti_modulecreated', 'tool_opencast', $data->title),
                 null,
-                notification::NOTIFY_SUCCESS);
+                notification::NOTIFY_SUCCESS
+            );
 
             // Form was submitted with first submit button.
         } else {
             // Redirect to Opencast videos overview page.
-            redirect($redirecturloverview,
+            redirect(
+                $redirecturloverview,
                 get_string('addlti_modulecreated', 'tool_opencast', $data->title),
                 null,
-                notification::NOTIFY_SUCCESS);
+                notification::NOTIFY_SUCCESS
+            );
         }
 
         // Otherwise.
     } else {
         // Redirect to Opencast videos overview page.
-        redirect($redirecturloverview,
+        redirect(
+            $redirecturloverview,
             get_string('addlti_modulenotcreated', 'tool_opencast', $data->title),
             null,
-            notification::NOTIFY_ERROR);
+            notification::NOTIFY_ERROR
+        );
     }
 }
 

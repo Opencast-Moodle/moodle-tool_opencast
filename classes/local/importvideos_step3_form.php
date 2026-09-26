@@ -41,8 +41,6 @@ require_once($CFG->dirroot . '/lib/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class importvideos_step3_form extends moodleform {
-
-
     /**
      * Form definition.
      */
@@ -78,21 +76,28 @@ class importvideos_step3_form extends moodleform {
 
         // Check if the handle series feature is enabled and apibridge is working.
         if ((importvideosmanager::handle_series_modules_is_enabled_and_working($ocinstanceid) == true)) {
-
             // Check if LTI handling is enabled and the user is allowed to use the feature.
-            if (ltimodulemanager::is_working_for_series($ocinstanceid) &&
-                has_capability('tool/opencast:addlti', $coursecontext)) {
+            if (
+                ltimodulemanager::is_working_for_series($ocinstanceid) &&
+                has_capability('tool/opencast:addlti', $coursecontext)
+            ) {
                 $handleseriesmodules = true;
                 // Get Opencast LTI series modules in this course which point to the source course's series.
-                $referencedseriesmodules = ltimodulemanager::get_modules_for_series_linking_to_other_course($ocinstanceid,
-                    $this->_customdata['courseid'], $this->_customdata['sourcecourseid']);
+                $referencedseriesmodules = ltimodulemanager::get_modules_for_series_linking_to_other_course(
+                    $ocinstanceid,
+                    $this->_customdata['courseid'],
+                    $this->_customdata['sourcecourseid']
+                );
             }
 
             // Check if mod_opencast is installed for handling activities.
             if (core_plugin_manager::instance()->get_plugin_info('mod_opencast') != null) {
                 $handleseriesmodules = true;
-                $referencedseriesmodules += activitymodulemanager::get_modules_for_series_linking_to_other_course($ocinstanceid,
-                    $this->_customdata['courseid'], $this->_customdata['sourcecourseid']);
+                $referencedseriesmodules += activitymodulemanager::get_modules_for_series_linking_to_other_course(
+                    $ocinstanceid,
+                    $this->_customdata['courseid'],
+                    $this->_customdata['sourcecourseid']
+                );
             }
         }
 
@@ -100,45 +105,58 @@ class importvideos_step3_form extends moodleform {
         $referencedepisodemodules = [];
         // Check if the handle episode feature is enabled _and_ the user is allowed to use the feature.
         if ((importvideosmanager::handle_episode_modules_is_enabled_and_working($ocinstanceid) == true)) {
-
             // Check if LTI handling is enabled and the user is allowed to use the feature.
-            if (ltimodulemanager::is_working_for_episodes($ocinstanceid) &&
-                has_capability('tool/opencast:addltiepisode', $coursecontext)) {
+            if (
+                ltimodulemanager::is_working_for_episodes($ocinstanceid) &&
+                has_capability('tool/opencast:addltiepisode', $coursecontext)
+            ) {
                 $handleepisodemodules = true;
 
                 // Get Opencast LTI episode modules in this course which point to a video in the source course's series.
                 $referencedepisodemodules = ltimodulemanager::get_modules_for_episodes_linking_to_other_course(
                     $ocinstanceid,
-                    $this->_customdata['courseid'], $this->_customdata['sourcecourseid'],
-                    array_keys($this->_customdata['coursevideos']));
+                    $this->_customdata['courseid'],
+                    $this->_customdata['sourcecourseid'],
+                    array_keys($this->_customdata['coursevideos'])
+                );
             }
 
             // Check if mod_opencast is installed for handling activities.
             if (core_plugin_manager::instance()->get_plugin_info('mod_opencast') != null) {
                 $handleepisodemodules = true;
                 $referencedepisodemodules += activitymodulemanager::get_modules_for_episodes_linking_to_other_course(
-                    $ocinstanceid, $this->_customdata['courseid'], $this->_customdata['sourcecourseid']);
+                    $ocinstanceid,
+                    $this->_customdata['courseid'],
+                    $this->_customdata['sourcecourseid']
+                );
             }
         }
 
         // If there is anything to be handled.
-        if (($handleseriesmodules == true && count($referencedseriesmodules) > 0) ||
-            ($handleepisodemodules == true && count($referencedepisodemodules) > 0)) {
+        if (
+            ($handleseriesmodules == true && count($referencedseriesmodules) > 0) ||
+            ($handleepisodemodules == true && count($referencedepisodemodules) > 0)
+        ) {
             // Add intro.
             $notification = $renderer->wizard_intro_notification(
-                get_string('importvideos_wizardstep3intro', 'tool_opencast'));
+                get_string('importvideos_wizardstep3intro', 'tool_opencast')
+            );
             $mform->addElement('html', $notification);
 
             // If there is any series module which needs to be handled.
             if ($handleseriesmodules == true && count($referencedseriesmodules) > 0) {
                 // Show heading for series module.
-                $handleseriesheadingstring = html_writer::tag('h3',
-                    get_string('importvideos_wizardstep3seriesmodulesubheading', 'tool_opencast'));
+                $handleseriesheadingstring = html_writer::tag(
+                    'h3',
+                    get_string('importvideos_wizardstep3seriesmodulesubheading', 'tool_opencast')
+                );
                 $mform->addElement('html', $handleseriesheadingstring);
 
                 // Show explanation for series module.
-                $handleseriesmodulestring = html_writer::tag('p',
-                    get_string('importvideos_wizardstep3seriesmoduleexplanation', 'tool_opencast'));
+                $handleseriesmodulestring = html_writer::tag(
+                    'p',
+                    get_string('importvideos_wizardstep3seriesmoduleexplanation', 'tool_opencast')
+                );
                 $mform->addElement('html', $handleseriesmodulestring);
 
                 // Add checkbox to fix series module.
@@ -150,13 +168,17 @@ class importvideos_step3_form extends moodleform {
             // If there is any episode module which needs to be handled.
             if ($handleepisodemodules == true && count($referencedepisodemodules) > 0) {
                 // Show heading for episode module.
-                $handleepisodeheadingstring = html_writer::tag('h3',
-                    get_string('importvideos_wizardstep3episodemodulesubheading', 'tool_opencast'));
+                $handleepisodeheadingstring = html_writer::tag(
+                    'h3',
+                    get_string('importvideos_wizardstep3episodemodulesubheading', 'tool_opencast')
+                );
                 $mform->addElement('html', $handleepisodeheadingstring);
 
                 // Show explanation for episode module.
-                $handleepisodemodulestring = html_writer::tag('p',
-                    get_string('importvideos_wizardstep3episodemoduleexplanation', 'tool_opencast'));
+                $handleepisodemodulestring = html_writer::tag(
+                    'p',
+                    get_string('importvideos_wizardstep3episodemoduleexplanation', 'tool_opencast')
+                );
                 $mform->addElement('html', $handleepisodemodulestring);
 
                 // Add checkbox to fix series module.
@@ -169,7 +191,8 @@ class importvideos_step3_form extends moodleform {
         } else {
             // Add intro.
             $notification = $renderer->wizard_intro_notification(
-                get_string('importvideos_wizardstep3skipintro', 'tool_opencast'));
+                get_string('importvideos_wizardstep3skipintro', 'tool_opencast')
+            );
             $mform->addElement('html', $notification);
         }
 

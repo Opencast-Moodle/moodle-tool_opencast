@@ -44,7 +44,6 @@ require_once($CFG->dirroot . '/backup/util/ui/renderer.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class renderer extends core_backup_renderer {
-
     /**
      * Renderer to display the import course selector.
      * This function is a modified version of import_course_selector from core_backup_renderer
@@ -55,11 +54,14 @@ class renderer extends core_backup_renderer {
      *
      * @return string
      */
-    public function importvideos_coursesearch(moodle_url $nextstageurl,
-                                              ?importvideos_coursesearch $courses = null) {
+    public function importvideos_coursesearch(
+        moodle_url $nextstageurl,
+        ?importvideos_coursesearch $courses = null
+    ) {
         $html = html_writer::start_tag('div', ['class' => 'import-course-selector']);
         $html .= $this->wizard_intro_notification(
-            get_string('importvideos_wizardstep1intro', 'tool_opencast'));
+            get_string('importvideos_wizardstep1intro', 'tool_opencast')
+        );
         $html .= html_writer::start_tag('form', ['method' => 'post', 'action' => $nextstageurl->out()]);
         $html .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'step', 'value' => 1]);
         foreach ($nextstageurl->params() as $key => $value) {
@@ -155,15 +157,21 @@ class renderer extends core_backup_renderer {
 
         // Compose progress bar (based on Bootstrap).
         $progressbar = html_writer::start_div('progress my-3');
-        $progressbar .= html_writer::start_div('progress-bar',
+        $progressbar .= html_writer::start_div(
+            'progress-bar',
             ['role' => 'progressbar',
                 'style' => 'width: ' . (floor(($currentstep / $maxsteps) * 100)) . '%',
                 'aria-valuenow' => $currentstep,
                 'aria-valuemin' => '0',
-                'aria-valuemax' => $maxsteps, ]);
+            'aria-valuemax' => $maxsteps,
+            ]
+        );
         $progressbar .= html_writer::start_span('text-left pl-2');
-        $progressbar .= get_string('importvideos_progressbarstep', 'tool_opencast',
-            ['current' => $currentstep, 'last' => $maxsteps]);
+        $progressbar .= get_string(
+            'importvideos_progressbarstep',
+            'tool_opencast',
+            ['current' => $currentstep, 'last' => $maxsteps]
+        );
         $progressbar .= html_writer::end_span('');
         $progressbar .= html_writer::end_div();
         $progressbar .= html_writer::end_div();
@@ -264,5 +272,4 @@ class renderer extends core_backup_renderer {
         // Finally, return the error notification code.
         return $notification;
     }
-
 }

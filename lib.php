@@ -37,8 +37,14 @@ use tool_opencast\seriesmapping;
 function tool_opencast_extend_navigation_course($navigation, $course, $context) {
     if (has_capability('tool/opencast:addactivity', $context)) {
         $url = new moodle_url('/admin/tool/opencast/index.php', ['courseid' => $course->id]);
-        $navigation->add(get_string('servicename', 'tool_opencast'), $url, navigation_node::TYPE_COURSE,
-        null, null, new pix_icon('i/report', ''));
+        $navigation->add(
+            get_string('servicename', 'tool_opencast'),
+            $url,
+            navigation_node::TYPE_COURSE,
+            null,
+            null,
+            new pix_icon('i/report', '')
+        );
     }
 }
 
@@ -75,7 +81,7 @@ function tool_opencast_output_fragment_series_form($args) {
         }
     }
 
-    list($ignored, $course) = get_context_info_array($context->id);
+    [$ignored, $course] = get_context_info_array($context->id);
 
     require_capability('tool/opencast:createseriesforcourse', $context);
 

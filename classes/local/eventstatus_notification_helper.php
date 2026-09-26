@@ -36,8 +36,6 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class eventstatus_notification_helper {
-
-
     /**
      * Save the event status notification job onto the db table to be processed later with cronjobs.
      *
@@ -310,21 +308,21 @@ class eventstatus_notification_helper {
      */
     private function get_status_message($status) {
         switch ($status) {
-            case 'FAILED' :
+            case 'FAILED':
                 return get_string('ocstatefailed', 'tool_opencast');
-            case 'PLANNED' :
+            case 'PLANNED':
                 return get_string('planned', 'tool_opencast');
-            case 'CAPTURING' :
+            case 'CAPTURING':
                 return get_string('ocstatecapturing', 'tool_opencast');
-            case 'NEEDSCUTTING' :
+            case 'NEEDSCUTTING':
                 return get_string('ocstateneedscutting', 'tool_opencast');
-            case 'DELETING' :
+            case 'DELETING':
                 return get_string('deleting', 'tool_opencast');
-            case 'RUNNING' :
-            case 'PAUSED' :
+            case 'RUNNING':
+            case 'PAUSED':
                 return get_string('ocstateprocessing', 'tool_opencast');
-            case 'SUCCEEDED' :
-            default :
+            case 'SUCCEEDED':
+            default:
                 return get_string('ocstatesucceeded', 'tool_opencast');
         }
     }

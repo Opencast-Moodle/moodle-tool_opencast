@@ -37,8 +37,10 @@ $uploadjobid = required_param('uploadjobid', PARAM_INT);
 $courseid = required_param('courseid', PARAM_INT);
 $ocinstanceid = optional_param('ocinstanceid', settings_api::get_default_ocinstance()->id, PARAM_INT);
 
-$baseurl = new moodle_url('/admin/tool/opencast/changescheduledvisibility.php',
-    ['uploadjobid' => $uploadjobid, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]);
+$baseurl = new moodle_url(
+    '/admin/tool/opencast/changescheduledvisibility.php',
+    ['uploadjobid' => $uploadjobid, 'courseid' => $courseid, 'ocinstanceid' => $ocinstanceid]
+);
 $PAGE->set_url($baseurl);
 
 require_login($courseid, false);
@@ -84,19 +86,29 @@ if ($data = $scheduledvisibilityform->get_data()) {
         $scheduledvisibility->scheduledvisibilitytime = $data->scheduledvisibilitytime;
         $scheduledvisibility->scheduledvisibilitystatus = $data->scheduledvisibilitystatus;
         $scheduledvisibilitygroups = null;
-        if ($data->scheduledvisibilitystatus == tool_opencast_renderer::GROUP
-            && !empty($data->scheduledvisibilitygroups)) {
+        if (
+            $data->scheduledvisibilitystatus == tool_opencast_renderer::GROUP
+            && !empty($data->scheduledvisibilitygroups)
+        ) {
             $scheduledvisibilitygroups = json_encode($data->scheduledvisibilitygroups);
         }
         $scheduledvisibility->scheduledvisibilitygroups = $scheduledvisibilitygroups;
         $result = visibility_helper::update_visibility_job($scheduledvisibility);
 
         if ($result) {
-            redirect($redirecturl, get_string('changescheduledvisibilitysuccess', 'tool_opencast'), null,
-                notification::NOTIFY_SUCCESS);
+            redirect(
+                $redirecturl,
+                get_string('changescheduledvisibilitysuccess', 'tool_opencast'),
+                null,
+                notification::NOTIFY_SUCCESS
+            );
         } else {
-            redirect($redirecturl, get_string('changescheduledvisibilityfailed', 'tool_opencast'),
-                null, notification::NOTIFY_ERROR);
+            redirect(
+                $redirecturl,
+                get_string('changescheduledvisibilityfailed', 'tool_opencast'),
+                null,
+                notification::NOTIFY_ERROR
+            );
         }
     }
 }

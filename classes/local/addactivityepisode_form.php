@@ -39,7 +39,6 @@ require_once($CFG->dirroot . '/lib/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class addactivityepisode_form extends moodleform {
-
     /**
      * Form definition.
      */
@@ -51,15 +50,26 @@ class addactivityepisode_form extends moodleform {
         $courseid = $this->_customdata['courseid'];
         $ocinstanceid = $this->_customdata['ocinstanceid'];
 
-        $mform->addElement('text', 'title', get_string('addactivityepisode_formactivitytitle', 'tool_opencast'),
-            ['size' => '40']);
+        $mform->addElement(
+            'text',
+            'title',
+            get_string('addactivityepisode_formactivitytitle', 'tool_opencast'),
+            ['size' => '40']
+        );
         $mform->setType('title', PARAM_TEXT);
-        $mform->setDefault('title',
-            activitymodulemanager::get_default_title_for_episode($ocinstanceid, $this->_customdata['episodeuuid']));
-        $mform->addRule('title',
-            get_string('addactivityepisode_noemptytitle', 'tool_opencast',
-                get_string('addactivityepisode_defaulttitle', 'tool_opencast')),
-            'required');
+        $mform->setDefault(
+            'title',
+            activitymodulemanager::get_default_title_for_episode($ocinstanceid, $this->_customdata['episodeuuid'])
+        );
+        $mform->addRule(
+            'title',
+            get_string(
+                'addactivityepisode_noemptytitle',
+                'tool_opencast',
+                get_string('addactivityepisode_defaulttitle', 'tool_opencast')
+            ),
+            'required'
+        );
 
         if (get_config('mod_opencast', 'global_download_' . $ocinstanceid)) {
             $mform->addElement('hidden', 'allowdownload');
@@ -72,14 +82,21 @@ class addactivityepisode_form extends moodleform {
         }
 
         if (get_config('tool_opencast', 'addactivityepisodeintro_' . $ocinstanceid) == true) {
-            $mform->addElement('editor', 'intro', get_string('addactivityepisode_formactivityintro', 'tool_opencast'),
+            $mform->addElement(
+                'editor',
+                'intro',
+                get_string('addactivityepisode_formactivityintro', 'tool_opencast'),
                 ['rows' => 5],
-                ['maxfiles' => 0, 'noclean' => true]);
+                ['maxfiles' => 0, 'noclean' => true]
+            );
             $mform->setType('intro', PARAM_RAW); // No XSS prevention here, users must be trusted.
-            $mform->setDefault('intro',
+            $mform->setDefault(
+                'intro',
                 ['text' =>
                     activitymodulemanager::get_default_intro_for_episode($ocinstanceid, $this->_customdata['episodeuuid']),
-                    'format' => FORMAT_HTML, ]);
+                'format' => FORMAT_HTML,
+                ]
+            );
         }
 
         if (get_config('tool_opencast', 'addactivityepisodesection_' . $ocinstanceid) == true) {
@@ -88,17 +105,26 @@ class addactivityepisode_form extends moodleform {
 
             // Add the widget only if we have more than one section.
             if (count($sectionmenu) > 1) {
-                $mform->addElement('select', 'section', get_string('addactivityepisode_formactivitysection', 'tool_opencast'),
-                    activitymodulemanager::get_course_sections($courseid));
+                $mform->addElement(
+                    'select',
+                    'section',
+                    get_string('addactivityepisode_formactivitysection', 'tool_opencast'),
+                    activitymodulemanager::get_course_sections($courseid)
+                );
                 $mform->setType('section', PARAM_INT);
                 $mform->setDefault('section', 0);
             }
         }
 
-        if (get_config('tool_opencast', 'addactivityepisodeavailability_' . $ocinstanceid) == true &&
-            !empty($CFG->enableavailability)) {
-            $mform->addElement('textarea', 'availabilityconditionsjson',
-                get_string('addactivityepisode_formactivityavailability', 'tool_opencast'));
+        if (
+            get_config('tool_opencast', 'addactivityepisodeavailability_' . $ocinstanceid) == true &&
+            !empty($CFG->enableavailability)
+        ) {
+            $mform->addElement(
+                'textarea',
+                'availabilityconditionsjson',
+                get_string('addactivityepisode_formactivityavailability', 'tool_opencast')
+            );
             frontend::include_all_javascript(get_course($courseid));
         }
 

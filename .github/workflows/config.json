@@ -7,7 +7,7 @@
   "database": ["mariadb", "psql"],
   "moodle-php": {
     "MOODLE_501_STABLE": ["8.2", "8.3", "8.4"],
-    "MOODLE_502_STABLE": ["8.2", "8.3", "8.4"]
+    "MOODLE_502_STABLE": ["8.3", "8.4"]
   },
-  "moodle-plugin-ci": "4.5.8"
+  "moodle-plugin-ci": "4.5.11"
 }

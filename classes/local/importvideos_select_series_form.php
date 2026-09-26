@@ -38,8 +38,6 @@ require_once($CFG->dirroot . '/lib/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class importvideos_select_series_form extends moodleform {
-
-
     /**
      * Form definition.
      */
@@ -67,7 +65,8 @@ class importvideos_select_series_form extends moodleform {
 
         // Add intro.
         $notification = $renderer->wizard_intro_notification(
-            get_string('importvideos_wizardstep2aclintro', 'tool_opencast'));
+            get_string('importvideos_wizardstep2aclintro', 'tool_opencast')
+        );
         $mform->addElement('html', $notification);
 
         // Add one single empty static element.
@@ -78,9 +77,17 @@ class importvideos_select_series_form extends moodleform {
         foreach ($courseseries as $id => $title) {
             $radioarray[] = $mform->createElement('radio', 'series', '', $title, $id, []);
         }
-        $mform->addGroup($radioarray, 'series',
-            get_string('importvideos_wizard_availableseries', 'tool_opencast',
-                get_course($this->_customdata['sourcecourseid'])->fullname), ['<br>'], false);
+        $mform->addGroup(
+            $radioarray,
+            'series',
+            get_string(
+                'importvideos_wizard_availableseries',
+                'tool_opencast',
+                get_course($this->_customdata['sourcecourseid'])->fullname
+            ),
+            ['<br>'],
+            false
+        );
 
         // Add action buttons.
         $this->add_action_buttons(true, get_string('importvideos_wizardstepbuttontitlecontinue', 'tool_opencast'));

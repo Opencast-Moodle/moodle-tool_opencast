@@ -106,12 +106,14 @@ final class upload_ingest_with_configpanel_test extends advanced_testcase {
         set_config('alloweduploadwfconfigs_1', 'straightToPublishing', 'tool_opencast');
         set_config('limituploadjobs_1', 2, 'tool_opencast');
         set_config('series_name_1', '[COURSENAME]', 'tool_opencast');
-        set_config('roles_1',
+        set_config(
+            'roles_1',
             '[{"rolename":"ROLE_ADMIN","actions":"write,read","permanent":1},' .
             '{"rolename":"ROLE_GROUP_MH_DEFAULT_ORG_EXTERNAL_APPLICATIONS","actions":"write,read","permanent":1},' .
             '{"rolename":"[COURSEID]_Instructor","actions":"write,read","permanent":1},' .
             '{"rolename":"[COURSEGROUPID]_Learner","actions":"read","permanent":0}]',
-            'tool_opencast');
+            'tool_opencast'
+        );
 
         // Upload file.
         $plugingenerator = $this->getDataGenerator()->get_plugin_generator('tool_opencast');

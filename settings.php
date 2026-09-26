@@ -31,4 +31,3 @@ use tool_opencast\settings\admin_settings_builder;
 if ($hassiteconfig) {
     admin_settings_builder::create_settings();
 }
-

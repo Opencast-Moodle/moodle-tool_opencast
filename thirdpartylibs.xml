@@ -9,9 +9,96 @@
     </library>
     <library>
         <location>vendor/elan-ev/opencast-api</location>
-        <name>Opencast PHP Library</name>
-        <version>2.0</version>
+        <name>A comprehensive PHP library for Opencast</name>
+        <version>2.0.0</version>
         <license>GPL</license>
         <licenseversion>3.0-or-later</licenseversion>
+        <repository>https://github.com/elan-ev/opencast-php-library</repository>
+    </library>
+    <library>
+        <location>vendor/guzzlehttp/guzzle</location>
+        <name>Guzzle is a PHP HTTP client library</name>
+        <version>7.15.5</version>
+        <license>MIT</license>
+        <repository>https://github.com/guzzle/guzzle</repository>
+    </library>
+    <library>
+        <location>vendor/guzzlehttp/promises</location>
+        <name>Guzzle promises library</name>
+        <version>2.5.3</version>
+        <license>MIT</license>
+        <repository>https://github.com/guzzle/promises</repository>
+    </library>
+    <library>
+        <location>vendor/guzzlehttp/psr7</location>
+        <name>PSR-7 message implementation that also provides common utility methods</name>
+        <version>2.13.1</version>
+        <license>MIT</license>
+        <repository>https://github.com/guzzle/psr7</repository>
+    </library>
+    <library>
+        <location>vendor/lcobucci/jwt</location>
+        <name>A simple library to work with JSON Web Token and JSON Web Signature</name>
+        <version>5.6.0</version>
+        <license>BSD</license>
+        <licenseversion>3-Clause</licenseversion>
+        <repository>https://github.com/lcobucci/jwt</repository>
+    </library>
+    <library>
+        <location>vendor/psr/clock</location>
+        <name>Common interface for reading the clock.</name>
+        <version>1.0.0</version>
+        <license>MIT</license>
+        <repository>https://github.com/php-fig/clock</repository>
+    </library>
+    <library>
+        <location>vendor/psr/http-client</location>
+        <name>Common interface for HTTP clients</name>
+        <version>1.0.3</version>
+        <license>MIT</license>
+        <repository>https://github.com/php-fig/http-client</repository>
+    </library>
+    <library>
+        <location>vendor/psr/http-factory</location>
+        <name>PSR-17: Common interfaces for PSR-7 HTTP message factories</name>
+        <version>1.1.0</version>
+        <license>MIT</license>
+        <repository>https://github.com/php-fig/http-factory</repository>
+    </library>
+    <library>
+        <location>vendor/psr/http-message</location>
+        <name>Common interface for HTTP messages</name>
+        <version>2.0</version>
+        <license>MIT</license>
+        <repository>https://github.com/php-fig/http-message</repository>
+    </library>
+    <library>
+        <location>vendor/ralouphie/getallheaders</location>
+        <name>A polyfill for getallheaders.</name>
+        <version>3.0.3</version>
+        <license>MIT</license>
+        <repository>https://github.com/ralouphie/getallheaders</repository>
+    </library>
+    <library>
+        <location>vendor/symfony/deprecation-contracts</location>
+        <name>A generic function and convention to trigger deprecation notices</name>
+        <version>3.7.1</version>
+        <license>MIT</license>
+        <repository>https://github.com/symfony/deprecation-contracts</repository>
+    </library>
+    <library>
+        <location>vendor/symfony/polyfill-php80</location>
+        <name>Symfony polyfill backporting some PHP 8.0+ features to lower PHP versions</name>
+        <version>1.37.0</version>
+        <license>MIT</license>
+        <repository>https://github.com/symfony/polyfill-php80</repository>
+    </library>
+    <library>
+        <location>vendor/composer</location>
+        <name>Automatically generated files by composer</name>
+    </library>
+    <library>
+        <location>vendor/autoload.php</location>
+        <name>Automatically generated file by composer</name>
     </library>
 </libraries>

@@ -38,8 +38,6 @@ require_once($CFG->dirroot . '/lib/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class importvideos_step3_form_acl extends moodleform {
-
-
     /**
      * Form definition.
      */
@@ -75,7 +73,8 @@ class importvideos_step3_form_acl extends moodleform {
         if (!$seriesobject) {
             // We are in a dead end situation, no chance to add anything.
             $notification = $renderer->wizard_error_notification(
-                get_string('importvideos_wizardstep1seriesnotfound', 'tool_opencast'));
+                get_string('importvideos_wizardstep1seriesnotfound', 'tool_opencast')
+            );
             $mform->addElement('html', $notification);
             $mform->addElement('cancel');
 
@@ -87,34 +86,46 @@ class importvideos_step3_form_acl extends moodleform {
 
         // Add intro.
         $notification = $renderer->wizard_intro_notification(
-            get_string('importvideos_wizardstep4intro', 'tool_opencast'));
+            get_string('importvideos_wizardstep4intro', 'tool_opencast')
+        );
         $mform->addElement('html', $notification);
 
         // Summary item: Source course.
         $sourcecourse = get_course($this->_customdata['sourcecourseid']);
         $courseentry = $renderer->course_menu_entry($sourcecourse);
-        $mform->addElement('static', 'summarysourcecourse',
+        $mform->addElement(
+            'static',
+            'summarysourcecourse',
             get_string('importvideos_wizardstep1sourcecourse', 'tool_opencast'),
-            $courseentry);
+            $courseentry
+        );
 
         // Horizontal line.
         $mform->addElement('html', '<hr>');
 
         // Summary item: Series.
         $seriesentry = $renderer->series_menu_entry($seriesobject);
-        $mform->addElement('static', 'summaryseries',
+        $mform->addElement(
+            'static',
+            'summaryseries',
             get_string('importvideos_wizard_seriesimported', 'tool_opencast'),
-            $seriesentry);
+            $seriesentry
+        );
 
         // Horizontal line.
         $mform->addElement('html', '<hr>');
 
         // Summary item: Course videos.
-        $coursevideossummary = importvideosmanager::get_import_acl_source_series_videos_summary($this->_customdata['ocinstanceid'],
-            $seriesobject->identifier);
-        $mform->addElement('static', 'summarycoursevideos',
+        $coursevideossummary = importvideosmanager::get_import_acl_source_series_videos_summary(
+            $this->_customdata['ocinstanceid'],
+            $seriesobject->identifier
+        );
+        $mform->addElement(
+            'static',
+            'summarycoursevideos',
             get_string('importvideos_wizardstep1coursevideos', 'tool_opencast'),
-            $coursevideossummary);
+            $coursevideossummary
+        );
 
         // Add action buttons.
         $this->add_action_buttons(true, get_string('importvideos_wizardstepbuttontitlerunimport', 'tool_opencast'));
