@@ -1,7 +1,13 @@
 CHANGELOG
 =========
 
-.1.2 (2026-07-23)
+5.2.0 (2026-09-26)
+------------------
+* Moodle 5.2 compatible version
+* Declare all third-party libraries in thirdpartylibs.xml
+* [FIXED] Update guzzlehttp/guzzle to 7.15.5 and guzzlehttp/psr7 to 2.13.1 (13 Dependabot alerts)
+
+5.1.2 (2026-07-23)
 ------------------
 * [FIXED] upgrade.php: fix installation without h5p-error
 
@@ -16,7 +22,7 @@ CHANGELOG
 * Moodle 5.1 compatible version
 
 
-* 5.0.2 (2025-09-22)
+5.0.2 (2025-09-22)
 ------------------
 * [FIXED] upgrade.php: fix wrong savepoint statement
 
