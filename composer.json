@@ -4,6 +4,7 @@
         "elan-ev/opencast-api": "2.0.0"
     },
     "config": {
-        "platform-check": false
+        "platform-check": false,
+        "prepend-autoloader": false
     }
 }
