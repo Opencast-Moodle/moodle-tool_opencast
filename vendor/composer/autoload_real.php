@@ -22,14 +22,14 @@ class ComposerAutoloaderInit8ba2ca4e105ea351f7cb241590a7de7e
             return self::$loader;
         }
 
-        spl_autoload_register(array('ComposerAutoloaderInit8ba2ca4e105ea351f7cb241590a7de7e', 'loadClassLoader'), true, true);
+        spl_autoload_register(array('ComposerAutoloaderInit8ba2ca4e105ea351f7cb241590a7de7e', 'loadClassLoader'), true, false);
         self::$loader = $loader = new \Composer\Autoload\ClassLoader(\dirname(__DIR__));
         spl_autoload_unregister(array('ComposerAutoloaderInit8ba2ca4e105ea351f7cb241590a7de7e', 'loadClassLoader'));
 
         require __DIR__ . '/autoload_static.php';
         call_user_func(\Composer\Autoload\ComposerStaticInit8ba2ca4e105ea351f7cb241590a7de7e::getInitializer($loader));
 
-        $loader->register(true);
+        $loader->register(false);
 
         $filesToLoad = \Composer\Autoload\ComposerStaticInit8ba2ca4e105ea351f7cb241590a7de7e::$files;
         $requireFile = \Closure::bind(static function ($fileIdentifier, $file) {
