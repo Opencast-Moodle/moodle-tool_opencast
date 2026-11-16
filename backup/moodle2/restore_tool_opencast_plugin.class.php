@@ -72,6 +72,10 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
      */
     protected $sourcecourseid;
     /**
+     * @var bool Whether the backup contained at least one series entry for ACL import mode.
+     */
+    protected $hasseriesdata = false;
+    /**
      * @var array List of Series with ACL changed.
      */
     protected $aclchanged = [];
@@ -176,6 +180,7 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
                 $apibridge = apibridge::get_instance($ocinstanceid);
 
                 if (isset($data->import[0]['series'][0])) {
+                    $this->hasseriesdata = true;
                     foreach ($data->import[0]['series'] as $series) {
                         $seriesid = $series['seriesid'];
 
@@ -375,7 +380,9 @@ class restore_tool_opencast_plugin extends restore_tool_plugin {
             }
 
             if (!$this->series) {
-                notifications::notify_missing_seriesid($courseid);
+                if ($this->hasseriesdata) {
+                    notifications::notify_missing_seriesid($courseid);
+                }
                 return;
             }
             // The ACL change import process is not successful.
